@@ -1,0 +1,7 @@
+	bankZone = GangZoneCreate(playerid, -2809.371337, -210.224258, -2419.752929, 164.570327); // 0
+	upperbankZone = GangZoneCreate(playerid, -2809.371337, 164.570327, -2389.391845, 565.902954); // 1
+	garciaZone = GangZoneCreate(playerid, -2373.217041, -195.209960, -2146.772460, 320.036376); // 2
+	rightGarciaZone = GangZoneCreate(playerid, -2146.772460, -70.782630, -1995.524780, 320.036376); // 3
+	upperGarciaZone = GangZoneCreate(playerid, -2373.217041, 320.036376, -2004.004638, 566.040466); // 4
+	chinatownZone = GangZoneCreate(playerid, -2389.391845, 565.902954, -2004.004638, 808.544311); // 5
+	downtownZone = GangZoneCreate(playerid, -2004.167602, 605.828369, -1713.900878, 845.468750); // 6
