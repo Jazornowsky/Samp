@@ -55,6 +55,8 @@ public OnGameModeInit()
 	// LoadConfig loads MySQL connection data from file
 	// LoadConfig();
 	
+	printf("[INFO:] Using %s as database", db_database);
+	
 	if(!(db_con1 = mysql_connect(db_host,db_user,db_database,db_pass)))
 	{
 		GameModeExit();

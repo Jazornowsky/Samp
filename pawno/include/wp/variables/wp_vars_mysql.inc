@@ -7,12 +7,10 @@
 *
 *************************************************************************************************************/
 
-// new db_host[16] = "176.122.224.184";
 new db_host[10] = "127.0.0.1";
-new db_user[7] = "root";
-new db_database[21] = "wlanpartyww_multiple";
-// new db_pass[20] = "55apacheapce55mysql";
-new db_pass[15] = "55apacheapce55";
+new db_user[5] = "root";
+new db_database[12] = "wparty_samp";
+new db_pass[9] = "password";
 
 new db_result[1024];
 new db_con1;
