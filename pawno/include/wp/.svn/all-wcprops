@@ -1,0 +1,185 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/samp/!svn/ver/52/trunk/pawno/include/wp
+END
+wp_audio.inc
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/samp/!svn/ver/61/trunk/pawno/include/wp/wp_audio.inc
+END
+wp_timers.inc
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_timers.inc
+END
+wp_utility.inc
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_utility.inc
+END
+wp_loadscript.inc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_loadscript.inc
+END
+wp_saveloadmzgkjobs.inc
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_saveloadmzgkjobs.inc
+END
+wp_engine.inc
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/samp/!svn/ver/44/trunk/pawno/include/wp/wp_engine.inc
+END
+wp_saveplayerdata.inc
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/samp/!svn/ver/58/trunk/pawno/include/wp/wp_saveplayerdata.inc
+END
+wp_itemfncs.inc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_itemfncs.inc
+END
+wp_bw.inc
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/samp/!svn/ver/61/trunk/pawno/include/wp/wp_bw.inc
+END
+wp_variables.inc
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_variables.inc
+END
+wp_importvehicle.inc
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/samp/!svn/ver/44/trunk/pawno/include/wp/wp_importvehicle.inc
+END
+wp_ondialogresponse.inc
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_ondialogresponse.inc
+END
+wp_removedobjects.inc
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_removedobjects.inc
+END
+wp_onplayerselectedmenurow.inc
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/samp/!svn/ver/58/trunk/pawno/include/wp/wp_onplayerselectedmenurow.inc
+END
+wp_ongamemodestock.inc
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_ongamemodestock.inc
+END
+wp_onvehiclestock.inc
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/samp/!svn/ver/55/trunk/pawno/include/wp/wp_onvehiclestock.inc
+END
+wp_reset.inc
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_reset.inc
+END
+wp_saveloadjobdata.inc
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_saveloadjobdata.inc
+END
+wp_buscheckpoints.inc
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/samp/!svn/ver/61/trunk/pawno/include/wp/wp_buscheckpoints.inc
+END
+wp_payday.inc
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/samp/!svn/ver/61/trunk/pawno/include/wp/wp_payday.inc
+END
+wp_onmysqlquery.inc
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_onmysqlquery.inc
+END
+wp_samsites.inc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/samp/!svn/ver/44/trunk/pawno/include/wp/wp_samsites.inc
+END
+wp_savedata.inc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_savedata.inc
+END
+wp_objects.inc
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/samp/!svn/ver/60/trunk/pawno/include/wp/wp_objects.inc
+END
+wp_dcmds.inc
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_dcmds.inc
+END
+wp_fuel.inc
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/samp/!svn/ver/61/trunk/pawno/include/wp/wp_fuel.inc
+END
+wp_player.inc
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/samp/!svn/ver/44/trunk/pawno/include/wp/wp_player.inc
+END
+wp_onplayerstock.inc
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_onplayerstock.inc
+END
+wp_onplayercommandtext.inc
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_onplayercommandtext.inc
+END
+wp_saveload.inc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/samp/!svn/ver/64/trunk/pawno/include/wp/wp_saveload.inc
+END

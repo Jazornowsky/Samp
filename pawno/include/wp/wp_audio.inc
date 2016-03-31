@@ -1,10 +1,10 @@
 /***
-* wp_audio.inc
 *
-*							Made by Damian Wojdat
-*
-*Last modified:
-*						17-06-2011
+* File: wp_audio.inc
+* Auth: Damian Wojdat
+* Date: 15.09.2011
+* Desc: Sample audio stuff.
+* TODO: Cleanup.
 *
 *************************************************************************************************************/
 
@@ -67,7 +67,7 @@ public Audio_OnPlay(playerid, handleid)
 	// {
 		// Audio_Set3DPosition(playerid, ChurchSequence2[playerid],2254.0,-1347.0,-51.0, 70.0);
 	// }
-	SetTimerEx("SetRadioAudioPos", 30000, 0, "dd", playerid, handleid);
+	// SetTimerEx("SetRadioAudioPos", 30000, 0, "dd", playerid, handleid);
 	return 1;
 }
 
@@ -78,10 +78,10 @@ public Audio_OnPlay(playerid, handleid)
 */
 public Audio_OnTransferFile(playerid, file[], current, total, result)
 {
-	AudioReady[playerid] = 1;
 	if(current == total)
 	{
-		// SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Zakoñczono ³adowanie plików muzycznych");
+		if(result == 0 || result == 1)
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Zakoñczono ³adowanie plików dŸwiêkowych");
 		AudioReady[playerid] = 1;
 		// PlayMusic(playerid);
 	}
@@ -98,7 +98,7 @@ public Audio_OnTransferFile(playerid, file[], current, total, result)
 *				From: PlayCustomMusic
 *				To: SetRadioAudioPos
 */
-SetRadioAudioPos(playerid, handleid)
+public SetRadioAudioPos(playerid, handleid)
 {
 	for(new i = 0; i < sizeof(gRadioSet); i++)
 	{

@@ -1,3 +1,13 @@
+/***
+*
+* File: wp_saveloadmzgkjobs.inc
+* Auth: Damian Wojdat
+* Date: 15.09.2011
+* Desc: Loading functions.
+* TODO: Transfer this to a better place.
+*
+*************************************************************************************************************/
+
 LoadMzgkJobCheckpointA()
 {
 	new arrCoords[36][64];
@@ -43,7 +53,9 @@ LoadMzgkJobCheckpointA()
 		MzgkJob[CheckPoint11ax] = floatstr(arrCoords[33]);
 		MzgkJob[CheckPoint11ay] = floatstr(arrCoords[34]);
 		MzgkJob[CheckPoint11az] = floatstr(arrCoords[35]);
-		print("[INFO:] Mzgk job checkpoint A loaded");
+		#if defined DEBUG
+			print("[INFO:] Mzgk job checkpoint A loaded");
+		#endif
 	}
 	else
 	{
@@ -98,7 +110,9 @@ LoadMzgkJobCheckpointB()
 		MzgkJob[CheckPoint11bx] = floatstr(arrCoords[33]);
 		MzgkJob[CheckPoint11by] = floatstr(arrCoords[34]);
 		MzgkJob[CheckPoint11bz] = floatstr(arrCoords[35]);
-		print("[INFO:] MZGK job checkpoint B loaded");
+		#if defined DEBUG
+			print("[INFO:] MZGK job checkpoint B loaded");
+		#endif
 	}
 	else
 	{
@@ -153,7 +167,9 @@ LoadSweeperJobCheckpointA()
 		SweeperJob[CheckPoint11ax] = floatstr(arrCoords[33]);
 		SweeperJob[CheckPoint11ay] = floatstr(arrCoords[34]);
 		SweeperJob[CheckPoint11az] = floatstr(arrCoords[35]);
-		print("[INFO:] Sweeper job checkpoint A loaded");
+		#if defined DEBUG
+			print("[INFO:] Sweeper job checkpoint A loaded");
+		#endif
 	}
 	else
 	{
@@ -208,7 +224,9 @@ LoadSweeperJobCheckpointB()
 		SweeperJob[CheckPoint11bx] = floatstr(arrCoords[33]);
 		SweeperJob[CheckPoint11by] = floatstr(arrCoords[34]);
 		SweeperJob[CheckPoint11bz] = floatstr(arrCoords[35]);
-		print("[INFO:] Sweeper job checkpoint B loaded");
+		#if defined DEBUG
+			print("[INFO:] Sweeper job checkpoint B loaded");
+		#endif
 	}
 	else
 	{
@@ -235,7 +253,9 @@ LoadFarmerJob()
 		FarmerJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		FarmerJob[TakeJobPickupID] = strval(arrCoords[6]);
         FarmerJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,FarmerJob[TakeJobX],FarmerJob[TakeJobY],FarmerJob[TakeJobZ]);
-		print("[INFO:] Farmer job loaded");
+		#if defined DEBUG
+			print("[INFO:] Farmer job loaded");
+		#endif
 	}
 	fclose(file);
 	return 1;
@@ -283,7 +303,9 @@ LoadFarmerJobCheckpointA()
 		FarmerJob[CheckPoint4ax] = floatstr(arrCoords[12]);
 		FarmerJob[CheckPoint4ay] = floatstr(arrCoords[13]);
 		FarmerJob[CheckPoint4az] = floatstr(arrCoords[14]);
-		print("[INFO:] Farmer job checkpoint A loaded");
+		#if defined DEBUG
+			print("[INFO:] Farmer job checkpoint A loaded");
+		#endif
 	}
 	else
 	{
@@ -341,7 +363,9 @@ LoadFarmerJobCheckpointB()
 		FarmerJob[CheckPoint12bx] = floatstr(arrCoords[36]);
 		FarmerJob[CheckPoint12by] = floatstr(arrCoords[37]);
 		FarmerJob[CheckPoint12bz] = floatstr(arrCoords[38]);
-		print("[INFO:] Farmer job checkpoint B loaded");
+		#if defined DEBUG
+			print("[INFO:] Farmer job checkpoint B loaded");
+		#endif
 	}
 	else
 	{
@@ -375,7 +399,9 @@ LoadFarmerJobCheckpointC()
 		FarmerJob[CheckPoint17cx] = floatstr(arrCoords[12]);
 		FarmerJob[CheckPoint17cy] = floatstr(arrCoords[13]);
 		FarmerJob[CheckPoint17cz] = floatstr(arrCoords[14]);
-		print("[INFO:] Farmer job checkpoint C loaded");
+		#if defined DEBUG
+			print("[INFO:] Farmer job checkpoint C loaded");
+		#endif
 	}
 	else
 	{

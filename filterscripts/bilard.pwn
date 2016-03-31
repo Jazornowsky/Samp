@@ -1,4 +1,8 @@
+#define FILTERSCRIPT
+
 #include <a_samp>
+
+#if defined FILTERSCRIPT
 
 #define NO_BALL 403
 #define CALA 0
@@ -100,6 +104,10 @@ new Char[2][] =
 
 public OnFilterScriptInit()
 {
+	print("\n--------------------------------------");
+	print(" Blank Filterscript by your name here");
+	print("--------------------------------------\n");
+	
 	for(new i = 0; i < 20; i++)
 	{
 	    Player[i][T1] = TextDrawCreate(481.000000,353.000000," ");
@@ -141,14 +149,52 @@ public OnFilterScriptInit()
 	return 1;
 }
 
+public OnFilterScriptExit()
+{
+	Release();
+	return 1;
+}
+
+#else
+
+main()
+{
+	print("\n----------------------------------");
+	print(" Blank Gamemode by your name here");
+	print("----------------------------------\n");
+}
+
+#endif
+
+public OnGameModeInit()
+{
+	// Don't use these lines if it's a filterscript
+	SetGameModeText("Blank Script");
+	AddPlayerClass(0, 1958.3783, 1343.1572, 15.3746, 269.1425, 0, 0, 0, 0, 0, 0);
+	return 1;
+}
+
+public OnGameModeExit()
+{
+	return 1;
+}
+
+public OnPlayerRequestClass(playerid, classid)
+{
+	SetPlayerPos(playerid, 1958.3783, 1343.1572, 15.3746);
+	SetPlayerCameraPos(playerid, 1958.3783, 1343.1572, 15.3746);
+	SetPlayerCameraLookAt(playerid, 1958.3783, 1343.1572, 15.3746);
+	return 1;
+}
+
 public OnPlayerCommandText(playerid, cmdtext[])
 {
-    if (strcmp("/bilard", cmdtext, true, 10) == 0)
+    if (strcmp("/teleport", cmdtext, true, 10) == 0)
 	{
 	    SetPlayerPos(playerid,2499.3174,-1683.8401,13.4014);
 	    return 1;
 	}
-	if (strcmp("/bilard-start", cmdtext, true, 10) == 0)
+	if (strcmp("/start", cmdtext, true, 10) == 0)
 	{
 		if(Game[Waiting] == false && Game[Running] == false)
 		{
@@ -167,7 +213,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	    	new name[24];
 	    	new str[100];
 			name = GetName(playerid);
-			format(str,sizeof(str),"%s oczekuje na przeciwnika. Wpisz /bilard-dolacz, aby rywalizowac z gospodarzem.",name);
+			format(str,sizeof(str),"%s oczekuje na przeciwnika. Wpisz /dolacz, aby rywalizowac z gospodarzem.",name);
 	    	for(new i = 0; i < 20; i++)
 	    	{
 	    	    if(IsPlayerConnected(i) == 1 && playerid != i)
@@ -248,7 +294,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	    }
 	    return 1;
 	}
-	if (strcmp("/bilard-dolacz", cmdtext, true, 10) == 0)
+	if (strcmp("/dolacz", cmdtext, true, 10) == 0)
 	{
 	    if(Game[Waiting] == true)
 	    {

@@ -1,6 +1,15 @@
-ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
+/***
+*
+* File: wp_importvehicle.inc
+* Auth: Damian Wojdat
+* Date: 15.09.2011
+* Desc: Sets vehicle data when imported by player.
+*
+*************************************************************************************************************/
+
+ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth)
 {
-	new carID;
+	new carID, j;
 	new color2;
 	new color1;
 	new string[256];
@@ -9,7 +18,7 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 	{
 		for(new n = 0; n < sizeof(gVehData); n++)
 		{
-			if(gVehData[n][CarModel] == 594)
+			if(gVehData[n][mVehModel] == 594)
 			{
 				DestroyVehicle(n+1);
 				color1 = random(126);
@@ -25,16 +34,29 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 							
 							carID = CreateVehicle(modelID, SpawnPlaceBoats[i][X], SpawnPlaceBoats[i][Y], SpawnPlaceBoats[i][Z], SpawnPlaceBoats[i][Angle], color1, color2, -1);
 							
-							gVehData[carID-1][CarModel] = modelID;
-							gVehData[carID-1][CarX] = SpawnPlaceBoats[i][X];
-							gVehData[carID-1][CarY] = SpawnPlaceBoats[i][Y];
-							gVehData[carID-1][CarZ] = SpawnPlaceBoats[i][Z];
-							gVehData[carID-1][CarAngle] = SpawnPlaceBoats[i][Angle];
-							gVehData[carID-1][CarColor1] = color1;
-							gVehData[carID-1][CarColor2] = color2;
-							gVehData[carID-1][FactionCar] = 255;
-							gVehData[carID-1][CarType] = 0;
-							gVehData[carID-1][Owned] = 0;
+							for(j = 0; j < sizeof(CarsData); j++)
+							{
+								if(CarsData[j][Model] == modelID && CarsData[j][Paliwo] == fueltype)
+								{
+									SetVehicleHealth(carID, CarsData[j][MaxHealth]);
+									break;
+								}
+							}
+							
+							gVehData[carID-1][mVehModel] = modelID;
+							gVehData[carID-1][mVehX] = SpawnPlaceBoats[i][X];
+							gVehData[carID-1][mVehY] = SpawnPlaceBoats[i][Y];
+							gVehData[carID-1][mVehZ] = SpawnPlaceBoats[i][Z];
+							VehNewPos[carID-1][0] = SpawnPlaceBoats[i][X];
+							VehNewPos[carID-1][1] = SpawnPlaceBoats[i][Y];
+							VehNewPos[carID-1][2] = SpawnPlaceBoats[i][Z];
+							gVehData[carID-1][mVehA] = SpawnPlaceBoats[i][Angle];
+							gVehData[carID-1][mVehColor1] = color1;
+							gVehData[carID-1][mVehColor2] = color2;
+							gVehData[carID-1][mVehFaction] = 255;
+							gVehData[carID-1][mVehType] = 0;
+							gVehData[carID-1][mVehVinNo] = random(999999);
+							gVehData[carID-1][mVehOwned] = 0;
 							strmid(gVehData[carID-1][Owner], "None", 0, 4, 128);
 							gVehData[carID-1][Price] = cenyPojazdow[modelID-400];
 							gVehData[carID-1][Closed] = 0;
@@ -43,7 +65,7 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 							gVehData[carID-1][CarRepairTimeLeft] = 0;
 							gVehData[carID-1][BusinessID] = BizKey;
 							gVehData[carID-1][CarFuel] = float(VehFTank(carID));
-							gVehData[carID-1][CarHealth] = 1000.0;
+							gVehData[carID-1][CarHealth] = maxHealth;
 							gVehData[carID-1][ReadyToSell] = 0;
 							gVehData[carID-1][CarCounter] = 0;
 							gVehData[carID-1][Fuel] = fueltype;
@@ -63,13 +85,16 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 							gVehData[carID-1][Alarm] = 0;
 							gVehData[carID-1][GasStep] = 0;
 							
-							SaveVehData(carID-1, "CarModel");
-							SaveVehData(carID-1, "CarPos");
-							SaveVehData(carID-1, "CarColor1");
-							SaveVehData(carID-1, "CarColor2");
-							SaveVehData(carID-1, "FactionCar");
-							SaveVehData(carID-1, "CarType");
-							SaveVehData(carID-1, "Owned");
+							RefreshVehicleDescription(carID-1);
+							
+							SaveVehData(carID-1, "VehModel");
+							SaveVehData(carID-1, "VehPos");
+							SaveVehData(carID-1, "VehColor1");
+							SaveVehData(carID-1, "VehColor2");
+							SaveVehData(carID-1, "VehFaction");
+							SaveVehData(carID-1, "VehType");
+							SaveVehData(carID-1, "VehVinNo");
+							SaveVehData(carID-1, "VehOwned");
 							SaveVehData(carID-1, "Owner");
 							SaveVehData(carID-1, "Price");
 							SaveVehData(carID-1, "Closed");
@@ -116,7 +141,7 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 					}
 					format(message, sizeof(message), "Twoj pojazd nie mogl zostac sprowadzony (model %d). Powod: limit slotow fabryki.", modelID);
 					format(string, sizeof(string), "INSERT INTO `samp_messages` ( `PlayerName` , `Content` , `Date` ) VALUES ( '%s' , '%s' , CURDATE() )", PlayerName, message);
-					mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
+					wp_mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
 					return 1;
 				}
 				if(IsAPlaneModel(modelID) || IsAHelicopterModel(modelID))
@@ -129,16 +154,29 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 							
 							carID = CreateVehicle(modelID, SpawnPlacePlanes[i][X], SpawnPlacePlanes[i][Y], SpawnPlacePlanes[i][Z], SpawnPlacePlanes[i][Angle], color1, color2, -1);
 							
-							gVehData[carID-1][CarModel] = modelID;
-							gVehData[carID-1][CarX] = SpawnPlacePlanes[i][X];
-							gVehData[carID-1][CarY] = SpawnPlacePlanes[i][Y];
-							gVehData[carID-1][CarZ] = SpawnPlacePlanes[i][Z];
-							gVehData[carID-1][CarAngle] = SpawnPlacePlanes[i][Angle];
-							gVehData[carID-1][CarColor1] = color1;
-							gVehData[carID-1][CarColor2] = color2;
-							gVehData[carID-1][FactionCar] = 255;
-							gVehData[carID-1][CarType] = 0;
-							gVehData[carID-1][Owned] = 0;
+							for(j = 0; j < sizeof(CarsData); j++)
+							{
+								if(CarsData[j][Model] == modelID && CarsData[j][Paliwo] == fueltype)
+								{
+									SetVehicleHealth(carID, CarsData[j][MaxHealth]);
+									break;
+								}
+							}
+							
+							gVehData[carID-1][mVehModel] = modelID;
+							gVehData[carID-1][mVehX] = SpawnPlacePlanes[i][X];
+							gVehData[carID-1][mVehY] = SpawnPlacePlanes[i][Y];
+							gVehData[carID-1][mVehZ] = SpawnPlacePlanes[i][Z];
+							VehNewPos[carID-1][0] = SpawnPlacePlanes[i][X];
+							VehNewPos[carID-1][1] = SpawnPlacePlanes[i][Y];
+							VehNewPos[carID-1][2] = SpawnPlacePlanes[i][Z];
+							gVehData[carID-1][mVehA] = SpawnPlacePlanes[i][Angle];
+							gVehData[carID-1][mVehColor1] = color1;
+							gVehData[carID-1][mVehColor2] = color2;
+							gVehData[carID-1][mVehFaction] = 255;
+							gVehData[carID-1][mVehType] = 0;
+							gVehData[carID-1][mVehVinNo] = random(999999);
+							gVehData[carID-1][mVehOwned] = 0;
 							strmid(gVehData[carID-1][Owner], "None", 0, 4, 128);
 							gVehData[carID-1][Price] = cenyPojazdow[modelID-400];
 							gVehData[carID-1][Closed] = 0;
@@ -147,7 +185,7 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 							gVehData[carID-1][CarRepairTimeLeft] = 0;
 							gVehData[carID-1][BusinessID] = BizKey;
 							gVehData[carID-1][CarFuel] = float(VehFTank(carID));
-							gVehData[carID-1][CarHealth] = 1000.0;
+							gVehData[carID-1][CarHealth] = maxHealth;
 							gVehData[carID-1][ReadyToSell] = 0;
 							gVehData[carID-1][CarCounter] = 0;
 							gVehData[carID-1][Fuel] = fueltype;
@@ -167,13 +205,16 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 							gVehData[carID-1][Alarm] = 0;
 							gVehData[carID-1][GasStep] = 0;
 							
-							SaveVehData(carID-1, "CarModel");
-							SaveVehData(carID-1, "CarPos");
-							SaveVehData(carID-1, "CarColor1");
-							SaveVehData(carID-1, "CarColor2");
-							SaveVehData(carID-1, "FactionCar");
-							SaveVehData(carID-1, "CarType");
-							SaveVehData(carID-1, "Owned");
+							RefreshVehicleDescription(carID-1);
+							
+							SaveVehData(carID-1, "VehModel");
+							SaveVehData(carID-1, "VehPos");
+							SaveVehData(carID-1, "VehColor1");
+							SaveVehData(carID-1, "VehColor2");
+							SaveVehData(carID-1, "VehFaction");							
+							SaveVehData(carID-1, "VehVinNo");
+							SaveVehData(carID-1, "VehType");
+							SaveVehData(carID-1, "VehOwned");
 							SaveVehData(carID-1, "Owner");
 							SaveVehData(carID-1, "Price");
 							SaveVehData(carID-1, "Closed");
@@ -220,7 +261,7 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 					}
 					format(message, sizeof(message), "Twoj pojazd nie mogl zostac sprowadzony (model %d). Powod: limit slotow fabryki.", modelID);
 					format(string, sizeof(string), "INSERT INTO `samp_messages` ( `PlayerName` , `Content` , `Date` ) VALUES ( '%s' , '%s' , CURDATE() )", PlayerName, message);
-					mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
+					wp_mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
 					return 1;
 				}
 				else
@@ -233,16 +274,29 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 							
 							carID = CreateVehicle(modelID, SpawnPlaceCars[i][X], SpawnPlaceCars[i][Y], SpawnPlaceCars[i][Z], SpawnPlaceCars[i][Angle], color1, color2, -1);
 							
-							gVehData[carID-1][CarModel] = modelID;
-							gVehData[carID-1][CarX] = SpawnPlaceCars[i][X];
-							gVehData[carID-1][CarY] = SpawnPlaceCars[i][Y];
-							gVehData[carID-1][CarZ] = SpawnPlaceCars[i][Z];
-							gVehData[carID-1][CarAngle] = SpawnPlaceCars[i][Angle];
-							gVehData[carID-1][CarColor1] = color1;
-							gVehData[carID-1][CarColor2] = color2;
-							gVehData[carID-1][FactionCar] = 255;
-							gVehData[carID-1][CarType] = 0;
-							gVehData[carID-1][Owned] = 0;
+							for(j = 0; j < sizeof(CarsData); j++)
+							{
+								if(CarsData[j][Model] == modelID && CarsData[j][Paliwo] == fueltype)
+								{
+									SetVehicleHealth(carID, CarsData[j][MaxHealth]);
+									break;
+								}
+							}
+							
+							gVehData[carID-1][mVehModel] = modelID;
+							gVehData[carID-1][mVehX] = SpawnPlaceCars[i][X];
+							gVehData[carID-1][mVehY] = SpawnPlaceCars[i][Y];
+							gVehData[carID-1][mVehZ] = SpawnPlaceCars[i][Z];
+							VehNewPos[carID-1][0] = SpawnPlaceCars[i][X];
+							VehNewPos[carID-1][1] = SpawnPlaceCars[i][Y];
+							VehNewPos[carID-1][2] = SpawnPlaceCars[i][Z];
+							gVehData[carID-1][mVehA] = SpawnPlaceCars[i][Angle];
+							gVehData[carID-1][mVehColor1] = color1;
+							gVehData[carID-1][mVehColor2] = color2;
+							gVehData[carID-1][mVehFaction] = 255;
+							gVehData[carID-1][mVehType] = 0;
+							gVehData[carID-1][mVehVinNo] = random(999999);
+							gVehData[carID-1][mVehOwned] = 0;
 							strmid(gVehData[carID-1][Owner], "None", 0, 4, 128);
 							gVehData[carID-1][Price] = cenyPojazdow[modelID-400];
 							gVehData[carID-1][Closed] = 0;
@@ -251,7 +305,7 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 							gVehData[carID-1][CarRepairTimeLeft] = 0;
 							gVehData[carID-1][BusinessID] = BizKey;
 							gVehData[carID-1][CarFuel] = float(VehFTank(carID));
-							gVehData[carID-1][CarHealth] = 1000.0;
+							gVehData[carID-1][CarHealth] = maxHealth;
 							gVehData[carID-1][ReadyToSell] = 0;
 							gVehData[carID-1][CarCounter] = 0;
 							gVehData[carID-1][Fuel] = fueltype;
@@ -271,13 +325,16 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 							gVehData[carID-1][Alarm] = 0;
 							gVehData[carID-1][GasStep] = 0;
 							
-							SaveVehData(carID-1, "CarModel");
-							SaveVehData(carID-1, "CarPos");
-							SaveVehData(carID-1, "CarColor1");
-							SaveVehData(carID-1, "CarColor2");
-							SaveVehData(carID-1, "FactionCar");
-							SaveVehData(carID-1, "CarType");
-							SaveVehData(carID-1, "Owned");
+							RefreshVehicleDescription(carID-1);
+							
+							SaveVehData(carID-1, "VehModel");
+							SaveVehData(carID-1, "VehPos");
+							SaveVehData(carID-1, "VehColor1");
+							SaveVehData(carID-1, "VehColor2");
+							SaveVehData(carID-1, "VehFaction");
+							SaveVehData(carID-1, "VehVinNo");
+							SaveVehData(carID-1, "VehType");
+							SaveVehData(carID-1, "VehOwned");
 							SaveVehData(carID-1, "Owner");
 							SaveVehData(carID-1, "Price");
 							SaveVehData(carID-1, "Closed");
@@ -324,14 +381,15 @@ ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype)
 					}
 					format(message, sizeof(message), "Twoj pojazd nie mogl zostac sprowadzony (model %d). Powod: limit slotow fabryki.", modelID);
 					format(string, sizeof(string), "INSERT INTO `samp_messages` ( `PlayerName` , `Content` , `Date` ) VALUES ( '%s' , '%s' , CURDATE() )", PlayerName, message);
-					mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
+					wp_mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
 					return 1;
 				}
 			}
 		}
 		format(message, sizeof(message), "Twoj pojazd nie mogl zostac sprowadzony (model %d). Powod: limit pojazdow gry.", modelID);
+		
 		format(string, sizeof(string), "INSERT INTO `samp_messages` ( `PlayerName` , `Content` , `Date` ) VALUES ( '%s' , '%s' , CURDATE() )", PlayerName, message);
-		mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
+		wp_mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
 		return 1;
 	}
 	else

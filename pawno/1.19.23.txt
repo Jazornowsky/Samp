@@ -1,0 +1,4 @@
+- zdjêto ograniczenie wyp³aty pieniêdzy z kasy frakcji
+- poprawiono napisy od pasków ¿ycia
+- przesuniêto pasek doœwiadczenia pracy
+- W urzêdzie mo¿na teraz sprawdziæ które frakcje publiczne nie posiadaj¹ lidera

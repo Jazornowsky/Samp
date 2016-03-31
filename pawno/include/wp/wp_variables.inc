@@ -1,33 +1,54 @@
 /***
-* wp_variables.inc - Declarations, macros and variables.
 *
-*
-* Author:
-*	Damian Wojdat
+* File: wp_variables.inc
+* Auth: Damian Wojdat
+* Date: 15.09.2011
+* Desc: Declarations, macros and variables.
 *
 *************************************************************************************************************/
+
+#if defined _WP_VARIABLES
+	#endinput
+#endif
+#define _WP_VARIABLES
+
+// #define DEBUG
+// #define DEBUG2
+
+#define CUSTOM_MAX_PLAYERS 100						// Manualy set server slot amout for functions, variables, etc.
+
+#include <wp\variables\wp_vars_mysql>
+#include <wp\variables\wp_vars_zones>
+#include <wp\variables\wp_vars_skins>
+#include <wp\variables\wp_vars_objects>
+#include <wp\variables\wp_vars_jobs>
+#include <wp\variables\wp_vars_veh_lenghts>
+#include <wp\variables\wp_vars_gates>
+#include <wp\variables\wp_vars_weed>
+#include <wp\variables\wp_vars_event1>
+#include <wp\variables\wp_vars_veh_names>
+#include <wp\variables\wp_vars_event_pickups>
+
+
+native WP_Hash(buffer[], len, const str[]);
 
 /* Declarations */
 
 forward main();
-public ResetVehicleData(vehicleid,reason);
+OnQueryFinish(resultid, extraid, connectionHandle);
+wp_mysql_query(query[], resultid = -1, extraid = -1, connectionHandle = 1);
 LoadDynamicCarSpawns();
 SaveDynamicCarSpawns();
 LoadDynamicPlanesSpawns();
 SaveDynamicPlanesSpawns();
 LoadDynamicBoatsSpawns();
 SaveDynamicBoatsSpawns();
-ImportVeh(BizKey, modelID, PlayerName[MAX_PLAYER_NAME], fueltype);
-// KillPlayer(playerid);
-BW(playerid);
-public VehicleCrack(playerid, vehicleid);
-public VehicleCrack2(playerid, vehicleid);
+ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth);
 LoadDynamicTaxes();
 SaveDynamicTaxes();
 SaveTaxiJob();
 LoadTaxiJob();
 PlayMusic(playerid);
-// CreateDynamicObjects();
 busCheckpoints(i);
 playerNextLvlBusPoints(playerid);
 LoadMzgkJobCheckpointA();
@@ -48,19 +69,12 @@ LoadFarmerJobCheckpointC();
 LoadMechanicJob();
 SaveMechanicJob();
 LoadMechanicJob1();
-SaveMechanicJob1();
 LoadMechanicJob2();
 SaveMechanicJob2();
-SaveDynamicRaces();
-LoadDynamicRaces();
-SpawnedInWorld(playerid);
 LoadDynamicZones();
-SaveDynamicZones();
 LoadHouses(hsource);
-SaveHouses(hsource);
 NewbieOff(color,const string[]); // WTF ?
 SendJobMessage(job, color, string[]); // WTF ?
-SafeGivePlayerMoney(plyid, amounttogive); // WTF ?
 SafeResetPlayerWeapons(plyid); // WTF ?
 SafeGivePlayerGun(plyid, weaponid, ammo); // WTF ?
 RemovePlayerWeapon(playerid, weaponid); 
@@ -68,17 +82,14 @@ OnPlayerLogin(playerid,password[]);
 SendFactionMessage(faction, color, string[]);
 SendFactionTypeMessage(factiontype, color, string[]);
 SetPlayerToFactionSkin(playerid);
-SetPlayerSpawn(playerid);
 ProxDetector(Float:radi, playerid, string[],col1,col2,col3,col4,col5);
 ResetStats(playerid);
 LoadDynamicCars();
-SaveDynamicCars();
 LoadDynamicFactions();
 SaveDynamicFactions();
 LoadCivilianSpawn();
 SaveCivilianSpawn();
 LoadBuildings();
-SaveBuildings();
 ShowStats(playerid,targetid);
 BanPlayer(playerid,bannedby[MAX_PLAYER_NAME],reason[]);
 BanPlayerAccount(playerid,bannedby[MAX_PLAYER_NAME],reason[]);
@@ -89,12 +100,11 @@ KickLog(string[]);
 PayLog(string[]);
 HackLog(string[]);
 PlayerActionLog(string[]);
-PlayerLocalLog(string[]);
 TalkLog(string[]);
-FactionChatLog(string[]);
+// FactionChatLog(string[]);
 SMSLog(string[]);
 PMLog(string[]);
-ResetVehicleLog(string[]);
+VehicleLog(string[]);
 DonatorLog(string[]);
 OOCLog(string[]);
 PayDayLog(string[]);
@@ -104,17 +114,10 @@ ABroadCast(color,const string[],level);
 BroadCast(color,const string[]);
 GovermentLog(string[]);
 StateChangeLog(string[]);
-PickupGametexts();
 PlayerActionMessage(playerid,Float:radius,message[]);
-PlayerLocalMessage(playerid,Float:radius,message[]);
 PlayerPlayerActionMessage(playerid,targetid,Float:radius,message[]);
-//SetPlayerToFactionColor(playerid); //Setting player to faction color.
 LoadBusinesses();
 SaveBusinesses();
-LoadFactionMaterialsStorage();
-SaveFactionMaterialsStorage();
-LoadFactionDrugsStorage();
-SaveFactionDrugsStorage();
 LoadDrivingTestPosition();
 SaveDrivingTestPosition();
 LoadSkillPosition();
@@ -127,14 +130,12 @@ LoadSkillPositionb();
 SaveSkillPositionb();
 LoadSkillPositionc();
 SaveSkillPositionc();
-LoadFlyingTestPosition();
-SaveFlyingTestPosition();
+LoadPlaneTestPosition();
+SavePlaneTestPosition();
 LoadBoatTestPosition();
 SaveBoatTestPosition();
-LoadBankPosition();
-SaveBankPosition();
-LoadBankPosition2();
-SaveBankPosition2();
+LoadPoliceComputerPassword();
+SavePoliceComputerPassword();
 LoadGunJob();
 SaveGunJob();
 LoadDrugJob();
@@ -144,7 +145,6 @@ LoadWeaponLicensePosition();
 SaveWeaponLicensePosition();
 PhoneAnimation(playerid);
 SetPlayerWantedLevelEx(playerid,level);
-GetPlayerWantedLevelEx(playerid);
 ResetPlayerWantedLevelEx(playerid);
 IsAtBar(playerid);
 UndrugEffect(playerid);
@@ -169,28 +169,27 @@ SaveRapistJob();
 LoadDirJob();
 SaveDirJob();
 LoadScript();
-public MoveCamera(playerid); // need fix, unauthorized use of gPlayerData[playerid][SpawnAngle]
 LoadRafinery();
 SaveRafinery();
 LoadWFactoryLegal();
 public RefuelingVehicle(playerid, vehicleid, Float:refillvalue, gasStationID, Float:pPosX, Float:pPosY, Float:pPosZ);
+public RefuelingVehicle(playerid, vehicleid, Float:refillvalue, gasStationID, Float:pPosX, Float:pPosY, Float:pPosZ);
 public FuelTankerPetrol(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
 public FuelTankerOil(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
 public FuelTankerGas(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
+public FuelTankerFly(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
 public DrainTankerFuel(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
+public RefuelVehicleFly(playerid, Float:refillvalue, Float:pPosX, Float:pPosY, Float:pPosZ, truckId, tlId, planeId);
 LoadGasStations();
 SaveGasStations();
-RafineryResourcesIncrease();
-PayDay();
 LoadPayRank();
 SavePayRank();
 SavePlayerData(playerid, column[], otherid = -1);
+UpdatePlayerDataByName(name[], column[], newvalue = 0);
 SaveVehData(carid, column[], otherid = -1);
 LoadVariables();
-SaveVariables();
 VehFTank(vehID);
 ASpeed(vehicleID);
-AddExpPoint(playerid);
 SaveBizData(bizid, column[]);
 SaveHouseData(houseid, column[]);
 SaveFData(fid, column[]);
@@ -203,63 +202,169 @@ SaveNewsBoyJob();
 SaveFuleStationData(gasid, column[]);
 public RefuelingVehicleCanister(playerid, vehicleid, Float:xpos, Float:ypos, Float:zpos);
 public RefuelingCanister(playerid, Float:refillvalue, slot, gasStationID, Float:xpos, Float:ypos, Float:zpos);
-Load();
-// LoadWantedList();
-SetRadioAudioPos(playerid, handleid);
+public SetRadioAudioPos(playerid, handleid);
 IsPlayerInWFCP(playerid);
 public TogglePlayerUnControllable( playerid, Float:x, Float:y, Float:z );
-ShowPlayerMapIcons( playerid, type );
-RemovePlayerMapIcons( playerid, type );
-StartEngine( playerid );
 LoadCustomObjects();
-SaveObjData(slot);
 SaveBusTrack(slot, column[], cp=-1);
+SaveTrashTrack(slot, column[], cp=-1);
 LoadBusTracks();
+LoadTrashTracks();
+LoadSweeperTracks();
+LoadFarmerTracks();
 CreateCustomObject( playerid, model, Float:objX, Float:objY, Float:objZ, Float:rX = 0.0, Float:rY = 0.0, Float:rZ = 0.0 );
 RemoveCustomObject( objectID );
 MoveCustomObject( objectID, Float:mx, Float:my, Float:mz );
 Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
+Float:VehBatDegradation(itemid);
+Float:MaxVehicleHealth(vehId);
 
 /* Default data */
-#define CUSTOM_MAX_PLAYERS 50 				// Manualy set server slot amout for functions, variables, etc.
+#define VERSION "1.32"										
 #define MAX_ZONE_NAME 28
-#define MAX_SPAWN_ATTEMPTS 4 				// This is the amount of times sometime can try to spawn before finally getting kicked.
-#define SMS_COST 15 						// Price used in phone sms
-#define PHONE_COST 2 						// Price used for 1 minute call
-#define PRODUCT_PRICE 10					// Price used to buy products by product seller
-#define PARTS_PRICE	500 					// Price used to buy parts by mechanic
+#define MAX_SPAWN_ATTEMPTS 4						// This is the amount of times sometime can try to spawn before finally getting kicked.
+#define SMS_COST 15									// Price used in phone sms
+#define PHONE_COST 2								// Price used for 1 minute call
+#define PRODUCT_PRICE 10							// Price used to buy products by product seller
+#define PARTS_PRICE	500								// Price used to buy parts by mechanic
 #define REPAIR_TIME_MULTIPLIER 1
-#define MAX_PING	600 					// Values over MAX_PING are treated as high ping and are couted in every function pass
-#define MAX_PING_HIT_LIMIT 5 				// Number represents timer (function) pass befor player gets kicked out for high ping
-#define IDLE_TIME 300000 					// Timer after player gets kicked out for AFK
-#define BUS_PENALTY_COST 15000 				// Penalty payed by player for reckles driving bus
-#define ENGINE_STARTUP_TIME 1500 			// Time after engine starts
-#define ENGINE_STARTUP_TIME_FAST 100 		// Time after engine starts fast (ex. for admin)
-#define ENGINE_INFO_TIME 3000 				// Time after message can be repeated
-#define ENGINE_NO_KEY_TIME 5000 			// Time after next engine startup can be done without key
-#define FUEL_TANKER_STEP 100 				// Default time after 1ltr of fuel is fueled
-#define JOB_BUS_TXT_SHOW_TIME 1000 			// How long departure message must be shown
-#define GAME_TEXT_DEFAULT_TIME 2000 		// How long game text will be showed
-#define WFACTORY_DESTROY_TIME 60000 		// Default time after factory gets burned out
-#define WFACTORY_COST 100000 				// Default cost of factory build
-#define WFACTORY_DES_REW_OFFICER 500 		// Default reward value for police officer for destroying factory
-#define WFACTORY_DES_REW_FACTION 10000		// Default reward value for police faction for destroying factory
-#define FUEL_REFUEL_STEP 0.5 				// How much fuel is refueled after 1 second
-#define FUEL_REFUEL_STEP_CNSTR 1.0			// How much fuel is refueled to canister after 1 second
-#define MAX_BUSINESSES 300 					// How many businesses are setup in array
-#define ICONS_BASIC 1 						// Which icons should be showed for player
-#define ICONS_ADVANCED 2 					// Which icons should be showed for player
-#define FACTORY_L_REWARD 5 					// How much pay for one part/weapon/ammo
-#define WARN_COOLDOWN 7 					// Payday counts before warn gone
-#define MAX_HUNGER 100.0 					// Max hunger status 0 full hunger, 100 - no hunger
-#define MAX_HUNGER_VIP 150.0 				// Max hunger for vips
-#define MAX_SUBMEALS 30 					// How many submeals player can have before stomach probles starts
-#define MAX_SUBMEALS_HP_LOSS 20 			// How much hp vomiting will take
-#define BIZ_CPN_ID 19 						// Last ID of CPN biz
-#define RESERVED_HOUSES 300					// Houses than can't be moved by government
-#define ADVERT_TIMER 60000 					// Time after player can again post next advert using /ogloszenie
-#define GasMax 100							// Default value of vehicle tanker
-#define Speedgun 22 						// The ID of weapon used as speedgun
+#define MAX_PING	600								// Values over MAX_PING are treated as high ping and are couted in every function pass
+#define MAX_PING_HIT_LIMIT 5						// Number represents timer (function) pass befor player gets kicked out for high ping
+#define IDLE_TIME 300000							// Timer after player gets kicked out for AFK
+#define BUS_PENALTY_COST 2000						// Penalty payed by player for reckles driving bus
+#define ENGINE_STARTUP_TIME 1500					// Time after engine starts
+#define ENGINE_STARTUP_TIME_FAST 100				// Time after engine starts fast (ex. for admin)
+#define ENGINE_INFO_TIME 3000						// Time after message can be repeated
+#define ENGINE_NO_KEY_TIME 5000						// Time after next engine startup can be done without key
+#define FUEL_TANKER_STEP 100						// Default time after 1ltr of fuel is fueled
+#define JOB_BUS_TXT_SHOW_TIME 1000					// How long departure message must be shown
+#define GAME_TEXT_DEFAULT_TIME 2000					// How long game text will be showed
+#define WFACTORY_DESTROY_TIME 60000					// Default time after factory gets burned out
+#define WFACTORY_COST 15000							// Default cost of factory build
+#define WFACTORY_DES_REW_OFFICER 100				// Default reward value for police officer for destroying factory
+#define WFACTORY_DES_REW_FACTION 2000				// Default reward value for police faction for destroying factory
+#define FUEL_REFUEL_STEP 2.5 						// How much fuel is refueled after 1 second
+#define FUEL_REFUEL_STEP_CNSTR 1.0					// How much fuel is refueled to canister after 1 second
+#define MAX_BUILDINGS 200							// How many buildings are setup in array
+#define MAX_MAP_ICONS 50							// How many map icons are setup in array
+#define MAX_PICKUP_INFOS 50							// How many pickups are setup in array
+#define MAX_PUBLIC_ADS 50							// How many public ads are setup in array
+#define MAX_REPAIR_POINTS 10						// How many repair points are setup in array
+#define MAX_WHEEL_POINTS 8							// How many wheel change points are setup in array
+#define MAX_BUSINESSES 1000							// How many businesses are setup in array
+#define MAX_HOUSES 1500								// How many houses are setup in array
+#define ICONS_BASIC 1								// Which icons should be showed for player
+#define ICONS_ADVANCED 2							// Which icons should be showed for player
+#define FACTORY_L_REWARD 20							// How much pay for one part/weapon/ammo
+#define WARN_COOLDOWN 7								// Payday counts before warn gone
+#define BIZ_CPN_ID 19 								// Last ID of CPN biz
+#define RESERVED_HOUSES 300							// Houses than can't be moved by government
+#define ADVERT_TIMER 60000							// Time after player can again post next advert using /ogloszenie
+#define GasMax 100									// Default value of vehicle tanker
+#define Speedgun 22 								// The ID of weapon used as speedgun
+#define DRIVING_LICENCE_COST 40 					// Cost of making driving licence in government
+#define PICKUP_LIFE_TIME 30 						// How long pickup exists ? multiple to 10 min
+#define MAX_PLAYER_ITEM_SLOT 25						// How many item slots player could have
+#define MAX_VEHICLE_ITEM_SLOT 15					// How many item slots vehicle could have
+#define MAX_HOUSE_ITEM_SLOT 15						// How many item slots house could have
+#define MAX_PENALTY_POINTS 24						// Max player penalty points for licence
+#define PENALTY_POINTS_DECRESE 6					// How many points to reduce after test
+#define SHOP_CP_COUNT 75							// How many shops with CP
+#define SHOP_CLOTHE_CP_COUNT 64						// How many shops with CP
+#define PHONET_FEE 0								// Phone on fee
+#define PHONET_CARD 1								// Phone on prepaid
+#define DRIVING_INSTRUCTOR_REWARD 40				// how much instructor will receive for examiantion
+#define HOUSE_BREAK_COOLDOWN 72						// how much time faction must wait before next house robbery
+#define BIZ_BREAK_COOLDOWN 72						// how much time faction must wait before next biz robbery
+#define CHAR_STEAL_COOLDOWN 72						// how much time faction must wait before next char robbery
+#define BUSINESS_TYPES "1: Restaurant - 2: Phone - 3: 24-7 - 4: Ammunation - 5: Advertising - 6: Clothes Store - 7. Bar/Club"
+#define BUSINESS_TYPES2 "8: Record Company - 9: Studio - 10: Salon"
+#define BUS_TICKET_VIP_DISCOUNT 0.20
+#define HIGH_SCHOOL_POINTS 20 						// how many points player must have to achive high school
+#define MAX_GRADE_LVL 4								// how many points player must have to achive high school
+#define SCHOOL_COST 25
+#define HIGH_SCHOOL_COST 500
+#define SCHOOL_COOLDOWN 20
+#define EVENT_COUNT 1
+
+#define MAX_RACES	50															// How many races are avaible
+#define MAX_RACES_CP	150													// How many races cp are avaible
+#define DEFAULT_TIME_BEFORE_RACE_START 600			// Time in seconds
+#define DEFAULT_TIME_BEFORE_RACE_END 60				// Time in seconds
+
+/* Character needs */
+#define ENERGY					0.4
+#define MAX_ENERGY			100.0
+#define MAX_ENERGY_VIP	150.0
+#define HUNGER					1.0
+#define MAX_HUNGER			100.0
+#define MAX_HUNGER_VIP	150.0
+#define THIRST						1.7
+#define MAX_THIRST				100.0
+#define MAX_THIRST_VIP		150.0
+#define POISON					0.2
+#define MAX_POISON			100.0
+#define MAX_POISON_VIP		150.0
+#define FAT							0.3
+#define MAX_FAT					100.0
+#define MAX_FAT_VIP			150.0
+#define STOMACH					1.5
+#define MAX_STOMACH		100.0
+#define MAX_STOMACH_VIP	150.0
+#define VITAMINS					1.0
+#define MAX_VITAMINS			100.0
+#define MAX_VITAMINS_VIP	150.0
+#define DRUNK						2.0
+#define MAX_DRUNK				100.0
+#define MAX_DRUNK_VIP		100.0
+#define NARCOTIC				0.3
+#define MAX_NARCOTIC		100.0
+#define MAX_NARCOTIC_VIP	150.0
+#define MAX_SUBMEALS 		30 												// How many submeals player can have before stomach probles starts
+#define MAX_SUBMEALS_HP_LOSS 20.0					// How much hp vomiting will take
+
+/* Weapons skill costs */
+#define PIS_SKILL_COST 1000
+#define SIL_SKILL_COST 1000
+#define DES_SKILL_COST 2000
+#define SHO_SKILL_COST 2000
+#define SHA_SKILL_COST 2000
+#define SPASS_SKILL_COST 3000
+#define UZI_SKILL_COST 2000
+#define MP5_SKILL_COST 4000
+#define AK_SKILL_COST 5000
+#define M4_SKILL_COST 5000
+#define SNIPER_SKILL_COST 6000
+
+/* Police msg types for CB fnc */
+#define POLICE_MSGT_VEHICLE_BREAK 0
+#define POLICE_MSGT_HOUSE_BREAK 1
+#define POLICE_MSGT_BIZ_BREAK 2
+
+/* House types */
+#define HOUSET_HOUSE 0
+#define HOUSET_GARAGE 1
+#define HOUSET_GARAGE_BIG 2
+
+/* Race states */
+#define RACE_STATE_NONE 0
+#define RACE_STATE_JOINING 1
+#define RACE_STATE_RACE 2
+#define RACE_STATE_COUNTDOWN 3
+#define RACE_STATE_FINISHED 4
+
+/* Player race states */
+#define PLAYER_RACE_STATE_NONE 0
+#define PLAYER_RACE_STATE_CONNECTED 1
+#define PLAYER_RACE_STATE_LEFT 2
+#define PLAYER_RACE_STATE_FINISHED 3
+
+/* Race CP types */
+#define RACE_CP_TYPE_NONE 0
+#define RACE_CP_TYPE_START 1
+#define RACE_CP_TYPE_CP 2
+#define RACE_CP_TYPE_SPLIT 3
+#define RACE_CP_TYPE_FINISH 4
 
 /* Job lvl patterns*/
 #define FARMER_LVL 60*gPlayerData[i][pFarmerJobLvl]
@@ -277,20 +382,56 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 
 /* Default faction IDs macros */
 #define FACTIONID_POLICE 0
+#define FACTIONID_MEDICS 2
+#define FACTIONID_SANNEWS 3
+#define FACTIONID_TAXI 4
 #define FACTIONID_GOVERNMENT 9
 #define FACTIONID_RAFINERY 11
+
+/* Default faction types macros */
+#define FACTIONT_POLICE 1
+#define FACTIONT_GOVERNMENT 2
+#define FACTIONT_GANG 3
+#define FACTIONT_TAXI 6
+#define FACTIONT_RAFINERY 7
+#define FACTIONT_COMPANY_PHONE 9
+#define FACTIONT_COMPANY_OTHER 10
+
+/* Vehicle types */
+#define VEHICLET_TAXI_TP 999
+
+/* Building types */
+#define BUILDINGT_NORMAL 0
+#define BUILDINGT_GARAGE 1
 
 /* Faction types */
 #define F_POLICE 1
 
 /* Business types */
+#define BIZT_EATING 1
+#define BIZT_PHONE 2
+#define BIZT_SHOP 3
 #define BIZT_WEAPONS 4
+#define BIZT_ADVERT 5
+#define BIZT_CLOTHES 6
+#define BIZT_BAR 7
+#define BIZT_RECORD 8
+#define BIZT_STUDIO 9
+#define BIZT_VEHICLES 10
 #define BIZT_GAS 11
+
+/* Jobs */
+#define JOB_BUSDRIVER 13
+#define JOB_TRASHDRIVER 14
+#define JOB_SWEEPER 15
+#define JOB_FARMER 18
+#define JOB_PRODUCTSELLER 5
+#define JOB_MECHANIC 17
 
 /* Item defines */
 #define I_SLOT1 1
 #define I_SLOT2 2
-#define I_SLOT3	3
+#define I_SLOT3 3
 #define I_SLOT4 4
 #define I_SLOT5 5
 #define I_SLOT6 6
@@ -303,6 +444,16 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 #define I_SLOT13 13
 #define I_SLOT14 14
 #define I_SLOT15 15
+#define I_SLOT16 16
+#define I_SLOT17 17
+#define I_SLOT18 18
+#define I_SLOT19 19
+#define I_SLOT20 20
+#define I_SLOT21 21
+#define I_SLOT22 22
+#define I_SLOT23 23
+#define I_SLOT24 24
+#define I_SLOT25 25
 
 /* Factory types */
 #define WF_WEAPON 1
@@ -369,18 +520,32 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 #define GAME_TEXT_STYLE_5 5
 #define GAME_TEXT_STYLE_6 6
 
+/* Item types */
+#define ITEM_TYPE_1 1
+#define ITEM_TYPE_2 2
+#define ITEM_TYPE_3 3
+#define ITEM_TYPE_4 4
+#define ITEM_TYPE_5 5
+#define ITEM_TYPE_6 6
+#define ITEM_TYPE_7 7
+#define ITEM_TYPE_8 8
+#define ITEM_TYPE_9 9
+#define ITEM_TYPE_10 10
+
 /* Tanker macros */
-#define MAX_TANKER_RESOURCE_VALUE 700 // The maximum value of tanker capacity
-#define TANKER_TYPE_NONE 0 // Tanker hasn't been tanked yet
-#define TANKER_TYPE_PETROL 1 // Tanker contain petrol
-#define TANKER_TYPE_OIL 2 // Tanker contain oil
-#define TANKER_TYPE_GAS 3 // Tanker contain gas
+#define MAX_TANKER_RESOURCE_VALUE 700 				// The maximum value of tanker capacity
+#define TANKER_TYPE_NONE 0 							// Tanker hasn't been tanked yet
+#define TANKER_TYPE_PETROL 1 						// Tanker contain petrol
+#define TANKER_TYPE_OIL 2 							// Tanker contain oil
+#define TANKER_TYPE_GAS 3 							// Tanker contain gas
+#define TANKER_TYPE_FLY 4 							// Tanker contain aviation fuel
 
 /* Some special defines */
 #define ADMIN_SPEC_TYPE_NONE 0
 #define ADMIN_SPEC_TYPE_PLAYER 1
 #define ADMIN_SPEC_TYPE_VEHICLE 2
-#define HADM 5 // Highest admin lvl
+
+#define HADM 5 										// Highest admin lvl
 #define ALPHA 128
 #define SetPlayerHoldingObject(%1,%2,%3,%4,%5,%6,%7,%8,%9) SetPlayerAttachedObject(%1,MAX_PLAYER_ATTACHED_OBJECTS-1,%2,%3,%4,%5,%6,%7,%8,%9)
 #define StopPlayerHoldingObject(%1) RemovePlayerAttachedObject(%1,MAX_PLAYER_ATTACHED_OBJECTS-1)
@@ -393,73 +558,59 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 	(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 
 /* Macros of hex colors */
-#define COLOR_URZAD 0xFFFFFFFF
-#define COLOR_SPEC 0xBFC0C200
-#define COLOR_ASKQ 0xFF0000FF
-#define COLOR_FACTIONCHAT 0x01FCFFC8
-#define COLOR_CORLEONE 0x212121AA
-#define COLOR_RIGHTHAND_DONS 0xA10000AA //PARAMEDICS
-#define COLOR_RIGHTHAND_DONS_INVISIBLE 0xA10000AA
-#define COLOR_BARZINI 0x00FF00AA
-#define COLOR_PATERNO 0x800080AA
-#define COLOR_TATTAGLIA 0xD3D300AA
-#define COLOR_STRACCI 0x0FD9FAAA
-#define COLOR_LSPD 0x0000FFAA
-#define COLOR_LSPD_INVISIBLE 0x0000FF00
-#define COLOR_FBI 0x191970AA
-#define COLOR_FBI_INVISIBLE 0x19197000
-#define COLOR_NATIONALGUARD 0x556B2FAA
-#define COLOR_CIVILIAN 0xFFFFFFFF
-#define COLOR_CIVILIAN_INVISIBLE 0xFFFFFF00
-#define COLOR_ORANGE 0xFF8000AA
-#define COLOR_LOCALMSG 0xEC5413AA
-#define COLOR_ADMINCMD 0xF97804FF
-#define COLOR_ADMINDUTY 0x007E96F6
-#define COLOR_NOTLOGGED 0x00000000
-#define COLOR_GRAD1 0xB4B5B7FF
-#define COLOR_GRAD2 0xBFC0C2FF
-#define COLOR_MONEYBAR 0x005800FF
-#define COLOR_GRAD3 0xCBCCCEFF
-#define COLOR_GRAD4 0xD8D8D8FF
-#define COLOR_GRAD5 0xE3E3E3FF
-#define COLOR_GRAD6 0xF0F0F0FF
-#define COLOR_GREY 0xAFAFAFAA
-#define COLOR_GREEN 0x33AA33AA
-#define COLOR_RED 0xA10000AA
-#define COLOR_BLACK 0x000000FF
-#define COLOR_DARKRED 0xCD000000
-#define COLOR_ANTICHEAT 0xAA3333AA
-#define COLOR_LIGHTRED 0xFF6347AA
-#define COLOR_LIGHTRED_INVISIBLE 0xFF634700
-#define COLOR_LIGHTBLUE 0x33CCFFAA
-#define COLOR_LIGHTGREEN 0x9ACD32AA
-#define COLOR_LIGHTBLUE2 0x0080FFAA
-#define COLOR_LIGHTGREEN 0x9ACD32AA
-#define COLOR_LIGHTORANGE 0xFF8000FF
-#define COLOR_DARKBROWN 0xB36C42FF
-#define COLOR_MEDIUMBLUE 0x1ED5C7FF
-#define COLOR_MEDIUMBLUE_INVISIBLE 0x1ED5C700
-#define COLOR_CYELLOW 0xE0E377AA
-#define COLOR_CYELLOW_INVISIBLE 0xE0E37700
-#define COLOR_LIGHTYELLOW 0xE0E377AA
-#define COLOR_LIGHTYELLOW2 0xE0EA64AA
-#define COLOR_LIGHTYELLOW3 0xFF6347AA
-#define COLOR_DARKPURPLE 0x5F56F8AA
-#define COLOR_DARKPURPLE_INVISIBLE 0x5F56F800
-#define COLOR_YELLOW 0xFFFF00AA
-#define COLOR_YELLOW2 0xF5DEB3AA
-#define COLOR_WHITE 0xFFFFFFAA
-#define COLOR_FADE1 0xE6E6E6E6
-#define COLOR_FADE2 0xC8C8C8C8
-#define COLOR_FADE3 0xAAAAAAAA
-#define COLOR_FADE4 0x8C8C8C8C
-#define COLOR_FADE5 0x6E6E6E6E
-#define COLOR_PURPLE 0xC2A2DAAA
-#define COLOR_DBLUE 0x2641FEAA
-#define COLOR_ALLDEPT 0xFF8282AA
-#define COLOR_NEWS 0xFFA500AA
-#define COLOR_OOC 0xE0FFFFAA
-#define COLOR_NEWOOC 0x0080FFAA
+#define COLOR_URZAD 								0xFFFFFFFF
+#define COLOR_FACTIONCHAT							0x01FCFFC8
+#define COLOR_LSPD 									0x0000FFAA
+#define COLOR_NATIONALGUARD 						0x556B2FAA
+#define COLOR_CIVILIAN 								0xFFFFFFFF
+#define COLOR_ORANGE 								0xFF8000AA
+#define COLOR_ADMINCMD 								0xF97804FF
+//#define COLOR_ADMINDUTY 							0x007E96F6
+#define COLOR_ADMINDUTY 							0xB10000F6
+#define COLOR_NOTLOGGED 							0x00000000
+#define COLOR_GRAD1 								0xB4B5B7FF
+#define COLOR_GRAD2 								0xBFC0C2FF
+#define COLOR_GRAD3 								0xCBCCCEFF
+#define COLOR_GRAD4 								0xD8D8D8FF
+#define COLOR_GRAD5 								0xE3E3E3FF
+#define COLOR_GRAD6 								0xF0F0F0FF
+#define COLOR_GREY 									0xAFAFAFAA
+#define COLOR_GREEN 								0x33AA33AA
+#define COLOR_RED									0xA10000AA
+#define COLOR_BLACK 								0x000000FF
+#define COLOR_DARKRED 								0xCD000000
+#define COLOR_LIGHTRED 								0xFF6347AA
+#define COLOR_LIGHTBLUE 							0x33CCFFAA
+#define COLOR_LIGHTBLUE2 							0x0080FFAA
+#define COLOR_LIGHTGREEN 							0x9ACD32AA
+#define COLOR_LIGHTORANGE 							0xFF8000FF
+#define COLOR_DARKBROWN 							0xB36C42FF
+#define COLOR_LIGHTYELLOW 							0xE0E377AA
+#define COLOR_LIGHTYELLOW2 							0xE0EA64AA
+#define COLOR_DARKPURPLE 							0x5F56F8AA
+#define COLOR_YELLOW 								0xFFFF00AA
+#define COLOR_YELLOW2 								0xF5DEB3AA
+#define COLOR_WHITE 								0xFFFFFFAA
+#define COLOR_FADE1 								0xE6E6E6E6
+#define COLOR_FADE2 								0xC8C8C8C8
+#define COLOR_FADE3 								0xAAAAAAAA
+#define COLOR_FADE4 								0x8C8C8C8C
+#define COLOR_FADE5 								0x6E6E6E6E
+#define COLOR_PURPLE 								0xC2A2DAAA
+#define COLOR_DBLUE 								0x2641FEAA
+#define COLOR_NEWS 									0xFFA500AA
+#define COLOR_OOC 									0xE0FFFFAA
+
+#define COLOR_GANGZONE_ALLY							0x00FF0090
+#define COLOR_GANGZONE_ENEMY  						0xFF000090
+
+#define COLOR_TITLE 								"{FFF221}"
+#define COLOR_BEGIN 								"{FF0000}"
+#define COLOR_BEGIN2 								"{FFF221}"
+#define COLOR_DEFAULT 								"{EBEBEB}"
+#define COLOR_RED_T									"{A10000}"
+#define COLOR_YELLOW_T 								"{FFFF00}"
+#define COLOR_GREEN_T								"{33AA33}"
 
 /* Macros of bus txt */
 #define BUS_IN_ROUTE_BEFORE_A "Tras¹ pod¹¿a co najmniej 1 autobus i kieruje siê w strone tego przystanku [1]"
@@ -510,15 +661,15 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 #define LOAD_VARIABLES 29
 #define PLAYER_DATA_LOAD_OOCNAME_MYSQL 30
 #define LOAD_CARSDATA 31
-#define RESET_VEH_KEY_ITEM_1 32
-#define RESET_VEH_KEY_ITEM_2 33
-#define RESET_VEH_KEY_ITEM_3 34
+#define LOAD_CARS_CUSTOMIZE 32
+#define SHOW_DWANTED_LIST 33
+#define SHOW_SWANTED_LIST 34
 #define LOAD_HOUSES 35
 #define LOAD_DYNAMIC_FACTIONS 36
 #define LOAD_DYNAMIC_FACTIONS_WEAPONS 37
 #define LOAD_DYNAMIC_FACTIONS_WEAPONS2 38
 #define RELOAD_DYNAMIC_FACTIONS 39
-#define CHECK_PHONE 40
+#define CHECK_PHONE_FEE 40
 #define PLAYER_DATA_LOAD_ITEMS2_MYSQL 41
 #define LOAD_HOUSES_ITEMS 42
 #define PLAYER_DATA_LOAD_ITEMS3_MYSQL 43
@@ -532,21 +683,67 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 #define PLAYER_DATA_LOAD_FIRST_MYSQL 51
 #define PLAYER_LOAD_FUEL 52
 #define SAVE4 53
-#define PLAYER_DATA_LOAD_NAME_MYSQL 54
+// #define ______FREEEEEEEEE 54
 #define LOAD_CARS_CPARTS 55
 #define LOAD_CUSTOM_OBJECTS 56
 #define LOAD_BUS_TRACKS 57
 #define LOAD_BUS_TRACKS_DATA 58
 #define LOAD_LUCKY_LOTTERY 59
-#define UPDATE 60
+#define UPDATE_DATA 60
 #define LOAD_ITEM_FACTORIES 61
+#define LOAD_HOUSES_DATA 62
+#define CHECK_PHONE_CARD 63
+#define CHECK_PHONE_TYPE_CALL 64
+#define CHECK_PHONE_STATUS 65
+#define PHONE_LIST_SIM_REPLACE 66
+#define PHONE_LIST_FEE_RESIGN 67
+#define CHECK_PHONE_TYPE_EXTENSION 68
+#define PHONE_SMS_LIST 69
+#define SEND_SMS 70
+#define CHECK_PHONE_NEW_SMS 71
+#define SEND_SMS_TO_ALL 72
+#define LOAD_RANDOM_PICKUP_EVENT_1 73
+#define LOAD_RANDOM_PICKUP_EVENT_2 74
+#define LOAD_RANDOM_PICKUP_EVENT_3 75
+#define CHECK_VEHICLE_AVAILABLE 76
+#define LOAD_RACES_TRACKS 77
+#define LOAD_RACES_TRACKS_DATA 78
+#define LOAD_RACER_STATS 79
+#define LOAD_TRASH_TRACKS 80
+#define LOAD_TRASH_TRACKS_DATA 81
+#define LOAD_SWEEPER_TRACKS 82
+#define LOAD_SWEEPER_TRACKS_DATA 83
+#define LOAD_GANG_ZONES 84
+#define LOAD_WEED 85
+#define LOAD_FARMER_TRACKS 86
+#define LOAD_FARMER_TRACKS_DATA 87
+#define LOAD_DRIVER_BOOK_QUESTION 88
+#define DEF_FAC_LEADERS 89
+#define CHECK_ACCOUNT_STATUS 90
+#define SET_FORUM_FACTION 91
+#define LOAD_MAP_ICONS 92
+#define COMPANY_MEMBERS_DISMISS 93
+#define LOAD_PUBLIC_ADS 94
+#define DEL_FROM_FORUM_FACTION 95
+#define PLAYER_VEHICLE_CASH 96
+#define LOAD_ITEMS_FOR_DELETE 97
+#define LOAD_ITEMS2_FOR_DELETE 98
+#define LOAD_ITEMS3_FOR_DELETE 99
+#define FACTION_MEMBERS_RANK 100
+#define LOAD_RACER_STATS_BEST 101
+#define LOAD_PICKUP_INFOS 102
+#define CASH_FOR_EXPORT_VEH 103
+#define LOAD_NEWS 104
+#define PLAYER_DATA_LOAD_ALL 105
+#define PLAYER_DATA_LOAD_ALL_PAYDAY 106
+#define CHECK_ACCOUNT_STATUS_PAYDAY 107
 
 /* Macros of dialogs */
 #define DIALOG_ITEM_1 1
 #define DIALOG_ITEM_2 2
 #define DIALOG_ITEM_TRANSFER 3
 #define DIALOG_KANISTER 7
-#define DIALOG_BUY_PHONE 8
+#define DIALOG_BUY_SIM 8
 #define DIALOG_PHONE 9
 #define DIALOG_PHONE2 10
 #define DIALOG_PHONE_BOOK 11
@@ -563,7 +760,7 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 #define DIALOG_HITEM_INS_3 23
 #define DIALOG_HITEM_3 24
 #define DIALOG_GOVERNMENT_1 25
-#define DIALOG_GOVERNMENT_TAX 26
+#define DIALOG_GOVERNMENT_INFO 26
 #define DIALOG_GOVERNMENT_JOBS 27
 #define DIALOG_GOVERNMENT_JOBS_2 28
 #define DIALOG_GOVERNMENT_JOBS_3 29
@@ -629,12 +826,195 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 #define DIALOG_VITEM_4 90
 #define DIALOG_VITEM_INS_1 91
 #define DIALOG_VITEM_INS_2 92
+#define DIALOG_BUY_5P 93
+#define DIALOG_ITEM_FACTORY_1 94
+#define DIALOG_ITEM_FACTORY_2 95
+#define DIALOG_ITEM_FACTORY_3 96
+#define DIALOG_ITEM_FACTORY_4 97
+#define DIALOG_ITEM_FACTORY_5 98
+#define DIALOG_BUY_6P 99
+#define DIALOG_BUY_7P 100
+#define DIALOG_BUY_8P 101
+#define DIALOG_ITEM_3 102
+#define DIALOG_ITEM_4 103
+#define DIALOG_DRIVINGTESTQ 104
+#define DIALOG_DRIVINGTESTQ_2 105
+#define DIALOG_NEW_VERSION 106
+#define DIALOG_ONOFF 107
+#define DIALOG_ITEM_5 108
+#define DIALOG_FBUY_1 109
+#define DIALOG_FBUY_2 110
+#define DIALOG_FBUY_3 111
+#define DIALOG_FBUY_4 112
+#define DIALOG_FBUY_5 113
+#define DIALOG_FBUY_6 114
+#define DIALOG_FBUY_MSG 115
+#define DIALOG_ITEM_4B 116
+#define DIALOG_FBUY_MSG2 117
+#define DIALOG_POLICE_COMPUTER_1 118
+#define DIALOG_POLICE_COMPUTER_2A 119
+#define DIALOG_POLICE_COMPUTER_2B 120
+#define DIALOG_POLICE_COMPUTER_3A 121
+#define DIALOG_POLICE_COMPUTER_3B 122
+#define DIALOG_POLICE_COMPUTER_4A 123
+#define DIALOG_POLICE_COMPUTER_4B 124
+#define DIALOG_POLICE_COMPUTER_4C 125
+#define DIALOG_POLICE_COMPUTER_4D 126
+#define DIALOG_POLICE_COMPUTER_5A 127
+#define DIALOG_POLICE_COMPUTER_5B 128
+#define DIALOG_POLICE_COMPUTER_5C 129
+#define DIALOG_POLICE_COMPUTER_3C 130
+#define DIALOG_POLICE_COMPUTER_3D 131
+#define DIALOG_HEAL_ASK 132
+#define DIALOG_EXAMINE_ASK 133
+#define DIALOG_WLMENU_4_WEAPON_B_NFO 134
+#define DIALOG_WLMENU_5_WEAPON_B 135
+#define DIALOG_WLMENU_4_WEAPON_B 136
+#define DIALOG_WLMENU_5_WEAPON_B_F 137
+#define DIALOG_WLMENU_5_WEAPON_B_B 138
+#define DIALOG_WLMENU_4_AMMO_B_NFO 139
+#define DIALOG_WLMENU_5_AMMO_B 140
+#define DIALOG_WLMENU_4_AMMO_B 141
+#define DIALOG_WLMENU_5_AMMO_B_F 142
+#define DIALOG_WLMENU_5_AMMO_B_B 143
+#define DIALOG_BUY_SIM_2_FEE 144
+#define DIALOG_BUY_SIM_2_CARD 145
+#define DIALOG_BUY_SIM_2_RENEW 146
+#define DIALOG_BUY_SIM_2_RESIGN 147
+#define DIALOG_BUY_SIM_2_EXTENSION 148
+#define DIALOG_SELECT_PHONE_COMPANY 149
+#define DIALOG_SELECT_PHONE_COMPANY_2 150
+#define DIALOG_SELECT_PHONE_COMPANY_3 151
+#define DIALOG_BUY_SIM_2_RESIGN_CONTRACT 152
+#define DIALOG_NETWORK_COMP_1 153
+#define DIALOG_NETWORK_COMP_2 154
+#define DIALOG_SMS_2_VIEW 155
+#define DIALOG_SMS_3_VIEW 156
+#define DIALOG_SMS_4_VIEW_ANSWER 157
+#define DIALOG_SMS_4_VIEW_DELETE 158
+#define DIALOG_SMS_2_SEND 159
+#define DIALOG_SMS_3_SEND_MANU 160
+#define DIALOG_SMS_4_SEND_MANU 161
+#define DIALOG_SMS_3_SEND_SEL 162
+#define DIALOG_SMS_5 163
+#define DIALOG_STEAL_FROM_PLAYER 164
+#define DIALOG_RACE 165
+#define DIALOG_RACE_INFO 166
+#define DIALOG_RACE_SELECT 167
+#define DIALOG_RACE_STATS 168
+#define DIALOG_RACE_MAKE_1 169
+#define DIALOG_MAKE_FACTION 170
+#define DIALOG_MAKE_FACTION_2 171
+#define DIALOG_MAKE_FACTION_3 172
+#define DIALOG_RADIO_CHANNELS 173
+#define DIALOG_DRIVER_BOOK 174
+#define DIALOG_DRIVER_BOOK_2 175
+#define DIALOG_REPORT_PROBLEM 176
+#define DIALOG_HELP_3 177
+#define DIALOG_ITEM_TRANSFER_COUNT 178
+#define DIALOG_LOGIN_KP 179
+#define DIALOG_GOVERNMENT_LIC 180
+#define DIALOG_GOVERNMENT2_1 181
+#define DIALOG_BUY_BUS_TICKET 182
+#define DIALOG_F_ARMENT_1 183
+#define DIALOG_F_ARMENT_2 184
+#define DIALOG_F_ARMENT_W_1 185
+#define DIALOG_F_ARMENT_W_2 186
+#define DIALOG_F_ARMENT_A_1 187
+#define DIALOG_F_ARMENT_A_1_MSG 188
+#define DIALOG_MEDIC_1 189
+#define DIALOG_HEAL_ASK_BOT 190
+#define DIALOG_BUY_5P_BAR 191
+#define DIALOG_BUY_6P_BAR 192
+#define DIALOG_F_PAYMENT_1 193
+#define DIALOG_F_PAYMENT_2 194
+#define DIALOG_F_PAYMENT_2_MSG 195
+#define DIALOG_F2_PAYMENT_1 196
+#define DIALOG_F2_PAYMENT_2 197
+#define DIALOG_F2_PAYMENT_2_MSG 198
+#define DIALOG_COMPANY 199
+#define DIALOG_COMPANY_DISMISS 200
+#define DIALOG_COMPANY_DISMISS_MSG 201
+#define DIALOG_COMPANY_HIRE 202
+#define DIALOG_COMPANY_HIRE_MSG 203
+#define DIALOG_COMPANY_PAYMENT 204
+#define DIALOG_COMPANY_PAYMENT_MSG 205
+#define DIALOG_OBJECT_TXT 206
+#define DIALOG_OBJECT_TXT_2 207
+#define DIALOG_OBJECT_TXT_3 208
+#define DIALOG_OBJECT_TXT_4 209
+#define DIALOG_OBJECT_TXT_5 210
+#define DIALOG_OBJECT_TXT_6 211
+#define DIALOG_ENGINE_REPAIR_CONFIRM 212
+#define DIALOG_SELECT_WHEEL_TO_FIX 213
+#define DIALOG_WHEEL_REPAIR_CONFIRM 214
+#define DIALOG_BULB_CHANGE_SELECT 215
+#define DIALOG_BULB_CHANGE_CONFIRM 216
+#define DIALOG_HOOK_ADD_CONFIRM 217
+#define DIALOG_SELECT_BIZ_INT 218
+#define DIALOG_LPG_ADD_CONFIRM 219
+#define DIALOG_BUY_BUILDING 220
+#define DIALOG_POLICELIGHT_ADD_CONFIRM 221
+#define DIALOG_TAXILIGHT1_ADD_CONFIRM 222
+#define DIALOG_TAXILIGHT2_ADD_CONFIRM 223
+#define DIALOG_TAXILIGHT3_ADD_CONFIRM 224
+#define DIALOG_TAXILIGHT4_ADD_CONFIRM 225
+#define DIALOG_NETWORK_COMP_MSG 226
+#define DIALOG_GOVERNMENT_VEH_REG 227
+#define DIALOG_EVENT_JOIN 228
+#define DIALOG_EVENT_SELECT 229
+#define DIALOG_EVENT_SELECT_TIME 230
+#define DIALOG_EVENT_SELECT_PRIZE 231
+#define DIALOG_EVENT_STOP 232
+#define PLAYER_PRIVATE_VEHICLE_CASH 233
+#define DIALOG_FACTION 234
+#define DIALOG_FACTION_HIRE 235
+#define FACTION_MEMBERS_DISMISS 236
+#define DIALOG_FACTION_HIRE_MSG 237
+#define DIALOG_FACTION_DISMISS_MSG 238
+#define DIALOG_FACTION_DISMISS 239
+#define DIALOG_FACTION_RANK_SELECT 240
+#define DIALOG_FACTION_RANK 241
+#define DIALOG_FACTION_RANK_MSG 242
+#define DIALOG_FACTION_PAYMENT_MSG 243
+#define DIALOG_FACTION_PAYMENT_ENTER 244
+#define DIALOG_FACTION_PAYMENT 245
+#define DIALOG_FACTION_SKIN_SELECT 246
+#define DIALOG_FACTION_SKIN_INPUT 247
+#define DIALOG_FACTION_SKIN_MSG 248
+#define DIALOG_FACTORY_BUILD 249
+#define DIALOG_REPORTS 250
+#define DIALOG_TUNING_ADD_CONFIRM 251
+#define DIALOG_STOCK_ADD_CONFIRM 252
+#define DIALOG_MAP_LOCATIONS 253
+#define DIALOG_MAP_LOCATIONS_SET 254
+#define DIALOG_RENT_VEH 255
+#define DIALOG_GPS_LOCATIONS 256
+#define DIALOG_GPS_LOCATIONS_SET 257
+#define DIALOG_TELEPORT_TAXI 258
+#define DIALOG_HELP_4 259
+#define DIALOG_NEW_NEWS 260
+#define DIALOG_NEW_NEWS2 261
+#define DIALOG_HOUSE 262
+#define DIALOG_HOUSE_MONEY 263
+#define DIALOG_HOUSE_MONEY_TAKE 264
+#define DIALOG_HOUSE_MONEY_PUT 265
+#define DIALOG_HOUSE_MONEY_MSG 266
+#define DIALOG_HOUSE_RENT 267
+#define DIALOG_HOUSE_RENT_PRICE 268
+#define DIALOG_HOUSE_RENT_MSG 269
+#define DIALOG_HOUSE_ITEMS 270
 
 /* Macros of audio */
 #define AUDIO_ITEM_PICKUP 1
 #define AUDIO_BUY1 2
 #define AUDIO_DOOR_CLOSE 3
 #define AUDIO_DOOR_OPEN 4
+#define AUDIO_HEART_BEAT 5
+#define AUDIO_BREATH 6
+#define AUDIO_URBAN_NOISE 7
+#define AUDIO_URBAN_NOISE_MORNING 8
+#define AUDIO_SUBURB_NOISE 9
 
 /* UAC macros */
 #define CONFIG_FILE "UAC/UAC_Config.ini"
@@ -659,45 +1039,63 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 #define camera_z 9
 #define moving_speed 50
 
-/* Firework macros */
-#define COLOR_TAN 0xBDB76BAA
-#define RED 		0xE60000FF
-#define WHITE 		0xFFFFFFFF
-#define MAX_LIGHTS 100
-#define MAX_PARTS 13
-#define Sprinkleid 52
-#define RBSprinkleid 20
+/* Action ranges */
+#define AR_HOUSE_STEALING 30.0
+#define AR_BUSINESS_STEALING 30.0
 
-/* Firework dialogs */
-#define FWCPM 500
-#define FWCPDD 501
-#define FWCPFC 502
-#define FWCPFR1 503
-#define FWCPFR2 504
-#define FWCPCR 505
-#define FWCPFT1 506
-#define FWCPFT2 507
-#define FWCPFT3 508
-#define FWCPRB 509
+// /* Firework macros */
+// #define COLOR_TAN 0xBDB76BAA
+// #define RED 		0xE60000FF
+// #define WHITE 		0xFFFFFFFF
+// #define MAX_LIGHTS 100
+// #define MAX_PARTS 13
+// #define Sprinkleid 52
+// #define RBSprinkleid 20
+
+// /* Firework dialogs */
+// #define FWCPM 500
+// #define FWCPDD 501
+// #define FWCPFC 502
+// #define FWCPFR1 503
+// #define FWCPFR2 504
+// #define FWCPCR 505
+// #define FWCPFT1 506
+// #define FWCPFT2 507
+// #define FWCPFT3 508
+// #define FWCPRB 509
 
 /* Variable with text */
-new DIALOG_INFO_HEADER[] = "Informacja";
+new DIALOG_ITEM_FACTORY_TITLE[150] = "Fabryka itemów - %s";
+new DIALOG_ITEM_FACTORY_ITEM_LIST[] = "1. %s [$%d][%d]\n2. %s [$%d][%d]\n3. %s [$%d][%d]\n4. %s [$%d][%d]\n5. %s [$%d][%d]\n6. %s [$%d][%d]\n7. %s [$%d][%d]\n8. %s [$%d][%d]\n9. %s [$%d][%d]\n10. %s [$%d][%d]\n";
+new DIALOG_ITEM_FACTORY_HOW_MUCH[63 char] = !"Wpisz wartoœæ odpowiadaj¹c¹ iloœci itemów które chcesz zakupiæ";
+new DIALOG_ITEM_FACTORY_WRONG_VALUE[49 char] = !"Poda³eœ niepoprawn¹ wartoœæ, spróbuj jeszcze raz";
+new DIALOG_ITEM_FACTORY_NO_SPACE[27 char] = !"Nie masz miejsca w schowku";
+new DIALOG_ITEM_FACTORY_NO_ITEM[114 char] = !"Niestety nie ma teraz tego itemu na stanie lub jego iloœæ jest za ma³a w stosunku do minimalnego mo¿liwego zakupu";
+new DIALOG_ITEM_FACTORY_NO_CASH[21 char] = !"Masz za ma³o gotówki";
+new DIALOG_ITEM_FACTORY_B_CONFIRM[] = "Czy potwierdzasz zakup %d itemów za kwote $%d ?";
+new DIALOG_ITEM_FACTORY_MIN_BUY[] = "Musisz kupiæ co najmniej %d tych itemów !";
+new DIALOG_ITEM_FACTORY_B_SUCCESS[15 char] = !"Kupi³eœ itemy !";
+new DIALOG_INFO_HEADER[11 char] = !"Informacja";
 new DIALOG_INFO_EXIT[] = "Zamknij";
-new DIALOG_GOVERNMENT_1_TXT[] = "1. ZnaleŸæ prace \n2. Przejrzeæ aktualne podatki";
+new DIALOG_GOVERNMENT_1_TXT[] = "ZnaleŸæ prace\nPrzejrzeæ aktualne podatki\nWyrobiæ dowód\nWyrobiæ prawo jazdy\nWyrobiæ dowód rejestracyjny pojazdu";
+new DIALOG_GOVERNMENT2_1_TXT[] = "Przejrzeæ frakcje nie posiadaj¹ce lidera";
 new DIALOG_GOV_APPLY_TXT[] = "WeŸ prace";
-new DIALOG_BUY_1_TXT[] = "Transakcja zakoñczona sukcesem !";
-new DIALOG_BUY_2_TXT[] = "Nie posiadasz wystarczaj¹cej iloœci pieniêdzy";
-new DIALOG_BUY_3_TXT[] = "Jesteœ przeci¹¿ony !\nWyrzuæ jeden lub wiêcej itemów aby odci¹¿yæ swoj¹ postaæ";
+new DIALOG_BUY_1_TXT[33 char] = !"Transakcja zakoñczona sukcesem !";
+new DIALOG_BUY_2_TXT[46 char] = !"Nie posiadasz wystarczaj¹cej iloœci pieniêdzy";
+new DIALOG_BUY_3_TXT[78 char] = !"Jesteœ przeci¹¿ony !\nWyrzuæ jeden lub wiêcej itemów aby odci¹¿yæ swoj¹ postaæ";
 new DIALOG_BUY_4_TXT[] = "Nie masz wiêcej miejsca !";
-new DIALOG_BUY_5_TXT[] = "Posiadasz ju¿ ten item";
-new DIALOG_BUY_6_TXT[] = "Ten produkt nie ma ustalonej ceny !";
+// new DIALOG_BUY_5_TXT[] = "Posiadasz ju¿ ten item";
+new DIALOG_BUY_6_TXT[36 char] = !"Ten produkt nie ma ustalonej ceny !";
+new DIALOG_BUY_7_TXT[32 char] = !"Nie wybra³eœ ¿adnego produktu !";
+new DIALOG_BUY_8_TXT[15 char] = !"Brak produktu !";
+new DIALOG_BUY_9_TXT[49 char] = !"Aby kupiæ ubranie udaj siê do przymierzalni obok";
 new DIALOG_WMENU_TITLE_TXT[] = "Menu skupu broni oraz amunicji";
 new DIALOG_WMENU_NOSPAREPART_TXT[] = "Brak wymaganych czêœci !";
 new DIALOG_WMENU_NOCASH_TXT[] = "Niewystarczaj¹ca iloœc pieniêdzy w kasie frakcji !";
 new DIALOG_WMENU_GOTO1_TXT[] = "[INFO:] Udaj siê teraz do jednego ze stanowisk";
 new DIALOG_WMENU_GOTO2_TXT[] = "[INFO:] Aby rozpocz¹æ prace wpisz /skladaj";
 new DIALOG_WMENU_BOUGHT_PART_TXT[] = "Kupi³eœ czêœæ !\nJest ona teraz dostêpna w magazynie frakcji";
-new DIALOG_WMENU_BUY_CHECKOUT_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie frakcji: %d\nCena: %d$\nZasoby frakcji: %d$";
+new DIALOG_WMENU_BUY_CHECKOUT_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie frakcji: %d\nCena: $%d\nZasoby frakcji: $%d";
 new DIALOG_WMENU_BUY_CHECKOUT2_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie frakcji: %d\n";
 new DIALOG_WMENU_MAIN_TXT[] = "1. Bronie\n2. Czêœci\n3. Amunicja\n4. Zwróæ czêœci";
 new DIALOG_WMENU_SEL_TXT[] = "1. Broñ\n2. Amunicja";
@@ -705,14 +1103,14 @@ new DIALOG_WMENU_SEL_OB_TXT[] = "1. Zamów\n2. Kup";
 new DIALOG_WMENU_3_WEAPON_INFO_TXT[] = "Wybra³eœ ju¿ broñ lub czêœæ któr¹ chcesz zmontowaæ.\nAby wybraæ now¹ rzecz zwróc posiadane czêœci przechodz¹c do odpowiedniego menu w \"Menu broni\"";
 new DIALOG_WMENU_3_NO_SPACE_TXT[] = "Jesteœ przeci¹¿ony !";
 new DIALOG_WMENU_LIM_TXT[] = "Osi¹gn¹³eœ limit zamówieñ !\nWróæ jutro.";
-new DIALOG_WMENU_B_OUT_TXT[] = "Brak broni w magazynie !";
-new DIALOG_WMENU_W_LIST_TXT[] = "1. Pistolet 9mm [%d]\n2. Pistolet 9mm z t³umikiem [%d]\n3. Pistolet Desert Eagle [%d]\n4. Pistolet maszynowy micro SMG [%d]\n5. Pistolet maszynowy MP5 [%d]\n6. Tec9 [%d]\n7. Shotgun [%d]\n8. Karabinek AK-47 [%d]\n9. Karabinek M4 [%d]\n10. Karabin [%d]\n11. Karabin snajperski [%d]";
+new DIALOG_WMENU_B_OUT_TXT[] = "Brak broni w magazynie lub iloœæ na zamówieniu przekracza jej aktualny stan !";
+new DIALOG_WMENU_W_LIST_TXT[] = "1. Pistolet 9mm [%d]\n2. Pistolet 9mm z t³umikiem [%d]\n3. Pistolet Desert Eagle [%d]\n4. Pistolet maszynowy micro SMG [%d]\n5. Pistolet maszynowy MP5 [%d]\n6. Tec9 [%d]\n7. Shotgun [%d]\n8. Karabinek AK-47 [%d]\n9. Karabinek M4 [%d]\n10. Karabin [%d]\n11. Karabin snajperski [%d]\n12. Kastet [20$]\n13. £om [15$]\n14. Wytrych [5$]\n15. Pancerz";
 new DIALOG_WMENU_PASS_WL_TXT[] = "Zakoñczo etap %d z %d";
-new DIALOG_BUYW_TXT[] = "1. Pistolet 9mm [%d][%d$]\n2. Pistolet 9mm z t³umikiem [%d][%d$]\n3. Pistolet Desert Eagle [%d][%d$]\n4. Pistolet maszynowy micro SMG [%d][%d$]\n5. Pistolet maszynowy MP5 [%d][%d$]\n6. Tec9 [%d][%d$]\n7. Shotgun [%d][%d$]\n8. Karabinek AK-47 [%d][%d$]\n9. Karabinek M4 [%d][%d$]\n10. Karabin [%d][%d$]\n11. Karabin snajperski [%d][%d$]";
-new DIALOG_BUYA_TXT[] = "1. Nabój 9mm [%d][%d$]\n2. Nabój .50 AE [%d][%d$]\n3. Œrut [%d][%d$]\n4. Nabój 7.62mm [%d][%d$]\n5. Nabój 12.7mm [%d][%d$]";
-new WFACTORY_MOUNT_P_CP[] = "Punkt montowania broni/czesci";
-new WFACTORY_MOUNT_SP_CP[] = "Punkt montowania amunicji";
-new WFACTORY_TAKE_BUY_CP[] = "Punkt poboru/kupna czesci/podczesci";
+new DIALOG_BUYW_TXT[] = "1. Pistolet 9mm [%d][$%d]\n2. Pistolet 9mm z t³umikiem [%d][$%d]\n3. Pistolet Desert Eagle [%d][$%d]\n4. Pistolet maszynowy micro SMG [%d][$%d]\n5. Pistolet maszynowy MP5 [%d][$%d]\n6. Tec9 [%d][$%d]\n7. Shotgun [%d][$%d]\n8. Karabinek AK-47 [%d][$%d]\n9. Karabinek M4 [%d][$%d]\n10. Karabin [%d][$%d]\n11. Karabin snajperski [%d][$%d]";
+new DIALOG_BUYA_TXT[] = "1. Nabój 9mm [%d][$%d]\n2. Nabój .50 AE [%d][$%d]\n3. Œrut [%d][$%d]\n4. Nabój 7.62mm [%d][$%d]\n5. Nabój 12.7mm [%d][$%d]";
+new WFACTORY_MOUNT_P_CP[] = "Punkt montowania broni/czesci~n~/menubroni";
+new WFACTORY_MOUNT_SP_CP[] = "Punkt montowania amunicji~n~/menubroni";
+new WFACTORY_TAKE_BUY_CP[] = "Punkt poboru/kupna czesci/podczesci~n~/menubroni";
 new WFACTORY_TAKE_ORD_BUY_CP[] = "Punkt zamowien oraz skupu";
 // new WFACTORY_RETURN_CP[] = "Punkt skladowania broni";
 new WF_ASSEMBLE_T_LEFT[] = "Skladanie czesci    - pozostalo %d sekund";
@@ -723,25 +1121,28 @@ new WF_ASSEMBLE_NOT_SLCTED[] = "Nie wybra³eœ elementu do montowania.\nWybierz od
 new WF_ASSEMBLE_NOT_WCP[] = "Nie jesteœ w punkcie sk³adania broni/czêœci !";
 new WF_ASSEMBLE_NOT_ACP[] = "Nie jesteœ w punkcie skladania amunicji !";
 new WF_ASSEMBLE_ALREADY[] = "Poczekaj na zakoñczenie montowania obecnej czêœci.";
-new SHOP_PRODUCT_LIST[] = "1. Pa³ka bejsbolowa [%d$]\n2. Kanister [%d$]\n3. £opata [%d$]\n4. Plecak [%d$]\n5. Kij bilardowy [%d$]\n6. Rakieta [%d$]\n7. Ksi¹¿ka telefoniczna [%d$]\n8. Aparat fotograficzny [%d$]\n9. Kwiaty [%d$]\n10. ¯arówka H7 [%d$]\n11. Kostka do gry [%d$]\n12. Cygaro [%d$]\n13. £om [%d$]\n14. Hak holowniczny [%d$]\n15. GPS [%d$]\n16. Linka holownicza [%d$]\n17. Krótkofallówka [%d$]\n18. Alarm samochodowy [%d$]\n";
-new SHOP_PRODUCT_LIST2[] = "19. Mapa San Andreas [%d$]\n20. Radioodbiornik [%d$]\n21. Baton WParty [%d$]";
-new DIALOG_HELP_MAIN_TXT[] = "WParty - czaty\nWParty - licencje\nWParty - animacje\nWParty - pojazdy\nWParty - prace";
+new SHOP_PRODUCT_LIST[] = "1. %s [$%d][%d]\n2. %s [$%d][%d]\n3. %s [$%d][%d]\n4. %s [$%d][%d]\n5. %s [$%d][%d]\n6. %s [$%d][%d]\n7. %s [$%d][%d]\n8. %s [$%d][%d]\n9. %s [$%d][%d]\n10. %s [$%d][%d]";
+new FOOD_PRODUCT_LIST[] = "1. %s [$%d][%d]\n2. %s [$%d][%d]\n3. %s [$%d][%d]\n4. %s [$%d][%d]\n5. %s [$%d][%d]";
+new DIALOG_HELP_MAIN_TXT[] = "Regulamin\nJak zacz¹æ\nFAQ\nLicencje\nAnimacje\nPojazdy\nPrace\nPaski zdrowia - opis\nPaski zdrowia\nCzaty\nIkony na mapie\nProblemy i bugi\nNarkotyki\nHurtownie\nWyœcigi\nWORD\nDomy\nBiznesy";
 new RADIO_CHANNELS[] = "[1:] Radioparty.pl g³ówny [2:] DJ Mixes [3:] House [4:] Trance [5:] Vocal Trance [6:] DnB [7:] Hardstyle [8:] Chillout";
-new RADIO_CHANNELS2[] = "[9:] Radio Zet [10:] RMF Classic [11:] RMF FM [12:] Eska rock";
+new RADIO_CHANNELS2[] =  "[9:] Radio Zet [10:] RMF Classic [11:] RMF FM [12:] Eska rock [13:] Eska Bydgoszcz 94,4 FM [14:] RadioDiscoPoloFM";
+new RADIO_CHANNELS3[] = "[15:] Technobase.FM [16:] Roots Reggae SKY.FM [17:] RMF Hip Hop [18:] Antyradio Warszawa";
+new RADIO_CHANNELS_DIALOG[] = "1. Radioparty.pl - kana³ g³ówny\n2. Radioparty.pl - DJ Mixes\n3. Radioparty.pl - House\n4. Radioparty.pl - Trances\n5. Radioparty.pl - Vocal Trance\n6. Radioparty.pl - Energy 2000\n7. Radioparty.pl - Ambeat\n8. Radio Horyzont\n9. Radio Zet\n10. RMF Classic\n11. RMF FM\n12. Eska Rock\n13. Eska Warszawa\n14. Polska Stacja - Disco Polo\n15. Technobase.FM\n16. Rastastacja\n17. Kiss The Flow\n18. Antyradio Warszawa";
 new DIALOG_KANISTER_TXT[] = "1. Przeka¿ item\n2. Wyrzuæ item\n3. Zatankuj pojazd\n4. Zawartoœæ\n5. Zatankuj kanister";
+new DIALOG_DRIVINGTESTQ_TITLE[] = "Test teoretyczny na prawo jazdy";
 
 /* Bus job const */
 new JOB_BUS_DEP_TIME_LEFT[] = "Odjazd za: %d sek.";
 
 /* Legal factory weapon menu */
-new DIALOG_WMENU_BUY_W_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nCena za sztuke: %d$";
-new DIALOG_WMENU_ORD_W_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nAktualnie zamówionych: %d\nCena sztuke: %d$";
-new DIALOG_WMENU_BUY_A_TXT[] = "Nazwa: %s\nDostêpna iloœæw magazyne: %d\nCena za komplet: %d$";
-new DIALOG_WMENU_ORD_A_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nAktualnie zamówionych: %d\nCena za komplet: %d$";
+new DIALOG_WMENU_BUY_W_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nCena za sztuke: $%d";
+new DIALOG_WMENU_ORD_W_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nAktualnie zamówionych: %d\nCena sztuke: $%d";
+new DIALOG_WMENU_BUY_A_TXT[] = "Nazwa: %s\nDostêpna iloœæw magazyne: %d\nCena za komplet: $%d";
+new DIALOG_WMENU_ORD_A_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nAktualnie zamówionych: %d\nCena za komplet: $%d";
 
 /* Rafinery const */
 new RAF_RSC_CP_MENU_HEADER[] = "Menu punktu tankowania cystern";
-new RAF_RSC_CP_MENU_OPTIONS_MAIN[] = "1. Zatankuj benzyne \n2. Zatankuj rope\n3. Nape³nij gazem\n4. Opró¿nij zawartoœæ cysterny do magazynu rafinerii";
+new RAF_RSC_CP_MENU_OPTIONS_MAIN[] = "1. Zatankuj benzyne \n2. Zatankuj rope\n3. Nape³nij gazem\n4. Nape³nij paliwem lotniczym\n5. Opró¿nij zawartoœæ cysterny do magazynu rafinerii";
 new RAF_RSC_CP_MENU_SELECT[] = "Wybierz";
 new RAF_RSC_CP_MENU_EXIT[] = "Zamknij";
 new RAF_RSC_CP_MENU_BACK[] = "Wróæ";
@@ -780,124 +1181,328 @@ new RAF_GS_REFUELED_B[] = "Zbiorniki nie zosta³y nape³nione - nast¹pi³o przemies
 new RAF_GS_REFUELED_C[] = "Zbiorniki nie zosta³y nape³nione - zabrak³o paliwa w cysternie. Otrzyma³eœ po³owe wynagrodzenia.";
 new RAF_GS_REFUELED_D[] = "Zbiorniki nie zosta³y nape³nione - brak funduszy na stacji na dalsze tankowanie. Otrzyma³eœ zap³ate za to tankowanie.";
 
-/* UAC help variables */
-new Float:gHealthUAC;
-new Float:gArmourUAC;
-
 enum Winfo
 {
 	Weapon[13]
 }
-
 new Ammo[CUSTOM_MAX_PLAYERS][MAX_WEAPONS];
 new Gun[CUSTOM_MAX_PLAYERS][Winfo];
 new Spawned[CUSTOM_MAX_PLAYERS];
 new IngVehData[CUSTOM_MAX_PLAYERS];
 new Float:NewPos[CUSTOM_MAX_PLAYERS][3];
 new PosHackCheckTime[CUSTOM_MAX_PLAYERS];
-new BadNames[100][100], BadNameCount = 0;
+// new BadNames[100][100], BadNameCount = 0;
+
+/* World time */
+new gHour = 6, gMin = 0, gSec = 0;
 
 /* Used in WarTimer */
 new gSuspectPlayersCount;
 new gAllPlayersCount;
 
-/* MySQL variables */
-// new db_host[128] = "zebra.og-servers.net";
-// new db_user[128] = "wlanp_admin";
-// new db_database[128] = "wlanpartyww_multiple";
-// new db_pass[128] = "33comanche33";
-
-new db_host[128] = "elephant.og-servers.net";
-new db_user[128] = "wlanp_admin";
-new db_database[128] = "wlanpartyww_multiple";
-new db_pass[128] = "33comanche33";
-
-new db_result[1024];
-new MySQL:db_con1;
-new MySQL:db_con2;
-new MySQL:db_con3;
-new MySQL:db_con4;
-// new MySQL:db_con5;
-
-/* 3D Text variables */
-// new Text3D:playerAFK[CUSTOM_MAX_PLAYERS];
-
 /* Job variables */
 new gPapers[CUSTOM_MAX_PLAYERS]; // praca roznosiciela gazet - ilosc przenoszonych gazet
 
+
+/**
+* Bus tracks variables
+*/
 new gBusTrackEnabled[50];
 new gBusTrackStartArea[50];
-new Float:gBusTrackCPX[50][50];
-new Float:gBusTrackCPY[50][50];
-new Float:gBusTrackCPZ[50][50];
-new gBusTrackCPReward[50][50];
-new gBusTrackCPType[50][50];
-new gBusTrackCPTime[50][50];
+new gBusTrackDesc[50][64];
+new gBusTrackTicketCost[50];
+new Float:gBusTrackCpX[50][50];
+new Float:gBusTrackCpY[50][50];
+new Float:gBusTrackCpZ[50][50];
+new gBusTrackCpReward[50][50];
+new gBusTrackCpType[50][50];
+new gBusTrackCpTime[50][50];
 
+/**
+* Trash tracks variables
+*/
+new gTrashTrackEnabled[50];
+new gTrashTrackStartArea[50];
+new Float:gTrashTrackCpX[50][50];
+new Float:gTrashTrackCpY[50][50];
+new Float:gTrashTrackCpZ[50][50];
+new gTrashTrackCpReward[50][50];
+new gTrashTrackCpType[50][50];
+new gTrashTrackCpTime[50][50];
+new gTrashTrackCpTrashEnabled[50][50];
+new gTrashTrackCpTrashId[50][50];
+
+/**
+* Sweeper tracks variables
+*/
+new gSweeperTrackEnabled[50];
+new gSweeperTrackStartArea[50];
+new Float:gSweeperTrackCpX[50][50];
+new Float:gSweeperTrackCpY[50][50];
+new Float:gSweeperTrackCpZ[50][50];
+new gSweeperTrackCpReward[50][50];
+new gSweeperTrackCpType[50][50];
+new gSweeperTrackCpTime[50][50];
+new gSweeperTrackCpTrashEnabled[50][50];
+new gSweeperTrackCpTrashId[50][50];
+
+/**
+* Farmer tracks variables
+*/
+new gFarmerTrackEnabled[50];
+new gFarmerTrackStartArea[50];
+new Float:gFarmerTrackCpX[50][50];
+new Float:gFarmerTrackCpY[50][50];
+new Float:gFarmerTrackCpZ[50][50];
+new gFarmerTrackCpReward[50][50];
+new gFarmerTrackCpType[50][50];
+new gFarmerTrackCpTime[50][50];
+new gFarmerTrackCpTrashEnabled[50][50];
+new gFarmerTrackCpTrashId[50][50];
+
+/**
+* Race tracks variables
+*/
+new gRaceTrackEnabled[50];
+new Float:gRaceTrackInfoCpX[50];
+new Float:gRaceTrackInfoCpY[50];
+new Float:gRaceTrackInfoCpZ[50];
+new gRaceTrackInfoPickupId[50];
+new gRaceTrackStartPosCount[50];
+new Float:gRaceTrackCpX[50][150];
+new Float:gRaceTrackCpY[50][150];
+new Float:gRaceTrackCpZ[50][150];
+new gRaceTrackCpType[50][150];
+new Float:gRaceTrackStart1CpX[50];
+new Float:gRaceTrackStart1CpY[50];
+new Float:gRaceTrackStart1CpZ[50];
+new Float:gRaceTrackStart2CpX[50];
+new Float:gRaceTrackStart2CpY[50];
+new Float:gRaceTrackStart2CpZ[50];
+new Float:gRaceTrackStart3CpX[50];
+new Float:gRaceTrackStart3CpY[50];
+new Float:gRaceTrackStart3CpZ[50];
+new Float:gRaceTrackStart4CpX[50];
+new Float:gRaceTrackStart4CpY[50];
+new Float:gRaceTrackStart4CpZ[50];
+new Float:gRaceTrackStart5CpX[50];
+new Float:gRaceTrackStart5CpY[50];
+new Float:gRaceTrackStart5CpZ[50];
+new Float:gRaceTrackStart6CpX[50];
+new Float:gRaceTrackStart6CpY[50];
+new Float:gRaceTrackStart6CpZ[50];
+new Float:gRaceTrackStart7CpX[50];
+new Float:gRaceTrackStart7CpY[50];
+new Float:gRaceTrackStart7CpZ[50];
+new Float:gRaceTrackStart8CpX[50];
+new Float:gRaceTrackStart8CpY[50];
+new Float:gRaceTrackStart8CpZ[50];
+new Float:gRaceTrackStart9CpX[50];
+new Float:gRaceTrackStart9CpY[50];
+new Float:gRaceTrackStart9CpZ[50];
+new Float:gRaceTrackStart10CpX[50];
+new Float:gRaceTrackStart10CpY[50];
+new Float:gRaceTrackStart10CpZ[50];
+
+enum raceStatus
+{
+	mRaceId,
+	mRaceState,
+	Text:mRaceInfo,
+	mRaceTimeToStart,
+	mRaceTimeToEnd,
+	mRaceStartHour,
+	mRaceStartMin,
+	mRaceStartSec,
+	mRaceLaps,
+	mRaceRacersCount,
+	mRaceEntrant1[MAX_PLAYER_NAME],
+	mRaceEntrant1Id,
+	mRaceEntrant1Status,
+	mRaceEntrant1Place,
+	mRaceEntrant1CpId,
+	mRaceEntrant1NextCpId,
+	mRaceEntrant1IsOnStartPos,
+	mRaceEntrant1Hour,
+	mRaceEntrant1Min,
+	mRaceEntrant1Sec,
+	mRaceEntrant1Lap,
+	Float:mRaceEntrant1DistanceLeft,
+	mRaceEntrant2[MAX_PLAYER_NAME],
+	mRaceEntrant2Id,
+	mRaceEntrant2Status,
+	mRaceEntrant2Place,
+	mRaceEntrant2CpId,
+	mRaceEntrant2NextCpId,
+	mRaceEntrant2IsOnStartPos,
+	mRaceEntrant2Hour,
+	mRaceEntrant2Min,
+	mRaceEntrant2Sec,
+	mRaceEntrant2Lap,
+	Float:mRaceEntrant2DistanceLeft,
+	mRaceEntrant3[MAX_PLAYER_NAME],
+	mRaceEntrant3Id,
+	mRaceEntrant3Status,
+	mRaceEntrant3Place,
+	mRaceEntrant3CpId,
+	mRaceEntrant3NextCpId,
+	mRaceEntrant3IsOnStartPos,
+	mRaceEntrant3Hour,
+	mRaceEntrant3Min,
+	mRaceEntrant3Sec,
+	mRaceEntrant3Lap,
+	Float:mRaceEntrant3DistanceLeft,
+	mRaceEntrant4[MAX_PLAYER_NAME],
+	mRaceEntrant4Id,
+	mRaceEntrant4Status,
+	mRaceEntrant4Place,
+	mRaceEntrant4CpId,
+	mRaceEntrant4NextCpId,
+	mRaceEntrant4IsOnStartPos,
+	mRaceEntrant4Hour,
+	mRaceEntrant4Min,
+	mRaceEntrant4Sec,
+	mRaceEntrant4Lap,
+	Float:mRaceEntrant4DistanceLeft,
+	mRaceEntrant5[MAX_PLAYER_NAME],
+	mRaceEntrant5Id,
+	mRaceEntrant5Status,
+	mRaceEntrant5Place,
+	mRaceEntrant5CpId,
+	mRaceEntrant5NextCpId,
+	mRaceEntrant5IsOnStartPos,
+	mRaceEntrant5Hour,
+	mRaceEntrant5Min,
+	mRaceEntrant5Sec,
+	mRaceEntrant5Lap,
+	Float:mRaceEntrant5DistanceLeft,
+	mRaceEntrant6[MAX_PLAYER_NAME],
+	mRaceEntrant6Id,
+	mRaceEntrant6Status,
+	mRaceEntrant6Place,
+	mRaceEntrant6CpId,
+	mRaceEntrant6NextCpId,
+	mRaceEntrant6IsOnStartPos,
+	mRaceEntrant6Hour,
+	mRaceEntrant6Min,
+	mRaceEntrant6Sec,
+	mRaceEntrant6Lap,
+	Float:mRaceEntrant6DistanceLeft,
+	mRaceEntrant7[MAX_PLAYER_NAME],
+	mRaceEntrant7Id,
+	mRaceEntrant7Status,
+	mRaceEntrant7Place,
+	mRaceEntrant7CpId,
+	mRaceEntrant7NextCpId,
+	mRaceEntrant7IsOnStartPos,
+	mRaceEntrant7Hour,
+	mRaceEntrant7Min,
+	mRaceEntrant7Sec,
+	mRaceEntrant7Lap,
+	Float:mRaceEntrant7DistanceLeft,
+	mRaceEntrant8[MAX_PLAYER_NAME],
+	mRaceEntrant8Id,
+	mRaceEntrant8Status,
+	mRaceEntrant8Place,
+	mRaceEntrant8CpId,
+	mRaceEntrant8NextCpId,
+	mRaceEntrant8IsOnStartPos,
+	mRaceEntrant8Hour,
+	mRaceEntrant8Min,
+	mRaceEntrant8Sec,
+	mRaceEntrant8Lap,
+	Float:mRaceEntrant8DistanceLeft,
+	mRaceEntrant9[MAX_PLAYER_NAME],
+	mRaceEntrant9Id,
+	mRaceEntrant9Status,
+	mRaceEntrant9Place,
+	mRaceEntrant9CpId,
+	mRaceEntrant9NextCpId,
+	mRaceEntrant9IsOnStartPos,
+	mRaceEntrant9Hour,
+	mRaceEntrant9Min,
+	mRaceEntrant9Sec,
+	mRaceEntrant9Lap,
+	Float:mRaceEntrant9DistanceLeft,
+	mRaceEntrant10[MAX_PLAYER_NAME],
+	mRaceEntrant10Id,
+	mRaceEntrant10Status,
+	mRaceEntrant10Place,
+	mRaceEntrant10CpId,
+	mRaceEntrant10NextCpId,
+	mRaceEntrant10IsOnStartPos,
+	mRaceEntrant10Hour,
+	mRaceEntrant10Min,
+	mRaceEntrant10Sec,
+	mRaceEntrant10Lap,
+	Float:mRaceEntrant10DistanceLeft
+}
+new gRaceStatus[100][raceStatus];
+
+/**
+* Player bus, mzgk, sweeper, farmer job variables
+*/
 new gBusDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
 new gBusDriverSelectedLine[CUSTOM_MAX_PLAYERS];
 new gBusDriverIsPassenger[CUSTOM_MAX_PLAYERS];
 new gBusDriverPaymentCount[CUSTOM_MAX_PLAYERS];
 new gBusDriverPenaltyInformed[CUSTOM_MAX_PLAYERS];
-new Float:gBusDriverPaymentMultiplier = 0.8;
 new gBusDriverCheckpointTime[CUSTOM_MAX_PLAYERS];
 new gBusDriverJustStarted[CUSTOM_MAX_PLAYERS];
 new gBusDriverOnDuty[CUSTOM_MAX_PLAYERS];
+new gBusDriverResetTime[CUSTOM_MAX_PLAYERS];
 
-new gMzgkDriverIsPassenger[CUSTOM_MAX_PLAYERS];
-new gMzgkDriverPaymentCount[CUSTOM_MAX_PLAYERS];
-new gMzgkDriverPenaltyInformed[CUSTOM_MAX_PLAYERS];
-new Float:gMzgkDriverPaymentMultiplier = 0.55;
-new gMzgkDriverCheckpointTime[CUSTOM_MAX_PLAYERS];
-new gMzgkDriverLastSelectedLine;
-new gMzgkDriverJustStarted[CUSTOM_MAX_PLAYERS];
-new gMzgkDriverSelectedLine[CUSTOM_MAX_PLAYERS];
-new gMzgkDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
-new gMzgkDriverOnDuty[CUSTOM_MAX_PLAYERS];
-new gMzgkDriverCheckpointCount[CUSTOM_MAX_PLAYERS];
-new gMzgkDriverInRoute[CUSTOM_MAX_PLAYERS];
+new gTrashDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
+new gTrashDriverSelectedLine[CUSTOM_MAX_PLAYERS];
+new gTrashDriverIsPassenger[CUSTOM_MAX_PLAYERS];
+new gTrashDriverPaymentCount[CUSTOM_MAX_PLAYERS];
+new gTrashDriverPenaltyInformed[CUSTOM_MAX_PLAYERS];
+new gTrashDriverCheckpointTime[CUSTOM_MAX_PLAYERS];
+new gTrashDriverJustStarted[CUSTOM_MAX_PLAYERS];
+new gTrashDriverOnDuty[CUSTOM_MAX_PLAYERS];
+new gTrashDriverResetTime[CUSTOM_MAX_PLAYERS];
 
+new gSweeperDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
+new gSweeperDriverSelectedLine[CUSTOM_MAX_PLAYERS];
 new gSweeperDriverIsPassenger[CUSTOM_MAX_PLAYERS];
 new gSweeperDriverPaymentCount[CUSTOM_MAX_PLAYERS];
 new gSweeperDriverPenaltyInformed[CUSTOM_MAX_PLAYERS];
-new Float:gSweeperDriverPaymentMultiplier = 0.6;
-new gSweeperDriverLastSelectedLine;
+new gSweeperDriverCheckpointTime[CUSTOM_MAX_PLAYERS];
 new gSweeperDriverJustStarted[CUSTOM_MAX_PLAYERS];
-new gSweeperDriverSelectedLine[CUSTOM_MAX_PLAYERS];
-new gSweeperDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
 new gSweeperDriverOnDuty[CUSTOM_MAX_PLAYERS];
-new gSweeperDriverCheckpointCount[CUSTOM_MAX_PLAYERS];
-new gSweeperDriverInRoute[CUSTOM_MAX_PLAYERS];
+new gSweeperDriverResetTime[CUSTOM_MAX_PLAYERS];
 
+new gFarmerDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
+new gFarmerDriverSelectedLine[CUSTOM_MAX_PLAYERS];
 new gFarmerDriverIsPassenger[CUSTOM_MAX_PLAYERS];
 new gFarmerDriverPaymentCount[CUSTOM_MAX_PLAYERS];
 new gFarmerDriverPenaltyInformed[CUSTOM_MAX_PLAYERS];
-new Float:gFarmerDriverPaymentMultiplier = 0.15;
-new gFarmerDriverLastSelectedLine;
-new gFarmerDriverJustStarted[CUSTOM_MAX_PLAYERS];
-new gFarmerDriverSelectedLine[CUSTOM_MAX_PLAYERS];
-new gFarmerDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
-new gFarmerDriverOnDuty[CUSTOM_MAX_PLAYERS];
 new gFarmerDriverCheckpointTime[CUSTOM_MAX_PLAYERS];
+new gFarmerDriverJustStarted[CUSTOM_MAX_PLAYERS];
+new gFarmerDriverOnDuty[CUSTOM_MAX_PLAYERS];
+new gFarmerDriverResetTime[CUSTOM_MAX_PLAYERS];
 
 /* Checkpoint variables */
 new gGovCheckpoint;
-new gShopCP1, gShopCP2, gShopCP3, gShopCP4, gShopCP5, gShopCP6;
-new gCShopCP1, gCShopCP2, gCShopCP3, gCShopCP4, gCShopCP5, gCShopCP6;
-new gAmmoCP1, gAmmoCP2, gAmmoCP3, gAmmoCP4;
-new gEatCP1, gEatCP2, gEatCP3, gEatCP4, gEatCP5, gEatCP6, gEatCP7, gEatCP8, gEatCP9, gEatCP10,gEatCP11;
+new gGovCheckpoint2;
+new gMedicCheckpoints[3];
+new gShopCP[SHOP_CP_COUNT];
+new gClotheShopCP[SHOP_CLOTHE_CP_COUNT];
+new gHorsesCp[2];
 
 /* Weather variables */
 new gMW_warszawa, gMW_lasvegas, gMW_sanfrancisco, gMW_losangeles;
 
 /* Speed limited areas */
-new gASanFierro, gALosSantos1, gALosSantos2, gAAngelPine, gAPalominoCreek, gAMontgomery, gABountyBay, gADilimore;
+new gASanFierro, gALosSantos1, gALosSantos2, gAAngelPine, gAPalominoCreek, gAMontgomery, gABountyBay, gADilimore, gAFortCarson, gABlueBerryFarm;
+new gALosSantos3, gALosSantos4, gALosSantos5, gALosSantos6, gALosSantos7, gALosSantos8;
 new gIsInCityAreaSpeedLimit[CUSTOM_MAX_PLAYERS] = 0;
 
 /* Other areas */
 new gArea_Molo, gArea_Pool;
 new gArea_MW_SanFierro, gArea_MW_LosSantos, gArea_MW_LasVenturas;
 new gArea_Prison1;
+new gArea_CarTest;
 
 /* Pickup variables */
 new gOfficialPickup; // official status
@@ -939,9 +1544,51 @@ new gP_Lottery; // lottery pickup
 // new Fountain3Time[MAX_PLAYERS];
 // new DestroySprinkleID[MAX_PLAYERS];
 
+/* Company panel variables */
+new gCompanyMembersToFire[CUSTOM_MAX_PLAYERS][100][MAX_PLAYER_NAME];
+new gCompanyMembersCount[CUSTOM_MAX_PLAYERS];
+
+/* Factio panel variables */
+new gFactionMembersToFire[CUSTOM_MAX_PLAYERS][100][MAX_PLAYER_NAME];
+new gFactionMembersCount[CUSTOM_MAX_PLAYERS];
+
+/* Zone creator */
+new Float:gZone1X, Float:gZone1Y, Float:gZone2X, Float:gZone2Y;
+
+/* San News Messages */
+enum gSanNewsMsgsInfo
+{
+	mId,
+	mTimeLeft,
+	mContent[255],
+	mUsed
+};
+new gSanNewsMsgs[20][gSanNewsMsgsInfo];
+new gSanNewsCurrentMsg;
+new gSanNewsTimeLeft;
+
+stock SendSanNewsMessage(message[])
+{
+	for(new i = 0; i < sizeof(gSanNewsMsgs); i++)
+	{
+		if(gSanNewsMsgs[i][mUsed])
+		{
+			continue;
+		}
+		
+		format(gSanNewsMsgs, 255, message);
+		
+		return 1;
+	}
+	return 0;
+}
+
 /* Other variables */
-new gSprinting[CUSTOM_MAX_PLAYERS]; // information for admin and cooldown
-new gJumped[CUSTOM_MAX_PLAYERS]; // how many times player jumped while walking
+new gPoliceComputerPassword[64];
+new gBackgroundAudio1[CUSTOM_MAX_PLAYERS] = -1;
+new gBackgroundAudio2[CUSTOM_MAX_PLAYERS] = -1;
+new gIsPlayerFrozen[CUSTOM_MAX_PLAYERS];
+new gWalkingDrunk[CUSTOM_MAX_PLAYERS];
 new gIsOnAShip[CUSTOM_MAX_PLAYERS] = { -1, ... };
 new gKickVoteStartCooldown[CUSTOM_MAX_PLAYERS] = { 0, ... }; // how long player must wait befor he can start next kick vote
 new gKickVotePlayerVote[CUSTOM_MAX_PLAYERS] = { 0, ... }; // vote of the players 0 - NO, 1 - YES
@@ -950,32 +1597,39 @@ new gKickVoteTimeLeft = 0; // time in which vote take place
 new gBizBoughtApproved[CUSTOM_MAX_PLAYERS] = { 0, ... };
 new gBizBoughtApprovalSendBy[CUSTOM_MAX_PLAYERS] = { -1, ... }; // who did send approval request
 new gBizBoughtApprovalID[CUSTOM_MAX_PLAYERS] = { -1, ... }; // the ID of business which will be bought by player
-new Float:gATM[4][3] = { { 1238.11 , 328.388 , 19.4655 } , { 200.729 , -62.2478 , 1.47812 } , { 1367.99 , 393.505 , 19.43 } , { 661.348 , -555.223 , 15.9359 } };
 new gFirstTime[CUSTOM_MAX_PLAYERS];
 new gVehPosCheckCooldown[CUSTOM_MAX_PLAYERS];
 new gReportCooldown; // cooldown before next report
 new gVipReduceOn = 1; // if equals 1 will reduce vip time left for player in payday
 new Float:gStartSpawnX, Float:gStartSpawnY, Float:gStartSpawnZ, gStartMoney, gStartBank, gStartSkin;
-new gPasswd[CUSTOM_MAX_PLAYERS][64]; // onplayerlogin passwords
-new Text:gBlackBox; // used for fade out player when BW
+new gPasswd[CUSTOM_MAX_PLAYERS][145]; // onplayerlogin passwords
 new gWFactoryGunCreating[CUSTOM_MAX_PLAYERS] = 0; // id itema broni/czesci jaka gracz bedzie montowal
 new gTGunIDLastCD[CUSTOM_MAX_PLAYERS] = 0; // cool down
 new gTGunIDLast[CUSTOM_MAX_PLAYERS] = 0;
 new gTGunID = 0; // do zapisu broni w OnPlayerUpdate
 new gTGunAmmo = 0; // do zapisu broni w OnPlayerUpdate
 new gJustDropped[CUSTOM_MAX_PLAYERS]; // przed chwila wyrzucil item ze schowka
-new gBuyBusiness[CUSTOM_MAX_PLAYERS]; // z ktorego biznesu poszla komenda /kup
+new gBuyBusinessID[CUSTOM_MAX_PLAYERS]; // z ktorego biznesu poszla komenda /kup
+new gBuyBusinessItemListID[CUSTOM_MAX_PLAYERS]; // ktora lista itemow zostala wybrana
+new gBuyBusinessItemSellCount[CUSTOM_MAX_PLAYERS]; // ile itemow na sprzedaz
+new gBuyItemFactoryID[CUSTOM_MAX_PLAYERS]; // z ktorej fabryki gracz kupuje itemy
+new gBuyItemFactoryVehID[CUSTOM_MAX_PLAYERS]; // z jakiego pojazdu gracz kupuje itemy
+new gBuyItemFactoryItemCount[CUSTOM_MAX_PLAYERS]; // ile itemów ma zamiar kupiæ
 new gLoginOn = 1;
 // new Float:gWeight; // waga danego itemu
 new gCalledCompany[CUSTOM_MAX_PLAYERS] = 255; // biznes obslugujacy polaczenie
 new gCallCost[CUSTOM_MAX_PLAYERS]; // koszt polaczenia telefonicznego
+new gCallFreeMins[CUSTOM_MAX_PLAYERS]; // ilosc pozostalych darmowych minut z konkretnego polaczenia
+new gCallDataReceived[CUSTOM_MAX_PLAYERS] = {1, ...}; // czy uzyskano dane z bazy - ma zapobiec desynchronizacji
 new gTransferCoolDown[CUSTOM_MAX_PLAYERS]; // cool down do /przekaz
 // new gAdminAudio[CUSTOM_MAX_PLAYERS][5];
 new gDSelectedHItemHouse[CUSTOM_MAX_PLAYERS]; // id domu z itemami
 new gDSelectedVItemVID[CUSTOM_MAX_PLAYERS]; // id pojazdu z itemami
+new gDSelectedVItemVTSpace[CUSTOM_MAX_PLAYERS]; // sloty baga¿nika pojazdu z itemami
 new gDSelectedVItemSlot[CUSTOM_MAX_PLAYERS]; // id slotu
 new gDSelectedHItem[CUSTOM_MAX_PLAYERS]; // slot wybrany przez dialog - itemy domowe
 new gSendingPlayer[CUSTOM_MAX_PLAYERS]; // player offering player to receive item
+new gSendingCount[CUSTOM_MAX_PLAYERS]; // how much items to transfer
 new gOverSpeed[CUSTOM_MAX_PLAYERS]; // ile razy w czasie testu na prawko przekroczyl predkosc
 new gTryCoolDown[CUSTOM_MAX_PLAYERS]; // cooldownd komendy /proba
 new gAdminGodMode[CUSTOM_MAX_PLAYERS];
@@ -987,9 +1641,18 @@ new gSelectedNumberID[CUSTOM_MAX_PLAYERS];
 new gSelectedNumber[CUSTOM_MAX_PLAYERS];
 new gSelectedSlot[CUSTOM_MAX_PLAYERS];
 new gPreviousDialogList[CUSTOM_MAX_PLAYERS] = { -1 };
+new gIsAntiBH = 1;
+new Text3D:playerAFK[CUSTOM_MAX_PLAYERS];
+
+/*
+* Used to switch betweene dialogs maintaning selected option and containing some data
+*/
 new gListItem[CUSTOM_MAX_PLAYERS];
-new gListOverItem[CUSTOM_MAX_PLAYERS] = -1; // overwrite gListItem value;
+new gListOverItem[CUSTOM_MAX_PLAYERS] = -1;
+new gDialogValue[CUSTOM_MAX_PLAYERS] = 0;
+
 new gRandNumber[CUSTOM_MAX_PLAYERS];
+new gRandSimNumber[CUSTOM_MAX_PLAYERS];
 new gPhoneC[CUSTOM_MAX_PLAYERS];
 new AccountantCost[CUSTOM_MAX_PLAYERS];
 new AccountantOffer[CUSTOM_MAX_PLAYERS] = 999;
@@ -1001,8 +1664,19 @@ new gSaveReady = 0;
 new houseSource = 1; // 0 - deprecated (file), 1 (database)
 new gPayDayLoop = 0; // actual round of payday check
 new gPayDayCount = 0; // how many player payday will pass
-new Text:GPSText[CUSTOM_MAX_PLAYERS] = {Text:INVALID_TEXT_DRAW,...};
+new Text:gPayDayText = Text:INVALID_TEXT_DRAW;
+new Text:gPhoneCall = Text:INVALID_TEXT_DRAW;
+new Text:gPhoneText = Text:INVALID_TEXT_DRAW;
+new Text:gHealthTextEnergy = Text:INVALID_TEXT_DRAW;
+new Text:gTextTime = Text:INVALID_TEXT_DRAW;
+// new Text:gTextDate = Text:INVALID_TEXT_DRAW;
+new gPhoneCallShowed[CUSTOM_MAX_PLAYERS] = 0;
+new gPhoneTextShowed[CUSTOM_MAX_PLAYERS] = 0;
+new gPhoneTextBlinking[CUSTOM_MAX_PLAYERS] = 0;
+new gPhoneTextReceived[CUSTOM_MAX_PLAYERS] = 0;
+new Text:EatText[CUSTOM_MAX_PLAYERS] = {Text:INVALID_TEXT_DRAW,...};
 new Text:GangWar[CUSTOM_MAX_PLAYERS];
+new Text:GangWarTime[CUSTOM_MAX_PLAYERS];
 new Text:CameraFront[CUSTOM_MAX_PLAYERS];
 new Text:CameraPos[CUSTOM_MAX_PLAYERS];
 new Text:Angle2[CUSTOM_MAX_PLAYERS];
@@ -1011,28 +1685,17 @@ new Float:pDrugsUsedStartArmour[CUSTOM_MAX_PLAYERS]; // pancerz gracza przed uzy
 new PlayerWrittingAnything[CUSTOM_MAX_PLAYERS];
 new Bar:JobProgress[CUSTOM_MAX_PLAYERS];
 new KilledWithWeapon[CUSTOM_MAX_PLAYERS];
-new Menu:przewodnik;
-new Menu:prace;
-new Menu:prace2;
-new Menu:licencje;
 new IncommingCall[CUSTOM_MAX_PLAYERS];
-new IsFile[CUSTOM_MAX_PLAYERS];
-new PlayerPassword[CUSTOM_MAX_PLAYERS][128];
 new ZonesCreated[CUSTOM_MAX_PLAYERS];
-new PlayerRacePlace[CUSTOM_MAX_PLAYERS];
-new RacePlace;
 new ReadyToSave = 0;
-new gDSelectedItemP5[CUSTOM_MAX_PLAYERS];
+new gDSelectedItemP5[CUSTOM_MAX_PLAYERS+1][64];
 new CarKey1LVL = 2;
 new AirKeyLVL = 15;
 new BoatKeyLVL = 15;
-// new LastEat[CUSTOM_MAX_PLAYERS];
 new LastDrug[CUSTOM_MAX_PLAYERS];
-new gunGiven[CUSTOM_MAX_PLAYERS]; // /dajbron
 new DyingPlayerKillTime[CUSTOM_MAX_PLAYERS];
 new EnteredVehicleID[CUSTOM_MAX_PLAYERS];
 new IsCarJackerOpening[CUSTOM_MAX_PLAYERS];
-new randomlock[CUSTOM_MAX_PLAYERS];
 new MoloSequence[CUSTOM_MAX_PLAYERS] = 255;
 new PoolSequence[CUSTOM_MAX_PLAYERS] = 255;
 new AudioReady[CUSTOM_MAX_PLAYERS] = 0;
@@ -1050,32 +1713,17 @@ new VipAFKActive[CUSTOM_MAX_PLAYERS];
 new Float:LifeDecreaserTmpHP;
 new CurrentInformationTmp;
 new CurrentInformation;
-new VehicleStatusShow[CUSTOM_MAX_PLAYERS];
-new Text:VehicleStatus[CUSTOM_MAX_PLAYERS]; // dolny pasek statusu pojazdu
+new gAHeartBeat;
+new gABreath;
 new PlayerStatusCreated[CUSTOM_MAX_PLAYERS];
 new PlayerStatusShowed[CUSTOM_MAX_PLAYERS] = 1;
-new Text:PlayerStatus[CUSTOM_MAX_PLAYERS]; // dolny pasek statusu gracza
-new RaceTimeM[CUSTOM_MAX_PLAYERS];
-new RaceTimeS[CUSTOM_MAX_PLAYERS];
-new RaceCountDownTime = 300; // 5 minut
-new RaceID = 255; // id wyscigu
-new RaceStarted; // odliczani zakonczone, rozpoczeto wyscig
-new StartRaceCountDown; // rozpoczecie odliczania
-new RaceDrivers[CUSTOM_MAX_PLAYERS][MAX_PLAYER_NAME]; // lista kierowcow
-new RaceDriversID[CUSTOM_MAX_PLAYERS];
-new RacePrize; // pula
-new RaceDriversCount; // liczba kierowcow
-new RaceOrganizator[MAX_PLAYER_NAME]; // organizator wyscigu
-new IsAnyRaceStarted; // czy obecnie trwa jakis wyscig
-new gangZoneID[15];
-new gangZoneIDtmp;
+new PlayerText:PlayerStatus[CUSTOM_MAX_PLAYERS]; // dolny pasek statusu gracza
 new gangZoneLoaded[CUSTOM_MAX_PLAYERS];
-new gpsOn[CUSTOM_MAX_PLAYERS];
 new AngleOn[CUSTOM_MAX_PLAYERS];
 new Camera1On[CUSTOM_MAX_PLAYERS];
 new Camera2On[CUSTOM_MAX_PLAYERS];
 new IsPlayerTaxiPassenger[CUSTOM_MAX_PLAYERS];
-new Distance[CUSTOM_MAX_PLAYERS];
+new gTaxiPassengerDistance[CUSTOM_MAX_PLAYERS];
 new CheckDelay[CUSTOM_MAX_PLAYERS];
 new Alive[CUSTOM_MAX_PLAYERS];
 new Text:Status[CUSTOM_MAX_PLAYERS];
@@ -1085,152 +1733,115 @@ new EngineTurningOn[CUSTOM_MAX_PLAYERS];
 new noooc = 0;
 new nofooc = 0;
 new nopwooc = 0;
-// new Text:title; // napis www
 new gMainGateZomo[2];
 new gSpectateID[CUSTOM_MAX_PLAYERS] = { INVALID_PLAYER_ID, ... };
 new gSpectateType[CUSTOM_MAX_PLAYERS];
 new NewbieTime[CUSTOM_MAX_PLAYERS];
 new nonewbie = 0;
 new gDice[CUSTOM_MAX_PLAYERS];
-new ScriptMoneyUpdated[CUSTOM_MAX_PLAYERS];
-new ScriptMoney[CUSTOM_MAX_PLAYERS];
 new ReduceTime[CUSTOM_MAX_PLAYERS];
 new GuardOffer[CUSTOM_MAX_PLAYERS];
 new GuardPrice[CUSTOM_MAX_PLAYERS];
 new Float:PlayerPos[CUSTOM_MAX_PLAYERS][6];
-// new InRing = 0;
-// new RoundStarted = 0;
-// new BoxDelay = 0;
-// new Boxer1 = 255;
-// new Boxer2 = 255;
-// new TBoxer = 255;
-// new BoxWaitTime[CUSTOM_MAX_PLAYERS];
-// new PlayerBoxing[CUSTOM_MAX_PLAYERS];
-// new BoxOffer[CUSTOM_MAX_PLAYERS];
 new JustDied[CUSTOM_MAX_PLAYERS];
-new KnockedDown[CUSTOM_MAX_PLAYERS];
-new PlayerNeedsHelp[CUSTOM_MAX_PLAYERS];
-new Text:Textdraw0;
-new Text:Textdraw1;
 new gOOC[CUSTOM_MAX_PLAYERS] = 1;
 new gPlayerLogged[CUSTOM_MAX_PLAYERS];
 new realchat = 1;
 new BigEar[CUSTOM_MAX_PLAYERS];
-new levelexp = 3;
 new RegistrationStep[CUSTOM_MAX_PLAYERS];
-new TakingDrivingTest[CUSTOM_MAX_PLAYERS];
+new TakingDrivingTestA[CUSTOM_MAX_PLAYERS];
+new TakingDrivingTestB[CUSTOM_MAX_PLAYERS];
+new TakingDrivingTestCE[CUSTOM_MAX_PLAYERS];
 new DrivingTestStep[CUSTOM_MAX_PLAYERS];
 new SpawnAttempts[CUSTOM_MAX_PLAYERS];
 new FactionRequest[CUSTOM_MAX_PLAYERS];//Where information will be stored regarding faction invites.
-// new Fuel[MAX_VEHICLES];//Fuel Information
-// new EngineStatus[MAX_VEHICLES];
+new CompanyRequest[CUSTOM_MAX_PLAYERS];
 new ShowFuel[CUSTOM_MAX_PLAYERS];
-new Mobile[CUSTOM_MAX_PLAYERS]; //Mobile Phone information will be stored here.
+new Mobile[CUSTOM_MAX_PLAYERS] = {255, ...}; //Mobile Phone information will be stored here.
 new Muted[CUSTOM_MAX_PLAYERS];
 new StartedCall[CUSTOM_MAX_PLAYERS];
 new SpeakerPhone[CUSTOM_MAX_PLAYERS];
 new gAddCooldown[CUSTOM_MAX_PLAYERS];
 new OOCStatus = 0;
 new AdminDuty[CUSTOM_MAX_PLAYERS];
-new VehicleLockedPlayer[CUSTOM_MAX_PLAYERS];
-new WantedPoints[CUSTOM_MAX_PLAYERS];
-new CarWindowStatus[MAX_VEHICLES];
+new CarWindowStatus[MAX_VEHICLES] = 1;
 new WantedLevel[CUSTOM_MAX_PLAYERS];
 new PlayerCuffed[CUSTOM_MAX_PLAYERS];
 new PlayerTazed[CUSTOM_MAX_PLAYERS];
-new TicketOffer[CUSTOM_MAX_PLAYERS];
-new TicketMoney[CUSTOM_MAX_PLAYERS];
-new MatsHolding[CUSTOM_MAX_PLAYERS];
 new DrugsHolding[CUSTOM_MAX_PLAYERS];
 new DrugsIntake[CUSTOM_MAX_PLAYERS];
 new TrackingPlayer[CUSTOM_MAX_PLAYERS];
 new ProductsOffer[CUSTOM_MAX_PLAYERS];
 new ProductsAmount[CUSTOM_MAX_PLAYERS];
 new ProductsCost[CUSTOM_MAX_PLAYERS];
-new pdgate1a;
-new pdgate1b;
-new pdgate2a, pdgate2b, pdgate2c, pdgate2d;
-new HQ;
-new HQ2;
-new bramawojsko1;
-new bramawojsko2;
-new bramawojsko3;
-new bramataxi1;
-new bramataxi2;
-new slums;
-new zomo1;
-new zomo2;
-new mostpol1;
-new mostpol2;
-new mostpol3;
-new mostpol4;
-new Float:MoveCameraAngle[CUSTOM_MAX_PLAYERS]; // used for MoveCamera to set apropriate angle
+new gActiveEventList[CUSTOM_MAX_PLAYERS][10];
+new gPaydayLaunched = 0;
 
 new cenyPojazdow[212] = {
-85000, //400
-15000, //401
-540000, //402
-1500000, //403
-11000, //404
-30000, //405
-2000000, //406
-1300000, //407
-430000, //408
-560000, //409
-20000, //410
-720000, //411
-24000, //412
-50005, //413
-65000, //414
-850001, //415
-140000, //416
-1200000, //417
-50000, //418
-32000, //419
-43000, //420
-33000, //421
-34000, //422
-70000, //423
-760000, //424
-50000000, //425
-25000, //426
-440000, //427
-400000, //428
-790000, //429
-120000, //430
-660000, //431
-10000000, //432
-640000, //433
-71000, //434
-0, //435
-19000, //436
-680000, //437
-43000, //438
-65000, //439
-55000, //440
-0, //441
-150000, //442
-250000, //443
-420000, //444
-30000, //445
-1200000, //446
-0, //447
-3000, //448
-0, //449
-0, //450
-820000, //451
-600000, //452
-900000, //453
-1100000, //454
-380000, //455
-100000, //456
+75000,//400 - Landstalker
+15000,//401 - Bravura
+207000,//402 - Buffalo
+105000,//403 Linerunner
+7000,//404 - Perenniel
+35000,//405 - Sentinel
+200000,//406 - Dumper
+130000,//407 - Firetruck
+430000,//408 - Trashmaster
+560000,//409 - Stretch
+12000,//410 - Manana
+320000,//411 - Infernus
+24000,//412 - Voodoo
+50005,//413 - Pony
+81500,//414 - Mule
+850001,//415 - Cheetah
+140000,//416 - Ambulance
+1200000,//417 -Leviathan
+40000,//418 - Moonbeam
+29500,//419 - Esperanto
+33000,//420 - Taxi
+33000,//421 - Washington
+39990,//422 - Bobcat
+70000,//423 - Mr Whoopee
+76000,//424 - BF Injection
+0,//425 - Hunter
+22000,//426 - Premier
+440000,//427 - Enforcer
+400000,//428 - Securicar
+790000,//429 - Banshee
+120000,//430 - Predator
+660000,//431 - Bus
+0,//432 - Rhino
+640000,//433 - Barracks
+71000,//434 - Hotknife
+50000,//435 - Article Trailer
+18000,//436 - Previon
+680000,//437 - Coach
+33000,//438 - Cabbie
+45000,//439 - Stallion
+55000,//440 - Rumpo
+0,//441 - RC Bandit
+150000,//442 - Romero
+250000,//443 - Packer
+420000,//444 - Monster
+200000,//445 - Admiral
+120000,//446 - Squallo
+0,//447 - Seasparrow
+1000,//448 - Pizzaboy
+0,//449 - Tram
+0,//450 - Article Trailer 2
+820000, //451 Turismo
+600000, //452 Speeder
+900000, //453 Reefer
+1100000, //454 Tropic
+250900, //455 tran 15 slot
+80050, //456 tran 15 slot
 5000, //457
 28000, //458
-24000, //459
+45000, //459 trans 13 slotow
 900000, //460
-15000, //461
-3000, //462
-20000, //463
+10000, //461
+1000, //462
+15000, //463
 0, //464
 0, //465
 25000, //466
@@ -1238,20 +1849,20 @@ new cenyPojazdow[212] = {
 11000, //468
 200000, //469
 800000, //470
-22000, //471
+12000, //471
 100000, //472
 60000, //473
 21000, //474
 44000, //475
 1350000, //476
 730000, //477
-25000, //478
-45000, //479
+4500, //478
+20000, //479
 690000, //480
-900, //481
-55000, //482
+250, //481
+55000, //482 tran 13 slot
 70000, //483
-1220000, //484
+122000, //484
 10500, //485
 0, //486
 820000, //487
@@ -1260,45 +1871,45 @@ new cenyPojazdow[212] = {
 200000, //490
 21000, //491
 24000, //492
-1350000, //493
-900000, //494
+350000, //493
+350000, //494
 200000, //495
 40999, //496
 400000, //497
-50000, //498
-60000, //499
-70000, //500
+41000, //498 tran 12 slot
+75000, //499 tran 15 slot
+65000, //500
 0, //501
-1000000, //502
-1000000, //503
-900000, //504
-77999, //505
+350000, //502
+350000, //503
+350000, //504
+74999, //505
 780000, //506
 34000, //507
 200000, //508
-120, //509
-1200, //510
+250, //509
+350, //510
 400000, //511
 300000, //512
 990000, //513
-280000, //514
-350000, //515
+150000, //514 tir 4 slot
+140000, //515 tir 4 slot
 35000, //516
 20500, //517
 19500, //518
 1800000, //519
-8000000, //520
-80000, //521
-90999, //522
-82000, //523
+0, //520
+30000, //521 FCR 900
+45000, //522 NRG
+60500, //523
 620000, //524
-140000, //525
-28000, //526
-25000, //527
+101500, //525
+23000, //526
+19000, //527
 600000, //528
 23200, //529
 5000, //530
-30000, //531
+1000, //531
 215001, //532
 52000, //533
 32000, //534
@@ -1307,21 +1918,21 @@ new cenyPojazdow[212] = {
 0, //537
 0, //538
 130000, //539
-21000, //540
+19000, //540
 800000, //541
-33000, //542
-80000, //543
+12000, //542
+18000, //543 tran 7 slot
 740000, //544
 200000, //545
-22200, //546
+14000, //546
 10199, //547
 1000000, //548
-30000, //549
-24100, //550
-32000, //551
-32000, //552
+8500, //549
+22500, //550
+25000, //551
+29000, //552
 600000, //553
-78000, //554
+41999, //554 tran 13 slot
 300000, //555
 500000, //556
 500000, //557
@@ -1333,9 +1944,9 @@ new cenyPojazdow[212] = {
 1000000, //563
 0, //564
 150000, //565
-34000, //566
+27000, //566
 30000, //567
-80000, //568
+55000, //568
 0, //569
 0, //570
 55000, //571
@@ -1346,11 +1957,11 @@ new cenyPojazdow[212] = {
 18000, //576
 0, //577
 160000, //578
-89000, //579
+71999, //579
 20000, //580
-70000, //581
+25000, //581 BF-400
 90000, //582
-14000, //583
+5000, //583
 150000, //584
 22000, //585
 45000, //586
@@ -1363,323 +1974,28 @@ new cenyPojazdow[212] = {
 890000, //593
 0, //594
 590000, //595
-100000, //596
-100000, //597
-100000, //598
-150000, //599
-30000, //600
-500000,  //601
+90000, //596
+90000, //597
+90000, //598
+85000, //599
+16000, //600
+500000, //601
 690000, //602
 710000, //603
-10000, //604
-10000, //605
+1000, //604
+1000, //605
 0, //606
 0, //607
 0, //608
-66000, //609
+55555, //609 tran 13 slot
 0, //610
 0 //611
 };
 
-new nazwypojazdow[212][32] = { 
-"Landstalker", 
-"Bravura", 
-"Buffalo", 
-"Linerunner", 
-"Pereniel", 
-"Sentinel", 
-"Dumper", 
-"Firetruck", 
-"Trashmaster", 
-"Stretch", 
-"Manana", 
-"Infernus", 
-"Voodoo", 
-"Pony", 
-"Mule", 
-"Cheetah", 
-"Ambulance", 
-"Leviathan", 
-"Moonbeam", 
-"Esperanto", 
-"Taxi", 
-"Washington", 
-"Bobcat", 
-"Mr Whoopee", 
-"BF Injection", 
-"Hunter", 
-"Premier", 
-"Enforcer", 
-"Securicar", 
-"Banshee", 
-"Predator", 
-"Bus", 
-"Rhino", 
-"Barracks", 
-"Hotknife", 
-"Trailer", 
-"Previon", 
-"Coach", 
-"Cabbie", 
-"Stallion", 
-"Rumpo", 
-"RC Bandit", 
-"Romero", 
-"Packer", 
-"Monster", 
-"Admiral", 
-"Squalo", 
-"Seasparrow", 
-"Pizzaboy", 
-"Tram", 
-"Trailer", 
-"Turismo", 
-"Speeder", 
-"Reefer", 
-"Tropic", 
-"Flatbed", 
-"Yankee", 
-"Caddy", 
-"Solair", 
-"Berkley's RC Van", 
-"Skimmer", 
-"PCJ-600", 
-"Faggio", 
-"Freeway", 
-"RC Baron", 
-"RC Raider", 
-"Glendale", 
-"Oceanic", 
-"Sanchez", 
-"Sparrow", 
-"Patriot", 
-"Quad", 
-"Coastguard", 
-"Dinghy", 
-"Hermes", 
-"Sabre", 
-"Rustler", 
-"ZR3 50", 
-"Walton", 
-"Regina", 
-"Comet", 
-"BMX", 
-"Burrito", 
-"Camper", 
-"Marquis", 
-"Baggage", 
-"Dozer", 
-"Maverick", 
-"News Chopper", 
-"Rancher", 
-"FBI Rancher", 
-"Virgo", 
-"Greenwood", 
-"Jetmax", 
-"Hotring", 
-"Sandking", 
-"Blista Compact", 
-"Policyjny Maverick", 
-"Boxville", 
-"Benson", 
-"Mesa", 
-"RC Goblin", 
-"Hotring Racer", 
-"Hotring Racer", 
-"Bloodring Banger", 
-"Rancher", 
-"Super GT", 
-"Elegant", 
-"Journey", 
-"Bike", 
-"Mountain Bike", 
-"Beagle", 
-"Cropdust", 
-"Stunt", 
-"Tanker", 
-"RoadTrain", 
-"Nebula", 
-"Majestic", 
-"Buccaneer", 
-"Shamal", 
-"Hydra", 
-"FCR-900", 
-"NRG-500", 
-"HPV1000", 
-"Cement Truck", 
-"Tow Truck", 
-"Fortune", 
-"Cadrona", 
-"Woz FBI", 
-"Willard", 
-"Forklift", 
-"Tractor", 
-"Combine", 
-"Feltzer", 
-"Remington", 
-"Slamvan", 
-"Blade", 
-"Freight", 
-"Streak", 
-"Vortex", 
-"Vincent", 
-"Bullet", 
-"Clover", 
-"Sadler", 
-"Firetruck", 
-"Hustler", 
-"Intruder", 
-"Primo", 
-"Cargobob", 
-"Tampa", 
-"Sunrise", 
-"Merit", 
-"Utility", 
-"Nevada", 
-"Yosemite", 
-"Windsor", 
-"Monster", 
-"Monster", 
-"Uranus", 
-"Jester", 
-"Sultan", 
-"Stratum", 
-"Elegy", 
-"Raindance", 
-"RC Tiger", 
-"Flash", 
-"Tahoma", 
-"Savanna", 
-"Bandito", 
-"Freight", 
-"Trailer", 
-"Kart", 
-"Mower", 
-"Duneride", 
-"Sweeper", 
-"Broadway", 
-"Tornado", 
-"AT-400", 
-"DFT-30", 
-"Huntley", 
-"Stafford", 
-"BF-400", 
-"Newsvan", 
-"Tug", 
-"Trailer", 
-"Emperor", 
-"Wayfarer", 
-"Euros", 
-"Hotdog", 
-"Club", 
-"Trailer", 
-"Trailer", 
-"Andromeda", 
-"Dodo", 
-"RC Cam", 
-"Launch", 
-"Radiowoz", 
-"Radiowoz", 
-"Radiowoz", 
-"Policyjny Ranger", 
-"Picador", 
-"S.W.A.T. Van", 
-"Alpha", 
-"Phoenix", 
-"Glendale", 
-"Sadler", 
-"Luggage Trailer", 
-"Luggage Trailer", 
-"Stair Trailer", 
-"Boxville", 
-"Farm Plow", 
-"Utility Trailer" 
-};
-
-
-/*
-new dachyk1;
-new dachyk2;
-new dachyk9;
-new dachyk3;
-new dachyk4;
-new dachyk5;
-new dachyk6;
-new dachyk7;
-new dachyk8;
-new dachvla3;
-new dachvla4;
-new dachvla5;
-new dachvla6;
-new dachvla7;
-new dachvla8;
-new dachvla9;
-new dachvla10;
-new dachvla11;
-new dachvla12;
-new dachvla13;
-new dachvla14;
-new dachvla15;
-new dachvla16;
-new dachcza1;
-new dachcza2;
-new dachcza3;
-new dachcza4;
-new dachcza5;
-new dachcza6;
-new dachcza7;
-new dachcza8;
-new dachcza9;
-new dachcza10;
-new dachcza11;
-new dachcza12;
-new dachcza13;
-new dachcza14;
-new dachcza15;
-new dachcza16;
-new dachcza17;
-new dachcza18;
-new dachcza19;
-new dachcza20;
-new dachcza21;
-new dachcza22;
-new dachcza23;
-new dachcza24;
-new dachcza25;
-new dachcza26;
-new dachcza27;
-new dachcza28;
-new dachcza29;
-new dachcza30;
-new dachcza31;
-new dachcza32;
-new dachcza33;
-new dachcza34;
-new dachcza35;
-new dachcza36;
-new dachcza37;
-new dachcza38;
-new dachcza39;
-new dachcza40;
-new dachcza41;
-new dachcza42;
-new dachcza43;
-new dachcza44;
-new dachcza45;
-new dachcza46;
-new dachcza47;
-new dachcza48;
-new dachcza49;
-new dachcza50;
-new dachcza51;
-new dachcza52;
-new dachcza53;
-*/
-//=========================================================================================
-//=================================[ENUMS]=================================================
-
 enum pInfo
 {
+	pIsNPC,
+	pLoading,
 	pKey[128],
 	pName[64],
 	pLevel,
@@ -1697,12 +2013,16 @@ enum pInfo
 	pExp,
 	pCash,
 	pBank,
+	pBankOld,
+	pBankNew,
+	pBankIncome,
+	pBankLoose,
+	pPayDayMessage,
 	pSkin,
 	pDrugs,
 	pDrugsEffect,
 	pDrugsTaken,
 	pDrugsAddicted,
-	pMaterials,
 	pJob,
 	pJobTimeChange,
 	pSeatBelt,
@@ -1729,8 +2049,8 @@ enum pInfo
 	pSkillPointsM4,
 	pSkillPointsSni,
 	pPozwolenie,
-	pAng,
-	pWf,
+	pTech,
+	pLaw,
 	pMat,
 	pPol,
 	pHis,
@@ -1740,8 +2060,8 @@ enum pInfo
 	pMagister,
 	pInz,
 	pDowod,
-	pPktAng,
-	pPktWf,
+	pPktTech,
+	pPktLaw,
 	pPktMat,
 	pPktPol,
 	pPktHis,
@@ -1764,45 +2084,20 @@ enum pInfo
 	pAllowedPayday,
 	pPayCheck,
 	pFaction,
+	pFaction2,
 	pRank,
-	pHouseKey,
-	pCarKey1,
-	pCar1OC,
-	pCar1OCValue,
-	pCar1AC,
-	pCar1ACValue,
-	pCarKey2,
-	pCar2OC,
-	pCar2OCValue,
-	pCar2AC,
-	pCar2ACValue,
-	pCarKey3,
-	pCar3OC,
-	pCar3OCValue,
-	pCar3AC,
-	pCar3ACValue,
-	pBoatKey,
-	pBoatOC,
-	pBoatOCValue,
-	pBoatAC,
-	pBoatACValue,
-	pHeliKey,
-	pHeliOC,
-	pHeliOCValue,
-	pHeliAC,
-	pHeliACValue,
-	pPlaneKey,
-	pPlaneOC,
-	pPlaneOCValue,
-	pPlaneAC,
-	pPlaneACValue,
+	pRank2,
 	pBizKey,
 	pBanned,
 	pWarnings,
-	pCarLic,
 	pBoatLic,
-	pFlyLic,
+	pPlaneLic,
+	pHeliLic,
 	pWepLic,
+	pTestAreaTimeLeft, // How much bought time left (minutes) player have in test driving area
+	pPenaltyPointsA,
+	pPenaltyPointsB,
+	pPenaltyPointsCE,
 	pPhoneC,//Phone Company (Business ID)
 	pPhoneBook,
 	pListNumber,
@@ -1833,12 +2128,13 @@ enum pInfo
 	pNote5s,
 	pInvWeapon,
 	pInvAmmo,
-	pTutorial,
 	pModerator,
+	pQuiz,
+	pSetToDelete,
+	pIsOnVacation,
 	pGoggles,
 	pCost,
 	pTicket,
-	pGPS,
 	pWantedLvl,
 	pItem1,
 	pItem2,
@@ -2040,10 +2336,10 @@ enum pInfo
 	pItem23param6,
 	pItem24param6,
 	pItem25param6,
-	JemmyUses,
 	pCharacterDeath,
 	pCharacterDying,
 	Float:pHP,
+	Float:pArmour,
 	bool:SpawnDance,
 	Float:SpawnAngle,
 	SpawnTimer,
@@ -2068,6 +2364,9 @@ enum pInfo
 	pFirstStats,	
 	pFirstJail,
 	pFirstStudy,
+	pAchieveTickets,
+	pAchieveArrests,
+	pAchieveDistance,
 	Float:pCrashAngle,
 	pDuty,
 	pWSlot0,
@@ -2084,6 +2383,18 @@ enum pInfo
 	pWSlot5Ammo,
 	pWSlot6,
 	pWSlot6Ammo,
+	pWSlot7,
+	pWSlot7Ammo,
+	pWSlot8,
+	pWSlot8Ammo,
+	pWSlot9,
+	pWSlot9Ammo,
+	pWSlot10,
+	pWSlot10Ammo,
+	pWSlot11,
+	pWSlot11Ammo,
+	pWSlot12,
+	pWSlot12Ammo,
 	pJoinedFaction,
 	pHoursOnDutyHelper,
 	pHoursOnDuty,
@@ -2091,7 +2402,9 @@ enum pInfo
 	pDeathCount,
 	pScore,
 	pMechanicCoolDown,
-	pFirstCarTest,
+	pFirstATest,
+	pFirstBTest,
+	pFirstCETest,
 	pMaxWeight, // used or not ?
 	pPartType, // what player will made from parts ( 0 - null, 1 - weapon, 2 - main part, 3 - ammo )
 	pPartItem, // id of what player will made
@@ -2115,50 +2428,198 @@ enum pInfo
 	pVipYellowNeon,
 	pVipPinkNeon,
 	pVipWhiteNeon,
+	pVipHalogenLight,
+	pVipWhitePointLight,
+	pVipRedPointLight,
+	pVipGreenPointLight,
+	pVipBluePointLight,
 	pPWStatus, // is PW for player ON
 	pOOCStatus, // is OOC for player ON
+	pJoinInfoStatus, // is info for player when other player join server ON
+	pLeaveInfoStatus, // is info for player when other player leave server ON
+	pTipsStatus, // is tips for player ON
+	pBackgroundSoundStatus, // is backgroud sound for player ON
 	pWarnCooldown, // paydays before warn gone
 	pSpeedLimiter,
 	pLawyerLvl,
 	pLawyerPts,
 	Float:pHunger, // 0 -100
+	Float:pThirst, // 0 -100
+	Float:pPoison, // 0 -100
+	Float:pFat, // 0 -100
+	Float:pStomach, // 0 -100
+	Float:pVitamins, // 0 -100	
+	Float:pEnergy, // 0 -100
+	Float:pDrunk, // 0 -100
+	Float:pNarcotic, // 0 -100
 	Bar:pHungerProgressBarID,
+	Bar:pThirstProgressBarID,
+	Bar:pPoisonProgressBarID,
+	Bar:pFatProgressBarID,
+	Bar:pStomachProgressBarID,
+	Bar:pVitaminsProgressBarID,
+	Bar:pEnergyProgressBarID,
+	Bar:pDrunkProgressBarID,
+	Bar:pNarcoticProgressBarID,
+	pShowHealthBars,
 	pVipCustomObjects, // how much objects slot player can use
 	Text3D:pCharDescriptionID, // 3D Text label of player character description
+	Text3D:pCharNameID, // 3D Text label of player character name
 	pCharDescription[64], // character description displaying above character
-	pCharDescriptionColor,  // color of text
+	pCharDescriptionColor[32],  // color of text
 	pSubMealEaten, // how many snacks, candys, etc. player eated betweene main meal
 	pIsDeptor, // is player in debt ?
 	pLastLogged, // is player logged after last payday ?
+	pOOCChanell, // in what chanel player is - 0 is main/default
+	pNewVersion, // if new version is uploaded player will be informed about new changes
+	pPainKiller, // is pain killer activated and how much time is left (min)
+	pSlimming, // is slimming tab active and how much time is left (min)
+	pStomachDrops, // is stomach drops used, how many times, decrease after 1 hour
+	pMapIcons[MAX_BUSINESSES+MAX_BUILDINGS], // ids of icons
+	mPickupEventPickupStatus[sizeof(gPickupEventData)],
+	mPickupEventID,
+	mPickupEventRewardReceived,
+	mCreditRepayment,
+	mCreditValue,
+	mCreditPayed,
+	robbingHouseStage,
+	pHighSchool,
+	pSchoolCooldown,
+	mBroadCastMessages,
+	pIsLogged
 };
 new gPlayerData[CUSTOM_MAX_PLAYERS+1][pInfo];
 
-enum Zones
+enum playerVars
 {
-	Float:zMin_X,
-	Float:zMin_Y,
-	Float:zMax_X,
-	Float:zMax_Y,
-	zFaction,
+	lPoliceComputerPID,
+	lPoliceComputerPCat,
+	lPoliceComputerPName[MAX_PLAYER_NAME],
+	mHealID,
+	mExamineID,
+	mAntiCheatTimer,
+	mPlayerControllable,
+	mAtHouseID,
+	mAtBuildingId,
+	mAtBizID,
+	mAtCamperId,
+	mPhoneSimID,																// sim ID
+	mPhoneDataReceived, 												// czy uzyskano dane z bazy - ma zapobiec desynchronizacji
+	mPhoneDataTimeout, 													// czy uzyskano dane z bazy - ma zapobiec desynchronizacji
+	mPhoneType, 																	// sim type - prepaid or fee
+	mPhoneFaction,
+	mPhoneCash,																	// prepaid cash left
+	mPhoneRenewalTime,													// prepaid time left
+	mPhoneNr,
+	mGlobalSms[256],															// used to contain sms for all players
+	mGlobalSmsSenderNumber,
+	mPickupEventPickups[sizeof(gPickupEventData)],					// id of event pickups
+	mQuizQuestionNo,
+	mQuizQuestionSet,
+	mQuizWrongAnsweres,
+	mFuelType,																		// used for ImportVeh function
+	Float:mVehMaxHealth,														// used for ImportVeh function
+	Text:mVehicleStatus, 														// dolny pasek statusu pojazdu
+	mVehicleStatusShow,															// status dolnego pasku statusu pojazdu
+	mVehicleStatusShowChanged,
+	PlayerText:mSanNewsTextDrawId,														// dolny pasek informacyjny san news
+	mSanNewsTextDrawCreated,														// dolny pasek informacyjny san news
+	mSanNewsStatus,														// status dolneg pasku informacyjnego san news
+	mJumped,																			// how many times player jumped while walking
+	mSprinting,
+	mSelectedRace,																// race dialog id
+	mSelectedRaceList[MAX_RACES],								// id of avaiable races
+	Text:mRacePlace1Info,
+	Text:mRacePlace2Info,
+	Text:mRacePlace3Info,
+	Text:mRacePlace4Info,
+	Text:mRacePlace5Info,
+	Text:mRacePlace6Info,
+	Text:mRacePlace7Info,
+	Text:mRacePlace8Info,
+	Text:mRacePlace9Info,
+	Text:mRacePlace10Info,
+	mIsPlayerHouseJacking,
+	mIsPlayerBizJacking,
+	mPassTries,
+	mBulletProof,
+	mBugInfoCoolDown,
+	mNewbieCoolDown,
+	mRobbingHouseStage,
+	mRobbingBusinessStage,
+	mJustEnteredVehicle,
+	mBusTicketBuyTime,
+	mClotheShopSkinId,
+	mAtClotheStore,
+	mEditRank,							// which rank leader is edditing
+	mEditObj,
+	mMaterialId,
+	mObjText[128],
+	mRepairProgress,				// player vehicle repair progress
+	mRepairingItemId,				// default type always is one
+	mRepairingItemType,				// default type always is one
+	mBulbToChange,
+	mWheelToChange,
+	mBizIdIntEdit,
+	mBuildingBuyId,
+	mIsReanimate,
+	Float:measurePointX,
+	Float:measurePointY,
+	Float:measurePointZ,
+	Float:tempPosX,
+	Float:tempPosY,
+	Float:tempPosZ,
+	tempInterior,
+	tempWorld,
+	tempVehId,
+	tempVehSeat,
+	mIsInTaxiTeleportId,
+	PlayerText:mWardrobeExitText,
+	mTaxiTeleportTimeLeft,
+	Timer:mIdleAnimationTimer,
+	bool:mIsIdleAnimationTimerActive
+};
+new gPlayerVars[CUSTOM_MAX_PLAYERS+1][playerVars];
+
+timer ReturnPlayerFromTempPos[5000](playerid)
+{
+	gPlayerData[playerid][pCrashX] = gPlayerVars[playerid][tempPosX];
+	gPlayerData[playerid][pCrashY] = gPlayerVars[playerid][tempPosY];
+	gPlayerData[playerid][pCrashZ] = gPlayerVars[playerid][tempPosZ];
+	gPlayerData[playerid][pCrashInt] = gPlayerVars[playerid][tempInterior];
+	gPlayerData[playerid][pCrashW] = gPlayerVars[playerid][tempWorld];
+	
+	SetPlayerToPos(playerid, gPlayerData[playerid][pCrashX], gPlayerData[playerid][pCrashY], gPlayerData[playerid][pCrashZ]);
+	SetPlayerVirtualWorld(playerid, gPlayerData[playerid][pCrashW]);
+	SetPlayerInterior(playerid, gPlayerData[playerid][pCrashInt]);
+
+	if(gPlayerVars[playerid][tempVehId] != 0)
+	{
+		PutPlayerInVehicle(playerid, gPlayerVars[playerid][tempVehId], gPlayerVars[playerid][tempVehSeat]);
+	}
 }
-new DynamicZones[5][Zones];
 
 enum Cars
 {
-	CarModel,
-	Float:CarX,
-	Float:CarY,
-	Float:CarZ,
-	Float:CarAngle,
-	CarInterior,
-	CarVW,
-	CarColor1,
-	CarColor2,
-	FactionCar,
-	CarType,
-	Owned,
+	mVehModel,
+	Float:mVehX,
+	Float:mVehY,
+	Float:mVehZ,
+	Float:mVehA,
+	mVehInt,
+	mVehVW,
+	mVehColor1,
+	mVehColor2,
+	mVehPaintJob,
+	mVehFaction,
+	mVehVinNo,
+	mVehType,
+	mVehOwned,
 	Owner[128],
 	Price,
+	mRenter[MAX_PLAYER_NAME],
+	mRentPrice,
+	mRentPenalty,
 	Closed,
 	CarResetT,
 	CarDamaged,
@@ -2168,6 +2629,7 @@ enum Cars
 	Float:CarHealth,
 	ReadyToSell,
 	CarCounter,
+	CarCounterPrev, // previous traveled distance to get difference and count combustion of car based on combustion ltr/km
 	Fuel,
 	CarPanels,
 	CarDoors,
@@ -2201,15 +2663,37 @@ enum Cars
 	CustomObj3Model,
 	CustomObj3On,
 	Float:CustomObj3[6],
+	CustomObj4ID,
+	CustomObj4Model,
+	CustomObj4On,
+	Float:CustomObj4[6],
+	CustomObj5ID,
+	CustomObj5Model,
+	CustomObj5On,
+	Float:CustomObj5[6],
+	CustomObj6ID,
+	CustomObj6Model,
+	CustomObj6On,
+	Float:CustomObj6[6],
+	CustomObj7ID,
+	CustomObj7Model,
+	CustomObj7On,
+	Float:CustomObj7[6],
 	RadioVol,
 	Float:BatteryCapacity, // vehicle battery for launching engine or 
 	Float:BatteryMaxCapacity,
+	BatteryID,									// Default 0, higher values means new mouted battery (replacement) and ItemName is used
 	Text3D:Veh3DSell,
+	Veh3DSellCreated,
 	Text3D:Veh3DSerial,
 	Text3D:Veh3DTaxiNfo,
 	Text3D:Veh3DTaxiNfo2,
 	IsRefueling, // is veh refueling
 	VConfiscated, // is veh confiscated ?
+	VPoliceComputer, // has veh police computer ?
+	VCBRadio, // has veh cb radio ?
+	VCBRadioChanel, // has veh cb radio ?
+	VCBRadioStatus, // has veh cb radio ?
 	VItem1,
 	VItem2,
 	VItem3,
@@ -2330,36 +2814,48 @@ enum Cars
 	VItem13param6,
 	VItem14param6,
 	VItem15param6,
+	mVehSpoiler,
+	mVehHood,
+	mVehRoof,
+	mVehSideskirt,
+	mVehLamps,
+	mVehNitro,
+	mVehExhaust,
+	mVehWheels,
+	mVehStereo,
+	mVehHydraulics,
+	mVehFrontBumper,
+	mVehRearBumper,
+	mVehVentLeft,
+	mVehVentRight,
+	mVehTransportSlot1,
+	mVehTransportSlot2,
+	mVehTransportSlot3,
+	mVehTransportSlot4,
+	mVehIgnitionHacked,
+	mVehIgnitionDamaged,
+	mVehSirenObjId,
+	mVehSirenObjModel,
+	mVehSirenState,
+	mVehSetToTp
 };
-new gVehData[500][Cars];
-
-//==========================[3D TEXT VARIABLES]==========================
-new gCarFuelDistancer[sizeof(gVehData)];
+new gVehData[2000][Cars];
+new gVSelectedItemP5[sizeof(gVehData)];
+new Float:VehNewPos[sizeof(gVehData)][3];
+new VehJustRespawned[sizeof(gVehData)];
 new isPainting[sizeof(gVehData)];
 new isWheelChanging[sizeof(gVehData)];
 new isGasMounting[sizeof(gVehData)];
 new Text3D:BusRoute[sizeof(gVehData)];
 
-enum PCars
-{
-	CarModel,
-	Float:CarX,
-	Float:CarY,
-	Float:CarZ,
-	Float:CarAngle,
-	Float:CarHealth,
-	CarFuel
-};
-
 enum Factions
 {
 	Name[50],
+	mCompanyName[64],
 	IsEnabled, // Is faction enabled ? 
-	Float:fX,
-	Float:fY,
-	Float:fZ,
-	fMaterials,
-	fDrugs,
+	Float:m_fX,
+	Float:m_fY,
+	Float:m_fZ,
 	fBank,
 	fRank1[35],
 	fRank2[35],
@@ -2371,6 +2867,78 @@ enum Factions
 	fRank8[35],
 	fRank9[35],
 	fRank10[35],
+	fRank2TillCheck,
+	fRank2FactionStatus,
+	fRank2VehBuy,
+	fRank2VehSell,
+	fRank2VehSalvage,
+	fRank2VehDrive,
+	fRank2TerritoryWar,
+	fRank2BurnFactory,
+	fRank3TillCheck,
+	fRank3FactionStatus,
+	fRank3VehBuy,
+	fRank3VehSell,
+	fRank3VehSalvage,
+	fRank3VehDrive,
+	fRank3TerritoryWar,
+	fRank3BurnFactory,
+	fRank4TillCheck,
+	fRank4FactionStatus,
+	fRank4VehBuy,
+	fRank4VehSell,
+	fRank4VehSalvage,
+	fRank4VehDrive,
+	fRank4TerritoryWar,
+	fRank4BurnFactory,
+	fRank5TillCheck,
+	fRank5FactionStatus,
+	fRank5VehBuy,
+	fRank5VehSell,
+	fRank5VehSalvage,
+	fRank5VehDrive,
+	fRank5TerritoryWar,
+	fRank5BurnFactory,
+	fRank6TillCheck,
+	fRank6FactionStatus,
+	fRank6VehBuy,
+	fRank6VehSell,
+	fRank6VehSalvage,
+	fRank6VehDrive,
+	fRank6TerritoryWar,
+	fRank6BurnFactory,
+	fRank7TillCheck,
+	fRank7FactionStatus,
+	fRank7VehBuy,
+	fRank7VehSell,
+	fRank7VehSalvage,
+	fRank7VehDrive,
+	fRank7TerritoryWar,
+	fRank7BurnFactory,
+	fRank8TillCheck,
+	fRank8FactionStatus,
+	fRank8VehBuy,
+	fRank8VehSell,
+	fRank8VehSalvage,
+	fRank8VehDrive,
+	fRank8TerritoryWar,
+	fRank8BurnFactory,
+	fRank9TillCheck,
+	fRank9FactionStatus,
+	fRank9VehBuy,
+	fRank9VehSell,
+	fRank9VehSalvage,
+	fRank9VehDrive,
+	fRank9TerritoryWar,
+	fRank9BurnFactory,
+	fRank10TillCheck,
+	fRank10FactionStatus,
+	fRank10VehBuy,
+	fRank10VehSell,
+	fRank10VehSalvage,
+	fRank10VehDrive,
+	fRank10TerritoryWar,
+	fRank10BurnFactory,
 	fSkin1,
 	fSkin2,
 	fSkin3,
@@ -2391,6 +2959,8 @@ enum Factions
 	fUseColor,
 	fMaxCars,
 	fCarsCount,
+	fTerritoryWarWins,
+	fTerritoryWarLooses,
 	Float:fXDuty,
 	Float:fYDuty,
 	Float:fZDuty,
@@ -2404,6 +2974,46 @@ enum Factions
 	fCarsRank, // From which rank player can enter vehicle
 	fTaxiKMCost, // price for 1km  passenger drive
 	fTaxiEnterCost, // price for entrance a taxi
+	fHealCost, // basics cost for medicaments etc set by admin
+	fHealPrice, // how much player must pay for medical attention
+	fExamineCost, // basics cost for medicaments etc set by admin
+	fExaminePrice, // how much player must pay for medicat attention
+	mSimActivationCost,
+	mSimDailyFee,
+	mSimFreeMins,
+	mSimFreeSms,
+	mCallCostFee,
+	mSmsCostFee,
+	mCallCostCard,
+	mSmsCostCard,
+	mCardValidity,
+	mCardRenewCost1,
+	mCardRenewTime1,
+	mCardRenewCost2,
+	mCardRenewTime2,
+	mCardRenewCost3,
+	mCardRenewTime3,
+	mCardRenewCost4,
+	mCardRenewTime4,
+	mVehicleStealExportTimeLeft,
+	mVehicleStealExportCpId,
+	Float:mBizConIncome,
+	Float:mBizOfferIncome,
+	mBizJoinCash, // how much does company offer for new business when it join to company
+	mBizJoinTime, // how long biz must represent company if it doesnt want to pay penalty
+	mBizPenaltyValue, // how much penalty cost
+	mPayOffGranted,
+	mMechanicJobsDone, // TODO: dodac obsluge
+	fNotification1,	
+	fNotification2,
+	fNotification3,
+	fNotification4,
+	fNotification5,
+	fNotification1ID,
+	fNotification2ID,
+	fNotification3ID,
+	fNotification4ID,
+	fNotification5ID,
 	fGun1Rank1,
 	fGun1Rank2,
 	fGun1Rank3,
@@ -2471,6 +3081,7 @@ enum Factions
 	WFactoryBurning, // Is factory burning
 	WFactoryJustBought, // Factory has just been ordered by leader of faction
 	WFactoryCPPartTakeID,
+	WFactoryCPSafeID,
 	Float:WFactoryCentrePosX, // relative centre of building X
 	Float:WFactoryCentrePosY, // relative centre of building Y
 	Float:WFactoryCentrePosZ, // relative centre of building Z
@@ -2579,45 +3190,38 @@ enum CivilianSpawns
 	Float:Z,
 	World,
 	Interior,
-	Float:Angle,
+	Float:Angle
 };
 new CivilianSpawn[CivilianSpawns];
 
-enum FactionMaterials
-{
-	Float:X,
-	Float:Y,
-	Float:Z,
-	World,
-	Interior,
-	Float:Angle,
-	PickupID,
-};
-new FactionMaterialsStorage[FactionMaterials];
-
-enum FactionDrugs
-{
-	Float:X,
-	Float:Y,
-	Float:Z,
-	World,
-	Interior,
-	Float:Angle,
-	PickupID,
-};
-new FactionDrugsStorage[FactionDrugs];
-
 enum DrivingTestLocation
 {
-	Float:X,
-	Float:Y,
-	Float:Z,
-	World,
-	Interior,
-	Float:Angle,
-	PickupID,
+	Float:mPosXA,
+	Float:mPosYA,
+	Float:mPosZA,
+	mPosWorldA,
+	mPosInteriorA,
+	Float:mPosXB,
+	Float:mPosYB,
+	Float:mPosZB,
+	mPosWorldB,
+	mPosInteriorB,
+	Float:mPosXCE,
+	Float:mPosYCE,
+	Float:mPosZCE,
+	mPosWorldCE,
+	mPosInteriorCE,
+	mPriceA,
+	mPriceB,
+	mPriceCE,
+	mPriceLowA,
+	mPriceLowB,
+	mPriceLowCE,
+	PickupIDA,
+	PickupIDB,
+	PickupIDCE
 };
-new DrivingTestPosition[DrivingTestLocation];
+new gDrivingTestPosition[DrivingTestLocation];
 
 enum BoatTestLocation
 {
@@ -2627,7 +3231,7 @@ enum BoatTestLocation
 	World,
 	Interior,
 	Float:Angle,
-	PickupID,
+	PickupID
 };
 new BoatTestPosition[BoatTestLocation];
 
@@ -2639,214 +3243,27 @@ enum BankLocation
 	World,
 	Interior,
 	Float:Angle,
-	PickupID,
+	mPickupId
 };
-new BankPosition[BankLocation];
-new BankPosition2[BankLocation];
+new BankPosition[14][BankLocation] = 
+{
+	{ 1322.546630, 120.573074, 1003.219360 },
+	{ -470.957550, -199.424087, 985.378356 },
+	{ 1442.93, -994.01, 26.82 },
+	{ 1444.84, -996.32, 26.82 },
+	{ 1448.49, -997.13, 26.82 },
+	{ 331.16, 129.57, 1007.96 },
+	{ 327.65, 130.92, 1007.96 },
+	{ 324.42, 132.02, 1007.96 },
+	{ 1318.51, 120.56, 1003.21 },
+	{ 1322.53, 120.56, 1003.21 },
+	{ 1327.04, 120.56, 1003.21 },
+	{ 304.85, 1854.31, 1613.36 },
+	{ 599.26, -1512.62, 15.42 },
+	{ 599.26, -1518.64, 15.42 }
+};
 
-enum WFWorkerJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new WFWorkerJob[WFWorkerJobInfo];
 
-enum MechanicJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new MechanicJob[MechanicJobInfo];
-
-enum MechanicJobInfo1
-{
-	Float:RepairPointX,
-	Float:RepairPointY,
-	Float:RepairPointZ,
-	Float:RepairPointX2,
-	Float:RepairPointY2,
-	Float:RepairPointZ2,
-	RepairPointPickupID,
-	RepairPointPickupID2,
-};
-new MechanicJob1[MechanicJobInfo1];
-
-enum MechanicJobInfo2
-{
-	Float:BuyProductsX,
-	Float:BuyProductsY,
-	Float:BuyProductsZ,
-	BuyProductsWorld,
-	BuyProductsInterior,
-	Float:BuyProductsAngle,
-	BuyProductsPickupID,
-};
-new MechanicJob2[MechanicJobInfo2];
-	
-enum ProductsSellerJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
- 	Float:BuyProductsX,
-	Float:BuyProductsY,
-	Float:BuyProductsZ,
-	BuyProductsWorld,
-	BuyProductsInterior,
-	Float:BuyProductsAngle,
-	BuyProductsPickupID,
-};
-new ProductsSellerJob[ProductsSellerJobInfo];
-
-enum WhoreJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new WhoreJob[WhoreJobInfo];
-
-enum DirJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new DirJob[DirJobInfo];
-
-enum StuntJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new StuntJob[StuntJobInfo];
-
-enum CarjackJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new CarjackJob[CarjackJobInfo];
-
-enum BodyJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new BodyJob[BodyJobInfo];
-
-enum RapistJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new RapistJob[RapistJobInfo];
-
-enum BoxerJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new BoxerJob[BoxerJobInfo];
-
-enum GunJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
- 	Float:BuyPackagesX,
-	Float:BuyPackagesY,
-	Float:BuyPackagesZ,
-	BuyPackagesWorld,
-	BuyPackagesInterior,
-	Float:BuyPackagesAngle,
-	BuyPackagesPickupID,
-  	Float:DeliverX,
-	Float:DeliverY,
-	Float:DeliverZ,
-	DeliverWorld,
-	DeliverInterior,
-	Float:DeliverAngle,
-	DeliverPickupID,
-};
-new GunJob[GunJobInfo];
-
-enum DrugJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
- 	Float:BuyDrugsX,
-	Float:BuyDrugsY,
-	Float:BuyDrugsZ,
-	BuyDrugsWorld,
-	BuyDrugsInterior,
-	Float:BuyDrugsAngle,
-	BuyDrugsPickupID,
-  	Float:DeliverX,
-	Float:DeliverY,
-	Float:DeliverZ,
-	DeliverWorld,
-	DeliverInterior,
-	Float:DeliverAngle,
-	DeliverPickupID,
-};
-new DrugJob[DrugJobInfo];
 
 enum SkillPositionInfo
 {
@@ -2883,12 +3300,12 @@ enum SkillPositionInfo
 	Float:XSni,
 	Float:YSni, 
 	Float:ZSni,
-	Float:XAng,
-	Float:YAng, 
-	Float:ZAng,
-	Float:XWf,
-	Float:YWf, 
-	Float:ZWf,
+	Float:XTech,
+	Float:YTech, 
+	Float:ZTech,
+	Float:XLaw,
+	Float:YLaw, 
+	Float:ZLaw,
 	Float:XMat,
 	Float:YMat, 
 	Float:ZMat,
@@ -2904,6 +3321,9 @@ enum SkillPositionInfo
 	Float:XBio,
 	Float:YBio, 
 	Float:ZBio,
+	Float:XHighSchool,
+	Float:YHighSchool, 
+	Float:ZHighSchool,
 	PickupIDPis,
 	PickupIDSil,
 	PickupIDDes,
@@ -2915,220 +3335,28 @@ enum SkillPositionInfo
 	PickupIDAk,
 	PickupIDM4,
 	PickupIDSni,
-	PickupIDAng,
-	PickupIDWf,
+	PickupIDTech,
+	PickupIDLaw,
 	PickupIDMat,
 	PickupIDPol,
 	PickupIDHis,
 	PickupIDFiz,
 	PickupIDBio,
+	PickupIDHighSchool
 };
 new SkillPosition[SkillPositionInfo];
 
-enum BusJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-};
-new BusJob[BusJobInfo];
-
-enum MzgkJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-	Float:CheckPoint0ax,
-	Float:CheckPoint0ay,
-	Float:CheckPoint0az,
-	Float:CheckPoint1ax,
-	Float:CheckPoint1ay,
-	Float:CheckPoint1az,
-	Float:CheckPoint2ax,
-	Float:CheckPoint2ay,
-	Float:CheckPoint2az,
-	Float:CheckPoint3ax,
-	Float:CheckPoint3ay,
-	Float:CheckPoint3az,
-	Float:CheckPoint4ax,
-	Float:CheckPoint4ay,
-	Float:CheckPoint4az,
-	Float:CheckPoint5ax,
-	Float:CheckPoint5ay,
-	Float:CheckPoint5az,
-	Float:CheckPoint6ax,
-	Float:CheckPoint6ay,
-	Float:CheckPoint6az,
-	Float:CheckPoint7ax,
-	Float:CheckPoint7ay,
-	Float:CheckPoint7az,
-	Float:CheckPoint8ax,
-	Float:CheckPoint8ay,
-	Float:CheckPoint8az,
-	Float:CheckPoint9ax,
-	Float:CheckPoint9ay,
-	Float:CheckPoint9az,
-	Float:CheckPoint10ax,
-	Float:CheckPoint10ay,
-	Float:CheckPoint10az,
-	Float:CheckPoint11ax,
-	Float:CheckPoint11ay,
-	Float:CheckPoint11az,
-	Float:CheckPoint0bx,
-	Float:CheckPoint0by,
-	Float:CheckPoint0bz,
-	Float:CheckPoint1bx,
-	Float:CheckPoint1by,
-	Float:CheckPoint1bz,
-	Float:CheckPoint2bx,
-	Float:CheckPoint2by,
-	Float:CheckPoint2bz,
-	Float:CheckPoint3bx,
-	Float:CheckPoint3by,
-	Float:CheckPoint3bz,
-	Float:CheckPoint4bx,
-	Float:CheckPoint4by,
-	Float:CheckPoint4bz,
-	Float:CheckPoint5bx,
-	Float:CheckPoint5by,
-	Float:CheckPoint5bz,
-	Float:CheckPoint6bx,
-	Float:CheckPoint6by,
-	Float:CheckPoint6bz,
-	Float:CheckPoint7bx,
-	Float:CheckPoint7by,
-	Float:CheckPoint7bz,
-	Float:CheckPoint8bx,
-	Float:CheckPoint8by,
-	Float:CheckPoint8bz,
-	Float:CheckPoint9bx,
-	Float:CheckPoint9by,
-	Float:CheckPoint9bz,
-	Float:CheckPoint10bx,
-	Float:CheckPoint10by,
-	Float:CheckPoint10bz,
-	Float:CheckPoint11bx,
-	Float:CheckPoint11by,
-	Float:CheckPoint11bz,
-};
-new MzgkJob[MzgkJobInfo];
-
-enum SweeperJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-	Float:CheckPoint0ax,
-	Float:CheckPoint0ay,
-	Float:CheckPoint0az,
-	Float:CheckPoint1ax,
-	Float:CheckPoint1ay,
-	Float:CheckPoint1az,
-	Float:CheckPoint2ax,
-	Float:CheckPoint2ay,
-	Float:CheckPoint2az,
-	Float:CheckPoint3ax,
-	Float:CheckPoint3ay,
-	Float:CheckPoint3az,
-	Float:CheckPoint4ax,
-	Float:CheckPoint4ay,
-	Float:CheckPoint4az,
-	Float:CheckPoint5ax,
-	Float:CheckPoint5ay,
-	Float:CheckPoint5az,
-	Float:CheckPoint6ax,
-	Float:CheckPoint6ay,
-	Float:CheckPoint6az,
-	Float:CheckPoint7ax,
-	Float:CheckPoint7ay,
-	Float:CheckPoint7az,
-	Float:CheckPoint8ax,
-	Float:CheckPoint8ay,
-	Float:CheckPoint8az,
-	Float:CheckPoint9ax,
-	Float:CheckPoint9ay,
-	Float:CheckPoint9az,
-	Float:CheckPoint10ax,
-	Float:CheckPoint10ay,
-	Float:CheckPoint10az,
-	Float:CheckPoint11ax,
-	Float:CheckPoint11ay,
-	Float:CheckPoint11az,
-	Float:CheckPoint0bx,
-	Float:CheckPoint0by,
-	Float:CheckPoint0bz,
-	Float:CheckPoint1bx,
-	Float:CheckPoint1by,
-	Float:CheckPoint1bz,
-	Float:CheckPoint2bx,
-	Float:CheckPoint2by,
-	Float:CheckPoint2bz,
-	Float:CheckPoint3bx,
-	Float:CheckPoint3by,
-	Float:CheckPoint3bz,
-	Float:CheckPoint4bx,
-	Float:CheckPoint4by,
-	Float:CheckPoint4bz,
-	Float:CheckPoint5bx,
-	Float:CheckPoint5by,
-	Float:CheckPoint5bz,
-	Float:CheckPoint6bx,
-	Float:CheckPoint6by,
-	Float:CheckPoint6bz,
-	Float:CheckPoint7bx,
-	Float:CheckPoint7by,
-	Float:CheckPoint7bz,
-	Float:CheckPoint8bx,
-	Float:CheckPoint8by,
-	Float:CheckPoint8bz,
-	Float:CheckPoint9bx,
-	Float:CheckPoint9by,
-	Float:CheckPoint9bz,
-	Float:CheckPoint10bx,
-	Float:CheckPoint10by,
-	Float:CheckPoint10bz,
-	Float:CheckPoint11bx,
-	Float:CheckPoint11by,
-	Float:CheckPoint11bz,
-};
-new SweeperJob[SweeperJobInfo];
-	
-enum TaxiJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID
-};
-
-new TaxiJob[TaxiJobInfo];
-	
 enum FlyingTestLocation
 {
-	Float:X,
-	Float:Y,
-	Float:Z,
-	World,
-	Interior,
-	Float:Angle,
-	PickupID,
+	Float:mPosX,
+	Float:mPosY,
+	Float:mPosZ,
+	mPosW,
+	mPosInt,
+	Float:mPosA,
+	PickupID
 };
-new FlyingTestPosition[FlyingTestLocation];
+new gPlaneTestPosition[FlyingTestLocation];
 
 enum WeaponLicenseLocation
 {
@@ -3138,37 +3366,18 @@ enum WeaponLicenseLocation
 	World,
 	Interior,
 	Float:Angle,
-	PickupID,
+	PickupID
 };
 new WeaponLicensePosition[WeaponLicenseLocation];
-
-enum DetectiveJobLocation
-{
-	Float:X,
-	Float:Y,
-	Float:Z,
-	World,
-	Interior,
-	Float:Angle,
-	PickupID,
-};
-new DetectiveJobPosition[DetectiveJobLocation];
-
-enum LawyerJobLocation
-{
-	Float:X,
-	Float:Y,
-	Float:Z,
-	World,
-	Interior,
-	Float:Angle,
-	PickupID,
-};
-new LawyerJobPosition[LawyerJobLocation];
 
 enum BuildingSystem
 {
 	BuildingName[128],
+	FactionOwnerId,
+	Cash,
+	Price,
+	StreetNo,
+	ForSale,
 	Float:EnterX,
 	Float:EnterY,
 	Float:EnterZ,
@@ -3182,18 +3391,29 @@ enum BuildingSystem
 	ExitInterior,
 	Float:ExitAngle,
 	Locked,
-	PickupID,
+	EnterPickupId,
+	ExitPickupId,
 	Opened,
 	Closed,
 	ObjectID,
-	BuildingType
+	BuildingType,
+	ShowIcon,
+	IconType,
+	mBuildingPlaced
 };
-new Building[50][BuildingSystem];
+new Building[MAX_BUILDINGS][BuildingSystem];
+new Text3D:Buildings3DTextLabelA[sizeof(Building)];
+new Text3D:Buildings3DTextLabelB[sizeof(Building)];
+new Text3D:Buildings3DTextLabelC[sizeof(Building)];
 
 enum BusinessSystem
 {
 	BusinessName[128],
+	BUID,
 	Owner[MAX_PLAYER_NAME],
+	mFaction,
+	mFactionTimeLeft, // how long to end of company contract
+	StreetNo,
 	Float:EnterX,
 	Float:EnterY,
 	Float:EnterZ,
@@ -3212,29 +3432,62 @@ enum BusinessSystem
 	Till,
 	Locked,
 	BizType,
-	Products,
 	PickupID,
+	ExitPickupId,
+	Products,
 	VehicleSpawned,
 	VehicleCount,
 	MaxVehicles,
 	VehicleOrderCount,
 	SalesJob,
 	W9MM,
+	mW9MMIncomeTotal,
+	mW9MMIncomeToday,
 	W9MMSil,
+	mW9MMSilIncomeTotal,
+	mW9MMSilIncomeToday,
 	WDesEagle,
+	mWDesEagleIncomeTotal,
+	mWDesEagleIncomeToday,
 	WMicroSMG,
+	mWMicroSMGIncomeTotal,
+	mWMicroSMGIncomeToday,
 	WMP5,
+	mWMP5IncomeTotal,
+	mWMP5IncomeToday,
 	WTec9,
+	mWTec9IncomeTotal,
+	mWTec9IncomeToday,
 	WShotgun,
+	mWShotgunIncomeTotal,
+	mWShotgunIncomeToday,
 	WAK47,
+	mWAK47IncomeTotal,
+	mWAK47IncomeToday,
 	WM4,
+	mWM4IncomeTotal,
+	mWM4IncomeToday,
 	WRifle,
+	mWRifleIncomeTotal,
+	mWRifleIncomeToday,
 	WSRifle,
+	mWSRifleIncomeTotal,
+	mWSRifleIncomeToday,
 	W9MMAmmo,
+	mW9MMAmmoIncomeTotal,
+	mW9MMAmmoIncomeToday,
 	W50AEAmmo,
+	mW50AEAmmoIncomeTotal,
+	mW50AEAmmoIncomeToday,
 	WBuckshot,
+	mWBuckshotIncomeTotal,
+	mWBuckshotIncomeToday,
 	W762MMAmmo,
+	mW762MMAmmoIncomeTotal,
+	mW762MMAmmoIncomeToday,
 	W127MMAmmo,
+	mW127MMAmmoIncomeTotal,
+	mW127MMAmmoIncomeToday,
 	BRadio1Bought, // Is radio bought
 	BRadio1On, // Is radio ON
 	BRadio1Ch, // Radio channell
@@ -3245,16 +3498,76 @@ enum BusinessSystem
 	Float:BRadio1Y, // radio y pos
 	Float:BRadio1Z, // radio z pos
 	Float:BRadio1Angle,
-	Product1Price,
-	Product2Price,
-	Product3Price,
-	Product4Price,
-	Product5Price,
-	Product6Price,
-	Product7Price,
-	Product8Price,
-	Product9Price,
-	Product10Price,
+	Product1,
+	Product1type,
+	Product1price,
+	Product1count,
+	Product1buy,
+	Product1incomeTotal,
+	Product1incomeToday,
+	Product2,
+	Product2type,
+	Product2price,
+	Product2count,
+	Product2buy,
+	Product2incomeTotal,
+	Product2incomeToday,
+	Product3,
+	Product3type,
+	Product3price,
+	Product3count,
+	Product3buy,
+	Product3incomeTotal,
+	Product3incomeToday,
+	Product4,
+	Product4type,
+	Product4price,
+	Product4count,
+	Product4buy,
+	Product4incomeTotal,
+	Product4incomeToday,
+	Product5,
+	Product5type,
+	Product5price,
+	Product5count,
+	Product5buy,
+	Product5incomeTotal,
+	Product5incomeToday,
+	Product6,
+	Product6type,
+	Product6price,
+	Product6count,
+	Product6buy,
+	Product6incomeTotal,
+	Product6incomeToday,
+	Product7,
+	Product7type,
+	Product7price,
+	Product7count,
+	Product7buy,
+	Product7incomeTotal,
+	Product7incomeToday,
+	Product8,
+	Product8type,
+	Product8price,
+	Product8count,
+	Product8buy,
+	Product8incomeTotal,
+	Product8incomeToday,
+	Product9,
+	Product9type,
+	Product9price,
+	Product9count,
+	Product9buy,
+	Product9incomeTotal,
+	Product9incomeToday,
+	Product10,
+	Product10type,
+	Product10price,
+	Product10count,
+	Product10buy,
+	Product10incomeTotal,
+	Product10incomeToday,
 	Product11Price,
 	Product12Price,
 	Product13Price,
@@ -3278,7 +3591,23 @@ enum BusinessSystem
 	BConfiscated,
 	BPlaced,
 	BIntSet,
-	BInterior
+	BInterior,
+	BGov,
+	BShowIcon,
+	mIncomeTotal,
+	mIncomePhoneTotal,
+	mIncomePhoneToday,
+	mIncomeFuelPetrolToday,
+	mIncomeFuelPetrolTotal,
+	mIncomeFuelOilToday,
+	mIncomeFuelOilTotal,
+	mIncomeFuelGasToday,
+	mIncomeFuelGasTotal,
+	mIncomeVehicleTotal,
+	mIncomeVehicleToday,
+	mIncomeEntranceTotal,
+	mIncomeEntranceToday,
+	mAlarm
 }
 new Businesses[MAX_BUSINESSES][BusinessSystem];
 new Text3D:Business3DTextLabelA[sizeof(Businesses)];
@@ -3289,6 +3618,9 @@ enum HouseSystem
 {
 	Description[128],
 	Owner[MAX_PLAYER_NAME],
+	HUID,
+	StreetNo,
+	HRenter[MAX_PLAYER_NAME],
 	Float:EnterX,
 	Float:EnterY,
 	Float:EnterZ,
@@ -3304,11 +3636,10 @@ enum HouseSystem
 	Rentable,
 	RentCost,
 	HousePrice,
-	Materials,
-	Drugs,
 	Money,
 	Locked,
 	PickupID,
+	ExitPickupId,
 	HItem1,
 	HItem2,
 	HItem3,
@@ -3363,38 +3694,29 @@ enum HouseSystem
 	HConfiscated, // is house confiscated ?
 	HPlaced,
 	HIntSet,
-	HInterior
-}
-new Houses[500][HouseSystem];
-new Text3D:Houses3DTextLabelA[sizeof(Houses)];
-new Text3D:Houses3DTextLabelB[sizeof(Houses)];
-new Text3D:Houses3DTextLabelC[sizeof(Houses)];
-new gLastHVisit[CUSTOM_MAX_PLAYERS][sizeof(Houses)]; // cooldown dla pracy gazeciarza
-new gLastBVisit[CUSTOM_MAX_PLAYERS][sizeof(Businesses)]; // cooldown dla pracy gazeciarza
-
-enum Races
-{
-	Float:TakeRaceX,
-	Float:TakeRaceY,
-	Float:TakeRaceZ,
-	Float:StartPointX,
-	Float:StartPointY,
-	Float:StartPointZ,
-	Float:FinishPointX,
-	Float:FinishPointY,
-	Float:FinishPointZ,
-	EnterPrice,
-	StartPrice,
-	TopTimeM,
-	TopTimeS,
-	LastWinner[MAX_PLAYER_NAME],
-	KingOfSprint[MAX_PLAYER_NAME],
-	Started,
-	Location[128],
-	MaxDrivers,
-	PickupID,
+	HInterior,
+	HAlarm,
+	HRobbed
 };
-new DynamicRaces[20][Races]; // ktory wyscig jest wybrany
+new Houses[MAX_HOUSES][HouseSystem];
+new Text3D:Houses3DTextLabelA[MAX_HOUSES];
+new Text3D:Houses3DTextLabelB[MAX_HOUSES];
+new Text3D:Houses3DTextLabelC[MAX_HOUSES];
+new gLastHVisit[CUSTOM_MAX_PLAYERS][MAX_HOUSES]; // cooldown dla pracy gazeciarza
+new gLastBVisit[CUSTOM_MAX_PLAYERS][sizeof(Businesses)]; // cooldown dla pracy gazeciarza
+new gHSelectedItemP5[MAX_HOUSES];
+
+enum HousesDataInfo
+{
+	mDescription[64],
+	mSize,
+	Float:mExitX,
+	Float:mExitY,
+	Float:mExitZ,
+	Float:mExitA,
+	mExitInt
+};
+new HousesData[105][HousesDataInfo];
 
 enum Taxes
 {
@@ -3411,131 +3733,8 @@ enum Taxes
 	Float:VatTaxMax,
 	Float:VatTaxMin,
 	TheRich
-}
-
-new DynamicTaxes[Taxes];
-
-enum FarmerJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID,
-	Float:CheckPoint0ax,
-	Float:CheckPoint0ay,
-	Float:CheckPoint0az,
-	Float:CheckPoint1ax,
-	Float:CheckPoint1ay,
-	Float:CheckPoint1az,
-	Float:CheckPoint2ax,
-	Float:CheckPoint2ay,
-	Float:CheckPoint2az,
-	Float:CheckPoint3ax,
-	Float:CheckPoint3ay,
-	Float:CheckPoint3az,
-	Float:CheckPoint4ax,
-	Float:CheckPoint4ay,
-	Float:CheckPoint4az,
-	Float:CheckPoint0bx,
-	Float:CheckPoint0by,
-	Float:CheckPoint0bz,
-	Float:CheckPoint1bx,
-	Float:CheckPoint1by,
-	Float:CheckPoint1bz,
-	Float:CheckPoint2bx,
-	Float:CheckPoint2by,
-	Float:CheckPoint2bz,
-	Float:CheckPoint3bx,
-	Float:CheckPoint3by,
-	Float:CheckPoint3bz,
-	Float:CheckPoint4bx,
-	Float:CheckPoint4by,
-	Float:CheckPoint4bz,
-	Float:CheckPoint5bx,
-	Float:CheckPoint5by,
-	Float:CheckPoint5bz,
-	Float:CheckPoint6bx,
-	Float:CheckPoint6by,
-	Float:CheckPoint6bz,
-	Float:CheckPoint7bx,
-	Float:CheckPoint7by,
-	Float:CheckPoint7bz,
-	Float:CheckPoint8bx,
-	Float:CheckPoint8by,
-	Float:CheckPoint8bz,
-	Float:CheckPoint9bx,
-	Float:CheckPoint9by,
-	Float:CheckPoint9bz,
-	Float:CheckPoint10bx,
-	Float:CheckPoint10by,
-	Float:CheckPoint10bz,
-	Float:CheckPoint11bx,
-	Float:CheckPoint11by,
-	Float:CheckPoint11bz,
-	Float:CheckPoint12bx,
-	Float:CheckPoint12by,
-	Float:CheckPoint12bz,
-	Float:CheckPoint13cx,
-	Float:CheckPoint13cy,
-	Float:CheckPoint13cz,
-	Float:CheckPoint14cx,
-	Float:CheckPoint14cy,
-	Float:CheckPoint14cz,
-	Float:CheckPoint15cx,
-	Float:CheckPoint15cy,
-	Float:CheckPoint15cz,
-	Float:CheckPoint16cx,
-	Float:CheckPoint16cy,
-	Float:CheckPoint16cz,
-	Float:CheckPoint17cx,
-	Float:CheckPoint17cy,
-	Float:CheckPoint17cz
 };
-	
-new FarmerJob[FarmerJobInfo];	
-
-enum SellerJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID
-}
-
-new SellerJob[SellerJobInfo];
-
-enum AccountantJobInfo
-{
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	TakeJobWorld,
-	TakeJobInterior,
-	Float:TakeJobAngle,
-	TakeJobPickupID
-}
-
-new AccountantJob[SellerJobInfo];
-
-enum  NewsBoyJobInfo {
-	Float:TakeJobX,
-	Float:TakeJobY,
-	Float:TakeJobZ,
-	Float:TakeJobAngle,
-	TakeJobWorld,
-	TakeJobInterior,
-	TakeJobPickupID,
-	TakeJobPapersCount,
-	TakeJobReward
-}
-
-new NewsBoyJob[NewsBoyJobInfo];	
+new DynamicTaxes[Taxes];
 
 enum SpawnPlaceInfo {
 	Float:X,
@@ -3543,7 +3742,7 @@ enum SpawnPlaceInfo {
 	Float:Z,
 	Float:Angle,
 	SlotUsed,
-	VehicleID,
+	VehicleID
 };
 new SpawnPlaceCars[20][SpawnPlaceInfo];
 new SpawnPlacePlanes[20][SpawnPlaceInfo];
@@ -3588,7 +3787,7 @@ enum GasStationInfo	{
 	Text3D:GS3dTextLabel,
 	Text3D:GS3dTextLabel2,
 	Text3D:GS3dTextLabel3,
-	Text3D:GS3dTextLabel4,
+	Text3D:GS3dTextLabel4
 };
 new GasStations[20][GasStationInfo];
 
@@ -3613,10 +3812,10 @@ enum CarsDataInfo {
 	Paliwo,
 	Spalanie,
 	ToGas,
-	Float:Co2Emmision
+	Float:Co2Emmision,
+	MaxHealth
 };
 new CarsData[400][CarsDataInfo];
-new fieldCount[128];
 
 enum DBVariablesInfo {
 	varName[128],
@@ -3627,71 +3826,6 @@ enum DBVariablesInfo {
 };
 
 new DBVariables[64][DBVariablesInfo];
-
-/* Used for keep tmp item data */
-enum tmpDataItem {
-	item1,
-	item2,
-	item3,
-	item4,
-	item5,
-	item1type,
-	item2type,
-	item3type,
-	item4type,
-	item5type,
-	item1param,
-	item2param,
-	item3param,
-	item4param,
-	item5param,
-	item1param2,
-	item2param2,
-	item3param2,
-	item4param2,
-	item5param2,
-	item6,
-	item7,
-	item8,
-	item9,
-	item10,
-	item6type,
-	item7type,
-	item8type,
-	item9type,
-	item10type,
-	item6param,
-	item7param,
-	item8param,
-	item9param,
-	item10param,
-	item6param2,
-	item7param2,
-	item8param2,
-	item9param2,
-	item10param2,
-	item11,
-	item12,
-	item13,
-	item14,
-	item15,
-	item11type,
-	item12type,
-	item13type,
-	item14type,
-	item15type,
-	item11param,
-	item12param,
-	item13param,
-	item14param,
-	item15param,
-	item11param2,
-	item12param2,
-	item13param2,
-	item14param2,
-	item15param2,
-	itemPlayerName[MAX_PLAYER_NAME]
-};
 
 enum PhoneBookNumberInfo {
 	ln1,
@@ -3713,9 +3847,37 @@ enum WantedListInfo {
 	WantedCommitedDay,
 	WantedCommitedMonth,
 	WantedCommitedYear,
-	WantedPunished
+	WantedPunished,
+	WantedID
 };
 new WantedList[50][WantedListInfo];
+
+enum PhoneListInfo
+{
+	mPhoneID,
+	mPhoneOwner[MAX_PLAYER_NAME],
+	mPhoneNr,
+	mPhoneFaction,
+	mPhoneFreeMins,
+	mPhoneFreeSms,
+	mPhoneRenewalTime,
+	mPhoneCash,
+	mPhoneSimID
+};
+new gPhoneList[50][PhoneListInfo];
+
+enum SmsListInfo
+{
+	mSmsId,
+	mSmsSenderSimId,
+	mSmsSenderNumber,
+	mSmsSenderName[MAX_PLAYER_NAME],
+	mSmsReceiverSimId,
+	mSmsReceiverNumber,
+	mSmsReceiverName[MAX_PLAYER_NAME],
+	mSmsContent[256]
+};
+new gSmsList[50][SmsListInfo];
 
 // new DrawDistanceWord[][32] =
 // {
@@ -3723,7 +3885,6 @@ new WantedList[50][WantedListInfo];
 	// {"Medium"},
 	// {"High"}
 // };
-
 // new UsageFW[][32] =
 // {
 	// {"All"},
@@ -3742,7 +3903,6 @@ new WantedList[50][WantedListInfo];
     // RocketB,
     // FWNDrawDistance,
 // };
-
 // new AllowedFirework[FWN];
 
 
@@ -3771,9 +3931,11 @@ enum RafineryNfo
 	RafResourcePetrol, // Actual resource value of PETROL
 	RafResourceOil, // Actual resource value of OIL
 	RafResourceGas, // Actual resource value of GAS
+	RafResourceFly, // Actual resource value of GAS
 	RafPetrolLtrCost, // How much costs 1 ltr of PETROL
 	RafOilLtrCost, // How much costs 1 ltr of OIL
 	RafGasLtrCost, // How much costs 1 ltr of GAS
+	RafFlyLtrCost, // How much costs 1 ltr of AVIATION FUEL
 	RafRefuelReward, // Employe reward for refuel station, TODO: need to mod to multiplier
 	RafMaxResources, // Max value of rafinery resources
 	RafResourceCP // Rafinery resource checkpoint
@@ -3886,6 +4048,12 @@ enum WFactoryLegalInfo // General factory info
 	Float:WFactoryCPDocsY,
 	Float:WFactoryCPDocsZ,
 	WFactoryCPDocsID,
+	WFactoryCPDocsID2,
+	WFactoryCPDocsID3,
+	WFactoryCPDocsID4,
+	WFactoryCPDocsID5,
+	WFactoryCPDocsID6,
+	WFactoryCPDocsID7,
 	Float:WFactoryCPBuyX,
 	Float:WFactoryCPBuyY,
 	Float:WFactoryCPBuyZ
@@ -4017,7 +4185,7 @@ enum radioInfo
 }
 new gRadioSet[5][radioInfo];
 new gRadioID[5][CUSTOM_MAX_PLAYERS];
-new gRadio[9][128];
+new gRadio[17][128];
 
 enum luckyLotteryNfo
 {
@@ -4026,38 +4194,14 @@ enum luckyLotteryNfo
 	LuckyRewardTaken, // player taken the reward
 	LuckyNumbers[4] // numbers which player checked	
 }
-new gLuckyLottery[1000][luckyLotteryNfo];
+new gLuckyLottery[5000][luckyLotteryNfo];
 new gLuckyLotteryID = 0; // the unique id of lottery, auto increament
 new gLuckyLotteryCash = 0; // how much cash is in lottery bank
 new gLuckyLotteryLastLottery = 0; // days count when last lottery was launched
 new gLuckyLotteryWinnersCount = 0; // this is need for reward split
 new gLuckyLotteryNumbers[4] = { -1, ... }; // the numbers which been randomly choosen by the system
 
-new gAllowedObjectList[1000] = { 10101, 1023123, 1233132, 1208,2514,2515,2097,2516,2517,2518,2519,2520,2521,2522,2523,2524,2525,2526,2527,2528,2602,2738,2739,2741,2742,14494,2303,1780,2127,2013,2017,2130,2131,2132,2135,
-2136,2144,2147,2149,2150,2170,2294,2336,2337,2339,2340,2360,2361,2415,2417,2421,2426,2452,2812,2820,2822,2829,2830,2831,2832,2848,2849,2850,2851,2862,2863,2864,2865,643,1432,1670,1720,1721,1722,1805,1810,
-1811,1825,1968,1969,1970,2027,2079,2120,2121,2122,2123,2124,2125,2350,2635,2635,2637,2638,2639,2644,2723,2725,2746,2747,2748,2762,2763,2764,2776,2777,2788,2799,2800,2801,2802,2807,2808,945,2740,2707,2026,
-2026,1893,1770,1734,1731,16780,1658,1657,936,937,941,1416,1417,1740,1741,2133,2134,2137,2138,2139,2140,2141,2142,2143,2145,2148,2151,2152,2153,2154,2155,2156,2157,2158,2159,2160,2304,2305,2334,2335,2338,
-2341,2416,2418,2419,2451,14720,15036,1518,1659,1661,1700,1701,1717,1725,1736,1745,1748,1749,1749,1750,1751,1752,1771,1781,1782,1783,1785,1786,1787,1788,1790,1791,1792,1793,1794,1795,1796,1797,1798,1799,
-1800,1801,1802,1803,1804,1809,1812,1828,1829,1839,1840,1841,2003,2028,2090,2091,2093,2099,2100,2101,2102,2103,2104,2190,2224,2225,2226,2227,2229,2230,2231,2232,2233,2296,2297,2298,2299,2300,2301,2302,2312,
-2316,2317,2318,2320,2322,2331,2332,2333,2344,2563,2564,2565,2566,2575,2595,2596,2603,2648,2700,2813,2816,2817,2818,2824,2826,2827,2828,2833,2834,2835,2841,2842,2847,2852,2853,2854,2855,9437,9438,9439,9440,
-10249,11666,14532,14604,14705,14806,14861,14866,14880,16377,1433,1516,1562,1563,1663,1671,1704,1705,1708,1714,1715,1716,1723,1724,1726,1727,1728,1729,1735,1739,1746,1806,1826,1827,1963,1998,1999,2008,2009,
-2096,2165,2166,2169,2171,2172,2173,2174,2175,2180,2181,2182,2183,2184,2185,2193,2198,2205,2206,2207,2209,2293,2308,2309,2310,2311,2313,2314,2315,2319,2321,2343,2346,2356,2370,2592,2605,2607,2724,2784,3383,
-11631,11665,14490,14869,3964,3963,3962,3921,2617,2572,2571,2289,2288,2287,2287,2286,2285,2284,2283,2282,2281,2280,2279,2278,2277,2276,2275,2274,2273,2272,2271,2270,2269,2268,2267,2266,2265,2264,2263,2262,
-2261,2260,2259,2258,2257,2256,2255,2239,2239,2196,2179,2178,2177,2176,2119,2118,2117,2115,2114,2112,2111,2110,2109,2108,2107,2106,2105,2086,2085,2080,2077,2076,2075,2074,2073,2072,2071,2070,2069,2032,2031,
-2030,2029,1768,1766,1764,1763,1761,1760,1757,1756,1753,1737,1713,1712,1710,1709,1707,1706,1703,1702,15037,1429,1255,1645,1446,1647,1730,1742,1743,1744,1754,1755,1758,1789,1762,1765,1767,1769,1816,1817,1818,
-1819,1820,1821,1822,1823,2000,2007,2020,2021,2024,2025,2046,2063,2065,2066,2067,2082,2083,2084,2087,2089,2092,2094,2126,2128,2129,2161,2162,2163,2164,2167,2168,2167,2191,2197,2199,2200,2204,2208,2210,2211,
-2234,2291,2235,2291,2292,2295,2306,2307,2323,2328,2329,2330,2462,2463,2475,2482,2502,2509,2562,2568,2569,2570,2573,2574,2576,2591,2604,2606,2608,2608,2609,2610,2708,14556,2254,14872,12807,684,848,847,846,
-845,844,843,842,841,840,839,838,837,836,835,834,833,832,831,615,616,617,618,619,620,621,622,623,624,629,634,641,645,648,649,652,654,655,6656,657,658,659,660,661,664,669,670,671,672,673,674,676,680,681,683,685,
-686,687,688,689,690,691,693,964,695,696,697,698,700,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,720,721,722,723,724,725,726,727,729,730,731,732,733,734,735,736,737,738,739,740,763,764,765,
-766,767,768,769,770,771,772,773,774,775,776,777,778,779,780,781,782,783,784,785,786,787,788,789,790,791,792,858,881,882,883,884,885,886,887,888,889,890,891,892,893,894,895,904,3505,3506,3506,3507,3508,3508,3509,
-3510,3511,3512,3517,16061,1481,1718,1719,1738,1778,1789,1808,1971,2002,2146,2186,2192,2201,2202,2613,2627,2628,2629,2630,2631,2632,2713,2718,2815,2819,2868,2869,2870,5678,14384,14386,14391,14392,14393,14446,
-14457,14480,14481,14527,14583,14757,14879,14891,15035,15039,15040,15063,15050,1256,1280,1281,1368,1594,1679,1824,1896,1954,1957,3657,3752,14405,14458,14619,14620,14810,14833,14837,947,946,3497,3496,3111,
-3031,3017,2919,2901,2894,2114,1974,1962,1961,1960,1958,1639,14820,14807,14462,14461,2529,2530,2531,2532,2533,2534,2737,14455,14472,14477,3948,3920,646,647,650,651,653,675,677,678,679,682,692,701,702,728,753,
-754,755,756,757,759,760,761,762,800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,817,818,819,820,821,822,823,824,825,826,827,855,856,857,858,859,860,861,862,863,864,865,866,872,873,874,875,3409,7595,
-7662,7952,7953,7954,9153,830,829,625,626,627,628,629,630,631,632,633,635,636,637,638,639,640,644,646,741,742,743,869,871,876,877,878,948,949,950,1360,1361,1364,1807,2001,2010,2011,2194,2195,2203,2240,2241,2242,
-2243,2245,2246,2247,2248,2249,2250,2251,2252,2253,2345,2811,3439,3520,3532,3660,3802,3810,7986,8319,8619,8623,8660,11413,11414,14834,15038,18014, -1, ...};
-
-new Float:gShipSight[CUSTOM_MAX_PLAYERS] = { 10, ... };
+new Float:gShipSight[CUSTOM_MAX_PLAYERS] = { 10.0, ... };
 enum shipsInfo
 {
 	shipObjID,
@@ -4088,34 +4232,13 @@ new gAreasWater[6][areasWaterInfo] =
 { -93.230, 239.70, 400.727, 540.62 }
 };
 
-enum wheelChangePosInfo
-{
-	Float:pos1X,
-	Float:pos1Y,
-	Float:pos1Z,
-	Float:pos2X,
-	Float:pos2Y,
-	Float:pos2Z,
-	Float:pos3X,
-	Float:pos3Y,
-	Float:pos3Z,
-	Float:pos4X,
-	Float:pos4Y,
-	Float:pos4Z,
-	pickup1,
-	pickup2,
-	pickup3,
-	pickup4
-};
-new gWheelChangePos[wheelChangePosInfo];
-
 enum itemFactoryInfo
 {
 	fName[128],
 	Float:fPosX,
 	Float:fPosY,
 	Float:fPosZ,
-	fPickupID,
+	fCPID,
 	item1,
 	item1type,
 	item1count,
@@ -4177,383 +4300,57 @@ enum itemFactoryInfo
 	item10reproduceCount,
 	item10price
 }
-new gItemFactories[3][itemFactoryInfo];
+new gItemFactories[50][itemFactoryInfo];
 
-enum SAZONE_MAIN {
-		SAZONE_NAME[28],
-		Float:SAZONE_AREA[6]
+/*
+* Where the driving time in test area can be bought
+*/
+enum drivingTestAreaBuyInfo
+{
+	Float:mPosX,
+	Float:mPosY,
+	Float:mPosZ,
+	mPosWorld,
+	mPosInterior,
+	mPrice,
+	mTime,
+	pickupID
 };
+new gDrivingTestAreaBuy[drivingTestAreaBuyInfo];
 
-new gSAZones[][SAZONE_MAIN] = {  // Majority of names and area coordinates adopted from Mabako's 'Zones Script' v0.2
-	//	NAME                            AREA (Xmin,Ymin,Zmin,Xmax,Ymax,Zmax)
-	{"The Big Ear",	                {-410.00,1403.30,-3.00,-137.90,1681.20,200.00}},
-	{"Aldea Malvada",               {-1372.10,2498.50,0.00,-1277.50,2615.30,200.00}},
-	{"Angel Pine",                  {-2324.90,-2584.20,-6.10,-1964.20,-2212.10,200.00}},
-	{"Arco del Oeste",              {-901.10,2221.80,0.00,-592.00,2571.90,200.00}},
-	{"Avispa Country Club",         {-2646.40,-355.40,0.00,-2270.00,-222.50,200.00}},
-	{"Avispa Country Club",         {-2831.80,-430.20,-6.10,-2646.40,-222.50,200.00}},
-	{"Avispa Country Club",         {-2361.50,-417.10,0.00,-2270.00,-355.40,200.00}},
-	{"Avispa Country Club",         {-2667.80,-302.10,-28.80,-2646.40,-262.30,71.10}},
-	{"Avispa Country Club",         {-2470.00,-355.40,0.00,-2270.00,-318.40,46.10}},
-	{"Avispa Country Club",         {-2550.00,-355.40,0.00,-2470.00,-318.40,39.70}},
-	{"Back o Beyond",               {-1166.90,-2641.10,0.00,-321.70,-1856.00,200.00}},
-	{"Battery Point",               {-2741.00,1268.40,-4.50,-2533.00,1490.40,200.00}},
-	{"Bayside",                     {-2741.00,2175.10,0.00,-2353.10,2722.70,200.00}},
-	{"Bayside Marina",              {-2353.10,2275.70,0.00,-2153.10,2475.70,200.00}},
-	{"Beacon Hill",                 {-399.60,-1075.50,-1.40,-319.00,-977.50,198.50}},
-	{"Blackfield",                  {964.30,1203.20,-89.00,1197.30,1403.20,110.90}},
-	{"Blackfield",                  {964.30,1403.20,-89.00,1197.30,1726.20,110.90}},
-	{"Blackfield Chapel",           {1375.60,596.30,-89.00,1558.00,823.20,110.90}},
-	{"Blackfield Chapel",           {1325.60,596.30,-89.00,1375.60,795.00,110.90}},
-	{"Blackfield Intersection",     {1197.30,1044.60,-89.00,1277.00,1163.30,110.90}},
-	{"Blackfield Intersection",     {1166.50,795.00,-89.00,1375.60,1044.60,110.90}},
-	{"Blackfield Intersection",     {1277.00,1044.60,-89.00,1315.30,1087.60,110.90}},
-	{"Blackfield Intersection",     {1375.60,823.20,-89.00,1457.30,919.40,110.90}},
-	{"Blueberry",                   {104.50,-220.10,2.30,349.60,152.20,200.00}},
-	{"Blueberry",                   {19.60,-404.10,3.80,349.60,-220.10,200.00}},
-	{"Blueberry Acres",             {-319.60,-220.10,0.00,104.50,293.30,200.00}},
-	{"Caligula's Palace",           {2087.30,1543.20,-89.00,2437.30,1703.20,110.90}},
-	{"Caligula's Palace",           {2137.40,1703.20,-89.00,2437.30,1783.20,110.90}},
-	{"Calton Heights",              {-2274.10,744.10,-6.10,-1982.30,1358.90,200.00}},
-	{"Chinatown",                   {-2274.10,578.30,-7.60,-2078.60,744.10,200.00}},
-	{"City Hall",                   {-2867.80,277.40,-9.10,-2593.40,458.40,200.00}},
-	{"Come-A-Lot",                  {2087.30,943.20,-89.00,2623.10,1203.20,110.90}},
-	{"Commerce",                    {1323.90,-1842.20,-89.00,1701.90,-1722.20,110.90}},
-	{"Commerce",                    {1323.90,-1722.20,-89.00,1440.90,-1577.50,110.90}},
-	{"Commerce",                    {1370.80,-1577.50,-89.00,1463.90,-1384.90,110.90}},
-	{"Commerce",                    {1463.90,-1577.50,-89.00,1667.90,-1430.80,110.90}},
-	{"Commerce",                    {1583.50,-1722.20,-89.00,1758.90,-1577.50,110.90}},
-	{"Commerce",                    {1667.90,-1577.50,-89.00,1812.60,-1430.80,110.90}},
-	{"Conference Center",           {1046.10,-1804.20,-89.00,1323.90,-1722.20,110.90}},
-	{"Conference Center",           {1073.20,-1842.20,-89.00,1323.90,-1804.20,110.90}},
-	{"Cranberry Station",           {-2007.80,56.30,0.00,-1922.00,224.70,100.00}},
-	{"Creek",                       {2749.90,1937.20,-89.00,2921.60,2669.70,110.90}},
-	{"Dillimore",                   {580.70,-674.80,-9.50,861.00,-404.70,200.00}},
-	{"Doherty",                     {-2270.00,-324.10,-0.00,-1794.90,-222.50,200.00}},
-	{"Doherty",                     {-2173.00,-222.50,-0.00,-1794.90,265.20,200.00}},
-	{"Downtown",                    {-1982.30,744.10,-6.10,-1871.70,1274.20,200.00}},
-	{"Downtown",                    {-1871.70,1176.40,-4.50,-1620.30,1274.20,200.00}},
-	{"Downtown",                    {-1700.00,744.20,-6.10,-1580.00,1176.50,200.00}},
-	{"Downtown",                    {-1580.00,744.20,-6.10,-1499.80,1025.90,200.00}},
-	{"Downtown",                    {-2078.60,578.30,-7.60,-1499.80,744.20,200.00}},
-	{"Downtown",                    {-1993.20,265.20,-9.10,-1794.90,578.30,200.00}},
-	{"Downtown Los Santos",         {1463.90,-1430.80,-89.00,1724.70,-1290.80,110.90}},
-	{"Downtown Los Santos",         {1724.70,-1430.80,-89.00,1812.60,-1250.90,110.90}},
-	{"Downtown Los Santos",         {1463.90,-1290.80,-89.00,1724.70,-1150.80,110.90}},
-	{"Downtown Los Santos",         {1370.80,-1384.90,-89.00,1463.90,-1170.80,110.90}},
-	{"Downtown Los Santos",         {1724.70,-1250.90,-89.00,1812.60,-1150.80,110.90}},
-	{"Downtown Los Santos",         {1370.80,-1170.80,-89.00,1463.90,-1130.80,110.90}},
-	{"Downtown Los Santos",         {1378.30,-1130.80,-89.00,1463.90,-1026.30,110.90}},
-	{"Downtown Los Santos",         {1391.00,-1026.30,-89.00,1463.90,-926.90,110.90}},
-	{"Downtown Los Santos",         {1507.50,-1385.20,110.90,1582.50,-1325.30,335.90}},
-	{"East Beach",                  {2632.80,-1852.80,-89.00,2959.30,-1668.10,110.90}},
-	{"East Beach",                  {2632.80,-1668.10,-89.00,2747.70,-1393.40,110.90}},
-	{"East Beach",                  {2747.70,-1668.10,-89.00,2959.30,-1498.60,110.90}},
-	{"East Beach",                  {2747.70,-1498.60,-89.00,2959.30,-1120.00,110.90}},
-	{"East Los Santos",             {2421.00,-1628.50,-89.00,2632.80,-1454.30,110.90}},
-	{"East Los Santos",             {2222.50,-1628.50,-89.00,2421.00,-1494.00,110.90}},
-	{"East Los Santos",             {2266.20,-1494.00,-89.00,2381.60,-1372.00,110.90}},
-	{"East Los Santos",             {2381.60,-1494.00,-89.00,2421.00,-1454.30,110.90}},
-	{"East Los Santos",             {2281.40,-1372.00,-89.00,2381.60,-1135.00,110.90}},
-	{"East Los Santos",             {2381.60,-1454.30,-89.00,2462.10,-1135.00,110.90}},
-	{"East Los Santos",             {2462.10,-1454.30,-89.00,2581.70,-1135.00,110.90}},
-	{"Easter Basin",                {-1794.90,249.90,-9.10,-1242.90,578.30,200.00}},
-	{"Easter Basin",                {-1794.90,-50.00,-0.00,-1499.80,249.90,200.00}},
-	{"Easter Bay Airport",          {-1499.80,-50.00,-0.00,-1242.90,249.90,200.00}},
-	{"Easter Bay Airport",          {-1794.90,-730.10,-3.00,-1213.90,-50.00,200.00}},
-	{"Easter Bay Airport",          {-1213.90,-730.10,0.00,-1132.80,-50.00,200.00}},
-	{"Easter Bay Airport",          {-1242.90,-50.00,0.00,-1213.90,578.30,200.00}},
-	{"Easter Bay Airport",          {-1213.90,-50.00,-4.50,-947.90,578.30,200.00}},
-	{"Easter Bay Airport",          {-1315.40,-405.30,15.40,-1264.40,-209.50,25.40}},
-	{"Easter Bay Airport",          {-1354.30,-287.30,15.40,-1315.40,-209.50,25.40}},
-	{"Easter Bay Airport",          {-1490.30,-209.50,15.40,-1264.40,-148.30,25.40}},
-	{"Easter Bay Chemicals",        {-1132.80,-768.00,0.00,-956.40,-578.10,200.00}},
-	{"Easter Bay Chemicals",        {-1132.80,-787.30,0.00,-956.40,-768.00,200.00}},
-	{"El Castillo del Diablo",      {-464.50,2217.60,0.00,-208.50,2580.30,200.00}},
-	{"El Castillo del Diablo",      {-208.50,2123.00,-7.60,114.00,2337.10,200.00}},
-	{"El Castillo del Diablo",      {-208.50,2337.10,0.00,8.40,2487.10,200.00}},
-	{"El Corona",                   {1812.60,-2179.20,-89.00,1970.60,-1852.80,110.90}},
-	{"El Corona",                   {1692.60,-2179.20,-89.00,1812.60,-1842.20,110.90}},
-	{"El Quebrados",                {-1645.20,2498.50,0.00,-1372.10,2777.80,200.00}},
-	{"Esplanade East",              {-1620.30,1176.50,-4.50,-1580.00,1274.20,200.00}},
-	{"Esplanade East",              {-1580.00,1025.90,-6.10,-1499.80,1274.20,200.00}},
-	{"Esplanade East",              {-1499.80,578.30,-79.60,-1339.80,1274.20,20.30}},
-	{"Esplanade North",             {-2533.00,1358.90,-4.50,-1996.60,1501.20,200.00}},
-	{"Esplanade North",             {-1996.60,1358.90,-4.50,-1524.20,1592.50,200.00}},
-	{"Esplanade North",             {-1982.30,1274.20,-4.50,-1524.20,1358.90,200.00}},
-	{"Fallen Tree",                 {-792.20,-698.50,-5.30,-452.40,-380.00,200.00}},
-	{"Fallow Bridge",               {434.30,366.50,0.00,603.00,555.60,200.00}},
-	{"Fern Ridge",                  {508.10,-139.20,0.00,1306.60,119.50,200.00}},
-	{"Financial",                   {-1871.70,744.10,-6.10,-1701.30,1176.40,300.00}},
-	{"Fisher's Lagoon",             {1916.90,-233.30,-100.00,2131.70,13.80,200.00}},
-	{"Flint Intersection",          {-187.70,-1596.70,-89.00,17.00,-1276.60,110.90}},
-	{"Flint Range",                 {-594.10,-1648.50,0.00,-187.70,-1276.60,200.00}},
-	{"Fort Carson",                 {-376.20,826.30,-3.00,123.70,1220.40,200.00}},
-	{"Foster Valley",               {-2270.00,-430.20,-0.00,-2178.60,-324.10,200.00}},
-	{"Foster Valley",               {-2178.60,-599.80,-0.00,-1794.90,-324.10,200.00}},
-	{"Foster Valley",               {-2178.60,-1115.50,0.00,-1794.90,-599.80,200.00}},
-	{"Foster Valley",               {-2178.60,-1250.90,0.00,-1794.90,-1115.50,200.00}},
-	{"Frederick Bridge",            {2759.20,296.50,0.00,2774.20,594.70,200.00}},
-	{"Gant Bridge",                 {-2741.40,1659.60,-6.10,-2616.40,2175.10,200.00}},
-	{"Gant Bridge",                 {-2741.00,1490.40,-6.10,-2616.40,1659.60,200.00}},
-	{"Ganton",                      {2222.50,-1852.80,-89.00,2632.80,-1722.30,110.90}},
-	{"Ganton",                      {2222.50,-1722.30,-89.00,2632.80,-1628.50,110.90}},
-	{"Garcia",                      {-2411.20,-222.50,-0.00,-2173.00,265.20,200.00}},
-	{"Garcia",                      {-2395.10,-222.50,-5.30,-2354.00,-204.70,200.00}},
-	{"Garver Bridge",               {-1339.80,828.10,-89.00,-1213.90,1057.00,110.90}},
-	{"Garver Bridge",               {-1213.90,950.00,-89.00,-1087.90,1178.90,110.90}},
-	{"Garver Bridge",               {-1499.80,696.40,-179.60,-1339.80,925.30,20.30}},
-	{"Glen Park",                   {1812.60,-1449.60,-89.00,1996.90,-1350.70,110.90}},
-	{"Glen Park",                   {1812.60,-1100.80,-89.00,1994.30,-973.30,110.90}},
-	{"Glen Park",                   {1812.60,-1350.70,-89.00,2056.80,-1100.80,110.90}},
-	{"Green Palms",                 {176.50,1305.40,-3.00,338.60,1520.70,200.00}},
-	{"Greenglass College",          {964.30,1044.60,-89.00,1197.30,1203.20,110.90}},
-	{"Greenglass College",          {964.30,930.80,-89.00,1166.50,1044.60,110.90}},
-	{"Hampton Barns",               {603.00,264.30,0.00,761.90,366.50,200.00}},
-	{"Hankypanky Point",            {2576.90,62.10,0.00,2759.20,385.50,200.00}},
-	{"Harry Gold Parkway",          {1777.30,863.20,-89.00,1817.30,2342.80,110.90}},
-	{"Hashbury",                    {-2593.40,-222.50,-0.00,-2411.20,54.70,200.00}},
-	{"Hilltop Farm",                {967.30,-450.30,-3.00,1176.70,-217.90,200.00}},
-	{"Hunter Quarry",               {337.20,710.80,-115.20,860.50,1031.70,203.70}},
-	{"Idlewood",                    {1812.60,-1852.80,-89.00,1971.60,-1742.30,110.90}},
-	{"Idlewood",                    {1812.60,-1742.30,-89.00,1951.60,-1602.30,110.90}},
-	{"Idlewood",                    {1951.60,-1742.30,-89.00,2124.60,-1602.30,110.90}},
-	{"Idlewood",                    {1812.60,-1602.30,-89.00,2124.60,-1449.60,110.90}},
-	{"Idlewood",                    {2124.60,-1742.30,-89.00,2222.50,-1494.00,110.90}},
-	{"Idlewood",                    {1971.60,-1852.80,-89.00,2222.50,-1742.30,110.90}},
-	{"Jefferson",                   {1996.90,-1449.60,-89.00,2056.80,-1350.70,110.90}},
-	{"Jefferson",                   {2124.60,-1494.00,-89.00,2266.20,-1449.60,110.90}},
-	{"Jefferson",                   {2056.80,-1372.00,-89.00,2281.40,-1210.70,110.90}},
-	{"Jefferson",                   {2056.80,-1210.70,-89.00,2185.30,-1126.30,110.90}},
-	{"Jefferson",                   {2185.30,-1210.70,-89.00,2281.40,-1154.50,110.90}},
-	{"Jefferson",                   {2056.80,-1449.60,-89.00,2266.20,-1372.00,110.90}},
-	{"Julius Thruway East",         {2623.10,943.20,-89.00,2749.90,1055.90,110.90}},
-	{"Julius Thruway East",         {2685.10,1055.90,-89.00,2749.90,2626.50,110.90}},
-	{"Julius Thruway East",         {2536.40,2442.50,-89.00,2685.10,2542.50,110.90}},
-	{"Julius Thruway East",         {2625.10,2202.70,-89.00,2685.10,2442.50,110.90}},
-	{"Julius Thruway North",        {2498.20,2542.50,-89.00,2685.10,2626.50,110.90}},
-	{"Julius Thruway North",        {2237.40,2542.50,-89.00,2498.20,2663.10,110.90}},
-	{"Julius Thruway North",        {2121.40,2508.20,-89.00,2237.40,2663.10,110.90}},
-	{"Julius Thruway North",        {1938.80,2508.20,-89.00,2121.40,2624.20,110.90}},
-	{"Julius Thruway North",        {1534.50,2433.20,-89.00,1848.40,2583.20,110.90}},
-	{"Julius Thruway North",        {1848.40,2478.40,-89.00,1938.80,2553.40,110.90}},
-	{"Julius Thruway North",        {1704.50,2342.80,-89.00,1848.40,2433.20,110.90}},
-	{"Julius Thruway North",        {1377.30,2433.20,-89.00,1534.50,2507.20,110.90}},
-	{"Julius Thruway South",        {1457.30,823.20,-89.00,2377.30,863.20,110.90}},
-	{"Julius Thruway South",        {2377.30,788.80,-89.00,2537.30,897.90,110.90}},
-	{"Julius Thruway West",         {1197.30,1163.30,-89.00,1236.60,2243.20,110.90}},
-	{"Julius Thruway West",         {1236.60,2142.80,-89.00,1297.40,2243.20,110.90}},
-	{"Juniper Hill",                {-2533.00,578.30,-7.60,-2274.10,968.30,200.00}},
-	{"Juniper Hollow",              {-2533.00,968.30,-6.10,-2274.10,1358.90,200.00}},
-	{"K.A.C.C. Military Fuels",     {2498.20,2626.50,-89.00,2749.90,2861.50,110.90}},
-	{"Kincaid Bridge",              {-1339.80,599.20,-89.00,-1213.90,828.10,110.90}},
-	{"Kincaid Bridge",              {-1213.90,721.10,-89.00,-1087.90,950.00,110.90}},
-	{"Kincaid Bridge",              {-1087.90,855.30,-89.00,-961.90,986.20,110.90}},
-	{"King's",                      {-2329.30,458.40,-7.60,-1993.20,578.30,200.00}},
-	{"King's",                      {-2411.20,265.20,-9.10,-1993.20,373.50,200.00}},
-	{"King's",                      {-2253.50,373.50,-9.10,-1993.20,458.40,200.00}},
-	{"LVA Freight Depot",           {1457.30,863.20,-89.00,1777.40,1143.20,110.90}},
-	{"LVA Freight Depot",           {1375.60,919.40,-89.00,1457.30,1203.20,110.90}},
-	{"LVA Freight Depot",           {1277.00,1087.60,-89.00,1375.60,1203.20,110.90}},
-	{"LVA Freight Depot",           {1315.30,1044.60,-89.00,1375.60,1087.60,110.90}},
-	{"LVA Freight Depot",           {1236.60,1163.40,-89.00,1277.00,1203.20,110.90}},
-	{"Las Barrancas",               {-926.10,1398.70,-3.00,-719.20,1634.60,200.00}},
-	{"Las Brujas",                  {-365.10,2123.00,-3.00,-208.50,2217.60,200.00}},
-	{"Las Colinas",                 {1994.30,-1100.80,-89.00,2056.80,-920.80,110.90}},
-	{"Las Colinas",                 {2056.80,-1126.30,-89.00,2126.80,-920.80,110.90}},
-	{"Las Colinas",                 {2185.30,-1154.50,-89.00,2281.40,-934.40,110.90}},
-	{"Las Colinas",                 {2126.80,-1126.30,-89.00,2185.30,-934.40,110.90}},
-	{"Las Colinas",                 {2747.70,-1120.00,-89.00,2959.30,-945.00,110.90}},
-	{"Las Colinas",                 {2632.70,-1135.00,-89.00,2747.70,-945.00,110.90}},
-	{"Las Colinas",                 {2281.40,-1135.00,-89.00,2632.70,-945.00,110.90}},
-	{"Las Payasadas",               {-354.30,2580.30,2.00,-133.60,2816.80,200.00}},
-	{"Las Venturas Airport",        {1236.60,1203.20,-89.00,1457.30,1883.10,110.90}},
-	{"Las Venturas Airport",        {1457.30,1203.20,-89.00,1777.30,1883.10,110.90}},
-	{"Las Venturas Airport",        {1457.30,1143.20,-89.00,1777.40,1203.20,110.90}},
-	{"Las Venturas Airport",        {1515.80,1586.40,-12.50,1729.90,1714.50,87.50}},
-	{"Last Dime Motel",             {1823.00,596.30,-89.00,1997.20,823.20,110.90}},
-	{"Leafy Hollow",                {-1166.90,-1856.00,0.00,-815.60,-1602.00,200.00}},
-	{"Liberty City",                {-1000.00,400.00,1300.00,-700.00,600.00,1400.00}},
-	{"Lil' Probe Inn",              {-90.20,1286.80,-3.00,153.80,1554.10,200.00}},
-	{"Linden Side",                 {2749.90,943.20,-89.00,2923.30,1198.90,110.90}},
-	{"Linden Station",              {2749.90,1198.90,-89.00,2923.30,1548.90,110.90}},
-	{"Linden Station",              {2811.20,1229.50,-39.50,2861.20,1407.50,60.40}},
-	{"Little Mexico",               {1701.90,-1842.20,-89.00,1812.60,-1722.20,110.90}},
-	{"Little Mexico",               {1758.90,-1722.20,-89.00,1812.60,-1577.50,110.90}},
-	{"Los Flores",                  {2581.70,-1454.30,-89.00,2632.80,-1393.40,110.90}},
-	{"Los Flores",                  {2581.70,-1393.40,-89.00,2747.70,-1135.00,110.90}},
-	{"Los Santos International",    {1249.60,-2394.30,-89.00,1852.00,-2179.20,110.90}},
-	{"Los Santos International",    {1852.00,-2394.30,-89.00,2089.00,-2179.20,110.90}},
-	{"Los Santos International",    {1382.70,-2730.80,-89.00,2201.80,-2394.30,110.90}},
-	{"Los Santos International",    {1974.60,-2394.30,-39.00,2089.00,-2256.50,60.90}},
-	{"Los Santos International",    {1400.90,-2669.20,-39.00,2189.80,-2597.20,60.90}},
-	{"Los Santos International",    {2051.60,-2597.20,-39.00,2152.40,-2394.30,60.90}},
-	{"Marina",                      {647.70,-1804.20,-89.00,851.40,-1577.50,110.90}},
-	{"Marina",                      {647.70,-1577.50,-89.00,807.90,-1416.20,110.90}},
-	{"Marina",                      {807.90,-1577.50,-89.00,926.90,-1416.20,110.90}},
-	{"Market",                      {787.40,-1416.20,-89.00,1072.60,-1310.20,110.90}},
-	{"Market",                      {952.60,-1310.20,-89.00,1072.60,-1130.80,110.90}},
-	{"Market",                      {1072.60,-1416.20,-89.00,1370.80,-1130.80,110.90}},
-	{"Market",                      {926.90,-1577.50,-89.00,1370.80,-1416.20,110.90}},
-	{"Market Station",              {787.40,-1410.90,-34.10,866.00,-1310.20,65.80}},
-	{"Martin Bridge",               {-222.10,293.30,0.00,-122.10,476.40,200.00}},
-	{"Missionary Hill",             {-2994.40,-811.20,0.00,-2178.60,-430.20,200.00}},
-	{"Montgomery",                  {1119.50,119.50,-3.00,1451.40,493.30,200.00}},
-	{"Montgomery",                  {1451.40,347.40,-6.10,1582.40,420.80,200.00}},
-	{"Montgomery Intersection",     {1546.60,208.10,0.00,1745.80,347.40,200.00}},
-	{"Montgomery Intersection",     {1582.40,347.40,0.00,1664.60,401.70,200.00}},
-	{"Mulholland",                  {1414.00,-768.00,-89.00,1667.60,-452.40,110.90}},
-	{"Mulholland",                  {1281.10,-452.40,-89.00,1641.10,-290.90,110.90}},
-	{"Mulholland",                  {1269.10,-768.00,-89.00,1414.00,-452.40,110.90}},
-	{"Mulholland",                  {1357.00,-926.90,-89.00,1463.90,-768.00,110.90}},
-	{"Mulholland",                  {1318.10,-910.10,-89.00,1357.00,-768.00,110.90}},
-	{"Mulholland",                  {1169.10,-910.10,-89.00,1318.10,-768.00,110.90}},
-	{"Mulholland",                  {768.60,-954.60,-89.00,952.60,-860.60,110.90}},
-	{"Mulholland",                  {687.80,-860.60,-89.00,911.80,-768.00,110.90}},
-	{"Mulholland",                  {737.50,-768.00,-89.00,1142.20,-674.80,110.90}},
-	{"Mulholland",                  {1096.40,-910.10,-89.00,1169.10,-768.00,110.90}},
-	{"Mulholland",                  {952.60,-937.10,-89.00,1096.40,-860.60,110.90}},
-	{"Mulholland",                  {911.80,-860.60,-89.00,1096.40,-768.00,110.90}},
-	{"Mulholland",                  {861.00,-674.80,-89.00,1156.50,-600.80,110.90}},
-	{"Mulholland Intersection",     {1463.90,-1150.80,-89.00,1812.60,-768.00,110.90}},
-	{"North Rock",                  {2285.30,-768.00,0.00,2770.50,-269.70,200.00}},
-	{"Ocean Docks",                 {2373.70,-2697.00,-89.00,2809.20,-2330.40,110.90}},
-	{"Ocean Docks",                 {2201.80,-2418.30,-89.00,2324.00,-2095.00,110.90}},
-	{"Ocean Docks",                 {2324.00,-2302.30,-89.00,2703.50,-2145.10,110.90}},
-	{"Ocean Docks",                 {2089.00,-2394.30,-89.00,2201.80,-2235.80,110.90}},
-	{"Ocean Docks",                 {2201.80,-2730.80,-89.00,2324.00,-2418.30,110.90}},
-	{"Ocean Docks",                 {2703.50,-2302.30,-89.00,2959.30,-2126.90,110.90}},
-	{"Ocean Docks",                 {2324.00,-2145.10,-89.00,2703.50,-2059.20,110.90}},
-	{"Ocean Flats",                 {-2994.40,277.40,-9.10,-2867.80,458.40,200.00}},
-	{"Ocean Flats",                 {-2994.40,-222.50,-0.00,-2593.40,277.40,200.00}},
-	{"Ocean Flats",                 {-2994.40,-430.20,-0.00,-2831.80,-222.50,200.00}},
-	{"Octane Springs",              {338.60,1228.50,0.00,664.30,1655.00,200.00}},
-	{"Old Venturas Strip",          {2162.30,2012.10,-89.00,2685.10,2202.70,110.90}},
-	{"Palisades",                   {-2994.40,458.40,-6.10,-2741.00,1339.60,200.00}},
-	{"Palomino Creek",              {2160.20,-149.00,0.00,2576.90,228.30,200.00}},
-	{"Paradiso",                    {-2741.00,793.40,-6.10,-2533.00,1268.40,200.00}},
-	{"Pershing Square",             {1440.90,-1722.20,-89.00,1583.50,-1577.50,110.90}},
-	{"Pilgrim",                     {2437.30,1383.20,-89.00,2624.40,1783.20,110.90}},
-	{"Pilgrim",                     {2624.40,1383.20,-89.00,2685.10,1783.20,110.90}},
-	{"Pilson Intersection",         {1098.30,2243.20,-89.00,1377.30,2507.20,110.90}},
-	{"Pirates in Men's Pants",      {1817.30,1469.20,-89.00,2027.40,1703.20,110.90}},
-	{"Playa del Seville",           {2703.50,-2126.90,-89.00,2959.30,-1852.80,110.90}},
-	{"Prickle Pine",                {1534.50,2583.20,-89.00,1848.40,2863.20,110.90}},
-	{"Prickle Pine",                {1117.40,2507.20,-89.00,1534.50,2723.20,110.90}},
-	{"Prickle Pine",                {1848.40,2553.40,-89.00,1938.80,2863.20,110.90}},
-	{"Prickle Pine",                {1938.80,2624.20,-89.00,2121.40,2861.50,110.90}},
-	{"Queens",                      {-2533.00,458.40,0.00,-2329.30,578.30,200.00}},
-	{"Queens",                      {-2593.40,54.70,0.00,-2411.20,458.40,200.00}},
-	{"Queens",                      {-2411.20,373.50,0.00,-2253.50,458.40,200.00}},
-	{"Randolph Industrial Estate",  {1558.00,596.30,-89.00,1823.00,823.20,110.90}},
-	{"Redsands East",               {1817.30,2011.80,-89.00,2106.70,2202.70,110.90}},
-	{"Redsands East",               {1817.30,2202.70,-89.00,2011.90,2342.80,110.90}},
-	{"Redsands East",               {1848.40,2342.80,-89.00,2011.90,2478.40,110.90}},
-	{"Redsands West",               {1236.60,1883.10,-89.00,1777.30,2142.80,110.90}},
-	{"Redsands West",               {1297.40,2142.80,-89.00,1777.30,2243.20,110.90}},
-	{"Redsands West",               {1377.30,2243.20,-89.00,1704.50,2433.20,110.90}},
-	{"Redsands West",               {1704.50,2243.20,-89.00,1777.30,2342.80,110.90}},
-	{"Regular Tom",                 {-405.70,1712.80,-3.00,-276.70,1892.70,200.00}},
-	{"Richman",                     {647.50,-1118.20,-89.00,787.40,-954.60,110.90}},
-	{"Richman",                     {647.50,-954.60,-89.00,768.60,-860.60,110.90}},
-	{"Richman",                     {225.10,-1369.60,-89.00,334.50,-1292.00,110.90}},
-	{"Richman",                     {225.10,-1292.00,-89.00,466.20,-1235.00,110.90}},
-	{"Richman",                     {72.60,-1404.90,-89.00,225.10,-1235.00,110.90}},
-	{"Richman",                     {72.60,-1235.00,-89.00,321.30,-1008.10,110.90}},
-	{"Richman",                     {321.30,-1235.00,-89.00,647.50,-1044.00,110.90}},
-	{"Richman",                     {321.30,-1044.00,-89.00,647.50,-860.60,110.90}},
-	{"Richman",                     {321.30,-860.60,-89.00,687.80,-768.00,110.90}},
-	{"Richman",                     {321.30,-768.00,-89.00,700.70,-674.80,110.90}},
-	{"Robada Intersection",         {-1119.00,1178.90,-89.00,-862.00,1351.40,110.90}},
-	{"Roca Escalante",              {2237.40,2202.70,-89.00,2536.40,2542.50,110.90}},
-	{"Roca Escalante",              {2536.40,2202.70,-89.00,2625.10,2442.50,110.90}},
-	{"Rockshore East",              {2537.30,676.50,-89.00,2902.30,943.20,110.90}},
-	{"Rockshore West",              {1997.20,596.30,-89.00,2377.30,823.20,110.90}},
-	{"Rockshore West",              {2377.30,596.30,-89.00,2537.30,788.80,110.90}},
-	{"Rodeo",                       {72.60,-1684.60,-89.00,225.10,-1544.10,110.90}},
-	{"Rodeo",                       {72.60,-1544.10,-89.00,225.10,-1404.90,110.90}},
-	{"Rodeo",                       {225.10,-1684.60,-89.00,312.80,-1501.90,110.90}},
-	{"Rodeo",                       {225.10,-1501.90,-89.00,334.50,-1369.60,110.90}},
-	{"Rodeo",                       {334.50,-1501.90,-89.00,422.60,-1406.00,110.90}},
-	{"Rodeo",                       {312.80,-1684.60,-89.00,422.60,-1501.90,110.90}},
-	{"Rodeo",                       {422.60,-1684.60,-89.00,558.00,-1570.20,110.90}},
-	{"Rodeo",                       {558.00,-1684.60,-89.00,647.50,-1384.90,110.90}},
-	{"Rodeo",                       {466.20,-1570.20,-89.00,558.00,-1385.00,110.90}},
-	{"Rodeo",                       {422.60,-1570.20,-89.00,466.20,-1406.00,110.90}},
-	{"Rodeo",                       {466.20,-1385.00,-89.00,647.50,-1235.00,110.90}},
-	{"Rodeo",                       {334.50,-1406.00,-89.00,466.20,-1292.00,110.90}},
-	{"Royal Casino",                {2087.30,1383.20,-89.00,2437.30,1543.20,110.90}},
-	{"San Andreas Sound",           {2450.30,385.50,-100.00,2759.20,562.30,200.00}},
-	{"Santa Flora",                 {-2741.00,458.40,-7.60,-2533.00,793.40,200.00}},
-	{"Santa Maria Beach",           {342.60,-2173.20,-89.00,647.70,-1684.60,110.90}},
-	{"Santa Maria Beach",           {72.60,-2173.20,-89.00,342.60,-1684.60,110.90}},
-	{"Shady Cabin",                 {-1632.80,-2263.40,-3.00,-1601.30,-2231.70,200.00}},
-	{"Shady Creeks",                {-1820.60,-2643.60,-8.00,-1226.70,-1771.60,200.00}},
-	{"Shady Creeks",                {-2030.10,-2174.80,-6.10,-1820.60,-1771.60,200.00}},
-	{"Sobell Rail Yards",           {2749.90,1548.90,-89.00,2923.30,1937.20,110.90}},
-	{"Spinybed",                    {2121.40,2663.10,-89.00,2498.20,2861.50,110.90}},
-	{"Starfish Casino",             {2437.30,1783.20,-89.00,2685.10,2012.10,110.90}},
-	{"Starfish Casino",             {2437.30,1858.10,-39.00,2495.00,1970.80,60.90}},
-	{"Starfish Casino",             {2162.30,1883.20,-89.00,2437.30,2012.10,110.90}},
-	{"Temple",                      {1252.30,-1130.80,-89.00,1378.30,-1026.30,110.90}},
-	{"Temple",                      {1252.30,-1026.30,-89.00,1391.00,-926.90,110.90}},
-	{"Temple",                      {1252.30,-926.90,-89.00,1357.00,-910.10,110.90}},
-	{"Temple",                      {952.60,-1130.80,-89.00,1096.40,-937.10,110.90}},
-	{"Temple",                      {1096.40,-1130.80,-89.00,1252.30,-1026.30,110.90}},
-	{"Temple",                      {1096.40,-1026.30,-89.00,1252.30,-910.10,110.90}},
-	{"The Camel's Toe",             {2087.30,1203.20,-89.00,2640.40,1383.20,110.90}},
-	{"The Clown's Pocket",          {2162.30,1783.20,-89.00,2437.30,1883.20,110.90}},
-	{"The Emerald Isle",            {2011.90,2202.70,-89.00,2237.40,2508.20,110.90}},
-	{"The Farm",                    {-1209.60,-1317.10,114.90,-908.10,-787.30,251.90}},
-	{"The Four Dragons Casino",     {1817.30,863.20,-89.00,2027.30,1083.20,110.90}},
-	{"The High Roller",             {1817.30,1283.20,-89.00,2027.30,1469.20,110.90}},
-	{"The Mako Span",               {1664.60,401.70,0.00,1785.10,567.20,200.00}},
-	{"The Panopticon",              {-947.90,-304.30,-1.10,-319.60,327.00,200.00}},
-	{"The Pink Swan",               {1817.30,1083.20,-89.00,2027.30,1283.20,110.90}},
-	{"The Sherman Dam",             {-968.70,1929.40,-3.00,-481.10,2155.20,200.00}},
-	{"The Strip",                   {2027.40,863.20,-89.00,2087.30,1703.20,110.90}},
-	{"The Strip",                   {2106.70,1863.20,-89.00,2162.30,2202.70,110.90}},
-	{"The Strip",                   {2027.40,1783.20,-89.00,2162.30,1863.20,110.90}},
-	{"The Strip",                   {2027.40,1703.20,-89.00,2137.40,1783.20,110.90}},
-	{"The Visage",                  {1817.30,1863.20,-89.00,2106.70,2011.80,110.90}},
-	{"The Visage",                  {1817.30,1703.20,-89.00,2027.40,1863.20,110.90}},
-	{"Unity Station",               {1692.60,-1971.80,-20.40,1812.60,-1932.80,79.50}},
-	{"Valle Ocultado",              {-936.60,2611.40,2.00,-715.90,2847.90,200.00}},
-	{"Verdant Bluffs",              {930.20,-2488.40,-89.00,1249.60,-2006.70,110.90}},
-	{"Verdant Bluffs",              {1073.20,-2006.70,-89.00,1249.60,-1842.20,110.90}},
-	{"Verdant Bluffs",              {1249.60,-2179.20,-89.00,1692.60,-1842.20,110.90}},
-	{"Verdant Meadows",             {37.00,2337.10,-3.00,435.90,2677.90,200.00}},
-	{"Verona Beach",                {647.70,-2173.20,-89.00,930.20,-1804.20,110.90}},
-	{"Verona Beach",                {930.20,-2006.70,-89.00,1073.20,-1804.20,110.90}},
-	{"Verona Beach",                {851.40,-1804.20,-89.00,1046.10,-1577.50,110.90}},
-	{"Verona Beach",                {1161.50,-1722.20,-89.00,1323.90,-1577.50,110.90}},
-	{"Verona Beach",                {1046.10,-1722.20,-89.00,1161.50,-1577.50,110.90}},
-	{"Vinewood",                    {787.40,-1310.20,-89.00,952.60,-1130.80,110.90}},
-	{"Vinewood",                    {787.40,-1130.80,-89.00,952.60,-954.60,110.90}},
-	{"Vinewood",                    {647.50,-1227.20,-89.00,787.40,-1118.20,110.90}},
-	{"Vinewood",                    {647.70,-1416.20,-89.00,787.40,-1227.20,110.90}},
-	{"Whitewood Estates",           {883.30,1726.20,-89.00,1098.30,2507.20,110.90}},
-	{"Whitewood Estates",           {1098.30,1726.20,-89.00,1197.30,2243.20,110.90}},
-	{"Willowfield",                 {1970.60,-2179.20,-89.00,2089.00,-1852.80,110.90}},
-	{"Willowfield",                 {2089.00,-2235.80,-89.00,2201.80,-1989.90,110.90}},
-	{"Willowfield",                 {2089.00,-1989.90,-89.00,2324.00,-1852.80,110.90}},
-	{"Willowfield",                 {2201.80,-2095.00,-89.00,2324.00,-1989.90,110.90}},
-	{"Willowfield",                 {2541.70,-1941.40,-89.00,2703.50,-1852.80,110.90}},
-	{"Willowfield",                 {2324.00,-2059.20,-89.00,2541.70,-1852.80,110.90}},
-	{"Willowfield",                 {2541.70,-2059.20,-89.00,2703.50,-1941.40,110.90}},
-	{"Yellow Bell Station",         {1377.40,2600.40,-21.90,1492.40,2687.30,78.00}},
-	// Main Zones
-	{"Los Santos",                  {44.60,-2892.90,-242.90,2997.00,-768.00,900.00}},
-	{"Las Venturas",                {869.40,596.30,-242.90,2997.00,2993.80,900.00}},
-	{"Bone County",                 {-480.50,596.30,-242.90,869.40,2993.80,900.00}},
-	{"Tierra Robada",               {-2997.40,1659.60,-242.90,-480.50,2993.80,900.00}},
-	{"Tierra Robada",               {-1213.90,596.30,-242.90,-480.50,1659.60,900.00}},
-	{"San Fierro",                  {-2997.40,-1115.50,-242.90,-1213.90,1659.60,900.00}},
-	{"Red County",                  {-1213.90,-768.00,-242.90,2997.00,596.30,900.00}},
-	{"Flint County",                {-1213.90,-2892.90,-242.90,44.60,-768.00,900.00}},
-	{"Whetstone",                   {-2997.40,-2892.90,-242.90,-1213.90,-1115.50,900.00}}
+enum drivingTestAreaInfo
+{
+	Float:posEntranceX,
+	Float:posEntranceY,
+	Float:posEntranceZ,
+	Float:posEntranceAngle,
+	posEntranceWorld,
+	posEntranceInterior,
+	Float:posExitX,
+	Float:posExitY,
+	Float:posExitZ,
+	Float:posExitAngle,
+	posExitWorld,
+	posExitInterior,
+	mPriceA,
+	mPriceB,
+	mPriceCE,
+	pickupID1,
+	pickupID2
 };
+new gDrivingTestArea[drivingTestAreaInfo];
 
+enum admissionChambersInfo
+{
+	Float:mPosX,
+	Float:mPosY,
+	Float:mPosZ,
+	mWorld,
+	mInt,
+	mPickupID
+}
+new gAdmissionChambers[30][admissionChambersInfo];
+	
 new gRandomStableModels[][2] = { //Total 87 Models
 {400},//Landstalker
 {401},//Bravura
@@ -4644,6 +4441,651 @@ new gRandomStableModels[][2] = { //Total 87 Models
 {605}//Sadler Shit
 };
 
+enum quizQuestionsInfo
+{
+	q1[128],
+	a1a[128],
+	a1b[128],
+	a1c[128],
+	a1d[128],
+	a1e[128],
+	a1,
+	q2[128],
+	a2a[128],
+	a2b[128],
+	a2c[128],
+	a2d[128],
+	a2e[128],
+	a2,
+	q3[128],
+	a3a[128],
+	a3b[128],
+	a3c[128],
+	a3d[128],
+	a3e[128],
+	a3,
+	q4[128],
+	a4a[128],
+	a4b[128],
+	a4c[128],
+	a4d[128],
+	a4e[128],
+	a4,
+	q5[128],
+	a5a[128],
+	a5b[128],
+	a5c[128],
+	a5d[128],
+	a5e[128],
+	a5,
+	q6[128],
+	a6a[128],
+	a6b[128],
+	a6c[128],
+	a6d[128],
+	a6e[128],
+	a6,
+	q7[128],
+	a7a[128],
+	a7b[128],
+	a7c[128],
+	a7d[128],
+	a7e[128],
+	a7,
+	q8[128],
+	a8a[128],
+	a8b[128],
+	a8c[128],
+	a8d[128],
+	a8e[128],
+	a8,
+	q9[128],
+	a9a[128],
+	a9b[128],
+	a9c[128],
+	a9d[128],
+	a9e[128],
+	a9,
+	q10[128],
+	a10a[128],
+	a10b[128],
+	a10c[128],
+	a10d[128],
+	a10e[128],
+	a10,
+	q11[128],
+	a11a[128],
+	a11b[128],
+	a11c[128],
+	a11d[128],
+	a11e[128],
+	a11,
+	q12[128],
+	a12a[128],
+	a12b[128],
+	a12c[128],
+	a12d[128],
+	a12e[128],
+	a12,
+	q13[128],
+	a13a[128],
+	a13b[128],
+	a13c[128],
+	a13d[128],
+	a13e[128],
+	a13,
+	q14[128],
+	a14a[128],
+	a14b[128],
+	a14c[128],
+	a14d[128],
+	a14e[128],
+	a14,
+	q15[128],
+	a15a[128],
+	a15b[128],
+	a15c[128],
+	a15d[128],
+	a15e[128],
+	a15,
+	q16[128],
+	a16a[128],
+	a16b[128],
+	a16c[128],
+	a16d[128],
+	a16e[128],
+	a16,
+	q17[128],
+	a17a[128],
+	a17b[128],
+	a17c[128],
+	a17d[128],
+	a17e[128],
+	a17,
+	q18[128],
+	a18a[128],
+	a18b[128],
+	a18c[128],
+	a18d[128],
+	a18e[128],
+	a18,
+	q19[128],
+	a19a[128],
+	a19b[128],
+	a19c[128],
+	a19d[128],
+	a19e[128],
+	a19,
+	q20[128],
+	a20a[128],
+	a20b[128],
+	a20c[128],
+	a20d[128],
+	a20e[128],
+	a20,
+	q21[128],
+	a21a[128],
+	a21b[128],
+	a21c[128],
+	a21d[128],
+	a21e[128],
+	a21,
+	q22[128],
+	a22a[128],
+	a22b[128],
+	a22c[128],
+	a22d[128],
+	a22e[128],
+	a22,
+	q23[128],
+	a23a[128],
+	a23b[128],
+	a23c[128],
+	a23d[128],
+	a23e[128],
+	a23,
+	q24[128],
+	a24a[128],
+	a24b[128],
+	a24c[128],
+	a24d[128],
+	a24e[128],
+	a24,
+	q25[128],
+	a25a[128],
+	a25b[128],
+	a25c[128],
+	a25d[128],
+	a25e[128],
+	a25
+};
+new gQuizQuestions[quizQuestionsInfo] =
+{
+	"1.Co rozumiesz pod pojêciem Role Play?",
+	"1.To inaczej Stunt.",
+	"2.Naœladowanie s³awnych osób.",
+	"3.Naœladowanie realnego ¿ycia.",
+	"4.Inaczej krêcimy filmy.",
+	"5.To inaczej Deatmatch.",
+	3,
+	"2.Co oznacza pojêcie Metagaming?",
+	"1.Kradzie¿ pojazdu w sposób NON-RP.",
+	"2.U¿ywanie informacji z OOC w IC. ",
+	"3.Wulgarne odzywki na czacie OOC. ",
+	"4.Zak³adanie multikont. ",
+	"5.Inaczej zabijanie bez powodu. ",
+	2,
+	"3.Co zrobisz jak bêdziesz na odludziu?",
+	"1.Zadzwoniê po taxi albo do kumpla. ",
+	"2.Zabijê siê. ",
+	"3.Bêde spamowa³ na /pw do admina o teleport.",
+	"4.Zacznê sprintowaæ do miasta. ",
+	"5.Odpalê cheaty i siê teleportujê. ",
+	1, 
+	"4.W jaki sposób poszukasz pracy (w frakcji)?",
+	"1.Zapytam lidera na /pw.", 
+	"2.Jak zobaczê kogoœ z frakcji to napiszê mu na /pw. ",
+	"3.Zaspamujê gg/skype lidera by mnie przyj¹³. ",
+	"4.Przypnê og³oszenie na forum i poczekam na odpowiedŸ. ",
+	"5.Gdy spotkam lidera wyœlê mu kilka dolców i mnie przyjmie. ",
+	4,
+	"5.Co znaczy Bunny Hopping?",
+	 "1.Strzelanie z miejsca pasa¿era. ",
+	 "2.Jazda w sposób NON-RP. ",
+	 "3.Skakanie, aby szybciej dotrzeæ do celu. ",
+	 "4.Odbijanie siê od œcian. ",
+	 "5.Skakanie samochodem. ",
+	 3,
+	"6. Jak poprawnie zaholujesz pojazd ?",
+	 "1. Zaczne pchaæ. ",
+	 "2. Wezwe mechanika.", 
+	 "3. U¿yje cheata.",
+	 "4. Poprosze admina. ",
+	 "5. Zaczne spamowac na chacie. ",
+	2, 
+	"7.Co znaczy Celebrity Name?",
+	 "1.Posiadanie nicku z GTA 4. ",
+	 "2.To nazwa baru. ",
+	 "3.Nicki wszystkich graczy. ",
+	 "4.Wesele. ",
+	 "5.Posiadanie nicku s³awnej osoby. ",
+	5,
+	"8.Co zrobisz jak zobaczysz policjantów na s³u¿bie?",
+	"1.Podbiegnê do nich, œci¹gnê spodnie i wypnê im dupsko.", 
+	"2.Przejdê obojêtnie. ",
+	"3.Bêde ich prowokowa³. ",
+	"4.Wpiszê komendê /q. ",
+	"5.Wyjmê kij/pistolet i zacznê w nich ³adowaæ. ",
+	2,
+	"9.Co znaczy Character Kill?",
+	"1.Nale¿enie do tajnej organizacji. ",
+	"2.Œmieræ postaci, poprzez blokadê konta. ",
+	"3.Z³y charakter. ",
+	"4.Zabijanie bez powodu. ",
+	"5.Zabijanie liderów frakcji. ",
+	2,
+	"10.Co to Power Gaming?",
+	"1.Wymuszanie na kimœ akcji RP. ",
+	"2.Granie w sposób NON-RP. ",
+	"3.Dziesiona. ",
+	"4.Odpalanie cheatów. ",
+	"5.Gra na maksa. ",
+	1,
+	"11.Co to DeathMatch?",
+	"1.Zrobienie komuœ CK. ",
+	"2.Nawalanie ka¿dego bez powodu. ",
+	"3.Strzelanie na statku. ",
+	"4.Uciekanie przed policj¹. ",
+	"5.Skakanie po œcianach. ",
+	2,
+	"12.Co to Revenge Kill?",
+	"1.Zabicie s³awnej osoby. ",
+	"2.Jazda po pijaku ",
+	"3.Zabijanie z zemsty. ",
+	"4.Wyzywanie na czacie IC. ",
+	"5.Wyzywanie na czacie OOC. ",
+	3,
+	"13.Jakie jest standardowe poruszanie siê po ulicach??",
+	"1.Skakanie",
+	"2.W - Bieg",
+	"3.Spacja + W - Sprint",
+	"4.ALT + W - Spacer",
+	"5.Uzywajac cheata ",
+	4,
+	"14.Jak mogê ukraœæ samochód?",
+	"1.Wyrzuciæ kierowcê i odjechaæ. ",
+	"2.Udaæ siê do jakiegoœ pustego auta. ",
+	"3.Ukraœæ auto przez /ja i /do. ",
+	"4.Nie mo¿emy. ",
+	"5.Ka¿dy auto jest moje. ",
+	3,
+	"15.Do czego s³u¿y komenda /ja i /do?",
+	"1.Do tañczenia. ",
+	"2.Wtedy siê lepiej biega. ",
+	"3.Do tego ¿eby siê admini odczepili. ",
+	"4.Do pisania OOC. ",
+	"5.Do opisywania akcji RP. ",
+	5,
+	"16.Co zrobisz jak zobaczysz kogoœ z gangu?",
+	"1.Zapytam siê czy mogê do³¹czyæ. ",
+	"2.Dowalê mu. ",
+	"3.Wypnê do niego ty³ek. ",
+	"4.Poka¿ê mu œrodkowy palec. ",
+	"5.Ominê go, z nimi lepiej nie zadzieraæ. ",
+	5,
+	"17.Jak bêdziesz porusza³ siê pojazdem?",
+	"1.Bêdê stuntowa³ i driftowa³, przysiêgam. ",
+	"2.Bêde jeŸdzi³ zgodnie z przepisami. ",
+	"3.Wszystkie s³upy s¹ moje. ",
+	"4.Tak jak na DM-ie. ",
+	"5.Jestem królem ulic, wszystko mi wolno. ",
+	2,
+	"18.Gdzie i jak bêdziesz móg³ wyci¹gnaæ pistolet?",
+	"1.W cichym miejscu z komend¹ /ja i /do. ",
+	"2.Na komendzie policji. ",
+	"3.W domu gangu. ",
+	"4.W WORDzie. ",
+	"5.W taksówce. ",
+	1,
+	"19.Jak bêdziesz u¿ywa³ komendy /donos?",
+	"1.Bêde u¿ywa³ kiedy bêde chcia³. ",
+	"2.Bêde na tej komendzie spamowaæ. ",
+	"3.Napiszê jeden i poczekam na odpowiedŸ. ",
+	"4.Nie wiem jeszcze. ",
+	"5.Nie u¿ywam jej, bo po co. ",
+	3,
+	"20.Co zrobisz jak zobaczysz Cheatera?",
+	"1.Spytam siê czy wyœle mi na pw cheata. ",
+	"2.Zacznê uciekaæ. ",
+	"3.Napisze szybko /donos. ",
+	"4.Zacznê z nim walczyæ. ",
+	"5.Ja równie¿ odpalê cheata. ",
+	3,
+	"21.Zabicie kogoœ przez przejechanie samochodem to ??",
+	"1.Car Kill",
+	"2.DM",
+	"3.Drive-by",
+	"4.MetaGaming",
+	"5.RK",
+	1,
+	"22.Co to NON-RP?",
+	"1.Skakanie na rowerze. ",
+	"2.Jazda po pijaku. ",
+	"3.Zachowanie wbrew zasadom RP. ",
+	"4.Wchodzenie na komendê policji. ",
+	"5.P³ywanie statkiem. ",
+	3,
+	"23.Co oznacza Ninja Jacking?",
+	"1.Posiadanie miecza ninji. ",
+	"2.Kradzie¿ pojazdu w, którym jest ju¿ kierowca. ",
+	"3.Nale¿enie do tajnej organizacji. ",
+	"4.Mafia japoñska. ",
+	"5.Skorumpowani policjanci. ",
+	2,
+	"24.Co oznacza IC?",
+	"1.Granie na zw³okê. ",
+	"2.Og³oszenie rz¹dowe. ",
+	"3.Temat tabu. ",
+	"4.Wszystko co dotyczy gry. ",
+	"5.Nazwa piwa. ",
+	4,
+	"25.Co oznacza OOC?",
+	"1.Wszystko co dotyczy twojej postaci. ",
+	"2.Kupowanie broni od dilera. ",
+	"3.Nazwy dragów. ",
+	"4.Wszystko co nie dotyczy gry. ",
+	"5.Udawanie ciemnego charakteru.",
+	4
+};
+
+enum testQuestionsInfo
+{
+	q1[256],
+	a1a[256],
+	a1b[256],
+	a1c[256],
+	a1,
+	q2[256],
+	a2a[256],
+	a2b[256],
+	a2c[256],
+	a2,
+	q3[256],
+	a3a[256],
+	a3b[256],
+	a3c[256],
+	a3,
+	q4[256],
+	a4a[256],
+	a4b[256],
+	a4c[256],
+	a4,
+	q5[256],
+	a5a[256],
+	a5b[256],
+	a5c[256],
+	a5
+};
+new gTestQuestions[9][testQuestionsInfo] =
+{
+	// zestaw nr 1
+	{
+		"Za nieprzepisowe parkowanie nie mo¿na zostaæ ukaranym:", // pytanie
+        "Mandatem", // odp 1
+        "Pouczeniem", // odp 2
+        "Wiêzieniem", // odp 3
+        3, // nr prawidlowej odp od 1 do 3
+        "Pieszy wszed³ na przejœcie dla pieszych. W tej sytuacji kieruj¹cy pojazdem:", // kolejne pytanie....
+        "Mo¿e wjechaæ na przejœcie",
+        "Mo¿e siê nie zatrzymaæ",
+        "Powinien zatrzymaæ siê oraz zachowaæ czujnoœæ",
+        3,
+        "Znak poziomy: linia ci¹g³a pojedyñcza",
+        "Zezwala na wyprzedzanie pojazdu",
+        "Rozdziela pasy o tym samym kierunku",
+        "Rozdziela pasy o przeciwnym kierunku",
+        2,
+        "Sygnalizator œwietlny. Zapalone œwiat³a czerwone i ¿ó³te. Jakie nastêpne œwiat³o siê zapali ?",
+        "Czerwone",
+        "¯ó³te i zielone",
+        "Zielone",
+        3,
+        "Maksymalna prêdkoœæ pojazdu do 3.5 ton w terenie zabudowanym to:",
+        "60 km/h miêdzy 23:00-05:00",
+        "50 km/h miêdzy 23:00-05:00",
+        "Brak ograniczenia",
+        1
+	},	
+	// zestaw nr 2
+	{
+		"Motocyklista powinien :", // pytanie
+        "Zak³adaæ kask podczas jazdy", // odp 1
+        "Zak³adaæ odpowiednie obuwie oraz odzie¿ ochronna", // odp 2
+        "Wszystkie powy¿ej ", // odp 3
+        3, // nr prawid³owej odp od 1 do 3
+        "Badania techniczne przeprowadza siê :", // kolejne pytanie....
+        "Raz do roku",
+        "Przed up³ywem terminu okreœlonego w dowodzie rejestracyjnym ",
+        "W ogóle siê nie przeprowadza",
+        2,
+        "Widzisz pojazd jad¹cy na sygnale, co robisz: ",
+        "Zatrzymujê siê na œrodku ulicy i czekam, a¿ mnie ominie",
+        "Zje¿d¿am na poboczê i czekam, a¿ przejedzie",
+        "Jadê szybciej, aby pojazd mnie nie dogoni³",
+        2,
+        "Do silnika Diesla wlejesz :",
+        "Ropê",
+        "Gaz",
+        "Olej napêdowy",
+        1,
+        "Kiedy u¿ywamy œwiate³ mijania: ",
+        "Wieczorami",
+        "Wrzez ca³y rok ",
+        "W czasie mg³y",
+        2
+	},
+	// zestaw nr 3
+	{
+		 "Umieszczone na jezdni punktowe elementy odblaskowe barwy czerwonej wyznaczaj¹:",
+        "Praw¹ krawêdŸ jezdni",
+        "Lew¹ krawêdŸ jezdni",
+        "Pasy ruchu",
+        1, // nr prawid³owej odp od 1 do 3
+        "Dokonywanie regularnych przegl¹dów technicznych motocykla : ", // kolejne pytanie....
+        "Pozwala utrzymaæ motocykl we w³aœciwej sprawnoœci ",
+        "Nie jest koniecznie",
+        "Jest nie op³acalne ze wzglêdów pienieznych",
+        1,
+        "Stosunek uciœniêæ mostka do iloœci sztucznych oddechów u poszkodowanych wynosi:",
+        "30:2 ",
+        "2:30",
+        "1:5",
+        1,
+        "W jaki sposób zabezpieczysz miejsce wypadku samochodowego?:",
+        "wy³¹czê stacyjkê samochodu, który mia³ wypadek.",
+        "zostawiæ samochód na ceg³ach",
+        "podleje benzyn¹, po¿ar bêdzie widoczny z wiêkszej odleg³oœci",
+        1,
+        "W WParty jeŸdzi siê … ulicy :",
+        "œrodkiem",
+        "po lewej stronie",
+        "po prawej stronie ",
+        3
+	},	
+	// zestaw nr 4
+	{
+		 "W sytuacji kieruj¹cy pojazdem widz¹c pijanego na drodze pieszego powinien:",
+        "byæ przygotowany do zatrzymania pojazdu,",
+        "przyspieszyæ pojazdem",
+        "podaæ pieszemu kolejna butelkê piwa",
+        1,
+        "Podwójna linia ci¹g³a oznacza :", // kolejne pytanie....
+        "Mo¿na wyprzedzaæ",
+        "Mo¿na zawracaæ",
+        "Zakaz przeje¿d¿ania przez ta linie",
+        3,
+        "Predkosc max po za terenem zabudowanym wynosi :",
+        "90 km/h",
+        "120 km/h",
+        "50 km/h",
+        1,
+        "W jaki sposób sprawdzisz przytomnoœæ u poszkodowanego (doros³ego)?:",
+        "Chwycê poszkodowanego za barki i lekko potrz¹saj¹c zapytam np. Co siê sta³o?",
+        "Poklepiê go po twarzy",
+        "Polejê kwasem",
+        1,
+        "Na zakrêcie pozwala siê na : ",
+        "wyprzedzanie",
+        "zatrzymanie pojazdu",
+        "¯adna odpowiedz",
+        3
+	},	
+	// zestaw nr 5
+	{
+		 "Przed rozpoczêciem jazdy kieruj¹cy samochodem osobowym powinien sprawdziæ:",
+        "czy okno jest zamkniête w samochodzie",
+        "zabranie pieniêdzy na ³apówki",
+        "ustawienie fotela, lusterek, zapiêcia pasów przez pasa¿erów",
+        3,
+        "Obowi¹zek udzielania pierwszej pomocy ofiarom wypadku ma:", // kolejne pytanie....
+        "Wszyscy wokó³ mnie tylko nie ja",
+        "Wy³¹cznie lekarze",
+        "Wszyscy w³¹cznie z mn¹",
+        3,
+        "Ekonomiczna jazda samochodem osobowym to:",
+        "Jazda na mo¿liwie najwy¿szym biegu bez przeci¹¿ania silnika",
+        "Gwa³townie hamowaæ oraz przyspieszaæ",
+        "Utrzymywanie za wszelk¹ cenê sta³ej prêdkoœci przy jeŸdzie pod górê,",
+        1,
+        "Prawid³owe trzymanie kierownicy podczas jazdy na wprost : ",
+        "jedna rêka na kierownicy na godzenie 12 a druga na skrzyni biegów",
+        "jedna rêka na godzinie 10 druga na 2 h ",
+        "jedna rêka zimny ³okieæ druga trzyma kierownice na godzinie 6 przy kolanach",
+        2,
+        "Umieszczone na jezdni punktowe elementy odblaskowe barwy czerwonej wyznaczaj¹:",
+        "Praw¹ krawêdŸ jezdni",
+        "Lew¹ krawêdŸ jezdni",
+        "Pasy ruchu",
+        1
+	},
+	// zestaw nr 6
+	{
+		"W razie uczestniczenia w wypadku drogowym, kieruj¹cy pojazdem powinien podaæ na ¿¹danie osób w nim uczestnicz¹cych:", // pytanie
+        "Dane techniczne swojego samochodu", // odp 1
+        "Dane swoich rodziców i OC", // odp 2
+        "Dane osobiste, samochodu i OC", // odp 3
+        3, // nr prawid³owej odp od 1 do 3
+        "W razie uczestniczenia w wypadku drogowym, w którym nie ma ofiar, kieruj¹cy pojazdem powinien:", // kolejne pytanie....
+        "Zatrzymaæ pojazd, nie powoduj¹c przy tym zagro¿enia bezpieczeñstwa ruchu.",
+        "Przejechaæ obok",
+        "Dobiæ ofiary wypadku, aby nie cierpia³y wiêcej",
+        1,
+        "W razie uczestniczenia w wypadku drogowym, w którym s¹ ofiary, kieruj¹cy pojazdem powinien:",
+        "Modliæ siê",
+        "Wezwaæ zespó³ ratownictwa medycznego i policje",
+        "Wezwaæ prezydenta",
+        2,
+        "W sytuacji kieruj¹cy pojazdem widz¹c pijanego na drodze pieszego powinien:",
+        "byæ przygotowany do zatrzymania pojazdu,",
+        "przyspieszyæ pojazdem",
+        "podaæ pieszemu kolejna butelkê piwa",
+        1,
+        "Jad¹c za pojazdem uprzywilejowanym, kierowca :",
+        "tr¹bimy aby szybciej jechali",
+        "Gaz do dechy - wyprzedzamy nie patrzymy siê",
+        "nie mo¿e wyprzedziæ pojazdu uprzywilejowanego - na obszarze zabudowanym,",
+        3
+	},
+	// zestaw nr 7
+	{
+		"W okresie dostatecznej widocznoœci, kieruj¹cy pojazdem holuj¹cym:", // pytanie
+		"w³o¿yæ kask ochronny", // odp 1
+		"powinien mieæ w³¹czone œwiat³a mijania,", // odp 2
+		"w³¹czyæ radio na full bass", // odp 3
+		2, // nr prawid³owej odp od 1 do 3
+		"Na autostradzie dopuszcza siê holowanie:", // kolejne pytanie....
+		"nie mo¿na holowaæ - nale¿y zostawiæ samochód",
+		"tylko pojazdem przeznaczonym do tego celu,",
+		"ka¿dym samochodem",
+		2,
+		"W jaki sposób zabezpieczysz miejsce wypadku samochodowego?:",
+		"wy³¹czê stacyjkê samochodu, który mia³ wypadek.",
+		"zostawiæ samochód na ceg³ach",
+		"podleje benzyn¹, po¿ar bêdzie widoczny z wiêkszej odleg³oœci",
+		1,
+		"W okresie docierania samochodu osobowego nie nale¿y:",
+		"korzystaæ z samochodu",
+		"wrzucaæ 4tego biegu",
+		"jeŸdziæ z prêdkoœci¹ zbli¿on¹ do maksymalnej,",
+		3,
+		"Dokonywanie regularnych przegl¹dów technicznych pojazdu:",
+		"pogarsza stan pojazdu",
+		"jest konieczne, gdy¿ pozwala utrzymaæ pojazd we w³aœciwej sprawnoœci,",
+		"mordêga - za ka¿dym razem musimy odmontowaæ  nasz tuning samochodowy",
+		2
+	},	
+	// zestaw nr 8
+	{
+		"Przed rozpoczêciem d³u¿szej jazdy nale¿y sprawdziæ:", // pytanie
+        "stan lakieru", // odp 1
+        "stan zderzaka", // odp 2
+        "dzia³anie uk³adu hamulcowego i kierowniczego,", // odp 3
+        3, // nr prawid³owej odp od 1 do 3
+        "Lampki kontrolne informuj¹ce w czasie jazdy kierowcê o wa¿nym problemie technicznym s¹ barwy:", // kolejne pytanie....
+        "czerwonej.",
+        "zielonej",
+        "¿ó³tej",
+        1,
+        "Kontrola hydraulicznego hamulca roboczego polega na:",
+        "oddanie samochodu do mechanika",
+        "sprawdzeniu poziomu p³ynu do spryskiwaczy",
+        "sprawdzeniu poziomu p³ynu hamulcowego w zbiorniku.",
+        3,
+        "Ubytek oleju w silniku uzupe³nia siê:",
+        "rop¹",
+        "olejem polecanym przez producenta",
+        "benzyn¹",
+        2,
+        "Przed rozpoczêciem jazdy kieruj¹cy samochodem osobowym powinien sprawdziæ:",
+        "czy okno jest zamkniête w samochodzie",
+        "zabranie pieniêdzy na ³apówki",
+        "ustawienie fotela, lusterek, zapiêcia pasów przez pasa¿erów",
+        3
+	},
+	// zestaw nr 9
+	{
+		"Na prostym odcinku drogi wielopasowej zaleca siê jechaæ", // pytanie
+        "Jak najd³u¿ej jednym i tym samym pasem ruchu i prawym pasem", // odp 1
+        "Lewym pasem ruchu", // odp 2
+        "Slalom miêdzy pasami", // odp 3
+        1, // nr prawid³owej odp od 1 do 3
+        "Ekonomiczna jazda samochodem osobowym to:", // kolejne pytanie....
+        "Gaz do dechy",
+        "Unikanie gwa³townych przyspieszeñ i hamowañ,",
+        "Zmieniamy biegi/hamujemy jak w F1",
+        2,
+        "Droga hamowania samochodu osobowego na mokrej jezdni, jest:",
+        "D³u¿sza od drogi hamowania na jezdni suchej i krótsza na jezdni oblodzonej",
+        "Bardzo i to bardzo krótka",
+        "W ogóle nie nale¿y na takiej powierzchni hamowaæ",
+        1,
+        "Kieruj¹cy samochodem osobowym powinien mieæ przy sobie:",
+        "Dowód osobisty, prawo jazdy, OC",
+        "Zdjêcie ¿ony i dziecka",
+        "Pieni¹dze na ³apówkê",
+        1,
+        "Opuszczaj¹c pojazd, kieruj¹cy:",
+        "w ka¿dym przypadku, mo¿e pozostawiæ drzwi otwarte",
+        "mo¿e zaleciæ pasa¿erom wyjœcie tylko od strony ulicy",
+        "powinien upewniæ siê, czy nie utrudni ruchu innym pojazdom,",
+        3
+	}
+};
+new gSelectedTest[CUSTOM_MAX_PLAYERS];
+new gSelectedTestQ[CUSTOM_MAX_PLAYERS];
+new gTestQuestionsA[CUSTOM_MAX_PLAYERS][5];
+new gTestResult[CUSTOM_MAX_PLAYERS];
+
 /* Relative position of weapon factory building (illegal) objects, etc. without main building */
 new Float:WFObj[31][6] = {
 /*2061*/ { 4.6550841331482, -0.78501975536346, 0.37005430459976, 0.0, 0.0, 102.0 },
@@ -4679,1144 +5121,421 @@ new Float:WFObj[31][6] = {
 /*18693*/{ 4.0167889595032, 8.4001379013062, -0.24687500298023, 0.0, 0.0, 0.0 }
 };
 
-new Float:WFCP[5][3] = {
+new Float:WFCP[6][3] = {
 /*Make weapon parts*/ { 3.4828429222107, -2.5014038085938, 1.078125 },
 /*Make weapon parts*/ { 2.8650646209717, -4.8278775215149, 1.078125 },
 /*Make weapon subparts*/ { -2.0474841594696,  -4.7468156814575, 1.078125 },
 /*Take/buy ammo/weapon (sub) parts*/ { -1.471581697464, -0.76670616865158, 1.078125 },
-/*Make weapon subparts*/ { -1.8708779811859, 6.9664425849915, 1.078125 }
+/*Make weapon subparts*/ { -1.8708779811859, 6.9664425849915, 1.078125 },
+/*Safe*/ { -3.54, 3.22, 1.07 }
 };
 
-new Float:Hat2OffSet[300][9] = {
-{ 0.100663, 0.008073, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.115779 }, // skin id = [0], model = [19064], bone = [2]
-{ 0.100663, 0.008073, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.115779 }, // skin id = [1], model = [19064], bone = [2]
-{ 0.100663, 0.008073, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.115779 }, // skin id = [2], model = [19064], bone = [2]
-{ 0.108949, 0.024837, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.074483 }, // skin id = [3], model = [19064], bone = [2]
-{ 0.108949, 0.024837, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.074483 }, // skin id = [4], model = [19064], bone = [2]
-{ 0.108949, 0.024837, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.074483 }, // skin id = [5], model = [19064], bone = [2]
-{ 0.108949, 0.024837, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.074483 }, // skin id = [6], model = [19064], bone = [2]
-{ 0.120401, 0.023067, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.179961 }, // skin id = [7], model = [19064], bone = [2]
-{ 0.120401, 0.023067, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.179961 }, // skin id = [8], model = [19064], bone = [2]
-{ 0.108834, 0.001940, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.102558 }, // skin id = [9], model = [19064], bone = [2]
-{ 0.108834, 0.001940, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.102558 }, // skin id = [10], model = [19064], bone = [2]
-{ 0.108834, 0.001940, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.102558 }, // skin id = [11], model = [19064], bone = [2]
-{ 0.108834, -0.014089, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.215142 }, // skin id = [12], model = [19064], bone = [2]
-{ 0.108834, 0.008640, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.179138 }, // skin id = [13], model = [19064], bone = [2]
-{ 0.108834, 0.029575, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.165817 }, // skin id = [14], model = [19064], bone = [2]
-{ 0.092250, -0.006511, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.000000 }, // skin id = [15], model = [19064], bone = [2]
-{ 0.115394, 0.040135, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.231852 }, // skin id = [16], model = [19064], bone = [2]
-{ 0.115394, 0.022877, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.143157 }, // skin id = [17], model = [19064], bone = [2]
-{ 0.090276, 0.018406, 0.000000, 318.743621, 90.836112, 129.518234, 1.000000, 1.000000, 1.121624 }, // skin id = [18], model = [19064], bone = [2]
-{ 0.119411, 0.015202, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.187119 }, // skin id = [19], model = [19064], bone = [2]
-{ 0.114618, 0.015202, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.180831 }, // skin id = [20], model = [19064], bone = [2]
-{ 0.114618, 0.015202, -0.004274, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.182685 }, // skin id = [21], model = [19064], bone = [2]
-{ 0.145339, 0.020703, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.139336 }, // skin id = [22], model = [19064], bone = [2]
-{ 0.132010, 0.020703, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.131027 }, // skin id = [23], model = [19064], bone = [2]
-{ 0.115294, 0.015068, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.064684 }, // skin id = [24], model = [19064], bone = [2]
-{ 0.115294, 0.015068, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.111173 }, // skin id = [25], model = [19064], bone = [2]
-{ 0.115294, 0.015068, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.111173 }, // skin id = [26], model = [19064], bone = [2]
-{ 0.115294, 0.015068, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.111173 }, // skin id = [27], model = [19064], bone = [2]
-{ 0.101279, 0.043311, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.201314 }, // skin id = [28], model = [19064], bone = [2]
-{ 0.101279, 0.043311, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.201314 }, // skin id = [29], model = [19064], bone = [2]
-{ 0.100152, 0.029989, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.201314 }, // skin id = [30], model = [19064], bone = [2]
-{ 0.118224, 0.029989, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.201314 }, // skin id = [31], model = [19064], bone = [2]
-{ 0.085090, 0.001141, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 0.995188 }, // skin id = [32], model = [19064], bone = [2]
-{ 0.049956, 0.044890, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.178247 }, // skin id = [33], model = [19064], bone = [2]
-{ 0.125074, 0.032208, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.060122 }, // skin id = [34], model = [19064], bone = [2]
-{ 0.125074, 0.032208, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.147537 }, // skin id = [35], model = [19064], bone = [2]
-{ 0.125074, 0.019595, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.145235 }, // skin id = [36], model = [19064], bone = [2]
-{ 0.113745, 0.034553, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.145235 }, // skin id = [37], model = [19064], bone = [2]
-{ 0.113745, 0.043961, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.124068 }, // skin id = [38], model = [19064], bone = [2]
-{ 0.083446, 0.025371, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.076464 }, // skin id = [39], model = [19064], bone = [2]
-{ 0.086473, 0.010406, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.276442 }, // skin id = [40], model = [19064], bone = [2]
-{ 0.108832, 0.010406, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.276442 }, // skin id = [41], model = [19064], bone = [2]
-{ 0.108832, 0.010406, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.276442 }, // skin id = [42], model = [19064], bone = [2]
-{ 0.056497, 0.010406, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.047237 }, // skin id = [43], model = [19064], bone = [2]
-{ 0.083470, 0.042717, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 0.961919 }, // skin id = [44], model = [19064], bone = [2]
-{ 0.083470, 0.010942, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.128475 }, // skin id = [45], model = [19064], bone = [2]
-{ 0.107942, 0.028896, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.128475 }, // skin id = [46], model = [19064], bone = [2]
-{ 0.107942, 0.028896, -0.009368, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.191473 }, // skin id = [47], model = [19064], bone = [2]
-{ 0.107942, 0.020610, -0.009368, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.207744 }, // skin id = [48], model = [19064], bone = [2]
-{ 0.091822, 0.020610, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.109796 }, // skin id = [49], model = [19064], bone = [2]
-{ 0.115101, -0.007094, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.259942 }, // skin id = [50], model = [19064], bone = [2]
-{ 0.112170, 0.026142, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.294207 }, // skin id = [51], model = [19064], bone = [2]
-{ 0.112170, 0.026142, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.294207 }, // skin id = [52], model = [19064], bone = [2]
-{ 0.104983, 0.026142, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.057950 }, // skin id = [53], model = [19064], bone = [2]
-{ 0.104983, 0.026142, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.106665 }, // skin id = [54], model = [19064], bone = [2]
-{ 0.088841, 0.007201, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.277095 }, // skin id = [55], model = [19064], bone = [2]
-{ 0.088841, 0.007201, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.277095 }, // skin id = [56], model = [19064], bone = [2]
-{ 0.132677, 0.028666, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.150766 }, // skin id = [57], model = [19064], bone = [2]
-{ 0.095171, 0.014284, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [58], model = [19064], bone = [2]
-{ 0.115982, 0.031060, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.186399 }, // skin id = [59], model = [19064], bone = [2]
-{ 0.097391, 0.029945, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.186399 }, // skin id = [60], model = [19064], bone = [2]
-{ 0.097391, 0.029945, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.186399 }, // skin id = [61], model = [19064], bone = [2]
-{ 0.097391, 0.041534, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.184580 }, // skin id = [62], model = [19064], bone = [2]
-{ 0.097391, 0.026724, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.225096 }, // skin id = [63], model = [19064], bone = [2]
-{ 0.097391, 0.026724, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.047671 }, // skin id = [64], model = [19064], bone = [2]
-{ 0.097391, 0.026724, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.071504 }, // skin id = [65], model = [19064], bone = [2]
-{ 0.097391, 0.026724, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.136306 }, // skin id = [66], model = [19064], bone = [2]
-{ 0.097391, 0.026724, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.136306 }, // skin id = [67], model = [19064], bone = [2]
-{ 0.097391, 0.049577, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.077786 }, // skin id = [68], model = [19064], bone = [2]
-{ 0.097391, 0.015980, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.153886 }, // skin id = [69], model = [19064], bone = [2]
-{ 0.097391, 0.040229, 0.005998, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.153886 }, // skin id = [70], model = [19064], bone = [2]
-{ 0.097391, 0.040229, 0.005998, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.190629 }, // skin id = [71], model = [19064], bone = [2]
-{ 0.097391, 0.040229, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.070280 }, // skin id = [72], model = [19064], bone = [2]
-{ 0.091815, 0.040229, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.074685 }, // skin id = [73], model = [19064], bone = [2]
-{ 0.110245, 0.015980, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.083666 }, // skin id = [74], model = [19064], bone = [2]
-{ 0.092244, 0.039664, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.174946 }, // skin id = [75], model = [19064], bone = [2]
-{ 0.092244, 0.018678, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.200430 }, // skin id = [76], model = [19064], bone = [2]
-{ 0.092244, 0.018678, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.200430 }, // skin id = [77], model = [19064], bone = [2]
-{ 0.092244, 0.018678, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.136188 }, // skin id = [78], model = [19064], bone = [2]
-{ 0.092244, 0.018678, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.124930 }, // skin id = [79], model = [19064], bone = [2]
-{ 0.077141, 0.010480, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.124930 }, // skin id = [80], model = [19064], bone = [2]
-{ 0.077141, 0.010480, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.124930 }, // skin id = [81], model = [19064], bone = [2]
-{ 0.146304, 0.027749, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.196292 }, // skin id = [82], model = [19064], bone = [2]
-{ 0.146304, 0.027749, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.196292 }, // skin id = [83], model = [19064], bone = [2]
-{ 0.146304, 0.027749, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.196292 }, // skin id = [84], model = [19064], bone = [2]
-{ 0.122793, 0.023942, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.150571 }, // skin id = [85], model = [19064], bone = [2]
-{ 0.122793, 0.023942, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.150571 }, // skin id = [86], model = [19064], bone = [2]
-{ 0.122793, 0.023942, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.150571 }, // skin id = [87], model = [19064], bone = [2]
-{ 0.087779, 0.046096, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.072350 }, // skin id = [88], model = [19064], bone = [2]
-{ 0.087779, 0.012614, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.148725 }, // skin id = [89], model = [19064], bone = [2]
-{ 0.092782, 0.026678, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.218428 }, // skin id = [90], model = [19064], bone = [2]
-{ 0.099995, 0.011460, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.218428 }, // skin id = [91], model = [19064], bone = [2]
-{ 0.099995, 0.011460, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.218428 }, // skin id = [92], model = [19064], bone = [2]
-{ 0.106036, 0.011460, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.218428 }, // skin id = [93], model = [19064], bone = [2]
-{ 0.043410, 0.011460, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 0.981182 }, // skin id = [94], model = [19064], bone = [2]
-{ 0.091110, 0.011460, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.080359 }, // skin id = [95], model = [19064], bone = [2]
-{ 0.097404, 0.035096, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.112940 }, // skin id = [96], model = [19064], bone = [2]
-{ 0.097404, 0.004439, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.129864 }, // skin id = [97], model = [19064], bone = [2]
-{ 0.097404, 0.042370, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.147444 }, // skin id = [98], model = [19064], bone = [2]
-{ 0.116996, 0.018986, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.287936 }, // skin id = [99], model = [19064], bone = [2]
-{ 0.116996, 0.018986, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.287936 }, // skin id = [100], model = [19064], bone = [2]
-{ 0.116996, 0.018986, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.287936 }, // skin id = [101], model = [19064], bone = [2]
-{ 0.096433, 0.032795, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.257257 }, // skin id = [102], model = [19064], bone = [2]
-{ 0.096433, 0.032795, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.257257 }, // skin id = [103], model = [19064], bone = [2]
-{ 0.096433, 0.032795, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.257257 }, // skin id = [104], model = [19064], bone = [2]
-{ 0.096433, 0.032795, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.257257 }, // skin id = [105], model = [19064], bone = [2]
-{ 0.122925, 0.018785, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.264957 }, // skin id = [106], model = [19064], bone = [2]
-{ 0.121388, 0.018785, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.289153 }, // skin id = [107], model = [19064], bone = [2]
-{ 0.108690, 0.030352, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.138071 }, // skin id = [108], model = [19064], bone = [2]
-{ 0.108690, 0.030352, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.227682 }, // skin id = [109], model = [19064], bone = [2]
-{ 0.108690, 0.030352, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.227682 }, // skin id = [110], model = [19064], bone = [2]
-{ 0.108690, 0.030352, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048590 }, // skin id = [111], model = [19064], bone = [2]
-{ 0.087880, 0.018912, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 0.977017 }, // skin id = [112], model = [19064], bone = [2]
-{ 0.129501, 0.018912, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.170819 }, // skin id = [113], model = [19064], bone = [2]
-{ 0.129501, 0.018912, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.187558 }, // skin id = [114], model = [19064], bone = [2]
-{ 0.129501, 0.018912, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.187558 }, // skin id = [115], model = [19064], bone = [2]
-{ 0.115204, 0.029935, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.248551 }, // skin id = [116], model = [19064], bone = [2]
-{ 0.098536, 0.034332, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.028380 }, // skin id = [117], model = [19064], bone = [2]
-{ 0.098536, 0.034332, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.028380 }, // skin id = [118], model = [19064], bone = [2]
-{ 0.098536, 0.034332, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.093928 }, // skin id = [119], model = [19064], bone = [2]
-{ 0.102054, 0.017489, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.140911 }, // skin id = [120], model = [19064], bone = [2]
-{ 0.102054, 0.017489, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.306998 }, // skin id = [121], model = [19064], bone = [2]
-{ 0.102054, 0.017489, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.108091 }, // skin id = [122], model = [19064], bone = [2]
-{ 0.102054, 0.017489, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.229357 }, // skin id = [123], model = [19064], bone = [2]
-{ 0.102054, 0.033586, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.247572 }, // skin id = [124], model = [19064], bone = [2]
-{ 0.102054, 0.033586, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.039693 }, // skin id = [125], model = [19064], bone = [2]
-{ 0.102054, 0.017489, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.168370 }, // skin id = [126], model = [19064], bone = [2]
-{ 0.102054, 0.035144, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.181575 }, // skin id = [127], model = [19064], bone = [2]
-{ 0.102054, 0.035144, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.320350 }, // skin id = [128], model = [19064], bone = [2]
-{ 0.102054, 0.035144, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 0.974116 }, // skin id = [129], model = [19064], bone = [2]
-{ 0.060913, 0.023896, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.152007 }, // skin id = [130], model = [19064], bone = [2]
-{ 0.093210, 0.022467, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.143597 }, // skin id = [131], model = [19064], bone = [2]
-{ 0.020900, 0.017402, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 0.961703 }, // skin id = [132], model = [19064], bone = [2]
-{ 0.123046, 0.033499, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.017683 }, // skin id = [133], model = [19064], bone = [2]
-{ 0.104138, 0.007578, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.050785 }, // skin id = [134], model = [19064], bone = [2]
-{ 0.082287, 0.022648, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.105241 }, // skin id = [135], model = [19064], bone = [2]
-{ 0.105703, 0.022648, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.020779 }, // skin id = [136], model = [19064], bone = [2]
-{ 0.105703, 0.022648, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.020779 }, // skin id = [137], model = [19064], bone = [2]
-{ 0.105703, 0.008839, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.144485 }, // skin id = [138], model = [19064], bone = [2]
-{ 0.105703, 0.008839, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.144485 }, // skin id = [139], model = [19064], bone = [2]
-{ 0.105703, 0.008839, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.144485 }, // skin id = [140], model = [19064], bone = [2]
-{ 0.095617, 0.008839, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.158308 }, // skin id = [141], model = [19064], bone = [2]
-{ 0.095617, 0.037618, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.158308 }, // skin id = [142], model = [19064], bone = [2]
-{ 0.095617, 0.037618, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.158308 }, // skin id = [143], model = [19064], bone = [2]
-{ 0.121501, 0.016946, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.315088 }, // skin id = [144], model = [19064], bone = [2]
-{ 0.121501, 0.016946, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.115811 }, // skin id = [145], model = [19064], bone = [2]
-{ 0.121501, 0.016946, -0.002220, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.115811 }, // skin id = [146], model = [19064], bone = [2]
-{ 0.097873, 0.004487, 0.011196, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.075660 }, // skin id = [147], model = [19064], bone = [2]
-{ 0.097873, 0.004487, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.169092 }, // skin id = [148], model = [19064], bone = [2]
-{ 0.097873, 0.025286, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.169092 }, // skin id = [149], model = [19064], bone = [2]
-{ 0.097873, 0.011688, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.186793 }, // skin id = [150], model = [19064], bone = [2]
-{ 0.097873, 0.011688, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.413600 }, // skin id = [151], model = [19064], bone = [2]
-{ 0.097873, 0.011688, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.082336 }, // skin id = [152], model = [19064], bone = [2]
-{ 0.101187, 0.023255, 0.004624, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.192174 }, // skin id = [153], model = [19064], bone = [2]
-{ 0.092901, 0.002612, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.072205 }, // skin id = [154], model = [19064], bone = [2]
-{ 0.103273, 0.017940, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.367254 }, // skin id = [155], model = [19064], bone = [2]
-{ 0.118991, 0.017940, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.279008 }, // skin id = [156], model = [19064], bone = [2]
-{ 0.091741, 0.004131, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.199913 }, // skin id = [157], model = [19064], bone = [2]
-{ 0.091741, 0.004131, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.199913 }, // skin id = [158], model = [19064], bone = [2]
-{ 0.114886, 0.020204, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.121232 }, // skin id = [159], model = [19064], bone = [2]
-{ 0.114886, 0.020204, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.022253 }, // skin id = [160], model = [19064], bone = [2]
-{ 0.157463, 0.007521, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.042751 }, // skin id = [161], model = [19064], bone = [2]
-{ 0.129340, 0.007521, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.042751 }, // skin id = [162], model = [19064], bone = [2]
-{ 0.107728, 0.007521, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.042751 }, // skin id = [163], model = [19064], bone = [2]
-{ 0.107728, 0.007521, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.042751 }, // skin id = [164], model = [19064], bone = [2]
-{ 0.105775, 0.024779, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.042751 }, // skin id = [165], model = [19064], bone = [2]
-{ 0.105775, 0.024779, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.042751 }, // skin id = [166], model = [19064], bone = [2]
-{ 0.105775, 0.024779, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.042751 }, // skin id = [167], model = [19064], bone = [2]
-{ 0.105775, 0.024779, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.042751 }, // skin id = [168], model = [19064], bone = [2]
-{ 0.105775, -0.013501, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.422666 }, // skin id = [169], model = [19064], bone = [2]
-{ 0.105775, 0.027923, -0.006746, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.135464 }, // skin id = [170], model = [19064], bone = [2]
-{ 0.114695, 0.023537, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.176451 }, // skin id = [171], model = [19064], bone = [2]
-{ 0.107693, 0.006279, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.176451 }, // skin id = [172], model = [19064], bone = [2]
-{ 0.148143, 0.048334, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.176451 }, // skin id = [173], model = [19064], bone = [2]
-{ 0.148116, 0.012201, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.176451 }, // skin id = [174], model = [19064], bone = [2]
-{ 0.148116, 0.012201, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.176451 }, // skin id = [175], model = [19064], bone = [2]
-{ 0.109948, 0.012201, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.176451 }, // skin id = [176], model = [19064], bone = [2]
-{ 0.157659, 0.012201, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.211356 }, // skin id = [177], model = [19064], bone = [2]
-{ 0.115230, 0.012201, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.039193 }, // skin id = [178], model = [19064], bone = [2]
-{ 0.115230, 0.012201, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.039193 }, // skin id = [179], model = [19064], bone = [2]
-{ 0.131751, 0.005606, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.148015 }, // skin id = [180], model = [19064], bone = [2]
-{ 0.131751, 0.031114, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.077084 }, // skin id = [181], model = [19064], bone = [2]
-{ 0.100987, 0.021145, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.077084 }, // skin id = [182], model = [19064], bone = [2]
-{ 0.100987, 0.021145, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.077084 }, // skin id = [183], model = [19064], bone = [2]
-{ 0.100987, 0.021145, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.107463 }, // skin id = [184], model = [19064], bone = [2]
-{ 0.100987, 0.037242, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.203808 }, // skin id = [185], model = [19064], bone = [2]
-{ 0.113669, 0.025800, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.203808 }, // skin id = [186], model = [19064], bone = [2]
-{ 0.088992, 0.024627, 0.009368, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.152960 }, // skin id = [187], model = [19064], bone = [2]
-{ 0.088992, 0.024627, 0.009368, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.152960 }, // skin id = [188], model = [19064], bone = [2]
-{ 0.110827, 0.027173, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.172328 }, // skin id = [189], model = [19064], bone = [2]
-{ 0.110827, 0.027173, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.273374 }, // skin id = [190], model = [19064], bone = [2]
-{ 0.110827, 0.027173, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.273374 }, // skin id = [191], model = [19064], bone = [2]
-{ 0.110827, 0.025916, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.273374 }, // skin id = [192], model = [19064], bone = [2]
-{ 0.124637, 0.024891, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.153440 }, // skin id = [193], model = [19064], bone = [2]
-{ 0.124637, 0.024891, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.153440 }, // skin id = [194], model = [19064], bone = [2]
-{ 0.118720, 0.020674, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.153440 }, // skin id = [195], model = [19064], bone = [2]
-{ 0.118720, -0.001637, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [196], model = [19064], bone = [2]
-{ 0.118720, 0.015072, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.135230 }, // skin id = [197], model = [19064], bone = [2]
-{ 0.141033, 0.015072, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.128531 }, // skin id = [198], model = [19064], bone = [2]
-{ 0.123329, 0.014289, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.050498 }, // skin id = [199], model = [19064], bone = [2]
-{ 0.123329, 0.014289, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.050498 }, // skin id = [200], model = [19064], bone = [2]
-{ 0.123329, 0.014289, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.050498 }, // skin id = [201], model = [19064], bone = [2]
-{ 0.123329, 0.014289, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.050498 }, // skin id = [202], model = [19064], bone = [2]
-{ 0.123329, 0.014289, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.057985 }, // skin id = [203], model = [19064], bone = [2]
-{ 0.123329, 0.014289, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.057985 }, // skin id = [204], model = [19064], bone = [2]
-{ 0.123329, 0.014289, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.057985 }, // skin id = [205], model = [19064], bone = [2]
-{ 0.123329, 0.030432, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [206], model = [19064], bone = [2]
-{ 0.086578, 0.013001, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [207], model = [19064], bone = [2]
-{ 0.111049, 0.017952, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048701 }, // skin id = [208], model = [19064], bone = [2]
-{ 0.104811, 0.004143, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.018824 }, // skin id = [209], model = [19064], bone = [2]
-{ 0.096683, 0.010871, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.015622 }, // skin id = [210], model = [19064], bone = [2]
-{ 0.107145, 0.020895, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.136367 }, // skin id = [211], model = [19064], bone = [2]
-{ 0.107145, 0.020895, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [212], model = [19064], bone = [2]
-{ 0.107145, 0.020895, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.106633 }, // skin id = [213], model = [19064], bone = [2]
-{ 0.093336, 0.020481, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.207620 }, // skin id = [214], model = [19064], bone = [2]
-{ 0.093336, 0.020481, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.207620 }, // skin id = [215], model = [19064], bone = [2]
-{ 0.093336, 0.020481, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.207620 }, // skin id = [216], model = [19064], bone = [2]
-{ 0.093336, 0.020481, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.207620 }, // skin id = [217], model = [19064], bone = [2]
-{ 0.093336, 0.036578, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.104186 }, // skin id = [218], model = [19064], bone = [2]
-{ 0.093336, 0.013400, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.183100 }, // skin id = [219], model = [19064], bone = [2]
-{ 0.063474, 0.043329, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.183100 }, // skin id = [220], model = [19064], bone = [2]
-{ 0.120845, 0.003177, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.225300 }, // skin id = [221], model = [19064], bone = [2]
-{ 0.120845, 0.003177, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.225300 }, // skin id = [222], model = [19064], bone = [2]
-{ 0.120845, 0.042454, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.225300 }, // skin id = [223], model = [19064], bone = [2]
-{ 0.098826, 0.009517, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.225300 }, // skin id = [224], model = [19064], bone = [2]
-{ 0.098826, 0.009517, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.185928 }, // skin id = [225], model = [19064], bone = [2]
-{ 0.098826, -0.000944, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.185928 }, // skin id = [226], model = [19064], bone = [2]
-{ 0.116084, 0.035856, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.087202 }, // skin id = [227], model = [19064], bone = [2]
-{ 0.116084, 0.019759, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.189719 }, // skin id = [228], model = [19064], bone = [2]
-{ 0.092633, 0.005610, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.090217 }, // skin id = [229], model = [19064], bone = [2]
-{ 0.068162, 0.018691, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.090217 }, // skin id = [230], model = [19064], bone = [2]
-{ 0.095815, 0.054824, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.090217 }, // skin id = [231], model = [19064], bone = [2]
-{ 0.095815, -0.011817, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.090217 }, // skin id = [232], model = [19064], bone = [2]
-{ 0.095815, 0.015846, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.174062 }, // skin id = [233], model = [19064], bone = [2]
-{ 0.095815, 0.004279, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.017575 }, // skin id = [234], model = [19064], bone = [2]
-{ 0.060159, 0.012565, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 0.982744 }, // skin id = [235], model = [19064], bone = [2]
-{ 0.078297, 0.022771, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.095751 }, // skin id = [236], model = [19064], bone = [2]
-{ 0.093339, -0.004955, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.152587 }, // skin id = [237], model = [19064], bone = [2]
-{ 0.106021, 0.025784, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.198230 }, // skin id = [238], model = [19064], bone = [2]
-{ 0.096620, 0.009687, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.183293 }, // skin id = [239], model = [19064], bone = [2]
-{ 0.108187, 0.024676, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.229502 }, // skin id = [240], model = [19064], bone = [2]
-{ 0.167723, -0.028721, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.229502 }, // skin id = [241], model = [19064], bone = [2]
-{ 0.102085, 0.004772, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.229502 }, // skin id = [242], model = [19064], bone = [2]
-{ 0.087426, 0.021865, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [243], model = [19064], bone = [2]
-{ 0.087426, 0.021865, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.105720 }, // skin id = [244], model = [19064], bone = [2]
-{ 0.123769, -0.003850, 0.010462, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.295428 }, // skin id = [245], model = [19064], bone = [2]
-{ 0.150485, 0.048570, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.267267 }, // skin id = [246], model = [19064], bone = [2]
-{ 0.126236, -0.004360, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.257738 }, // skin id = [247], model = [19064], bone = [2]
-{ 0.144666, 0.015212, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.273127 }, // skin id = [248], model = [19064], bone = [2]
-{ 0.144666, 0.029021, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.273127 }, // skin id = [249], model = [19064], bone = [2]
-{ 0.135488, 0.000895, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.112994 }, // skin id = [250], model = [19064], bone = [2]
-{ 0.115873, 0.000895, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.112994 }, // skin id = [251], model = [19064], bone = [2]
-{ 0.115873, 0.000895, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.188254 }, // skin id = [252], model = [19064], bone = [2]
-{ 0.115873, 0.020510, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.093130 }, // skin id = [253], model = [19064], bone = [2]
-{ 0.115873, 0.020510, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.165417 }, // skin id = [254], model = [19064], bone = [2]
-{ 0.115873, 0.020510, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [255], model = [19064], bone = [2]
-{ 0.115873, 0.004413, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.087416 }, // skin id = [256], model = [19064], bone = [2]
-{ 0.115873, 0.004413, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.087416 }, // skin id = [257], model = [19064], bone = [2]
-{ 0.115873, 0.018851, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.148198 }, // skin id = [258], model = [19064], bone = [2]
-{ 0.114300, 0.005907, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.184905 }, // skin id = [259], model = [19064], bone = [2]
-{ 0.114300, 0.028039, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.259154 }, // skin id = [260], model = [19064], bone = [2]
-{ 0.114300, 0.016597, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [261], model = [19064], bone = [2]
-{ 0.085203, 0.031544, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [262], model = [19064], bone = [2]
-{ 0.085203, 0.031544, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.223529 }, // skin id = [263], model = [19064], bone = [2]
-{ 0.085203, 0.031544, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.223529 }, // skin id = [264], model = [19064], bone = [2]
-{ 0.085203, 0.031544, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.084183 }, // skin id = [265], model = [19064], bone = [2]
-{ 0.100913, 0.031544, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.137119 }, // skin id = [266], model = [19064], bone = [2]
-{ 0.100913, 0.012670, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.155571 }, // skin id = [267], model = [19064], bone = [2]
-{ 0.100913, 0.012670, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.155571 }, // skin id = [268], model = [19064], bone = [2]
-{ 0.158835, -0.003362, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.155571 }, // skin id = [269], model = [19064], bone = [2]
-{ 0.124786, 0.024488, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.155571 }, // skin id = [270], model = [19064], bone = [2]
-{ 0.122586, -0.021279, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.155571 }, // skin id = [271], model = [19064], bone = [2]
-{ 0.120298, 0.005130, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.158007 }, // skin id = [272], model = [19064], bone = [2]
-{ 0.120298, 0.005130, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.158007 }, // skin id = [273], model = [19064], bone = [2]
-{ 0.120298, 0.005130, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.018631 }, // skin id = [274], model = [19064], bone = [2]
-{ 0.120298, 0.005130, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.018631 }, // skin id = [275], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [276], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [277], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [278], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [279], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [280], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [281], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [282], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [283], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [284], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [285], model = [19064], bone = [2]
-{ 0.120298, 0.014499, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.048962 }, // skin id = [286], model = [19064], bone = [2]
-{ 0.081753, 0.054948, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.203412 }, // skin id = [287], model = [19064], bone = [2]
-{ 0.139767, 0.010862, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.174665 }, // skin id = [288], model = [19064], bone = [2]
-{ 0.139767, 0.010862, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.174665 }, // skin id = [289], model = [19064], bone = [2]
-{ 0.116528, 0.009354, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.101741 }, // skin id = [290], model = [19064], bone = [2]
-{ 0.116528, 0.023416, 0.000000, 318.000000, 90.000000, 129.000000, 1.000000, 1.000000, 1.186849 }, // skin id = [291], model = [19064], bone = [2]
-{ 0.095830, 0.013420, -0.010044, 318.000000, 90.000000, 129.000000, 0.994540, 1.000000, 1.046511 }, // skin id = [292], model = [19064], bone = [2]
-{ 0.106734, 0.013420, 0.000000, 318.000000, 90.000000, 129.000000, 0.994540, 1.000000, 1.120004 }, // skin id = [293], model = [19064], bone = [2]
-{ 0.106734, 0.032277, 0.000000, 318.000000, 90.000000, 129.000000, 0.994540, 1.000000, 1.202311 }, // skin id = [294], model = [19064], bone = [2]
-{ 0.102113, 0.020710, 0.000000, 318.000000, 90.000000, 129.000000, 0.994540, 1.000000, 1.202311 }, // skin id = [295], model = [19064], bone = [2]
-{ 0.118856, 0.002652, 0.000000, 318.000000, 90.000000, 129.000000, 0.994540, 1.000000, 1.145482 }, // skin id = [296], model = [19064], bone = [2]
-{ 0.118856, 0.010938, 0.000000, 318.000000, 90.000000, 129.000000, 0.994540, 1.000000, 1.211190 }, // skin id = [297], model = [19064], bone = [2]
-{ 0.118856, 0.010938, 0.000000, 318.000000, 90.000000, 129.000000, 0.994540, 1.000000, 1.060776 }, // skin id = [298], model = [19064], bone = [2]
-{ 0.118856, 0.035834, 0.000000, 318.000000, 90.000000, 129.000000, 0.994540, 1.000000, 1.330662 } // skin id = [299], model = [19064], bone = [2]
-};
-
-new Float:Hat1OffSet[300][9] = {
-{ 0.122488, 0.000000, -0.005747, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.047722 }, // skin id = [0], model = [18926], bone = [2]
-{ 0.122488, 0.000000, -0.005747, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.047722 }, // skin id = [1], model = [18926], bone = [2]
-{ 0.122488, 0.000000, -0.005747, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.047722 }, // skin id = [2], model = [18926], bone = [2]
-{ 0.145050, 0.003062, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [3], model = [18926], bone = [2]
-{ 0.145050, 0.003062, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [4], model = [18926], bone = [2]
-{ 0.145050, 0.003062, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [5], model = [18926], bone = [2]
-{ 0.145050, 0.003062, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [6], model = [18926], bone = [2]
-{ 0.145050, 0.018146, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [7], model = [18926], bone = [2]
-{ 0.145050, 0.018146, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [8], model = [18926], bone = [2]
-{ 0.117782, 0.004405, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.049935 }, // skin id = [9], model = [18926], bone = [2]
-{ 0.124996, -0.003880, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [10], model = [18926], bone = [2]
-{ 0.137913, -0.000544, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [11], model = [18926], bone = [2]
-{ 0.137913, -0.014353, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [12], model = [18926], bone = [2]
-{ 0.137913, -0.014353, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [13], model = [18926], bone = [2]
-{ 0.137913, 0.014414, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.103389 }, // skin id = [14], model = [18926], bone = [2]
-{ 0.114263, -0.019343, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [15], model = [18926], bone = [2]
-{ 0.114263, -0.019343, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [16], model = [18926], bone = [2]
-{ 0.144622, 0.002975, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.023570 }, // skin id = [17], model = [18926], bone = [2]
-{ 0.127337, -0.006243, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.023570 }, // skin id = [18], model = [18926], bone = [2]
-{ 0.127337, -0.006243, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.023570 }, // skin id = [19], model = [18926], bone = [2]
-{ 0.152713, -0.005094, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.023570 }, // skin id = [20], model = [18926], bone = [2]
-{ 0.152713, -0.005094, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.023570 }, // skin id = [21], model = [18926], bone = [2]
-{ 0.152713, -0.005094, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.023570 }, // skin id = [22], model = [18926], bone = [2]
-{ 0.152713, -0.005094, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.023570 }, // skin id = [23], model = [18926], bone = [2]
-{ 0.152713, -0.005094, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.023570 }, // skin id = [24], model = [18926], bone = [2]
-{ 0.133577, 0.011490, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.023570 }, // skin id = [25], model = [18926], bone = [2]
-{ 0.137975, 0.009929, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.107309 }, // skin id = [26], model = [18926], bone = [2]
-{ 0.137975, 0.009929, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.107309 }, // skin id = [27], model = [18926], bone = [2]
-{ 0.137975, 0.014470, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.096025 }, // skin id = [28], model = [18926], bone = [2]
-{ 0.137975, 0.014470, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.096025 }, // skin id = [29], model = [18926], bone = [2]
-{ 0.137975, 0.007256, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.109232 }, // skin id = [30], model = [18926], bone = [2]
-{ 0.137975, 0.007256, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.109232 }, // skin id = [31], model = [18926], bone = [2]
-{ 0.137975, 0.007256, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.109232 }, // skin id = [32], model = [18926], bone = [2]
-{ 0.137975, 0.007256, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.109232 }, // skin id = [33], model = [18926], bone = [2]
-{ 0.137975, 0.007256, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.109232 }, // skin id = [34], model = [18926], bone = [2]
-{ 0.137975, 0.007256, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.109232 }, // skin id = [35], model = [18926], bone = [2]
-{ 0.137975, 0.008765, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.109232 }, // skin id = [36], model = [18926], bone = [2]
-{ 0.137975, 0.235536, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.109232 }, // skin id = [37], model = [18926], bone = [2]
-{ 0.137975, 0.235536, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.109232 }, // skin id = [38], model = [18926], bone = [2]
-{ 0.121833, -0.003900, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [39], model = [18926], bone = [2]
-{ 0.125358, 0.001044, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.101836 }, // skin id = [40], model = [18926], bone = [2]
-{ 0.125358, 0.001044, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.101836 }, // skin id = [41], model = [18926], bone = [2]
-{ 0.125358, 0.004358, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.025828 }, // skin id = [42], model = [18926], bone = [2]
-{ 0.072272, 0.004358, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [43], model = [18926], bone = [2]
-{ 0.106834, 0.018195, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 0.903266 }, // skin id = [44], model = [18926], bone = [2]
-{ 0.106834, -0.000235, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [45], model = [18926], bone = [2]
-{ 0.139074, 0.022726, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.079455 }, // skin id = [46], model = [18926], bone = [2]
-{ 0.139074, 0.007606, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.103345 }, // skin id = [47], model = [18926], bone = [2]
-{ 0.139074, -0.007036, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.103345 }, // skin id = [48], model = [18926], bone = [2]
-{ 0.129797, 0.006773, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [49], model = [18926], bone = [2]
-{ 0.135320, -0.029496, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.143053 }, // skin id = [50], model = [18926], bone = [2]
-{ 0.135320, -0.029496, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.143053 }, // skin id = [51], model = [18926], bone = [2]
-{ 0.135320, -0.029496, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.143053 }, // skin id = [52], model = [18926], bone = [2]
-{ 0.135320, -0.029496, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.143053 }, // skin id = [53], model = [18926], bone = [2]
-{ 0.135320, 0.023460, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [54], model = [18926], bone = [2]
-{ 0.135320, -0.013516, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.090074 }, // skin id = [55], model = [18926], bone = [2]
-{ 0.135320, -0.013516, -0.010104, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.090074 }, // skin id = [56], model = [18926], bone = [2]
-{ 0.158618, 0.017630, -0.009193, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.032991 }, // skin id = [57], model = [18926], bone = [2]
-{ 0.104293, 0.004492, -0.009193, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 0.950454 }, // skin id = [58], model = [18926], bone = [2]
-{ 0.150406, 0.005888, -0.009193, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.199363 }, // skin id = [59], model = [18926], bone = [2]
-{ 0.150406, 0.005888, -0.009193, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.199363 }, // skin id = [60], model = [18926], bone = [2] /ble
-{ 0.150406, 0.005888, -0.009193, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [61], model = [18926], bone = [2]
-{ 0.140373, 0.021984, -0.001980, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [62], model = [18926], bone = [2]
-{ 0.140373, -0.001262, -0.002243, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112322 }, // skin id = [63], model = [18926], bone = [2]
-{ 0.132639, 0.013685, -0.002243, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [64], model = [18926], bone = [2]
-{ 0.132639, 0.013685, -0.002243, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [65], model = [18926], bone = [2] /ble
-{ 0.132639, 0.008149, -0.002243, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [66], model = [18926], bone = [2]
-{ 0.132639, 0.008149, -0.013809, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.065091 }, // skin id = [67], model = [18926], bone = [2]
-{ 0.132639, 0.021871, -0.013809, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [68], model = [18926], bone = [2]
-{ 0.132639, -0.001306, -0.010973, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.153524 }, // skin id = [69], model = [18926], bone = [2]
-{ 0.132639, 0.016866, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.047332 }, // skin id = [70], model = [18926], bone = [2]
-{ 0.132639, 0.001274, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [71], model = [18926], bone = [2]
-{ 0.132639, 0.020889, -0.007968, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [72], model = [18926], bone = [2]
-{ 0.132639, 0.020889, -0.007968, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [73], model = [18926], bone = [2]
-{ 0.132639, 0.012713, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [74], model = [18926], bone = [2]
-{ 0.142566, 0.012713, -0.012704, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.048339 }, // skin id = [75], model = [18926], bone = [2]
-{ 0.126091, -0.007307, -0.001000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.111706 }, // skin id = [76], model = [18926], bone = [2]
-{ 0.126091, -0.007307, -0.001000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.111706 }, // skin id = [77], model = [18926], bone = [2]
-{ 0.181641, -0.007307, -0.001000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [78], model = [18926], bone = [2]
-{ 0.119516, 0.014787, -0.001000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [79], model = [18926], bone = [2]
-{ 0.119516, -0.008451, -0.006732, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [80], model = [18926], bone = [2]
-{ 0.119516, -0.008451, -0.006732, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [81], model = [18926], bone = [2]
-{ 0.147563, 0.017264, -0.015071, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.276582 }, // skin id = [82], model = [18926], bone = [2]
-{ 0.135211, 0.017264, -0.015071, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.206304 }, // skin id = [83], model = [18926], bone = [2]
-{ 0.135211, 0.017264, -0.015071, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.206304 }, // skin id = [84], model = [18926], bone = [2]
-{ 0.135211, 0.017264, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.308903 }, // skin id = [85], model = [18926], bone = [2]
-{ 0.135211, 0.017264, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.308903 }, // skin id = [86], model = [18926], bone = [2]
-{ 0.135211, 0.021998, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.116050 }, // skin id = [87], model = [18926], bone = [2]
-{ 0.135211, 0.020831, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.049436 }, // skin id = [88], model = [18926], bone = [2]
-{ 0.135211, -0.004561, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.049436 }, // skin id = [89], model = [18926], bone = [2]
-{ 0.135211, -0.004463, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.108762 }, // skin id = [90], model = [18926], bone = [2]
-{ 0.117180, 0.000520, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.108762 }, // skin id = [91], model = [18926], bone = [2]
-{ 0.124196, 0.000520, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.108762 }, // skin id = [92], model = [18926], bone = [2]
-{ 0.124196, 0.000520, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.108762 }, // skin id = [93], model = [18926], bone = [2]
-{ 0.095223, 0.000520, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.118700 }, // skin id = [94], model = [18926], bone = [2]
-{ 0.116827, -0.004483, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [95], model = [18926], bone = [2]
-{ 0.134084, 0.010464, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.052589 }, // skin id = [96], model = [18926], bone = [2]
-{ 0.120275, 0.015321, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.052589 }, // skin id = [97], model = [18926], bone = [2]
-{ 0.136372, 0.015860, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.148221 }, // skin id = [98], model = [18926], bone = [2]
-{ 0.136372, -0.005980, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.257121 }, // skin id = [99], model = [18926], bone = [2]
-{ 0.136372, 0.003087, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.189473 }, // skin id = [100], model = [18926], bone = [2]
-{ 0.136372, 0.003087, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.189473 }, // skin id = [101], model = [18926], bone = [2]
-{ 0.136372, 0.003087, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.189473 }, // skin id = [102], model = [18926], bone = [2]
-{ 0.136372, 0.003087, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.189473 }, // skin id = [103], model = [18926], bone = [2]
-{ 0.147141, 0.003087, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.204451 }, // skin id = [104], model = [18926], bone = [2]
-{ 0.147141, 0.003087, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.204451 }, // skin id = [105], model = [18926], bone = [2]
-{ 0.147141, 0.003087, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.204451 }, // skin id = [106], model = [18926], bone = [2]
-{ 0.160576, 0.004308, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.204451 }, // skin id = [107], model = [18926], bone = [2]
-{ 0.143863, 0.004308, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.078951 }, // skin id = [108], model = [18926], bone = [2]
-{ 0.143863, 0.017385, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.148880 }, // skin id = [109], model = [18926], bone = [2]
-{ 0.143863, 0.017385, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.148880 }, // skin id = [110], model = [18926], bone = [2]
-{ 0.143863, 0.017385, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [111], model = [18926], bone = [2]
-{ 0.111810, 0.013724, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [112], model = [18926], bone = [2]
-{ 0.161572, -0.010747, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.104514 }, // skin id = [113], model = [18926], bone = [2]
-{ 0.155531, 0.013724, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.161115 }, // skin id = [114], model = [18926], bone = [2]
-{ 0.155531, 0.013724, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.253216 }, // skin id = [115], model = [18926], bone = [2]
-{ 0.155531, 0.013724, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.118675 }, // skin id = [116], model = [18926], bone = [2]
-{ 0.121212, 0.021156, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [117], model = [18926], bone = [2]
-{ 0.121212, 0.021156, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [118], model = [18926], bone = [2]
-{ 0.121212, 0.021156, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [119], model = [18926], bone = [2]
-{ 0.136612, -0.004972, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.062047 }, // skin id = [120], model = [18926], bone = [2]
-{ 0.136612, -0.004972, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.062047 }, // skin id = [121], model = [18926], bone = [2]
-{ 0.125042, 0.012954, -0.009917, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.072784 }, // skin id = [122], model = [18926], bone = [2]
-{ 0.125042, 0.005220, -0.017130, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.188919 }, // skin id = [123], model = [18926], bone = [2]
-{ 0.141139, 0.005220, -0.008696, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.052314 }, // skin id = [124], model = [18926], bone = [2]
-{ 0.141139, 0.005220, -0.008696, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [125], model = [18926], bone = [2]
-{ 0.141139, -0.002690, -0.008696, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.092511 }, // skin id = [126], model = [18926], bone = [2]
-{ 0.141139, 0.014567, -0.008696, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.092511 }, // skin id = [127], model = [18926], bone = [2]
-{ 0.120021, 0.013273, -0.008696, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.381744 }, // skin id = [128], model = [18926], bone = [2]
-{ 0.120021, 0.013273, -0.008696, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 0.890708 }, // skin id = [129], model = [18926], bone = [2]
-{ 0.094104, 0.013273, -0.008696, 0.000000, 0.000000, 0.000000, 0.869958, 1.000000, 0.881632 }, // skin id = [130], model = [18926], bone = [2]
-{ 0.118576, 0.013273, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.045275 }, // skin id = [131], model = [18926], bone = [2]
-{ 0.059999, 0.003672, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 0.914665 }, // skin id = [132], model = [18926], bone = [2]
-{ 0.139307, 0.028143, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.120714 }, // skin id = [133], model = [18926], bone = [2]
-{ 0.115545, -0.021107, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.175123 }, // skin id = [134], model = [18926], bone = [2]
-{ 0.115545, 0.001053, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.059926 }, // skin id = [135], model = [18926], bone = [2]
-{ 0.123227, 0.001053, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [136], model = [18926], bone = [2]
-{ 0.123227, 0.001053, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [137], model = [18926], bone = [2]
-{ 0.123227, 0.001053, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.112983 }, // skin id = [138], model = [18926], bone = [2]
-{ 0.123227, 0.001053, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.112983 }, // skin id = [139], model = [18926], bone = [2]
-{ 0.123227, 0.019632, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.215738 }, // skin id = [140], model = [18926], bone = [2]
-{ 0.126272, -0.005924, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.122429 }, // skin id = [141], model = [18926], bone = [2]
-{ 0.126272, 0.016160, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.122429 }, // skin id = [142], model = [18926], bone = [2]
-{ 0.126272, 0.016160, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.122429 }, // skin id = [143], model = [18926], bone = [2]
-{ 0.151781, -0.009555, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.346199 }, // skin id = [144], model = [18926], bone = [2]
-{ 0.126064, 0.003478, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.079233 }, // skin id = [145], model = [18926], bone = [2]
-{ 0.126064, 0.003478, -0.008696, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [146], model = [18926], bone = [2]
-{ 0.115402, -0.002673, 0.003026, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.030608 }, // skin id = [147], model = [18926], bone = [2]
-{ 0.132193, -0.003811, -0.006344, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.132692 }, // skin id = [148], model = [18926], bone = [2]
-{ 0.132193, -0.003811, -0.006344, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.132692 }, // skin id = [149], model = [18926], bone = [2]
-{ 0.132193, -0.003811, -0.006344, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.091253 }, // skin id = [150], model = [18926], bone = [2]
-{ 0.132193, -0.003811, -0.010462, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.242875 }, // skin id = [151], model = [18926], bone = [2]
-{ 0.132193, -0.018617, -0.010462, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.050692 }, // skin id = [152], model = [18926], bone = [2]
-{ 0.132890, -0.010325, 0.002209, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.062782 }, // skin id = [153], model = [18926], bone = [2]
-{ 0.135060, -0.010325, -0.012207, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.062782 }, // skin id = [154], model = [18926], bone = [2]
-{ 0.135060, -0.010325, -0.012207, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.062782 }, // skin id = [155], model = [18926], bone = [2]
-{ 0.158299, -0.010325, -0.012207, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.233769 }, // skin id = [156], model = [18926], bone = [2]
-{ 0.133841, 0.000136, -0.012207, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.061530 }, // skin id = [157], model = [18926], bone = [2]
-{ 0.133841, 0.000136, -0.012207, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.061530 }, // skin id = [158], model = [18926], bone = [2]
-{ 0.133841, 0.011925, -0.012207, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.167111 }, // skin id = [159], model = [18926], bone = [2]
-{ 0.133841, 0.011925, -0.002360, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [160], model = [18926], bone = [2]
-{ 0.133841, 0.011925, -0.002360, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [161], model = [18926], bone = [2]
-{ 0.145610, 0.011925, -0.002360, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [162], model = [18926], bone = [2]
-{ 0.116057, 0.006403, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.072070 }, // skin id = [163], model = [18926], bone = [2]
-{ 0.116057, 0.006403, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [164], model = [18926], bone = [2]
-{ 0.116057, 0.017451, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.104861 }, // skin id = [165], model = [18926], bone = [2]
-{ 0.116057, 0.013904, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.061602 }, // skin id = [166], model = [18926], bone = [2]
-{ 0.116057, 0.013904, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.061602 }, // skin id = [167], model = [18926], bone = [2]
-{ 0.116057, 0.009507, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.061602 }, // skin id = [168], model = [18926], bone = [2]
-{ 0.116057, -0.008551, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.093496 }, // skin id = [169], model = [18926], bone = [2]
-{ 0.124342, 0.008472, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.128570 }, // skin id = [170], model = [18926], bone = [2]
-{ 0.142773, -0.003094, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.142036 }, // skin id = [171], model = [18926], bone = [2]
-{ 0.142773, -0.003094, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.071724 }, // skin id = [172], model = [18926], bone = [2]
-{ 0.142773, -0.003094, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.071724 }, // skin id = [173], model = [18926], bone = [2]
-{ 0.142773, 0.013945, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.186176 }, // skin id = [174], model = [18926], bone = [2]
-{ 0.142773, 0.013945, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.186176 }, // skin id = [175], model = [18926], bone = [2]
-{ 0.142773, 0.001430, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.069683 }, // skin id = [176], model = [18926], bone = [2]
-{ 0.169265, 0.001430, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.218822 }, // skin id = [177], model = [18926], bone = [2]
-{ 0.169265, 0.001430, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [178], model = [18926], bone = [2]
-{ 0.141736, 0.006385, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.041090 }, // skin id = [179], model = [18926], bone = [2]
-{ 0.141736, -0.004005, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.121248 }, // skin id = [180], model = [18926], bone = [2]
-{ 0.141736, -0.004005, -0.010646, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [181], model = [18926], bone = [2]
-{ 0.141736, 0.013400, -0.010462, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [182], model = [18926], bone = [2]
-{ 0.141736, 0.013400, -0.010462, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [183], model = [18926], bone = [2]
-{ 0.141736, 0.013400, -0.010462, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.111779 }, // skin id = [184], model = [18926], bone = [2]
-{ 0.141736, 0.006016, -0.010462, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.111779 }, // skin id = [185], model = [18926], bone = [2]
-{ 0.141736, -0.003507, -0.010462, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.111779 }, // skin id = [186], model = [18926], bone = [2]
-{ 0.115347, -0.003507, -0.002673, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.111779 }, // skin id = [187], model = [18926], bone = [2]
-{ 0.122633, 0.005860, -0.002673, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.028304 }, // skin id = [188], model = [18926], bone = [2]
-{ 0.154267, 0.003385, -0.002673, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.161581 }, // skin id = [189], model = [18926], bone = [2]
-{ 0.154267, 0.003385, -0.002673, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.161581 }, // skin id = [189], model = [18926], bone = [2]
-{ 0.154267, -0.002810, -0.013924, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.218858 }, // skin id = [190], model = [18926], bone = [2]
-{ 0.172987, -0.002810, -0.013924, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.081827 }, // skin id = [191], model = [18926], bone = [2]
-{ 0.172987, -0.002810, -0.013924, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.081827 }, // skin id = [192], model = [18926], bone = [2]
-{ 0.157022, -0.002810, -0.001242, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.112206 }, // skin id = [193], model = [18926], bone = [2]
-{ 0.157022, -0.002810, -0.001242, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.112206 }, // skin id = [194], model = [18926], bone = [2]
-{ 0.148613, -0.002810, -0.011904, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.139338 }, // skin id = [195], model = [18926], bone = [2]
-{ 0.121470, 0.010216, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.042801 }, // skin id = [196], model = [18926], bone = [2]
-{ 0.121470, -0.008962, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.159403 }, // skin id = [197], model = [18926], bone = [2]
-{ 0.121470, -0.008962, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.159403 }, // skin id = [198], model = [18926], bone = [2]
-{ 0.121470, 0.003720, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.031354 }, // skin id = [199], model = [18926], bone = [2]
-{ 0.145942, 0.003720, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.070631 }, // skin id = [200], model = [18926], bone = [2]
-{ 0.145942, 0.003720, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.070631 }, // skin id = [201], model = [18926], bone = [2]
-{ 0.168191, 0.002647, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 0.987042 }, // skin id = [202], model = [18926], bone = [2]
-{ 0.143719, 0.002647, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 0.987042 }, // skin id = [203], model = [18926], bone = [2]
-{ 0.143719, 0.010873, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.040781 }, // skin id = [204], model = [18926], bone = [2]
-{ 0.143719, 0.010873, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.040781 }, // skin id = [205], model = [18926], bone = [2]
-{ 0.143719, 0.010873, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 0.982968 }, // skin id = [206], model = [18926], bone = [2]
-{ 0.094776, 0.010873, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 0.982968 }, // skin id = [207], model = [18926], bone = [2]
-{ 0.094776, 0.010873, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 0.982968 }, // skin id = [208], model = [18926], bone = [2]
-{ 0.154858, 0.010873, -0.012284, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 0.982968 }, // skin id = [209], model = [18926], bone = [2]
-{ 0.123600, -0.002684, -0.004765, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 0.982968 }, // skin id = [210], model = [18926], bone = [2]
-{ 0.123983, -0.002684, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.155472 }, // skin id = [211], model = [18926], bone = [2]
-{ 0.123983, 0.016080, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 0.901051 }, // skin id = [212], model = [18926], bone = [2]
-{ 0.132268, 0.007086, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.026511 }, // skin id = [213], model = [18926], bone = [2]
-{ 0.132268, -0.003124, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.106538 }, // skin id = [214], model = [18926], bone = [2]
-{ 0.132268, -0.003124, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.161943 }, // skin id = [215], model = [18926], bone = [2]
-{ 0.132268, -0.003124, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.076964 }, // skin id = [216], model = [18926], bone = [2]
-{ 0.132268, 0.016638, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.076964 }, // skin id = [217], model = [18926], bone = [2]
-{ 0.132268, 0.006420, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.140585 }, // skin id = [218], model = [18926], bone = [2]
-{ 0.132268, -0.002305, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.101998 }, // skin id = [219], model = [18926], bone = [2]
-{ 0.129981, 0.007218, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [220], model = [18926], bone = [2]
-{ 0.161564, -0.011312, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.162133 }, // skin id = [221], model = [18926], bone = [2]
-{ 0.156510, -0.011312, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.162133 }, // skin id = [222], model = [18926], bone = [2]
-{ 0.156510, 0.016707, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.162133 }, // skin id = [223], model = [18926], bone = [2]
-{ 0.122079, -0.000794, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.162133 }, // skin id = [224], model = [18926], bone = [2]
-{ 0.122079, -0.000794, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.162133 }, // skin id = [225], model = [18926], bone = [2]
-{ 0.122079, -0.000794, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.162133 }, // skin id = [226], model = [18926], bone = [2]
-{ 0.142693, 0.018532, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.103451 }, // skin id = [227], model = [18926], bone = [2]
-{ 0.142693, 0.016351, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.195950 }, // skin id = [228], model = [18926], bone = [2]
-{ 0.116855, -0.008524, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.076935 }, // skin id = [229], model = [18926], bone = [2]
-{ 0.097095, 0.010386, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.076935 }, // skin id = [230], model = [18926], bone = [2]
-{ 0.122811, 0.019015, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.076935 }, // skin id = [231], model = [18926], bone = [2]
-{ 0.122811, -0.013999, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.076935 }, // skin id = [232], model = [18926], bone = [2]
-{ 0.129145, 0.005986, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.076935 }, // skin id = [233], model = [18926], bone = [2]
-{ 0.129145, -0.010040, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [234], model = [18926], bone = [2]
-{ 0.074942, -0.000671, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [235], model = [18926], bone = [2]
-{ 0.119606, -0.000671, -0.009073, 0.000000, 0.000000, 0.000000, 0.889625, 1.000000, 1.000000 }, // skin id = [236], model = [18926], bone = [2]
-{ 0.122475, -0.002666, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.033094 }, // skin id = [237], model = [18926], bone = [2]
-{ 0.120242, 0.029947, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.177383 }, // skin id = [238], model = [18926], bone = [2]
-{ 0.157252, -0.000177, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.066471 }, // skin id = [239], model = [18926], bone = [2]
-{ 0.160637, 0.003111, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.063985 }, // skin id = [240], model = [18926], bone = [2]
-{ 0.214130, -0.054737, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.063985 }, // skin id = [241], model = [18926], bone = [2]
-{ 0.214130, -0.054737, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.063985 }, // skin id = [242], model = [18926], bone = [2]
-{ 0.095521, 0.014462, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.063985 }, // skin id = [243], model = [18926], bone = [2]
-{ 0.095521, 0.038922, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.147456 }, // skin id = [244], model = [18926], bone = [2]
-{ 0.148919, 0.006913, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.177747 }, // skin id = [245], model = [18926], bone = [2]
-{ 0.148919, 0.006913, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.177747 }, // skin id = [246], model = [18926], bone = [2]
-{ 0.148919, 0.006913, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.174396 }, // skin id = [247], model = [18926], bone = [2]
-{ 0.148919, 0.013003, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.252582 }, // skin id = [248], model = [18926], bone = [2]
-{ 0.148919, 0.013003, -0.006529, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.252582 }, // skin id = [249], model = [18926], bone = [2]
-{ 0.129987, 0.014427, -0.016096, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.108909 }, // skin id = [250], model = [18926], bone = [2]
-{ 0.134128, 0.014427, -0.005327, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.108909 }, // skin id = [251], model = [18926], bone = [2]
-{ 0.134128, -0.008986, -0.005327, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.147707 }, // skin id = [252], model = [18926], bone = [2]
-{ 0.227209, 0.016729, -0.005327, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.133874 }, // skin id = [253], model = [18926], bone = [2]
-{ 0.151617, -0.008986, -0.005327, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.162871 }, // skin id = [254], model = [18926], bone = [2]
-{ 0.151617, -0.008986, -0.005327, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.162871 }, // skin id = [255], model = [18926], bone = [2]
-{ 0.104890, 0.003455, -0.005327, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.222769 }, // skin id = [256], model = [18926], bone = [2]
-{ 0.104890, 0.003455, -0.002754, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.388986 }, // skin id = [257], model = [18926], bone = [2]
-{ 0.128129, 0.003455, -0.002754, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.235578 }, // skin id = [258], model = [18926], bone = [2]
-{ 0.128129, 0.003455, -0.002754, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.263206 }, // skin id = [259], model = [18926], bone = [2]
-{ 0.161970, 0.003455, -0.002754, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.330883 }, // skin id = [260], model = [18926], bone = [2]
-{ 0.128395, 0.003455, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 0.998286 }, // skin id = [261], model = [18926], bone = [2]
-{ 0.128395, 0.003455, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 0.998286 }, // skin id = [262], model = [18926], bone = [2]
-{ 0.128395, -0.006790, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.097384 }, // skin id = [263], model = [18926], bone = [2]
-{ 0.128395, -0.006790, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.097384 }, // skin id = [264], model = [18926], bone = [2]
-{ 0.128395, 0.001495, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [265], model = [18926], bone = [2]
-{ 0.128395, -0.012040, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.077575 }, // skin id = [266], model = [18926], bone = [2]
-{ 0.128395, -0.005613, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.058893 }, // skin id = [267], model = [18926], bone = [2]
-{ 0.128395, -0.005613, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [268], model = [18926], bone = [2]
-{ 0.128395, -0.005613, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [269], model = [18926], bone = [2]
-{ 0.128395, -0.005613, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [270], model = [18926], bone = [2]
-{ 0.128395, -0.005613, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [271], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [272], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [273], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [274], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [275], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [276], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [278], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [279], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [280], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.112128 }, // skin id = [281], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.098565 }, // skin id = [282], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.098565 }, // skin id = [283], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.098565 }, // skin id = [284], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.098565 }, // skin id = [285], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.098565 }, // skin id = [286], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.098565 }, // skin id = [287], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.098565 }, // skin id = [288], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.098565 }, // skin id = [289], model = [18926], bone = [2]
-{ 0.128395, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.098565 }, // skin id = [290], model = [18926], bone = [2]
-{ 0.146826, 0.011835, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.175715 }, // skin id = [291], model = [18926], bone = [2]
-{ 0.130729, 0.005794, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [292], model = [18926], bone = [2]
-{ 0.236261, 0.005794, -0.013067, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000 }, // skin id = [293], model = [18926], bone = [2]
-{ 0.159098, -0.001010, -0.010598, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.208474 }, // skin id = [294], model = [18926], bone = [2]
-{ 0.127255, 0.013936, -0.010598, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.106938 }, // skin id = [295], model = [18926], bone = [2]
-{ 0.127255, -0.010056, -0.010598, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.106938 }, // skin id = [296], model = [18926], bone = [2]
-{ 0.146870, -0.000518, -0.010598, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.160915 }, // skin id = [297], model = [18926], bone = [2]
-{ 0.127423, -0.000518, -0.010598, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.050038 }, // skin id = [298], model = [18926], bone = [2]
-{ 0.151895, 0.018729, -0.010598, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.286438 } // skin id = [299], model = [18926], bone = [2]
-};
-
-/*
-* Cars lenghts from center to hood and trunk with trunk/hood side (front/back)
-* Angle: 0 - back; 1 - back (-180 degree)
-*/
-enum carsLenghtInfo
+enum vehTransportInfo
 {
-	lenghtModel,
-	Float:hoodDistance,
-	hoodAngle,
-	Float:trunkDistance,
-	trunkAngle,
-	trunkSpace
+	Float:mPosX1,
+	Float:mPosY1,
+	Float:mPosZ1,
+	Float:mPosX2,
+	Float:mPosY2,
+	Float:mPosZ2,
+	Float:mPosX3,
+	Float:mPosY3,
+	Float:mPosZ3,
+	Float:mPosX4,
+	Float:mPosY4,
+	Float:mPosZ4,
+	mPosInterior,
+	mPosAngle
+};
+new gVehTransport[vehTransportInfo] = 
+{
+	351.81,
+	174.06,
+	1014.95,
+	357.27,
+	174.06,
+	1013.89,
+	356.8,
+	170.82,
+	1013.96,
+	351.52,
+	170.82,
+	1013.96,
+	3,
+	90
+};
+
+
+enum vehExportInfo
+{
+	Float:mPosX1,
+	Float:mPosY1,
+	Float:mPosZ1,
+	Float:mPosX2,
+	Float:mPosY2,
+	Float:mPosZ2,
+	Float:mPosX3,
+	Float:mPosY3,
+	Float:mPosZ3,
+	Float:mPosX4,
+	Float:mPosY4,
+	Float:mPosZ4,
+	Float:mPosX5,
+	Float:mPosY5,
+	Float:mPosZ5,
+	Float:mPosX6,
+	Float:mPosY6,
+	Float:mPosZ6,
+	Float:mPosX7,
+	Float:mPosY7,
+	Float:mPosZ7,
+	mCpId1,
+	mCpId2,
+	mCpId3,
+	mCpId4,
+	mCpId5,
+	mCpId6,
+	mCpId7,
+	mTimeBeforeExport,
+	mTimeBeforeNextSteal
+};
+new gVehExport[vehExportInfo] =
+{
+	1610.22,
+	-1492.2,
+	13.55,
+	2790.76,
+	-2455.8,
+	13.33,
+	2790.76,
+	2823.19,
+	10.52,
+	1349.09,
+	1761.23,
+	10.52,
+	-2287.19,
+	2285.06,
+	4.97,
+	-1703.76,
+	14.97,
+	3.55,
+	-1275.6,
+	-631.94,
+	13.85,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	6,
+	24
+};
+
+new gAtmCp[12];
+new Float:gATM[12][3] = 
+{
+	{ 1238.11 , 328.388 , 19.4655 },
+	{ 200.729 , -62.2478 , 1.47812 },
+	{ 1367.99 , 393.505 , 19.43 },
+	{ 661.348 , -555.223 , 15.9359 },
+	{ -95.52 , 1083.22, 19.38 },
+	{ -310.63 , 1052.44, 19.99 },
+	{ 316.93, 1864.14, 1613.36 },
+	{ 319.66, 1864.36, 1613.36 },
+	{ 1103.09, -1428.22, 15.79 },
+	{ 1123.76, -1528.68, 15.60 },
+	{ 2209.87, -1149.79, 13.52 },
+	{ 1147.44, -1771.95, 16.59 }
+};
+
+#define HorseTimerTextDrawLocX 547
+#define HorseTimerTextDrawLocY 2
+#define TimeOfHorseRaceHours 1
+#define TimeOfHorseRaceMinutes 20
+#define HorseCashLowerBounds 100
+#define HorseCashHigherBounds 50000
+
+enum mapIconInfo
+{
+	mIconId,
+	Float:mPosX,
+	Float:mPosY,
+	Float:mPosZ,
+	mType,
+	mColor,
+	mWorld,
+	mInterior,
+	mStreamDistance
+};
+
+new gMapIcon[MAX_MAP_ICONS][mapIconInfo];
+
+enum publicAdsInfo
+{
+	mObjId,
+	mOwner[MAX_PLAYER_NAME],
+	Float:mObjPosX,
+	Float:mObjPosY,
+	Float:mObjPosZ,
+	Float:mObjRotX,
+	Float:mObjRotY,
+	Float:mObjRotZ,
+	mObjWorld,
+	mCpId,
+	Float:mCpPosX,
+	Float:mCpPosY,
+	Float:mCpPosZ,
+	mCpWorld,
+	mAdLine1Content[65],
+	mAdLine1TimeLeft,
+	mAdLine1Owner[MAX_PLAYER_NAME],
+	mAdLine2Content[65],
+	mAdLine2TimeLeft,
+	mAdLine2Owner[MAX_PLAYER_NAME],
+	mAdLine3Content[65],
+	mAdLine3TimeLeft,
+	mAdLine3Owner[MAX_PLAYER_NAME],
+	mAdLine4Content[65],
+	mAdLine4TimeLeft,
+	mAdLine4Owner[MAX_PLAYER_NAME],
+	mAdLine5Content[65],
+	mAdLine5TimeLeft,
+	mAdLine5Owner[MAX_PLAYER_NAME],
+	mAdLine6Content[65],
+	mAdLine6TimeLeft,
+	mAdLine6Owner[MAX_PLAYER_NAME],
+	mAdLine7Content[65],
+	mAdLine7TimeLeft,
+	mAdLine7Owner[MAX_PLAYER_NAME],
+	mAdLine8Content[65],
+	mAdLine8TimeLeft,
+	mAdLine8Owner[MAX_PLAYER_NAME],
+	mAdLine9Content[65],
+	mAdLine9TimeLeft,
+	mAdLine9Owner[MAX_PLAYER_NAME],
+	mAdLine10Content[65],
+	mAdLine10TimeLeft,
+	mAdLine10Owner[MAX_PLAYER_NAME]
+};
+new gPublicAds[MAX_PUBLIC_ADS][publicAdsInfo];
+
+enum pickupInfosInfo
+{
+	Float:mPosX,
+	Float:mPosY,
+	Float:mPosZ,
+	mWorld,
+	mInterior,
+	mPickupModel,
+	mPickupType,
+	mInfoTextLine1[128],
+	mInfoTextLine2[128],
+	mInfoTextLine3[128],
+	mInfoTextType,
+	mPickupId,
+	Text3D:m3dText1Id,
+	Text3D:m3dText2Id,
+	Text3D:m3dText3Id
+};
+new gPickupInfos[50][pickupInfosInfo];
+
+new gSearchItemType;
+new gSearchItemId;
+new gSearchItemParam1 = -999;
+new gSearchItemParam2 = -999;
+new gSearchItemParam3 = -999;
+new gSearchItemParam4 = -999;
+new gSearchItemParam5[64];
+
+enum playerReportsInfo
+{
+	mReportUsed,
+	mReportTimeLeft,
+	mReportContent[128],
+	mReporter[MAX_PLAYER_NAME],
+	mReported[MAX_PLAYER_NAME]
+};
+new gPlayersReports[30][playerReportsInfo];
+
+enum lsLocationsInfo
+{
+	mLocationDescription[64],
+	Float:mLocationPosCamX,
+	Float:mLocationPosCamY,
+	Float:mLocationPosCamZ,
+	Float:mLocationPosCamLookX,
+	Float:mLocationPosCamLookY,
+	Float:mLocationPosCamLookZ,
+	Float:mLocationPosX,
+	Float:mLocationPosY,
+	Float:mLocationPosZ,
+	mLocationPosCp
+};
+new gLsLocations[21][lsLocationsInfo] = 
+{
+	{ "Urz¹d LS", 1502.14, -1742.16, 44.11, 1500.07, -1746.71, 42.00, 1479.72, -1793.05, 15.35 },
+	{ "Policja LS", 1513.59, -1662.93, 33.83, 1518.37, -1664.37, 31.55, 1554.82, -1675.49, 16.19 },
+	{ "Bank LS", 1506.96, -1616.02, 38.19, 1505.82, -1611.15, 35.18, 1498.46, -1581.63, 13.84 },
+	{ "Biblioteka LS", 1306.01, -923.89, 50.60, 1307.96, -919.29, 49.02, 1316.61, -899.67, 39.57 },
+	{ "MZGK przy policji", 1629.28, -1643.89, 25.34, 1624.40, -1644.98, 21.97, 1607.99, -1640.29, 13.54 },
+	{ "MZGK przy dokach", 2209.15, -2179.58, 24.11, 2213.61, -2177.32, 21.57, 2226.15, -2177.99, 13.54 },
+	{ "MZGK przy stadionie", 2800.40, -1606.34, 26.35, 2796.37, -1607.14, 23.51, 2785.66, -1611.90, 10.92 },
+	{ "MZGK przy San News", 778.63, -1378.73, 22.42, 774.43, -1376.03, 19.86, 775.34, -1369.25, 13.52 },
+	{ "Szpital przy centrum handlowym", 1206.33, -1314.47, 26.62, 1202.09, -1316.46, 24.86, 1172.78, -1323.76, 15.40 },
+	{ "Szpital Jefferson", 2006.39, -1454.51, 39.99, 2009.10, -1450.30, 38.26, 2033.36, -1403.84, 17.27 },
+	{ "Pêtla autobusowa", 1815.92, -1883.63, 27.43, 1812.23, -1887.01, 25.35, 1794.97, -1914.96, 13.39 },
+	{ "WORD", 1151.44, -1746.38, 26.71, 1151.86, -1751.36, 24.35, 1153.83, -1771.47, 16.59 },
+	{ "Fabryka broni", 2457.03, -2085.14, 20.43, 2457.42, -2090.12, 18.99, 2460.77, -2119.65, 13.55 },
+	{ "Centrum handlowe", 1127.92, -1414.19, 47.32, 1128.01, -1419.19, 44.65, 1126.93, -1413.62, 25.89 },
+	{ "Motel Jefferson", 2192.39, -1108.54, 48.58, 2194.20, -1112.77, 46.63, 2233.08, -1159.39, 25.89 },
+	{ "Motel Idlewood", 2192.27, -1776.37, 30.30, 2189.24, -1780.35, 28.37, 2173.27, -1798.78, 13.36 },
+	{ "Salon Samochodowy - Urzêdowy", 2127.61, -1123.50, 35.76, 2128.26, -1127.84, 33.35, 2131.73, -1152.57, 24.14 },
+	{ "Hurtownia produktów - Flint Country", -98.99, -1128.31, 24.25, -103.66, -1126.53, 21.46, -130.51, -1118.26, 3.7 },
+	{ "Hurtownia produktów - Blue Berry", 90.31, -205.67, 37.53, 90.55, -210.67, 35.38, 93.63, -271.4, 1.57 },
+	{ "Hurtownia produktów - LVA Freight Depot", 1652.18, 917.51, 49.75, 1653.26, 922.39, 46.89, 1668.12, 948.23, 10.67 },
+	{ "Wiêzienie", 1843.16, -1596.83, 41.58, 1838.99, -1594.06, 39.73, 1806.22, -1575.43, 13.44 }
+};
+
+enum taxiLocationsInfo
+{
+	mLocationDescription[64],
+	Float:mPosX,
+	Float:mPosY,
+	Float:mPosZ,
+	Float:mPosCamX,
+	Float:mPosCamY,
+	Float:mPosCamZ,
+	Float:mPosCamLookX,
+	Float:mPosCamLookY,
+	Float:mPosCamLookZ
+};
+new gTaxiLocations[7][taxiLocationsInfo] = 
+{
+	{ "Urz¹d LS", 1480.226, -1739.641, 13.546, 1468.92, -1739.48, 18.77, 1473.86, -1738.68, 17.53 },
+	{ "Policja LS", 1536.805, -1651.242, 13.546, 1517.25, -1661.67, 19.31, 1520.40, -1657.79, 18.20 },
+	{ "WORD", 1166.669, -1767.476, 13.570, 1173.79, -1754.66, 19.28, 1173.45, -1759.65, 18.55 },
+	{ "Centrum handlowe", 1136.792, -1413.789, 13.641, 1121.10, -1388.63, 23.71, 1125.27, -1391.39, 21.86 },
+	{ "Motel Jefferson", 2239.412, -1146.886, 25.796, 2310.47, -1130.00, 50.97, 2306.12, -1132.47, 49.39 },
+	{ "Motel Idlewood", 2193.372, -1800.218, 13.546, 2182.88, -1822.44, 25.20, 2183.50, -1817.48, 23.08 },
+	{ "Lotnisko", 1718.722, -2328.082, -2.679, 1700.31, -2306.18, 5.70, 1705.07, -2307.72, 4.79}
+};
+
+enum prisonCellsInfo
+{
+	Float:mPosXCellEntrance,
+	Float:mPosYCellEntrance,
+	Float:mPosZCellEntrance,
+	Float:mPosXInCell,
+	Float:mPosYInCell,
+	Float:mPosZInCell
 }
-new CarsLenghts[201][carsLenghtInfo] =
+new gPrisonCells[10][prisonCellsInfo] = 
 {
-{ 400, 2.62, 1, 2.9, 0, 10 }, // 400
-{ 401, 3.18, 1, 3.05, 0, 10 }, // 401
-{ 402, 3.07, 1, 3.22, 0, 10 }, // 402
-{ 403, 5.0, 1, 2.1, 0, 10 }, // 403 ciezarowka
-{ 404, 2.77, 1, 3.26, 0, 10 }, // 404
-{ 405, 2.93, 1, 3.34, 0, 10 }, // 405
-{ 406, 6.15, 1, 2.67, 0, 10 }, // 406 dude
-{ 407, 4.84, 1, 2.18, 0, 10 }, // 407 straz
-{ 408, 5.69, 1, 1.9, 0, 10 }, // 408  smieciarka
-{ 409, 4.19, 1, 4.44, 0, 5 }, // 409
-{ 410, 2.81, 1, 2.79, 0, 3 }, // 410
-{ 411, 3.21, 1, 2.91, 0, 2 }, // 411
-{ 412, 3.12, 1, 3.96, 0, 6 }, // 412
-{ 413, 3.21, 1, 3.16, 0, 13 }, // 413 transportowy
-{ 414, 3.31, 1, 3.87, 0, 15 }, // 414 transportowy
-{ 415, 3.04, 0, 2.90, 1, 10 }, // 415 cheatach, silnik z tylu
-{ 416, 3.58, 1, 4.21, 0, 13 }, // 416 ambulans
-{ 417, 2.12, 1, 2.12, 0, 7 }, // 417 smiglowiec ble
-{ 418, 3.04, 1, 3.19, 0, 12 }, // 418 taki bus
-{ 419, 3.09, 1, 3.46, 0, 6 }, // 419
-{ 420, 2.86, 1, 3.31, 0, 7 }, // 420
-{ 421, 3.27, 1, 3.55, 0, 6 }, // 421
-{ 422, 2.88, 1, 3.02, 0, 13 }, // 422 pickup
-{ 423, 2.71, 1, 1.61, 0, 8 }, // 423 lodiarz
-{ 424, 2.08, 1, 2.22, 0, 2 }, // 424 bugi
-{ 425, 2.54, 1, 2.54, 0, 15 }, // 425 apatche
-{ 426, 2.86, 1, 3.30, 0, 6 }, // 426 
-{ 427, 3.86, 1, 4.45, 0, 15 }, // 427 policyjny enfoncer
-{ 428, 3.21, 1, 3.31, 0, 10 }, // 428 bankowoz
-{ 429, 2.80, 1, 2.95, 0, 2 }, // 429 sporotwuy
-{ 430, 1.0, 1, 1.0, 0, 10 }, // 430 lodz
-{ 431, 6.44, 1, 6.24, 0, 15 }, // 431 autobus
-{ 432, 4.45, 1, 4.66, 0, 15 }, // 432 czogl
-{ 433, 4.60, 1, 5.32, 0, 15 }, // 433 ciezarowka
-{ 434, 2.51, 1, 2.46, 0, 2 }, // 434
-{ 435, 1.0, 1, 1.0, 0, 15 }, // 435 naczepa
-{ 436, 2.85, 1, 3.11, 0, 3 }, // 436
-{ 437, 6.20, 1, 5.95, 0, 15 }, // 437 autobus
-{ 438, 3.20, 1, 3.26, 0, 6 }, // 438 taxi
-{ 439, 2.29, 1, 2.98, 0, 3 }, // 439
-{ 440, 3.11, 1, 3.08, 0, 13 }, // 440 pickup
-{ 441, 3.09, 1, 3.64, 0, 6 }, // 441 pojazd rc
-{ 442, 3.45, 1, 3.64, 0, 6 }, // 442
-{ 443, 6.56, 1, 2.28, 0, 10 }, // 443 lanscraper ten co przewozi kilka wozow
-{ 444, 3.29, 1, 3.30, 0, 5 }, // 444
-{ 445, 2.92, 1, 3.28, 0, 6 }, // 445
-{ 446, 1.7, 1, 1.7, 0, 6 }, // 446 lodz
-{ 447, 1.5, 1, 1.5, 0, 3 }, // 447 heli sparow
-{ 448, 0.87, 1, 0.87, 0, 1 }, // 448 skuter
-{ 449, 3.09, 1, 3.46, 0, 6 }, // 449 tranwaj
-{ 450, 7.01, 1, 4.58, 0, 15 }, // 450 naczepa
-{ 451, 2.95, 1, 3.05, 0, 3 }, // 451
-{ 452, 2.8, 1, 2.8, 0, 6 }, // 452 lodz
-{ 453, 2.18, 1, 2.18, 0, 15 }, // 453 kuter
-{ 454, 3.11, 1, 3.11, 0, 15 }, // 454 loidz cool
-{ 455, 4.59, 1, 5.20, 0, 15 }, // 455
-{ 456, 3.96, 1, 4.97, 0, 15 }, // 456
-{ 457, 1.62, 1, 1.58, 0, 2 }, // 457 golfowy wozek
-{ 458, 3.12, 1, 3.42, 0, 8 }, // 458
-{ 459, 3.15, 1, 3.10, 0, 13 }, // 459
-{ 460, 2.50, 1, 2.50, 0, 4 }, // 460 samolot
-{ 461, 0.80, 1, 0.80, 2, 1 }, // 461 motor
-{ 462, 0.81, 1, 0.81, 2, 1 }, // 462 motor
-{ 463, 0.85, 1, 0.85, 2, 1 }, // 463 motor
-{ 464, 3.09, 1, 3.46, 0, 6 }, // 464 rc
-{ 465, 3.09, 1, 3.46, 0, 6 }, // 465 rc
-{ 466, 3.10, 1, 3.46, 0, 6 }, // 466
-{ 467, 3.09, 1, 3.46, 0, 6 }, // 467 pociag :P
-{ 468, 0.74, 1, 0.74, 0, 1 }, // 468 motor
-{ 469, 1.47, 1, 1.47, 0, 2 }, // 469 heli sparrow
-{ 470, 2.71, 1, 3.07, 0, 5 }, // 470
-{ 471, 1.17, 1, 1.17, 0, 1 }, // 471 ten tego quad
-{ 472, 1.64, 1, 1.64, 0, 8 }, // 472 lodz
-{ 473, 1.04, 1, 1.04, 0, 2 }, // 473 ponton
-{ 474, 3.07, 1, 3.36, 0, 3 }, // 474
-{ 475, 2.94, 1, 3.26, 0, 3 }, // 475  ssssabre
-{ 476, 1.63, 1, 1.63, 0, 1 }, // 476 samolot
-{ 477, 3.25, 1, 3.22, 0, 3 }, // 477
-{ 478, 2.75, 1, 3.10, 0, 10 }, // 478
-{ 479, 2.94, 1, 3.42, 0, 8 }, // 479
-{ 480, 2.79, 1, 2.99, 0, 3 }, // 480
-{ 481, 0.87, 1, 0.87, 0, 1 }, // 481 rower
-{ 482, 3.07, 1, 3.15, 0, 13 }, // 482  bus
-{ 483, 3.38, 1, 3.42, 0, 10 }, // 483 ogorek
-{ 484, 1.7, 1, 1.7, 0, 10 }, // 484 duza lodz
-{ 485, 2.39, 1, 3.42, 2.08, 2 }, // 485
-{ 486, 1.6, 1, 1.6, 0, 3 }, // 486 koparka
-{ 487, 1.53, 1, 1.53, 0, 6 }, // 487 heli pd
-{ 488, 1.53, 1, 1.53, 0, 6 }, // 488 heli sand
-{ 489, 3.19, 1, 3.17, 0, 8 }, // 489 terenowy
-{ 490, 3.80, 1, 3.73, 0, 8 }, // 490 terenowy
-{ 491, 3.09, 1, 3.52, 0, 8 }, // 491 combi
-{ 492, 3.10, 1, 3.46, 0, 6 }, // 492
-{ 493, 1.4, 1, 1.4, 0, 6 }, // 493 lodz 
-{ 494, 3.0, 1, 3.60, 0, 1 }, // 494 sportowy i to bardzo
-{ 495, 2.66, 1, 2.80, 0, 2 }, // 495 
-{ 496, 2.94, 1, 2.75, 0, 4 }, // 496
-{ 497, 1.53, 1, 1.53, 0, 4 }, // 497 heli
-{ 498, 3.61, 1, 3.63, 0, 12 }, // 498
-{ 499, 3.15, 1, 3.94, 0, 15 }, // 499
-{ 500, 2.81, 1, 2.52, 0, 4 }, // 500 mesa
-{ 501, 2.94, 1, 3.42, 0, 6 }, // 501 rc 
-{ 502, 3.14, 1, 3.36, 0, 1 }, // 502
-{ 503, 3.14, 1, 3.36, 0, 1 }, // 503
-{ 504, 3.10, 1, 3.35, 0, 1 }, // 504
-{ 505, 3.19, 1, 3.18, 0, 8 }, // 505
-{ 506, 2.73, 1, 2.87, 0, 3 }, // 506
-{ 507, 3.29, 1, 3.64, 0, 6 }, // 507
-{ 508, 3.50, 1, 4.40, 0, 15 }, // 508
-{ 509, 0.9, 1, 0.90, 0, 1 }, // 509
-{ 510, 0.79, 1, 0.79, 0, 1 }, // 510
-{ 511, 2.23, 1, 2.23, 0, 4 }, // 511 samolot
-{ 512, 1.4, 1, 1.4, 0, 1 }, // 512 sp
-{ 513, 2.04, 1, 2.04, 0, 1 }, // 513 sp
-{ 514, 4.93, 1, 1.97, 0, 4 }, // 514 truck
-{ 515, 5.34, 1, 2.15, 0, 4 }, // 515
-{ 516, 3.41, 1, 3.44, 0, 6 }, // 516
-{ 517, 4.46, 1, 3.41, 0, 3 }, // 517
-{ 518, 3.35, 1, 3.31, 0, 3 }, // 518
-{ 519, 3.0, 1, 3.0, 0, 15 }, // 519 odrzutowiec duzy
-{ 520, 1.75, 1, 1.75, 0, 1 }, // 520 hydra
-{ 521, 0.81, 0, 0.00, 2, 2 }, // FCR-900
-{ 522, 0.81, 0, 0.00, 2, 2 }, // NRG-500
-{ 523, 0.81, 0, 0.00, 2, 2 }, // HPV1000
-{ 524, 4.84, 1, 0.00, 0, 1 }, // Cement Truck
-{ 525, 3.56, 1, 0.00, 0, 1 }, // Towtruck
-{ 526, 2.99, 1, 2.94, 0, 5 }, // Fortune
-{ 527, 3.16, 1, 2.89, 0, 5 }, // Cadrona
-{ 528, 3.02, 1, 3.04, 0, 2 }, // FBI Truck
-{ 529, 3.06, 1, 3.17, 0, 5 }, // Willard
-{ 530, 0.00, 0, 0.00, 0, 0 }, // Forklift
-{ 531, 2.09, 1, 0.00, 0, 0 }, // Tractor
-{ 532, 0.00, 0, 0.00, 0, 0 }, // Combine Harvester
-{ 533, 2.93, 1, 3.01, 0, 5 }, // Feltzer
-{ 534, 3.47, 1, 3.45, 0, 5 }, // Remington
-{ 535, 3.03, 1, 3.03, 0, 7 }, // Slamvan
-{ 536, 2.94, 1, 3.51, 0, 5 }, // Blade
-{ 540, 3.11, 1, 3.38, 0, 5 }, // Vincent
-{ 541, 2.67, 0, 0.00, 0, 2 }, // Bullet - hood not working
-{ 542, 3.12, 1, 3.48, 0, 5 }, // Clover
-{ 543, 2.77, 1, 3.15, 0, 7 }, // Sandler
-{ 545, 2.44, 1, 2.76, 0, 4 }, // Hustler
-{ 546, 3.21, 1, 3.20, 0, 5 }, // Intruder
-{ 547, 3.19, 1, 3.23, 0, 5 }, // Primo
-{ 548, 3.27, 1, 3.27, 0, 15 }, // 548 heli duyz 
-{ 549, 2.99, 1, 3.01, 0, 3 }, // 549 
-{ 550, 3.14, 1, 3.22, 0, 6 }, // 550
-{ 551, 3.23, 1, 3.65, 0, 6 }, // 551 
-{ 552, 3.73, 1, 3.42, 0, 8 }, // 552
-{ 553, 2.45, 1, 2.45, 0, 15 }, // 553 samloto duzy
-{ 554, 3.09, 1, 3.43, 0, 10 }, // 554
-{ 555, 2.89, 1, 2.86, 0, 3 }, // 555
-{ 556, 3.23, 1, 3.51, 0, 1 }, // 556
-{ 557, 3.25, 1, 3.44, 0, 5 }, // 557
-{ 558, 2.8, 1, 2.87, 0, 3 }, // 558
-{ 559, 3.02, 1, 2.78, 0, 3 }, // 559
-{ 560, 3.34, 1, 2.82, 0, 5 }, // 560
-{ 561, 3.21, 1, 3.22, 0, 8 }, // 561
-{ 562, 2.95, 1, 2.81, 0, 3 }, // 562
-{ 563, 1.81, 1, 1.81, 0, 10 }, // 563 heli
-{ 564, 0.9, 1, 0.90, 0, 1 }, // 564 rc
-{ 565, 2.76, 1, 2.59, 0, 5 }, // 565
-{ 566, 3.3, 1, 3.50, 0, 6 }, // 566
-{ 567, 3.06, 1, 3.67, 0, 6 }, // 567
-{ 568, 0.9, 1, 0.90, 0, 1 }, // 568 buggy brak w dupe se nie wsadzi 
-//{ 569, 0.9, 1, 0.90, 0, 1 }, // 569 jakis pociag
-{ 570, 0.9, 1, 0.90, 0, 1 }, // 570 ppociag
-{ 571, 0.9, 1, 0.90, 0, 1 }, // 571 gokard
-{ 572, 0.9, 1, 0.90, 0, 1 }, // 572 traktorek brak jak wyzejh
-{ 573, 3.75, 1, 3.99, 0, 10 }, // 573
-{ 574, 0.9, 1, 0.90, 0, 1 }, // 574 sweeper brak
-{ 575, 2.87, 1, 3.27, 0, 3 }, // 575
-{ 576, 2.9, 1, 3.51, 0, 3 }, // 576
-{ 577, 13.5, 1, 13.5, 0, 15 }, // 577 duzy samolot
-{ 578, 4.95, 1, 6.23, 0, 15 }, // 578 sprawdzic potem
-{ 579, 2.96, 1, 3.40, 0, 8 }, // 579
-{ 580, 3.24, 1, 3.23, 0, 6 }, // 580
-{ 581, 0.87, 1, 0.87, 2, 1 }, // 581 motor
-{ 582, 3.03, 1, 3.95, 0, 10 }, // 582
-{ 583, 2.13, 1, 2.19, 0, 1 }, // 583
-{ 584, 2.13, 1, 2.13, 0, 15 }, // 584 cysterna
-{ 585, 3.51, 1, 3.53, 0, 6 }, // 585
-{ 586, 0.84, 1, 0.84, 0, 4 }, // 586 motor
-{ 587, 2.85, 1, 3.11, 0, 3 }, // 587
-{ 588, 3.90, 1, 4.51, 0, 10 }, // 588
-{ 589, 2.87, 1, 2.82, 0, 5 }, // 589
-{ 590, 0.9, 1, 0.90, 0, 1 }, // 590 niewlasciwy model pewnie pociag albo samolot the biggest
-{ 591, 2.47, 1, 2.47, 0, 15 }, // 591
-{ 592, 11.5, 1, 11.5, 0, 15 }, // 592 a jednak nie to jest andromeda
-{ 593, 1.87, 1, 1.87, 0, 2 }, // 593 ptak dodo
-//{ 594, 0.9, 1, 0.90, 0, 1 }, // 594 rc 
-{ 595, 0.44, 1, 0.44, 0, 6 }, // 595 lodz
-{ 596, 2.88, 1, 3.28, 0, 7 }, // 596
-{ 597, 2.92, 1, 3.28, 0, 7 }, // 597
-{ 598, 2.91, 1, 3.22, 0, 7 }, // 598
-{ 599, 3.42, 1, 3.19, 0, 9 }, // 599
-{ 600, 3.30, 1, 3.23, 0, 8 }, // 600
-{ 601, 3.6, 1, 3.84, 0, 15 }, // 601
-{ 602, 2.9, 1, 3.06, 0, 3 }, // 602
-{ 603, 3.33, 1, 3.15, 0, 3 }, // 603
-{ 604, 3.15, 1, 3.42, 0, 6 }, // 604 
-{ 605, 2.78, 1, 3.14, 0, 8 }, // 605 
-//{ 606, 0.9, 1, 0.90, 0, 1 }, // 606 przyczepa
-//{ 607, 0.9, 1, 0.90, 0, 1 }, // 607przyczepa
-//{ 608, 0.9, 1, 0.90, 0, 1 }, // 608 schody
-{ 609, 3.61, 1, 3.61, 0, 13 } // 609
-//{ 610, 0.9, 1, 0.90, 0, 1 }, // 610 do farmera
-//{ 611, 0.9, 1, 0.90, 0, 1 }, // 611 przyczepa
+	{ 189.373, 158.0, 1002.943, 189.373, 162.086, 1002.943 },
+	{ 194.170, 158.0, 1002.909, 194.170, 162.151, 1002.909 },
+	{ 198.251, 158.0, 1003.029, 198.251, 161.843, 1003.029 },
+	{ 268.0, 77.528, 1001.039, 263.889, 77.528, 1001.039 },
+	{ 215.657, 144.5, 999.015, 215.657, 110.859, 999.015 },
+	{ 219.478, 144.5, 999.015, 219.478, 110.934, 999.015 },
+	{ 223.612, 144.5, 999.015, 223.612, 110.776, 999.015 },
+	{ 227.589, 144.5, 999.015, 227.589, 110.700, 999.015 },
+	{ 322.0, 312.5, 999.14, 320.0, 312.5, 999.14 },
+	{ 322.0, 316.5, 999.14, 320.0, 316.5, 999.14 }
+};
+new gPrisonCellsCp[10];
+
+new Float:gMainPrisonPos[3] = { 1799.0, -1578.07, 14.07 };
+new gMainPrisonCp;
+
+new Indicators_xqz[MAX_VEHICLES][6];
+
+new 
+	Text:gHorse1, 
+	Text:gHorse2,
+	Text:gHorse3, 
+	Text:gHorse4,
+	Text:gHorseBG1,
+	Text:gHorseBG2, 
+	Text:gHorseStart, 
+	Text:gHorseFinish,
+	Text:gHorseStart2,
+	Text:gHorseFinish2,
+	gHorseCD,
+	Text:gHorseCDTextDraw,
+	Text:gHorseNum1,
+	Text:gHorseNum2,
+	Text:gHorseNum3,
+	Text:gHorseNum4,
+	gHorseAnimCount,
+	Float:gHorsePosX1,
+	Float:gHorsePosX2,
+	Float:gHorsePosX3,
+	Float:gHorsePosX4,
+	gHorseStop,
+	gHorseMoneyBet[CUSTOM_MAX_PLAYERS],
+	gHorseBetOnHorse[CUSTOM_MAX_PLAYERS],
+	gHorseRaceStarted,
+	gHorseWatching[CUSTOM_MAX_PLAYERS],
+	gHorsePrepared;
+
+new MaleSkins[] =
+{
+	1, 2, 3, 4, 5, 6, 7, 8, 14, 15, 16, 17, 18, 19, 20, 21,
+	22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36,
+	37, 38, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 57,
+	58, 59, 60, 61, 62, 66, 67, 68, 70, 71, 72, 73, 78, 79,
+	80, 81, 82, 83, 84, 86, 94, 95, 96, 97, 98, 99, 100, 101,
+	102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
+	114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125,
+	126, 127, 128, 132, 133, 134, 135, 136, 137, 142, 143, 144,
+	146, 147, 153, 154, 155, 156, 158, 159, 160, 161, 162, 163,
+	164, 165, 166, 167, 168, 170, 171, 172, 173, 174, 175, 176,
+	177, 179, 180, 181, 182, 183, 184, 185, 186, 187, 189, 200,
+	202, 203, 204, 206, 208, 209, 210, 212, 213, 217, 220, 221,
+	222, 223, 227, 228, 229, 230, 234, 235, 236, 239, 240, 241,
+	242, 247, 248, 249, 250, 252, 253, 254, 255, 258, 259, 260,
+	261, 262, 264, 268, 269, 270, 271, 272, 273, 289, 290, 291,
+	292, 293, 294, 295, 296, 297, 299
 };
 
-new Float:SkinOffSet[300][7] = {
-{0.098771, 0.030772, -0.000335, 85.342658, 84.122947, 4.236968 }, // - 0
-{0.100766, 0.028630, -0.003521, 87.936676, 82.110870, 4.236968 }, // - 1
-{0.083712, 0.033132, -0.003521, 87.936676, 82.110870, 4.236968 }, // - 2
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 3
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 4
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 5
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 6
-{0.090066, 0.043458, -0.006523, 87.936676, 82.110870, 4.236968 }, // - 7
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 8
-{0.070977, 0.028663, 0.000147, 81.164970, 92.128402, 4.236968 },  // - 9
-{0.072317, 0.032179, -0.002934, 86.843269, 84.196006, 4.236968 }, // - 10
-{0.072317, 0.035465, -0.002201, 86.843269, 84.196006, 4.236968 }, // - 11
-{0.072317, 0.028100, -0.002201, 86.843269, 84.196006, 4.236968 }, // - 12
-{0.076569, 0.028100, -0.002201, 86.843269, 84.196006, 4.236968 }, // - 13
-{0.091310, 0.049169, -0.002201, 86.843269, 84.196006, 4.236968 }, // - 14
-{0.073734, 0.006292, -0.002755, 86.843269, 84.196006, 4.236968 }, // - 15
-{0.092845, 0.040331, 0.000183, 86.843269, 82.864280, 4.236968 },  // - 16
-{0.088241, 0.030184, -0.000157, 86.843269, 82.864280, 4.236968 }, // - 17
-{0.061677, 0.029596, -0.007398, 86.843269, 82.864280, 4.236968 }, // - 18
-{0.079911, 0.029596, -0.002934, 86.843269, 82.864280, 4.236968 }, // - 19
-{0.095079, 0.029596, -0.001718, 85.261871, 86.296562, 4.236968 }, // - 20
-{0.093728, 0.042083, -0.005781, 85.261871, 81.636192, 4.236968 }, // - 21
-{0.079585, 0.042083, -0.005781, 85.261871, 81.636192, 4.236968 }, // - 22
-{0.090786, 0.041737, -0.005263, 85.261871, 81.636192, 4.236968 }, // - 23
-{0.085247, 0.026941, -0.000317, 85.261871, 81.636192, 4.236968 }, // - 24
-{0.081646, 0.031448, -0.001113, 89.393653, 81.665985, 4.236968 }, // - 25
-{0.083700, 0.033814, -0.001960, 86.436462, 81.665985, 4.236968 }, // - 26
-{0.092498, 0.037321, -0.001960, 86.436462, 85.568023, 4.236968 }, // - 27
-{0.097068, 0.041360, -0.007881, 86.771400, 85.568023, 4.236968 }, // - 28
-{0.083456, 0.050595, 0.001011, 86.771400, 77.201461, 4.236968 },  // - 29
-{0.076983, 0.047168, -0.006161, 86.771400, 74.329719, 4.236968 }, // - 30
-{0.083798, 0.042184, -0.001869, 86.771400, 83.181861, 4.236968 }, // - 31
-{0.053021, -0.000587, -0.001869, 86.771400, 66.859710, 4.236968 },// - 32
-{0.034386, 0.013324, -0.001869, 86.771400, 80.314460, 4.236968 }, // - 33
-{0.104669, 0.037365, -0.001403, 86.771400, 87.178382, 4.236968 }, // - 34
-{0.102659, 0.037465, -0.000829, 86.771400, 93.020492, 4.236968 }, // - 35
-{0.107638, 0.037465, -0.000829, 86.771400, 93.020492, 4.236968 }, // - 36
-{0.107638, 0.035879, -0.000829, 86.771400, 93.020492, 4.236968 }, // - 37
-{0.107638, 0.041106, -0.000829, 86.771400, 93.020492, 4.236968 }, // - 38
-{0.080326, 0.035634, -0.000829, 86.771400, 93.020492, 4.236968 }, // - 39
-{0.080326, 0.027371, -0.000829, 86.771400, 93.020492, 4.236968 }, // - 40
-{0.084617, 0.039613, -0.001620, 86.771400, 93.020492, 4.236968 }, // - 41
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 42
-{0.040075, 0.025445, -0.000974, 86.771400, 92.964149, 4.236968 }, // - 43
-{0.077369, 0.028469, -0.000974, 86.771400, 78.435791, 4.236968 }, // - 44
-{0.064145, 0.028684, -0.000974, 86.771400, 84.762802, 4.236968 }, // - 45
-{0.091993, 0.056559, -0.000974, 86.771400, 84.762802, 4.236968 }, // - 46
-{0.084582, 0.051277, -0.005034, 86.771400, 84.762802, 4.236968 }, // - 47
-{0.092182, 0.042095, -0.003533, 86.771400, 84.762802, 4.236968 }, // - 48
-{0.086866, 0.032203, -0.001021, 86.771400, 84.762802, 4.236968 }, // - 49
-{0.099350, 0.009422, -0.005899, 86.771400, 84.762802, 4.236968 }, // - 50
-{0.099350, 0.030598, -0.005899, 86.771400, 84.762802, 4.236968 }, // - 51
-{0.099350, 0.030598, -0.003575, 86.771400, 84.762802, 4.236968 }, // - 52
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 53
-{0.079123, 0.030598, -0.003575, 86.771400, 84.762802, 4.236968 }, // - 54
-{0.063159, 0.029641, -0.003575, 86.771400, 84.762802, 4.236968 }, // - 55
-{0.070293, 0.029641, -0.000570, 86.771400, 84.762802, 4.236968 }, // - 56
-{0.111305, 0.045368, -0.000570, 86.771400, 84.458084, 4.236968 }, // - 57
-{0.084901, 0.020965, -0.000570, 86.771400, 79.542411, 4.236968 }, // - 58
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 59
-{0.090164, 0.044163, -0.004754, 86.771400, 79.542411, 4.236968 }, // - 60
-{0.087151, 0.041447, -0.000885, 90.928329, 89.598678, 0.000000 }, // - 61
-{0.094350, 0.041447, 0.005717, 90.928329, 89.598678, 0.000000 },  // - 62
-{0.075534, 0.041447, -0.001751, 90.928329, 89.598678, 0.000000 }, // - 63
-{0.075534, 0.041447, -0.001751, 90.928329, 89.598678, 0.000000 }, // - 64
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 65
-{0.104148, 0.034787, 0.001341, 90.928329, 89.598678, 0.000000 },  // - 66
-{0.104148, 0.034787, 0.001341, 90.928329, 89.598678, 0.000000 },  // - 67
-{0.087317, 0.039646, -0.004032, 90.928329, 89.598678, 0.000000 }, // - 68
-{0.074873, 0.039646, -0.003072, 90.928329, 89.598678, 0.000000 }, // - 69
-{0.090391, 0.042364, 0.005494, 90.928329, 89.598678, 0.000000 },  // - 70
-{0.090391, 0.022298, -0.001170, 90.928329, 89.598678, 0.000000 }, // - 71
-{0.090391, 0.039580, -0.001170, 90.928329, 89.598678, 0.000000 }, // - 72
-{0.090391, 0.038224, -0.001170, 90.928329, 89.598678, 0.000000 }, // - 73
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 74
-{0.083113, 0.038224, -0.001170, 90.928329, 89.598678, 0.000000 }, // - 75
-{0.072957, 0.028956, -0.001170, 90.928329, 89.598678, 0.000000 }, // - 76
-{0.069398, 0.039981, -0.001170, 90.928329, 89.598678, 0.000000 }, // - 77
-{0.105738, 0.010001, 0.004508, 90.928329, 79.030494, 0.000000 },  // - 78
-{0.078264, 0.019668, 0.004508, 90.928329, 79.030494, 0.000000 },  // - 79
-{0.087377, 0.022096, -0.001993, 90.928329, 79.030494, 0.000000 }, // - 80
-{0.087377, 0.022096, -0.001635, 90.928329, 79.030494, 0.000000 }, // - 81
-{0.100623, 0.043063, -0.001635, 90.928329, 87.672645, 0.000000 }, // - 82
-{0.092528, 0.027493, -0.001635, 90.928329, 87.672645, 0.000000 }, // - 83
-{0.102086, 0.027493, -0.001635, 90.928329, 87.672645, 0.000000 }, // - 84
-{0.081954, 0.041672, -0.001635, 90.928329, 87.672645, 0.000000 }, // - 85
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 86
-{0.077010, 0.046925, -0.003438, 90.928329, 91.590301, 0.000000 }, // - 87
-{0.069952, 0.042635, -0.003438, 90.928329, 86.722587, 0.000000 }, // - 88
-{0.093827, 0.019258, -0.003438, 90.928329, 86.722587, 0.000000 }, // - 89
-{0.066464, 0.035685, -0.000843, 90.928329, 86.722587, 0.000000 }, // - 90
-{0.066464, 0.035685, -0.000843, 90.928329, 86.722587, 0.000000 }, // - 91
-{0.066464, 0.038135, -0.000843, 90.928329, 86.722587, 0.000000 }, // - 92
-{0.066464, 0.038135, -0.001690, 90.928329, 86.722587, 0.000000 }, // - 93
-{0.048124, 0.010598, -0.001690, 90.928329, 86.722587, 0.000000 }, // - 94
-{0.084997, 0.006773, -0.001690, 90.928329, 86.722587, 0.000000 }, // - 95
-{0.100076, 0.026633, -0.001690, 90.928329, 80.020179, 0.000000 }, // - 96
-{0.061686, 0.027537, -0.001690, 90.928329, 80.020179, 0.000000 }, // - 97
-{0.098318, 0.053993, -0.001690, 90.928329, 89.237678, 0.000000 }, // - 98
-{0.098318, 0.033702, -0.001690, 90.928329, 89.237678, 0.000000 }, // - 99
-{0.086149, 0.042526, -0.001690, 90.928329, 77.587478, 0.000000 }, // - 100
-{0.081864, 0.030555, -0.001690, 90.928329, 78.145759, 0.000000 }, // - 101
-{0.081864, 0.047914, -0.005079, 90.928329, 78.145759, 0.000000 }, // - 102
-{0.089607, 0.036717, -0.005079, 90.928329, 78.145759, 0.000000 }, // - 103
-{0.079655, 0.042021, -0.005079, 90.928329, 78.145759, 0.000000 }, // - 104
-{0.091779, 0.037620, -0.005079, 90.928329, 78.145759, 0.000000 }, // - 105
-{0.084179, 0.035251, -0.005079, 90.928329, 78.145759, 0.000000 }, // - 106
-{0.089387, 0.040297, -0.006006, 90.928329, 78.145759, 0.000000 }, // - 107
-{0.081930, 0.030756, 0.001523, 90.928329, 78.145759, 0.000000 },  // - 108
-{0.092857, 0.043070, -0.006084, 90.928329, 85.326652, 0.000000 }, // - 109
-{0.092857, 0.043070, -0.006084, 90.928329, 85.326652, 0.000000 }, // - 110
-{0.106601, 0.028021, -0.003537, 90.928329, 90.217376, 0.000000 }, // - 111
-{0.096335, 0.015873, -0.003537, 90.928329, 90.217376, 0.000000 }, // - 112
-{0.105827, 0.046620, -0.001395, 90.928329, 90.217376, 0.000000 }, // - 113
-{0.097520, 0.044296, -0.007286, 90.928329, 90.217376, 0.000000 }, // - 114
-{0.097408, 0.043470, -0.007286, 90.928329, 90.217376, 0.000000 }, // - 115
-{0.092588, 0.049832, -0.007286, 90.928329, 90.217376, 0.000000 }, // - 116
-{0.081444, 0.037602, -0.003125, 90.928329, 90.217376, 0.000000 }, // - 117
-{0.078678, 0.037602, -0.001816, 90.928329, 90.217376, 0.000000 }, // - 118
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 119
-{0.089214, 0.029291, -0.000784, 90.928329, 84.624763, 0.000000 }, // - 120
-{0.086825, 0.033424, -0.000784, 90.928329, 77.233818, 0.000000 }, // - 121
-{0.082869, 0.030783, -0.000950, 90.928329, 77.233818, 0.000000 }, // - 122
-{0.096117, 0.048957, -0.006245, 90.928329, 87.579650, 0.000000 }, // - 123
-{0.103663, 0.040022, 0.000449, 90.928329, 87.579650, 0.000000 },  // - 124
-{0.099326, 0.031202, -0.001180, 90.928329, 87.579650, 0.000000 }, // - 125
-{0.099326, 0.031132, -0.001180, 90.928329, 87.579650, 0.000000 }, // - 126
-{0.099326, 0.039279, -0.001180, 90.928329, 87.579650, 0.000000 }, // - 127
-{0.099326, 0.047422, -0.001180, 90.928329, 87.579650, 0.000000 }, // - 128
-{0.088817, 0.021210, 0.000730, 90.928329, 87.579650, 0.000000 },  // - 129
-{0.025784, 0.028323, 0.000730, 90.928329, 59.394767, 0.000000 },  // - 130
-{0.068455, 0.031841, -0.004470, 90.928329, 79.979003, 0.000000 }, // - 131
-{0.012930, 0.008392, -0.004470, 90.928329, 72.129173, 0.000000 }, // - 132
-{0.102457, 0.032260, -0.003338, 90.928329, 84.534217, 0.000000 }, // - 133
-{0.085976, 0.014956, -0.003338, 90.928329, 80.308830, 0.000000 }, // - 134
-{0.071574, 0.028186, -0.001588, 90.928329, 80.308830, 0.000000 }, // - 135
-{0.085219, 0.016666, -0.000738, 90.928329, 80.308830, 0.000000 }, // - 136
-{0.065114, 0.009318, -0.000738, 90.928329, 80.308830, 0.000000 }, // - 137
-{0.066890, 0.040024, -0.000738, 90.928329, 87.341934, 0.000000 }, // - 138
-{0.072037, 0.036141, -0.000702, 90.928329, 87.341934, 0.000000 }, // - 139
-{0.069108, 0.042194, -0.000436, 90.928329, 87.341934, 0.000000 }, // - 140
-{0.058717, 0.043547, -0.000436, 90.928329, 87.209770, 0.000000 }, // - 141
-{0.104196, 0.039601, -0.005481, 90.928329, 87.209770, 0.000000 }, // - 142
-{0.090929, 0.045881, -0.012780, 90.928329, 87.209770, 0.000000 }, // - 143
-{0.098291, 0.042464, -0.006952, 90.928329, 83.081665, 0.000000 }, // - 144
-{0.080087, 0.030122, 0.000606, 90.928329, 83.081665, 0.000000 },  // - 145
-{0.093500, 0.030690, -0.001545, 90.928329, 83.081665, 0.000000 }, // - 146
-{0.079566, 0.020138, 0.004838, 90.928329, 73.715591, 0.000000 },  // - 147
-{0.073564, 0.028430, -0.000527, 90.928329, 88.295433, 0.000000 }, // - 148
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 149
-{0.073564, 0.028430, -0.000527, 90.928329, 88.295433, 0.000000 }, // - 150
-{0.083426, 0.032359, -0.005717, 90.928329, 88.295433, 0.000000 }, // - 151
-{0.072349, 0.019623, -0.000747, 90.928329, 82.624351, 0.000000 }, // - 152
-{0.075065, 0.015351, 0.006545, 90.928329, 71.041442, 0.000000 },  // - 153
-{0.062227, 0.029731, -0.004938, 90.928329, 84.602760, 0.000000 }, // - 154
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 155
-{0.079936, 0.049000, -0.000304, 90.928329, 82.926010, 0.000000 }, // - 156
-{0.067550, 0.035686, -0.000017, 90.928329, 82.926010, 0.000000 }, // - 157
-{0.090676, 0.039383, -0.001726, 90.928329, 88.667900, 0.000000 }, // - 158
-{0.090676, 0.039383, -0.003532, 90.928329, 88.667900, 0.000000 }, // - 159
-{0.098662, 0.017441, -0.001589, 90.928329, 88.667900, 0.000000 }, // - 160
-{0.105388, 0.038409, 0.003155, 90.928329, 88.667900, 0.000000 },  // - 161
-{0.097415, 0.036904, -0.000525, 90.928329, 88.667900, 0.000000 }, // - 162
-{0.088934, 0.023302, -0.004153, 90.928329, 80.393875, 0.000000 }, // - 163
-{0.088934, 0.023302, -0.004153, 90.928329, 80.393875, 0.000000 }, // - 164
-{0.087018, 0.051364, 0.000484, 90.928329, 94.584838, 0.000000 },  // - 165
-{0.087018, 0.051364, 0.000484, 90.928329, 94.584838, 0.000000 },  // - 166
-{0.095996, 0.038787, 0.000484, 90.928329, 84.315711, 0.000000 },  // - 167
-{0.089094, 0.034001, -0.006451, 90.928329, 84.315711, 0.000000 }, // - 168
-{0.075700, 0.028082, -0.006451, 90.928329, 84.315711, 0.000000 }, // - 169
-{0.093751, 0.041968, -0.005545, 90.928329, 84.315711, 0.000000 }, // - 170
-{0.090124, 0.031055, -0.000505, 90.928329, 84.315711, 0.000000 }, // - 171
-{0.066033, 0.032915, -0.002713, 90.928329, 84.315711, 0.000000 }, // - 172
-{0.088287, 0.045350, -0.005384, 90.928329, 84.315711, 0.000000 }, // - 173
-{0.087750, 0.042129, -0.005384, 90.928329, 84.315711, 0.000000 }, // - 174
-{0.092384, 0.039294, -0.005384, 90.928329, 84.315711, 0.000000 }, // - 175
-{0.097661, 0.039065, -0.006344, 90.928329, 80.736480, 0.000000 }, // - 176
-{0.097114, 0.039641, -0.006692, 90.928329, 80.736480, 0.000000 }, // - 177
-{0.069354, 0.039641, -0.000474, 90.928329, 80.736480, 0.000000 }, // - 178
-{0.091414, 0.039641, -0.005617, 90.928329, 80.736480, 0.000000 }, // - 179
-{0.094914, 0.039641, -0.005617, 90.928329, 80.736480, 0.000000 }, // - 180
-{0.117232, 0.033217, -0.001099, 90.928329, 82.396362, 0.000000 }, // - 181
-{0.082569, 0.032748, -0.003248, 90.928329, 87.394371, 0.000000 }, // - 182
-{0.095527, 0.027237, -0.001960, 90.928329, 86.443649, 0.000000 }, // - 183
-{0.095527, 0.040994, -0.006878, 90.928329, 86.443649, 0.000000 }, // - 184
-{0.085663, 0.030601, -0.002345, 90.928329, 81.496513, 0.000000 }, // - 185
-{0.085663, 0.030601, -0.001015, 90.928329, 81.496513, 0.000000 }, // - 186
-{0.076527, 0.027211, 0.008500, 90.928329, 74.401092, 0.000000 },  // - 187
-{0.096669, 0.032578, 0.001662, 90.928329, 83.502502, 0.000000 },  // - 188
-{0.098753, 0.032129, -0.001659, 90.928329, 90.153724, 0.000000 }, // - 189
-{0.092821, 0.035572, -0.001659, 90.928329, 90.153724, 0.000000 }, // - 190
-{0.092821, 0.035572, -0.001132, 90.928329, 90.153724, 0.000000 }, // - 191
-{0.092821, 0.035572, -0.001132, 90.928329, 90.153724, 0.000000 }, // - 192
-{0.092821, 0.035572, -0.001132, 90.928329, 90.153724, 0.000000 }, // - 193
-{0.092821, 0.035572, -0.001132, 90.928329, 90.153724, 0.000000 }, // - 194
-{0.092821, 0.035572, -0.001132, 90.928329, 90.153724, 0.000000 }, // - 195
-{0.092821, 0.035572, -0.001132, 90.928329, 90.153724, 0.000000 }, // - 196
-{0.100630, 0.020568, -0.001132, 90.928329, 90.153724, 0.000000 }, // - 197
-{0.077905, 0.028523, 0.000000, 89.675476, 89.270309, 0.000000 },  // - 198
-{0.099095, 0.022463, 0.000000, 89.675476, 89.270309, 0.000000 },  // - 199
-{0.103182, 0.031106, 0.000000, 89.675476, 89.270309, 0.000000 },  // - 200
-{0.078426, 0.038546, 0.000000, 89.675476, 89.270309, 0.000000 },  // - 201
-{0.101092, 0.035797, -0.002997, 89.675476, 82.081153, 0.000000 }, // - 202
-{0.092009, 0.042780, -0.005841, 89.675476, 84.463294, 0.000000 }, // - 203
-{0.092009, 0.042780, -0.005841, 89.675476, 84.463294, 0.000000 }, // - 204
-{0.092969, 0.027782, -0.002959, 89.675476, 84.463294, 0.000000 }, // - 205
-{0.105109, 0.036128, -0.000471, 89.675476, 84.463294, 0.000000 }, // - 206
-{0.066892, 0.024410, -0.002792, 89.675476, 84.463294, 0.000000 }, // - 207
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 208
-{0.084046, 0.013608, -0.002792, 89.675476, 81.667831, 0.000000 }, // - 209
-{0.084046, 0.013608, -0.001034, 89.675476, 81.667831, 0.000000 }, // - 210
-{0.067610, 0.033777, -0.001034, 89.675476, 85.214485, 0.000000 }, // - 211
-{0.094159, 0.020717, 0.000715, 89.675476, 85.214485, 0.000000 },  // - 212
-{0.098744, 0.036786, -0.001770, 89.675476, 85.214485, 0.000000 }, // - 213
-{0.068755, 0.036786, -0.001770, 89.675476, 85.214485, 0.000000 }, // - 214
-{0.068755, 0.026863, -0.001770, 89.675476, 85.214485, 0.000000 }, // - 215
-{0.068755, 0.026863, -0.001770, 89.675476, 85.214485, 0.000000 }, // - 216
-{0.095765, 0.030034, -0.001770, 89.675476, 85.214485, 0.000000 }, // - 217
-{0.085486, 0.039427, -0.003311, 89.675476, 85.214485, 0.000000 }, // - 218
-{0.068874, 0.027850, -0.001021, 89.675476, 85.214485, 0.000000 }, // - 219
-{0.052931, 0.050390, -0.002062, 89.675476, 88.113647, 0.000000 }, // - 220
-{0.094479, 0.034432, 0.000875, 89.675476, 83.572830, 0.000000 },  // - 221
-{0.094479, 0.034432, -0.000596, 89.675476, 83.572830, 0.000000 }, // - 222
-{0.094479, 0.062073, -0.003098, 89.675476, 83.572830, 0.000000 }, // - 223
-{0.064458, 0.029760, -0.001460, 89.675476, 83.572830, 0.000000 }, // - 224
-{0.064458, 0.029760, -0.001460, 89.675476, 83.572830, 0.000000 }, // - 225
-{0.072095, 0.029760, -0.001460, 89.675476, 83.572830, 0.000000 }, // - 226
-{0.110619, 0.043037, -0.001466, 89.675476, 86.927627, 0.000000 }, // - 227
-{0.099446, 0.050772, -0.001466, 89.675476, 85.103805, 0.000000 }, // - 228
-{0.078635, 0.023680, -0.000275, 89.675476, 73.445220, 0.000000 }, // - 229
-{0.043357, 0.028726, -0.000275, 89.675476, 73.445220, 0.000000 }, // - 230
-{0.092488, 0.049972, -0.000275, 89.675476, 88.981941, 0.000000 }, // - 231
-{0.092488, 0.016739, -0.000275, 89.675476, 88.981941, 0.000000 }, // - 232
-{0.071677, 0.037055, -0.002878, 89.675476, 88.981941, 0.000000 }, // - 233
-{0.082745, 0.004209, -0.002878, 89.675476, 88.981941, 0.000000 }, // - 234
-{0.057909, 0.021331, -0.002878, 89.675476, 88.981941, 0.000000 }, // - 235
-{0.079016, 0.021331, -0.000419, 89.675476, 77.678733, 0.000000 }, // - 236
-{0.074572, 0.021331, -0.000419, 89.675476, 84.527442, 0.000000 }, // - 237
-{0.074572, 0.038346, -0.001500, 89.675476, 84.527442, 0.000000 }, // - 238
-{0.111645, 0.011549, 0.006237, 89.675476, 84.527442, 0.000000 },  // - 239
-{0.090766, 0.044221, -0.000423, 89.675476, 89.461883, 0.000000 }, // - 240
-{0.069491, 0.049021, -0.000423, 89.675476, 89.461883, 0.000000 }, // - 241
-{0.059706, 0.031911, -0.000423, 89.675476, 89.461883, 0.000000 }, // - 242
-{0.065242, 0.031911, -0.000423, 89.675476, 89.461883, 0.000000 }, // - 243
-{0.065242, 0.051077, -0.001103, 89.675476, 89.461883, 0.000000 }, // - 244
-{0.082393, 0.038233, 0.000410, 89.675476, 89.461883, 0.000000 },  // - 245
-{0.079338, 0.044859, -0.002535, 89.675476, 89.461883, 0.000000 }, // - 246
-{0.101566, 0.037019, 0.000750, 89.675476, 83.514060, 0.000000 },  // - 247
-{0.091887, 0.047776, -0.000040, 89.675476, 83.514060, 0.000000 }, // - 248
-{0.089745, 0.044044, 0.004071, 89.675476, 83.514060, 0.000000 },  // - 249
-{0.094214, 0.044044, -0.007274, 89.675476, 83.514060, 0.000000 }, // - 250
-{0.072282, 0.044044, -0.001468, 89.675476, 90.444763, 0.000000 }, // - 251
-{0.095764, 0.034224, -0.000264, 89.675476, 82.959915, 0.000000 }, // - 252
-{0.087454, 0.026208, -0.000264, 89.675476, 82.959915, 0.000000 }, // - 253
-{0.099198, 0.037362, -0.000264, 89.675476, 82.959915, 0.000000 }, // - 254
-{0.070845, 0.019943, 0.003505, 89.675476, 73.529716, 0.000000 },  // - 255
-{0.065373, 0.033656, -0.001141, 89.675476, 83.002151, 0.000000 }, // - 256
-{0.070077, 0.033656, -0.001141, 89.675476, 83.002151, 0.000000 }, // - 257
-{0.089536, 0.041904, 0.000715, 89.675476, 83.002151, 0.000000 },  // - 258
-{0.084822, 0.041904, 0.000715, 89.675476, 83.002151, 0.000000 },  // - 259
-{0.093009, 0.031491, -0.001568, 89.675476, 83.002151, 0.000000 }, // - 260
-{0.093009, 0.015023, -0.001477, 89.675476, 83.002151, 0.000000 }, // - 261
-{0.076580, 0.039782, -0.001477, 89.675476, 88.620780, 0.000000 }, // - 262
-{0.076580, 0.028967, -0.001477, 89.675476, 88.620780, 0.000000 }, // - 263
-{0.075424, 0.043059, -0.001477, 89.675476, 88.620780, 0.000000 }, // - 264
-{0.089655, 0.021726, -0.001477, 89.675476, 88.620780, 0.000000 }, // - 265
-{0.096792, 0.014114, -0.003062, 89.675476, 85.166038, 0.000000 }, // - 266
-{0.094886, 0.024989, -0.003184, 89.675476, 85.166038, 0.000000 }, // - 267
-{0.094886, 0.024989, -0.003184, 89.675476, 85.166038, 0.000000 }, // - 268
-{0.102252, 0.024989, -0.003184, 89.675476, 85.166038, 0.000000 }, // - 269
-{0.102252, 0.024989, 0.000529, 89.675476, 85.166038, 0.000000 },  // - 270
-{0.096134, 0.025462, 0.000529, 89.675476, 79.225112, 0.000000 },  // - 271
-{0.099226, 0.032663, 0.000529, 89.675476, 79.225112, 0.000000 },  // - 272
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 273
-{0.089833, 0.022466, -0.001590, 89.675476, 88.636062, 0.000000 }, // - 274
-{0.089833, 0.022466, -0.001590, 89.675476, 88.636062, 0.000000 }, // - 275
-{0.089833, 0.022466, -0.001590, 89.675476, 88.636062, 0.000000 }, // - 276
-{0.082718, 0.062596, -0.000201, 89.675476, 88.636062, 0.000000 }, // - 277
-{0.082718, 0.062596, -0.000201, 89.675476, 88.636062, 0.000000 }, // - 278
-{0.087652, 0.059379, -0.000201, 89.675476, 88.636062, 0.000000 }, // - 279
-{0.087652, 0.023702, -0.003091, 89.675476, 88.636062, 0.000000 }, // - 280
-{0.087652, 0.023702, -0.003091, 89.675476, 88.636062, 0.000000 }, // - 281
-{0.090877, 0.026643, -0.003091, 89.675476, 88.636062, 0.000000 }, // - 282
-{0.090877, 0.026643, -0.003091, 89.675476, 88.636062, 0.000000 }, // - 283
-{0.090877, 0.053674, 0.009879, 89.675476, 88.636062, 0.000000 },  // - 284
-{0.104320, 0.041487, 0.008021, 89.675476, 88.636062, 0.000000 },  // - 285
-{0.087062, 0.021779, -0.003307, 89.675476, 88.636062, 0.000000 }, // - 286
-{0.073173, 0.048856, 0.005337, 89.675476, 92.561180, 0.000000 },  // - 287
-{0.090294, 0.027592, -0.003497, 89.675476, 92.561180, 0.000000 }, // - 288
-{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},                                   // - 289
-{0.086562, 0.042698, -0.000612, 89.675476, 92.561180, 0.000000 }, // - 290
-{0.096768, 0.039233, -0.000612, 89.675476, 83.550270, 0.000000 }, // - 291
-{0.079939, 0.020731, -0.005162, 89.675476, 83.550270, 0.000000 }, // - 292
-{0.097107, 0.027826, -0.005162, 89.675476, 88.505996, 0.000000 }, // - 293
-{0.097107, 0.037636, 0.000618, 89.675476, 88.505996, 0.000000 },  // - 294
-{0.079985, 0.035006, -0.000826, 89.675476, 87.533462, 0.000000 }, // - 295
-{0.088445, 0.024209, -0.002076, 89.675476, 73.285072, 0.000000 }, // - 296
-{0.094039, 0.035411, 0.000490, 89.675476, 84.277572, 0.000000 },  // - 297
-{0.099553, 0.024683, -0.002919, 89.675476, 84.277572, 0.000000 }, // - 298
-{0.099553, 0.044356, -0.000285, 89.675476, 84.277572, 0.000000 }  // - 299
+new FemaleSkins[] = 
+{
+	9, 10, 11, 12, 13, 31, 39, 40, 41, 53, 54, 55, 56, 63, 64,
+	65, 69, 75, 76, 77, 85, 87, 88, 89, 90, 91, 92, 93, 129, 130,
+	131, 138, 139, 140, 141, 145, 148, 150, 152, 157, 169, 172,
+	178, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 201,
+	205, 207, 211, 214, 215, 216, 218, 219, 224, 225, 226, 231,
+	232, 233, 237, 238, 243, 244, 245, 246, 251, 256, 257, 263,
+	298
 };
+/*	
+new Skins[] =
+{
+	0, 1, 2, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+	20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+	34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48,
+	49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
+	63, 64, 66, 67, 68, 69, 70, 71, 72, 73, 75, 76, 77, 78,
+	79, 80, 81, 82, 83, 84, 85, 87, 88, 89, 90, 91, 92, 93,
+	94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105,
+	106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116,
+	117, 118, 120, 121, 122, 123, 124, 125, 126, 127, 128,
+	129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139,
+	140, 141, 142, 143, 144, 145, 146, 147, 148, 150, 151,
+	152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162,
+	163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
+	174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184,
+	185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
+	196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+	207, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218,
+	219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
+	230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240,
+	241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251,
+	252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262,
+	263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 274,
+	275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285,
+	286, 287, 288, 290, 291, 292, 293, 294, 295, 296, 297,
+	298, 299
+};*/

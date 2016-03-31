@@ -39,7 +39,7 @@ public UpdateTime()
 public OnGameModeInit()
 {	
 	UpdateTime();
-	SetTimer("UpdateTime",1000 * 60,1);
+	SetTimer("UpdateTime",1000*60,1);
 
 	return 1;
 }
@@ -48,8 +48,8 @@ public OnGameModeInit()
 
 public OnPlayerSpawn(playerid)
 {
-	gettime(hour, minute);
-	SetPlayerTime(playerid,hour,minute);
+	// gettime(hour, minute);
+	// SetPlayerTime(playerid,hour,minute);
 	
 	return 1;
 }

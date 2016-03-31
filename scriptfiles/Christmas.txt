@@ -1,0 +1,10 @@
+UseSong=1
+UseMessage=1
+UseHat=0
+UseSnow=1
+Use_Snowman=1
+UseCountdown=1
+Placed=0
+PosX=0.000000
+PosY=0.000000
+PosZ=0.000000

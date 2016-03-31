@@ -1,0 +1,3 @@
+- Zmieniono priorytet odczytu danych na wysoki
+- Dodano mo¿liwoœæ wyrobienia dowodu oraz prawa jazdy u NPC urzêdowego w budynku urzêdu
+- Poprawiono bug ze zmian¹ w³aœciwoœci slotu w restauracji

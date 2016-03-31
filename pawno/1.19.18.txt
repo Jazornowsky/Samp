@@ -1,0 +1,1 @@
+- zmieniono nazwe komendy /onoff na /panelgracza

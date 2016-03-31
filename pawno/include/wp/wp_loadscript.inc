@@ -1,33 +1,39 @@
+/***
+*
+* File: wp_loadscript.inc
+* Auth: Damian Wojdat
+* Date: 15.09.2011
+* Desc: Launch script setup functions.
+*
+*************************************************************************************************************/
+
 LoadScript()
 {
-	print("[SKRYPT:] Rozpoczeto ladowanie danych z LoadScript");
+	print("[INFO:] LoadScript started");
+	
 	LoadDynamicFactions();
 	LoadDynamicZones();
 	LoadDynamicCarSpawns();
 	LoadDynamicBoatsSpawns();
 	LoadDynamicPlanesSpawns();
 	LoadDynamicCars();
-	LoadDynamicRaces();
 	LoadCivilianSpawn();
 	LoadBuildings();
 	LoadHouses(houseSource);
 	LoadGasStations();
 	LoadBusinesses();
-	LoadFactionMaterialsStorage();
-	LoadFactionDrugsStorage();
 	LoadDrivingTestPosition();
 	LoadSkillPosition();
 	LoadSkillPositionb();
 	LoadSkillPositionc();
 	LoadSkillPositiond();
 	LoadSkillPositione();
+	LoadSkillPositionf();
 	LoadBoatTestPosition();
-	LoadFlyingTestPosition();
-	LoadBankPosition();
-	LoadBankPosition2();
+	LoadPlaneTestPosition();
+	LoadPoliceComputerPassword();
 	LoadDynamicTaxes();
 	LoadWeaponLicensePosition();
-	LoadWheelChangePosition();
 	LoadTaxiJob();
 	LoadBusJob();
 	LoadMzgkJob();
@@ -66,13 +72,25 @@ LoadScript()
 	LoadSpawnInfo();
 	LoadCustomObjects();
 	LoadBusTracks();
+	LoadTrashTracks();
+	LoadSweeperTracks();
+	LoadFarmerTracks();
 	LoadLuckyLottery();
 	LoadItemFactories();
-	//LoadWantedList();
+	LoadDrivingTestArea();
+	LoadDrivingTestAreaBuy();
+	LoadAdmissionChambers();
+	LoadRandomPickupEvent();
+	LoadRaces();
+	LoadWeed();
+	LoadMapIcons();
+	LoadPublicAds();
+	LoadPickupInfos();
+	LoadNews();
+	CreateLocationsCp();
+	HorseRacePrepare(1);
 
-	//Audio_SetPack("camping", true); // audio plugin
-
-	print("[SKRYPT:] Zaladowano dane");
+	print("[INFO:] All loading functions initiated");
 
 	return 1;
 } // end of LoadScript

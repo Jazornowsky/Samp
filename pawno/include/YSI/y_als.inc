@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 					==============================
 					 y_als - Useful codes for ALS
 					==============================
@@ -18,17 +18,17 @@ Legal:
 	for the specific language governing rights and limitations under the
 	License.
 	
-	The Original Code is the SA:MP script information include.
+	The Original Code is the YSI ALS include.
 	
 	The Initial Developer of the Original Code is Alex "Y_Less" Cole.
-	Portions created by the Initial Developer are Copyright (C) 2008
+	Portions created by the Initial Developer are Copyright (C) 2011
 	the Initial Developer. All Rights Reserved.
 	
 	Contributors:
-		ZeeX, koolk
+		ZeeX, koolk, JoeBullet/Google63, g_aSlice/Slice
 	
 	Thanks:
-		Peter, Cam - Support.
+		JoeBullet/Google63 - Handy arbitrary ASM jump code using SCTRL.
 		ZeeX - Very productive conversations.
 		koolk - IsPlayerinAreaEx code.
 		TheAlpha - Danish translation.
@@ -43,29 +43,42 @@ Legal:
 		Matite - Pestering me to release it and using it.
 	
 	Very special thanks to:
-		Thiadmer - PAWN.
+		Thiadmer - PAWN, whose limits continue to amaze me!
 		Kye/Kalcor - SA:MP.
 		SA:MP Team past, present and future - SA:MP.
+	
 Version:
 	1.0
 Changelog:
+	29/04/11:
+		Added "call" macro to make testing easier.
 	21/10/10:
 		First version
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-#include <YSI\internal\y_version>
+#include "internal\y_version"
+#include "y_amx"
+#include "y_utils"
 
 // Allow multiple inclusions.
+#if !defined _inc_y_als
+	#error Did you do <YSI/y_als> instead of the required <YSI\y_als>?
+#endif
 #undef _inc_y_als
 
 #if !defined _Y_ALS_INCLUDED
-	// This is an include guard with a purpose!
-	
-	#include <YSI\y_bit>
-	#include <YSI\internal\y_shortfunc>
+	// This is an include guard with a purpose - we need more control than the
+	// standard include guards give.
+	#define _Y_ALS_INCLUDED
+	#include "y_bit"
+	#include "internal\y_shortfunc"
 	
 	enum ALS
 	{
+		//Bit:ALS_OnAnyScriptInit,
+		//Bit:ALS_OnAnyScriptExit,
+		Bit:ALS_OnScriptInit,
+		Bit:ALS_OnScriptExit,
 		Bit:ALS_OnGameModeInit,
 		Bit:ALS_OnGameModeExit,
 		Bit:ALS_OnFilterScriptInit,
@@ -107,7 +120,15 @@ Changelog:
 		Bit:ALS_OnVehicleStreamIn,
 		Bit:ALS_OnVehicleStreamOut,
 		Bit:ALS_OnDialogResponse,
-		Bit:ALS_OnPlayerClickPlayer
+		Bit:ALS_OnPlayerClickPlayer,
+		Bit:ALS_OnPlayerLogin,
+		Bit:ALS_OnPlayerLogout,
+		Bit:ALS_OnPlayerTakeDamage,
+		Bit:ALS_OnPlayerGiveDamage,
+		Bit:ALS_OnPlayerClickMap,
+		Bit:ALS_OnPlayerCommandReceived,
+		Bit:ALS_OnPlayerCommandPerformed,
+		Bit:ALS_OnUnoccupiedVehicleUpdate
 	}
 	
 	#define ALS_DATA<> static stock BitArray:gs_ALS<_:ALS>;
@@ -118,102 +139,168 @@ Changelog:
 	
 	//#define ALS_CALL_INT<%0,%2>(%3) return Bit_GetBit(Bit:gs_ALS,_:ALS_On%0)?P@(#ALS_PREFIX"_On"#%0,#%2#x,%3):1;
 	
-	#define ALS_C_INT<%0,%1,%2>(%3) return Bit_GetBit(Bit:gs_ALS,_:ALS_On%0)?P@(#ALS_PREFIX"_On"#%0,#%2#x,%3):%1;
-	#define ALS_F_INT<%0>(%1) forward On%0(%1);
+	// ALS Callback.
+	#define _ALS_C_INT<%0,%2>(%3) Bit_GetBit(Bit:gs_ALS,_:ALS_On%0)?P@(#ALS_PREFIX"_On"#%0,#%2#q,ALS_RS_%3):ALS_R_%0;
+	#define ALS_C_INT<%0,%2>(%3) return _ALS_C_INT<%0,%2>(%3)
+	// ALS Forward.
+	#define ALS_F_INT<%0,%8>(%1) forward On%0(ALS_KS_%1);
+	// ALS Go (ignore extra parameters).
+	#define ALS_G_INT<%0,%1>(%8)(%2) W@(#On#%0,#%1#x,%2)
 	
-	// Forward declarations.
-	#define ALS_F_GameModeInit              ALS_F_INT<GameModeInit             >()
-	#define ALS_F_GameModeExit              ALS_F_INT<GameModeExit             >()
-	#define ALS_F_FilterScriptInit          ALS_F_INT<FilterScriptInit         >()
-	#define ALS_F_FilterScriptExit          ALS_F_INT<FilterScriptExit         >()
-	#define ALS_F_PlayerConnect             ALS_F_INT<PlayerConnect            >(playerid)
-	#define ALS_F_PlayerDisconnect          ALS_F_INT<PlayerDisconnect         >(playerid,reason)
-	#define ALS_F_PlayerSpawn               ALS_F_INT<PlayerSpawn              >(playerid)
-	#define ALS_F_PlayerDeath               ALS_F_INT<PlayerDeath              >(playerid,killerid,reason)
-	#define ALS_F_VehicleSpawn              ALS_F_INT<VehicleSpawn             >(vehicleid)
-	#define ALS_F_VehicleDeath              ALS_F_INT<VehicleDeath             >(vehicleid,killerid)
-	#define ALS_F_PlayerText                ALS_F_INT<PlayerText               >(playerid,text[])
-	#define ALS_F_PlayerCommandText         ALS_F_INT<PlayerCommandText        >(playerid,cmdtext[])
-	#define ALS_F_PlayerRequestClass        ALS_F_INT<PlayerRequestClass       >(playerid,classid)
-	#define ALS_F_PlayerEnterVehicle        ALS_F_INT<PlayerEnterVehicle       >(playerid,vehicleid,ispassenger)
-	#define ALS_F_PlayerExitVehicle         ALS_F_INT<PlayerExitVehicle        >(playerid,vehicleid)
-	#define ALS_F_PlayerStateChange         ALS_F_INT<PlayerStateChange        >(playerid,newstate,oldstate)
-	#define ALS_F_PlayerEnterCheckpoint     ALS_F_INT<PlayerEnterCheckpoint    >(playerid)
-	#define ALS_F_PlayerLeaveCheckpoint     ALS_F_INT<PlayerLeaveCheckpoint    >(playerid)
-	#define ALS_F_PlayerEnterRaceCheckpoint ALS_F_INT<PlayerEnterRaceCheckpoint>(playerid)
-	#define ALS_F_PlayerLeaveRaceCheckpoint ALS_F_INT<PlayerLeaveRaceCheckpoint>(playerid)
-	#define ALS_F_RconCommand               ALS_F_INT<RconCommand              >(cmd[])
-	#define ALS_F_PlayerRequestSpawn        ALS_F_INT<PlayerRequestSpawn       >(playerid)
-	#define ALS_F_ObjectMoved               ALS_F_INT<ObjectMoved              >(objectid)
-	#define ALS_F_PlayerObjectMoved         ALS_F_INT<PlayerObjectMoved        >(playerid,objectid)
-	#define ALS_F_PlayerPickUpPickup        ALS_F_INT<PlayerPickUpPickup       >(playerid,pickupid)
-	#define ALS_F_VehicleMod                ALS_F_INT<VehicleMod               >(playerid,vehicleid,componentid)
-	#define ALS_F_EnterExitModShop          ALS_F_INT<EnterExitModShop         >(playerid,enterexit,interiorid)
-	#define ALS_F_VehiclePaintjob           ALS_F_INT<VehiclePaintjob          >(playerid,vehicleid,paintjobid)
-	#define ALS_F_VehicleRespray            ALS_F_INT<VehicleRespray           >(playerid,vehicleid,color1,color2)
-	#define ALS_F_VehicleDamageStatusUpdate ALS_F_INT<VehicleDamageStatusUpdate>(playerid,vehicleid)
-	#define ALS_F_PlayerSelectedMenuRow     ALS_F_INT<PlayerSelectedMenuRow    >(playerid,row)
-	#define ALS_F_PlayerExitedMenu          ALS_F_INT<PlayerExitedMenu         >(playerid)
-	#define ALS_F_PlayerInteriorChange      ALS_F_INT<PlayerInteriorChange     >(playerid,newinteriorid,oldinteriorid)
-	#define ALS_F_PlayerKeyStateChange      ALS_F_INT<PlayerKeyStateChange     >(playerid,newkeys,oldkeys)
-	#define ALS_F_RconLoginAttempt          ALS_F_INT<RconLoginAttempt         >(ip[],password[],success)
-	#define ALS_F_PlayerUpdate              ALS_F_INT<PlayerUpdate             >(playerid)
-	#define ALS_F_PlayerStreamIn            ALS_F_INT<PlayerStreamIn           >(playerid,forplayerid)
-	#define ALS_F_PlayerStreamOut           ALS_F_INT<PlayerStreamOut          >(playerid,forplayerid)
-	#define ALS_F_VehicleStreamIn           ALS_F_INT<VehicleStreamIn          >(vehicleid,forplayerid)
-	#define ALS_F_VehicleStreamOut          ALS_F_INT<VehicleStreamOut         >(vehicleid,forplayerid)
-	#define ALS_F_DialogResponse            ALS_F_INT<DialogResponse           >(playerid,dialogid,response,listitem,inputtext[])
-	#define ALS_F_PlayerClickPlayer         ALS_F_INT<PlayerClickPlayer        >(playerid,clickedplayerid,source)
+	// Default return value definitions.
+	//#define ALS_R_AnyScriptInit             1
+	//#define ALS_R_AnyScriptExit             1
+	#define ALS_R_ScriptInit                1
+	#define ALS_R_ScriptExit                1
+	#define ALS_R_GameModeInit              1
+	#define ALS_R_GameModeExit              1
+	#define ALS_R_FilterScriptInit          1
+	#define ALS_R_FilterScriptExit          1
+	#define ALS_R_PlayerConnect             1
+	#define ALS_R_PlayerDisconnect          1
+	#define ALS_R_PlayerSpawn               1
+	#define ALS_R_PlayerDeath               1
+	#define ALS_R_VehicleSpawn              1
+	#define ALS_R_VehicleDeath              1
+	#define ALS_R_PlayerText                1
+	#define ALS_R_PlayerCommandText         0
+	#define ALS_R_PlayerRequestClass        1
+	#define ALS_R_PlayerEnterVehicle        1
+	#define ALS_R_PlayerExitVehicle         1
+	#define ALS_R_PlayerStateChange         1
+	#define ALS_R_PlayerEnterCheckpoint     1
+	#define ALS_R_PlayerLeaveCheckpoint     1
+	#define ALS_R_PlayerEnterRaceCheckpoint 1
+	#define ALS_R_PlayerLeaveRaceCheckpoint 1
+	#define ALS_R_RconCommand               1
+	#define ALS_R_PlayerRequestSpawn        1
+	#define ALS_R_ObjectMoved               1
+	#define ALS_R_PlayerObjectMoved         1
+	#define ALS_R_PlayerPickUpPickup        1
+	#define ALS_R_VehicleMod                1
+	#define ALS_R_EnterExitModShop          1
+	#define ALS_R_VehiclePaintjob           1
+	#define ALS_R_VehicleRespray            1
+	#define ALS_R_VehicleDamageStatusUpdate 1
+	#define ALS_R_PlayerSelectedMenuRow     1
+	#define ALS_R_PlayerExitedMenu          1
+	#define ALS_R_PlayerInteriorChange      1
+	#define ALS_R_PlayerKeyStateChange      1
+	#define ALS_R_RconLoginAttempt          1
+	#define ALS_R_PlayerUpdate              1
+	#define ALS_R_PlayerStreamIn            1
+	#define ALS_R_PlayerStreamOut           1
+	#define ALS_R_VehicleStreamIn           1
+	#define ALS_R_VehicleStreamOut          1
+	#define ALS_R_DialogResponse            1
+	#define ALS_R_PlayerClickPlayer         1
+	#define ALS_R_PlayerLogin               1
+	#define ALS_R_PlayerLogout              1
+	#define ALS_R_PlayerTakeDamage          1
+	#define ALS_R_PlayerGiveDamage          1
+	#define ALS_R_PlayerClickMap            1
+	#define ALS_R_PlayerCommandReceived     1
+	#define ALS_R_PlayerCommandPerformed    -1
+	#define ALS_R_UnoccupiedVehicleUpdate   1
 	
 	// Chain call declarations.
-	#define ALS_C_GameModeInit              ALS_C_INT<GameModeInit             ,1,>()
-	#define ALS_C_GameModeExit              ALS_C_INT<GameModeExit             ,1,>()
-	#define ALS_C_FilterScriptInit          ALS_C_INT<FilterScriptInit         ,1,>()
-	#define ALS_C_FilterScriptExit          ALS_C_INT<FilterScriptExit         ,1,>()
-	#define ALS_C_PlayerConnect             ALS_C_INT<PlayerConnect            ,1,i>(playerid)
-	#define ALS_C_PlayerDisconnect          ALS_C_INT<PlayerDisconnect         ,1,ii>(playerid,reason)
-	#define ALS_C_PlayerSpawn               ALS_C_INT<PlayerSpawn              ,1,i>(playerid)
-	#define ALS_C_PlayerDeath               ALS_C_INT<PlayerDeath              ,1,iii>(playerid,killerid,reason)
-	#define ALS_C_VehicleSpawn              ALS_C_INT<VehicleSpawn             ,1,i>(vehicleid)
-	#define ALS_C_VehicleDeath              ALS_C_INT<VehicleDeath             ,1,ii>(vehicleid,killerid)
-	#define ALS_C_PlayerText                ALS_C_INT<PlayerText               ,1,is>(playerid,text)
-	#define ALS_C_PlayerCommandText         ALS_C_INT<PlayerCommandText        ,0,is>(playerid,cmdtext)
-	#define ALS_C_PlayerRequestClass        ALS_C_INT<PlayerRequestClass       ,1,ii>(playerid,classid)
-	#define ALS_C_PlayerEnterVehicle        ALS_C_INT<PlayerEnterVehicle       ,1,iii>(playerid,vehicleid,ispassenger)
-	#define ALS_C_PlayerExitVehicle         ALS_C_INT<PlayerExitVehicle        ,1,ii>(playerid,vehicleid)
-	#define ALS_C_PlayerStateChange         ALS_C_INT<PlayerStateChange        ,1,iii>(playerid,newstate,oldstate)
-	#define ALS_C_PlayerEnterCheckpoint     ALS_C_INT<PlayerEnterCheckpoint    ,1,i>(playerid)
-	#define ALS_C_PlayerLeaveCheckpoint     ALS_C_INT<PlayerLeaveCheckpoint    ,1,i>(playerid)
-	#define ALS_C_PlayerEnterRaceCheckpoint ALS_C_INT<PlayerEnterRaceCheckpoint,1,i>(playerid)
-	#define ALS_C_PlayerLeaveRaceCheckpoint ALS_C_INT<PlayerLeaveRaceCheckpoint,1,i>(playerid)
-	#define ALS_C_RconCommand               ALS_C_INT<RconCommand              ,1,s>(cmd)
-	#define ALS_C_PlayerRequestSpawn        ALS_C_INT<PlayerRequestSpawn       ,1,i>(playerid)
-	#define ALS_C_ObjectMoved               ALS_C_INT<ObjectMoved              ,1,i>(objectid)
-	#define ALS_C_PlayerObjectMoved         ALS_C_INT<PlayerObjectMoved        ,1,ii>(playerid,objectid)
-	#define ALS_C_PlayerPickUpPickup        ALS_C_INT<PlayerPickUpPickup       ,1,ii>(playerid,pickupid)
-	#define ALS_C_VehicleMod                ALS_C_INT<VehicleMod               ,1,iii>(playerid,vehicleid,componentid)
-	#define ALS_C_EnterExitModShop          ALS_C_INT<EnterExitModShop         ,1,iii>(playerid,enterexit,interiorid)
-	#define ALS_C_VehiclePaintjob           ALS_C_INT<VehiclePaintjob          ,1,iii>(playerid,vehicleid,paintjobid)
-	#define ALS_C_VehicleRespray            ALS_C_INT<VehicleRespray           ,1,iiii>(playerid,vehicleid,color1,color2)
-	#define ALS_C_VehicleDamageStatusUpdate ALS_C_INT<VehicleDamageStatusUpdate,1,ii>(playerid,playerid)
-	#define ALS_C_PlayerSelectedMenuRow     ALS_C_INT<PlayerSelectedMenuRow    ,1,ii>(playerid,row)
-	#define ALS_C_PlayerExitedMenu          ALS_C_INT<PlayerExitedMenu         ,1,i>(playerid)
-	#define ALS_C_PlayerInteriorChange      ALS_C_INT<PlayerInteriorChange     ,1,iii>(playerid,newinteriorid,oldinteriorid)
-	#define ALS_C_PlayerKeyStateChange      ALS_C_INT<PlayerKeyStateChange     ,1,iii>(playerid,newkeys,oldkeys)
-	#define ALS_C_RconLoginAttempt          ALS_C_INT<RconLoginAttempt         ,1,ssi>(ip,password,success)
-	#define ALS_C_PlayerUpdate              ALS_C_INT<PlayerUpdate             ,1,i>(playerid)
-	#define ALS_C_PlayerStreamIn            ALS_C_INT<PlayerStreamIn           ,1,ii>(playerid,forplayerid)
-	#define ALS_C_PlayerStreamOut           ALS_C_INT<PlayerStreamOut          ,1,ii>(playerid,forplayerid)
-	#define ALS_C_VehicleStreamIn           ALS_C_INT<VehicleStreamIn          ,1,ii>(vehicleid,forplayerid)
-	#define ALS_C_VehicleStreamOut          ALS_C_INT<VehicleStreamOut         ,1,ii>(vehicleid,forplayerid)
-	//#define ALS_C_DialogResponse            ALS_C_INT<DialogResponse           ,1,ii>(playerid,dialogid,response,listitem,inputtext)
-	#define ALS_C_PlayerClickPlayer         ALS_C_INT<PlayerClickPlayer        ,1,iii>(playerid,clickedplayerid,source)
-	#define ALS_C_DialogResponse if(inputtext[0]){ALS_C_INT<DialogResponse,1,iiiis>(playerid,dialogid,response,listitem,inputtext)}else{ALS_C_INT<DialogResponse,1,iiiis>(playerid,dialogid,response,listitem,NULL)}
+	#define ALS_DO_ScriptInit<%0>                %0<ScriptInit               ,>(end:)
+	#define ALS_DO_ScriptExit<%0>                %0<ScriptExit               ,>(end:)
+	#define ALS_DO_GameModeInit<%0>              %0<GameModeInit             ,>(end:)
+	#define ALS_DO_GameModeExit<%0>              %0<GameModeExit             ,>(end:)
+	#define ALS_DO_FilterScriptInit<%0>          %0<FilterScriptInit         ,>(end:)
+	#define ALS_DO_FilterScriptExit<%0>          %0<FilterScriptExit         ,>(end:)
+	#define ALS_DO_PlayerConnect<%0>             %0<PlayerConnect            ,i>(end:playerid)
+	#define ALS_DO_PlayerDisconnect<%0>          %0<PlayerDisconnect         ,ii>(more:playerid,end:reason)
+	#define ALS_DO_PlayerSpawn<%0>               %0<PlayerSpawn              ,i>(end:playerid)
+	#define ALS_DO_PlayerDeath<%0>               %0<PlayerDeath              ,iii>(more:playerid,more:killerid,end:reason)
+	#define ALS_DO_VehicleSpawn<%0>              %0<VehicleSpawn             ,i>(end:vehicleid)
+	#define ALS_DO_VehicleDeath<%0>              %0<VehicleDeath             ,ii>(more:vehicleid,end:killerid)
+	#define ALS_DO_PlayerText<%0>                %0<PlayerText               ,is>(more:playerid,end_string:text[])
+	#define ALS_DO_PlayerCommandText<%0>         %0<PlayerCommandText        ,is>(more:playerid,end_string:cmdtext[])
+	#define ALS_DO_PlayerRequestClass<%0>        %0<PlayerRequestClass       ,ii>(more:playerid,end:classid)
+	#define ALS_DO_PlayerEnterVehicle<%0>        %0<PlayerEnterVehicle       ,iii>(more:playerid,more:vehicleid,end:ispassenger)
+	#define ALS_DO_PlayerExitVehicle<%0>         %0<PlayerExitVehicle        ,ii>(more:playerid,end:vehicleid)
+	#define ALS_DO_PlayerStateChange<%0>         %0<PlayerStateChange        ,iii>(more:playerid,more:newstate,end:oldstate)
+	#define ALS_DO_PlayerEnterCheckpoint<%0>     %0<PlayerEnterCheckpoint    ,i>(end:playerid)
+	#define ALS_DO_PlayerLeaveCheckpoint<%0>     %0<PlayerLeaveCheckpoint    ,i>(end:playerid)
+	#define ALS_DO_PlayerEnterRaceCheckpoint<%0> %0<PlayerEnterRaceCheckpoint,i>(end:playerid)
+	#define ALS_DO_PlayerLeaveRaceCheckpoint<%0> %0<PlayerLeaveRaceCheckpoint,i>(end:playerid)
+	#define ALS_DO_RconCommand<%0>               %0<RconCommand              ,s>(end_string:cmd[])
+	#define ALS_DO_PlayerRequestSpawn<%0>        %0<PlayerRequestSpawn       ,i>(end:playerid)
+	#define ALS_DO_ObjectMoved<%0>               %0<ObjectMoved              ,i>(end:objectid)
+	#define ALS_DO_PlayerObjectMoved<%0>         %0<PlayerObjectMoved        ,ii>(more:playerid,end:objectid)
+	#define ALS_DO_PlayerPickUpPickup<%0>        %0<PlayerPickUpPickup       ,ii>(more:playerid,end:pickupid)
+	#define ALS_DO_VehicleMod<%0>                %0<VehicleMod               ,iii>(more:playerid,more:vehicleid,end:componentid)
+	#define ALS_DO_EnterExitModShop<%0>          %0<EnterExitModShop         ,iii>(more:playerid,more:enterexit,end:interiorid)
+	#define ALS_DO_VehiclePaintjob<%0>           %0<VehiclePaintjob          ,iii>(more:playerid,more:vehicleid,end:paintjobid)
+	#define ALS_DO_VehicleRespray<%0>            %0<VehicleRespray           ,iiii>(more:playerid,more:vehicleid,more:color1,end:color2)
+	#define ALS_DO_VehicleDamageStatusUpdate<%0> %0<VehicleDamageStatusUpdate,ii>(more:vehicleid,end:playerid)
+	#define ALS_DO_PlayerSelectedMenuRow<%0>     %0<PlayerSelectedMenuRow    ,ii>(more:playerid,end:row)
+	#define ALS_DO_PlayerExitedMenu<%0>          %0<PlayerExitedMenu         ,i>(end:playerid)
+	#define ALS_DO_PlayerInteriorChange<%0>      %0<PlayerInteriorChange     ,iii>(more:playerid,more:newinteriorid,end:oldinteriorid)
+	#define ALS_DO_PlayerKeyStateChange<%0>      %0<PlayerKeyStateChange     ,iii>(more:playerid,more:newkeys,end:oldkeys)
+	#define ALS_DO_RconLoginAttempt<%0>          %0<RconLoginAttempt         ,ssi>(string:ip[],string:password[],end:success)
+	#define ALS_DO_PlayerUpdate<%0>              %0<PlayerUpdate             ,i>(end:playerid)
+	#define ALS_DO_PlayerStreamIn<%0>            %0<PlayerStreamIn           ,ii>(more:playerid,end:forplayerid)
+	#define ALS_DO_PlayerStreamOut<%0>           %0<PlayerStreamOut          ,ii>(more:playerid,end:forplayerid)
+	#define ALS_DO_VehicleStreamIn<%0>           %0<VehicleStreamIn          ,ii>(more:vehicleid,end:forplayerid)
+	#define ALS_DO_VehicleStreamOut<%0>          %0<VehicleStreamOut         ,ii>(more:vehicleid,end:forplayerid)
+	#define ALS_DO_DialogResponse<%0>            %0<DialogResponse           ,iiiis>(more:playerid,more:dialogid,more:response,more:listitem,end_string:inputtext[])
+	#define ALS_DO_PlayerClickPlayer<%0>         %0<PlayerClickPlayer        ,iii>(more:playerid,more:clickedplayerid,end:source)
+	#define ALS_DO_PlayerLogin<%0>               %0<PlayerLogin              ,ii>(more:playerid,end:uid)
+	#define ALS_DO_PlayerLogout<%0>              %0<PlayerLogout             ,ii>(more:playerid,end:uid)
+	#define ALS_DO_PlayerGiveDamage<%0>          %0<PlayerGiveDamage         ,iifi>(more:playerid,more:damagedid,tag:Float:amount,end:weaponid)
+	#define ALS_DO_PlayerTakeDamage<%0>          %0<PlayerTakeDamage         ,iifi>(more:playerid,more:issuerid,tag:Float:amount,end:weaponid)
+	#define ALS_DO_PlayerClickMap<%0>            %0<PlayerClickMap           ,ifff>(more:playerid,tag:Float:fX,tag:Float:fY,end_tag:Float:fZ)
+	#define ALS_DO_PlayerCommandReceived<%0>     %0<PlayerCommandReceived    ,is>(more:playerid,end_string:cmdtext[])
+	#define ALS_DO_PlayerCommandPerformed<%0>    %0<PlayerCommandPerformed   ,isi>(more:playerid,string:cmdtext[],end:success)
+	#define ALS_DO_UnoccupiedVehicleUpdate<%0>    %0<UnoccupiedVehicleUpdate   ,iii>(more:vehicleid,more:playerid,end:passenger_seat)
+	//#define ALS_CALL<%0> ALS_C_%0
+	//#define ALS_FORWARD<%0> ALS_F_%0
 	
-	#define ALS_CALL<%0> ALS_C_%0
-	#define ALS_FORWARD<%0> ALS_F_%0
+	//#define call%0On%1(%2) ALS_G_%1(%2)
 	
-	#define _Y_ALS_INCLUDED
+	#define ALS_KS_more:%0,         %0,ALS_KS_
+	#define ALS_KS_string:%0[],     %0[],ALS_KS_
+	#define ALS_KS_tag:%3:%0,       %3:%0,ALS_KS_
+	#define ALS_KS_end:%0)          %0)
+	#define ALS_KS_end_string:%0[]) %0[])
+	#define ALS_KS_end_tag:%3:%0)   %3:%0)
+
+	#define ALS_RS_more:%0,         %0,ALS_RS_
+	#define ALS_RS_string:%0[],     ((%0[0])?(%0):NULL),ALS_RS_
+	#define ALS_RS_tag:%3:%0,       %0,ALS_RS_
+	#define ALS_RS_end:%0)          %0)
+	#define ALS_RS_end_string:%0[]) ((%0[0])?(%0):NULL))
+	#define ALS_RS_end_tag:%3:%0)   %0)
+	
+	#define ALS_DO:%9<%0> ALS_DO_%0<%9>
+	
+	#define ALS_CALL<%0> ALS_DO:ALS_C_INT<%0>
+	#define ALS_GET<%0> ALS_DO:_ALS_C_INT<%0>
+	#define ALS_FORWARD<%0> ALS_DO:ALS_F_INT<%0>
+	
+	#define call%0On%1(%2) ALS_DO:ALS_G_INT<%1>(%2)
+	
+	
+	/*ALS_DoDetect(const str[]);
+	public ALS_DoDetect(const str[])
+	{
+		new
+			addr;
+		addr = funcidx(str);
+		if (addr != -1)
+		{
+			// Get the actual function address, not just the structure offset.
+			addr *= 8;
+			addr += AMX_HEADER_PUBLICS;
+			#emit LREF.S.pri addr
+			#emit STOR.S.pri addr
+		}
+		return addr;
+	}*/
+	
 #endif
 
 #if !defined ALS_PREFIX

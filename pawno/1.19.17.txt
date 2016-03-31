@@ -1,0 +1,6 @@
+- zmodyfikowano uk³ad /komendy
+- przywrócono stary CP od pracy do urzêdu
+- wy³¹czono wyrzucanie gracza za AFK
+- przywrócono stare komendy animacji
+- zwiêkszono zarobki w wiêkszoœci prac
+| zbugowane tel taxi (brak punktu CP)

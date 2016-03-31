@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 					=======================================
 					 y_groups - Player group abstractions! 
 					=======================================
@@ -18,17 +18,17 @@ Legal:
 	for the specific language governing rights and limitations under the
 	License.
 	
-	The Original Code is the SA:MP script information include.
+	The Original Code is the YSI group include.
 	
 	The Initial Developer of the Original Code is Alex "Y_Less" Cole.
-	Portions created by the Initial Developer are Copyright (C) 2008
+	Portions created by the Initial Developer are Copyright (C) 2011
 	the Initial Developer. All Rights Reserved.
 	
 	Contributors:
-		ZeeX, koolk
+		ZeeX, koolk, JoeBullet/Google63, g_aSlice/Slice
 	
 	Thanks:
-		Peter, Cam - Support.
+		JoeBullet/Google63 - Handy arbitrary ASM jump code using SCTRL.
 		ZeeX - Very productive conversations.
 		koolk - IsPlayerinAreaEx code.
 		TheAlpha - Danish translation.
@@ -43,15 +43,16 @@ Legal:
 		Matite - Pestering me to release it and using it.
 	
 	Very special thanks to:
-		Thiadmer - PAWN.
+		Thiadmer - PAWN, whose limits continue to amaze me!
 		Kye/Kalcor - SA:MP.
 		SA:MP Team past, present and future - SA:MP.
+	
 Version:
 	1.0
 Changelog:
 	29/11/10:
 		First version
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #undef _inc_y_groupsingle
 
@@ -59,7 +60,7 @@ Changelog:
 //#undef Group
 
 /*#if YSIM_HAS_MASTER
-	#if YSIM_IS_CLIENT
+	#if _YSIM_IS_CLIENT
 		//#define Group:%0_InitialiseFromGroups(%1)
 		stock _GROUP_INITIALISE(x) <YSI_has_groups:n>
 		{
@@ -71,7 +72,7 @@ Changelog:
 			#pragma unused x
 		}
 	#else
-		#if YSIM_IS_SERVER
+		#if _YSIM_IS_SERVER
 			//#define Group:%0_InitialiseFromGroups(%1) forward _GROUP_INITIALISE(x);_GROUP_INITIALISE(%1)<YSI_has_groups:n>__GROUP_INITIALISE(%1);_GROUP_INITIALISE(%1)<>__GROUP_INITIALISE(%1);static stock __GROUP_INITIALISE(%1)
 			stock bool:_GROUP_INITIALISE(x) <YSI_has_groups:n>
 			{
@@ -85,8 +86,8 @@ Changelog:
 				return false;
 			}
 		#else
-			#if YSIM_IS_STUB
-				#error y_groupsingle called with YSIM_IS_STUB.
+			#if _YSIM_IS_STUB
+				#error y_groupsingle called with _YSIM_IS_STUB.
 			#else
 				//#define Group:%0_InitialiseFromGroups(%1) forward _GROUP_INITIALISE(x);_GROUP_INITIALISE(%1)<YSI_has_groups:n>__GROUP_INITIALISE(%1);_GROUP_INITIALISE(%1)<>__GROUP_INITIALISE(%1);static stock __GROUP_INITIALISE(%1)
 			#endif

@@ -1,0 +1,6 @@
+<YML>
+	<group name="itemFactory">
+		<entry name="DIALOG_ITEM_FACTORY_TITLE" style="client" colour="X11_RED" />
+		<entry name="DIALOG_INFO_HEADER" style="3" time="4000" />
+	</group>
+</YML>

@@ -1,0 +1,7 @@
+- Poprawiona komenda /wyrobdowod w której komunikat o wyrobieniu dowodu otrzymywa³a jedynie osoba wyrabiaj¹ca
+- Poprawiona komenda /zamknij gdzie osoba z legitymacj¹ instruktora mog³a otwieraæ i zamykaæ wszystkie pojazdy
+- Zwiêkszono dwukrotnie szybkoœæ schodzenia paska "¿o³¹dek"
+- Poprawiono czytelnoœæ opisu pasków
+- Dodano komunikat ostrzegaj¹cy o powa¿nym zatruciu
+- Poprawiono komendy zawieraj¹ce ceny pojazdów
+- Poprawiono bug z edycj¹ cen w biznesach przez osoby bez uprawnieñ

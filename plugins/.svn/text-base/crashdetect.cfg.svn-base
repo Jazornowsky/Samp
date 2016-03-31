@@ -1,0 +1,5 @@
+[General]
+catchNativeErrors = yes
+exitOnNativeError = no
+catchRuntimeErrors = yes
+exitOnRuntimeError = no

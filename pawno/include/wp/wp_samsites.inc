@@ -1,3 +1,12 @@
+/***
+*
+* File: wp_samsites.inc
+* Auth: Damian Wojdat
+* Date: 15.09.2011
+* Desc: Sam sites positions and activation.
+*
+*************************************************************************************************************/
+
 public OnSamSiteRestarted()
 {
 	AddStaticSAMEx(-1395.0, 493.0, 20.0, 1000.0, 80.0);
@@ -12,7 +21,7 @@ public OnSamSiteUpdate(samid, playerid)
 	{
 		if(samid == n)
 		{
-			if(gVehData[GetPlayerVehicleID(playerid)-1][FactionCar] == gPlayerData[playerid][pFaction] || gVehData[GetPlayerVehicleID(playerid)-1][FactionCar] == 255 || GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)
+			if(gVehData[GetPlayerVehicleID(playerid)-1][mVehFaction] == gPlayerData[playerid][pFaction] || gVehData[GetPlayerVehicleID(playerid)-1][mVehFaction] == 255 || GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)
 			{
 				SAM_cancel(n);
 			}

@@ -1,11 +1,9 @@
 /***
-* wp_buscheckpoints.inc - Handle rewards, experience gain, etc. for driving
-*											through bus checkpoints.
 *
-*							Made by Damian Wojdat
-*
-*Last modified:
-*						17-06-2011
+* File: wp_buscheckpoints.inc
+* Auth: Damian Wojdat
+* Date: 15.09.2011
+* Desc: Handle rewards, experience gain, etc. for driving through bus checkpoints.
 *
 *************************************************************************************************************/
 
@@ -15,7 +13,21 @@
 */
 playerNextLvlBusPoints(playerid)
 {
-	return ( (gPlayerData[playerid][pJobLvl]*30) + (gPlayerData[playerid][pJobLvl]*10) );
+	return 13*10*floatround(floatpower(3, gPlayerData[playerid][pJobLvl])); // 17 to jest œrednia liczba cp na danej trasie a 10 to liczba z ksiezyca naszej ziemi, dalej to zagadka dla ciebie
+}
+
+Float:BusCashForCheckpoint(playerid)
+{
+	switch(gPlayerData[playerid][pJobLvl])
+    {
+        case 1: return 40.0;
+        case 2: return 46.0;
+        case 3: return 52.0;
+        case 4: return 58.0;
+        case 5: return 60.0;
+        default: return 40.0;
+    }
+	return 0.0;
 }
 
 busCheckpoints(i)
@@ -51,25 +63,16 @@ busCheckpoints(i)
 			UpdateProgressBar(JobProgress[i], i);
 			format(string, sizeof(string), "[INFO:] Osi¹gn¹³eœ %d poziom jako kierowca autobusu !", gPlayerData[i][pJobLvl]);
 			SendClientMessage(i, COLOR_LIGHTYELLOW2, string);
-			if(gPlayerData[i][pExp] >= (gPlayerData[i][pLevel]+1)*levelexp)
-			{
-				gPlayerData[i][pLevel]++;
-				gPlayerData[i][pExp] = 0;
-				
-				SavePlayerData(i, "Level");
-				SavePlayerData(i, "Exp");
-				
-				format(string, sizeof(string), "[INFO:] Zdoby³eœ tak¿e nowy poziom postaci ! - %d", gPlayerData[i][pLevel]);
-				SendClientMessage(i, COLOR_LIGHTYELLOW2, string);
-			}
-			else
-			{
-				SendClientMessage(i, COLOR_LIGHTYELLOW2, "[INFO:] Otrzymujesz tak¿e 1pkt do doœwiadczenia !");
-			}
 		}
 	}
+	
+	if(vehicleID == 0)
+	{
+		return;
+	}
+	
 	GetVehicleHealth(vehicleID, vehicleHealth);
-	if(vehicleHealth <= 700.0 && gVehHealthOnPlayerEnter[i] > 700.0 && gBusDriverPenaltyInformed[i] == 0 && IsPlayerInAnyVehicle(i) && gVehData[vehicleID-1][CarType] == 2)
+	if(vehicleHealth-gVehHealthOnPlayerEnter[i] < -300.0 && gVehHealthOnPlayerEnter[i] > 300.0 && gBusDriverPenaltyInformed[i] == 0 && IsPlayerInAnyVehicle(i) && gVehData[vehicleID-1][mVehType] == 2)
 	{
 		gPlayerData[i][pCost] += BUS_PENALTY_COST;
 		gBusDriverPenaltyInformed[i] = 1;
@@ -80,23 +83,24 @@ busCheckpoints(i)
 		
 		SetProgressBarValue(JobProgress[i], float(gPlayerData[i][pBusJobPoints]));
 		UpdateProgressBar(JobProgress[i], i);
-		format( string, sizeof(string), "[INFO:] Zosta³eœ ukarany grzywn¹ w wysokoœci %s$ za nieostro¿n¹ jazde", BUS_PENALTY_COST);
+		format( string, sizeof(string), "[INFO:] Zosta³eœ ukarany grzywn¹ w wysokoœci $%d za nieostro¿n¹ jazde", BUS_PENALTY_COST);
 		SendClientMessage(i, COLOR_LIGHTYELLOW2, string);
 		SendClientMessage(i, COLOR_LIGHTYELLOW2, "[INFO:] Kara zostanie automatycznie pobrana przy nastêpnej wyp³acie");
 		SendClientMessage(i, COLOR_LIGHTYELLOW2, "[INFO:] Tracisz tak¿e 2pkt pracy");
 	}
+	
 	if(EnteredVehicleID[i] == GetPlayerVehicleID(i))
 	{
-		if( gBusTrackCPType[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] == 0 && gBusDriverJustStarted[i] )
+		if( gBusTrackCpType[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] == 0 && gBusDriverJustStarted[i] )
 		{
 			gBusDriverPaymentCount[i] = 0;
 			gBusDriverCurrentCheckPoint[i] = 0;
-			gBusDriverCheckpointTime[i] = gBusTrackCPTime[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ];
+			gBusDriverCheckpointTime[i] = gBusTrackCpTime[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ];
 			gBusDriverJustStarted[i] = 0;			
 			gJobProfit[i] = 0;
-			SetPlayerCheckpoint(i, gBusTrackCPX[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCPY[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCPZ[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], 5.0);
+			SetPlayerCheckpoint(i, gBusTrackCpX[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCpY[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCpZ[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], 5.0);
 		}
-		if( ( gBusTrackCPType[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] == 1 || gBusTrackCPType[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] == 0 ) && IsPlayerInRangeOfPoint(i, 5.0, gBusTrackCPX[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCPY[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCPZ[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] ) )
+		if( ( gBusTrackCpType[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] == 1 || gBusTrackCpType[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] == 0 ) && IsPlayerInRangeOfPoint(i, 5.0, gBusTrackCpX[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCpY[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCpZ[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] ) )
 		{
 			gBusDriverCheckpointTime[i]--;
 			if(gBusDriverCheckpointTime[i] > 0)
@@ -110,36 +114,36 @@ busCheckpoints(i)
 				SavePlayerData(i, "BusJobPoints");
 				SetProgressBarValue(JobProgress[i], float(gPlayerData[i][pBusJobPoints]));
 				UpdateProgressBar(JobProgress[i], i);
-				gJobProfit[i] += floatpower(gPlayerData[i][pJobLvl],gBusDriverPaymentMultiplier) + floatpower(gBusTrackCPReward[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusDriverPaymentMultiplier);
+				gJobProfit[i] += BusCashForCheckpoint(i);
 				
 				gBusDriverCurrentCheckPoint[i]++;
-				gBusDriverCheckpointTime[i] = gBusTrackCPTime[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ];
-				SetPlayerCheckpoint(i, gBusTrackCPX[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCPY[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCPZ[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], 5.0);				
+				gBusDriverCheckpointTime[i] = gBusTrackCpTime[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ];
+				SetPlayerCheckpoint(i, gBusTrackCpX[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCpY[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCpZ[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], 5.0);				
 			}
 		}
-		else if( gBusTrackCPType[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] == 2 && IsPlayerInRangeOfPoint(i, 5.0, gBusTrackCPX[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCPY[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCPZ[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] ) )
+		else if( gBusTrackCpType[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] == 2 && IsPlayerInRangeOfPoint(i, 5.0, gBusTrackCpX[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCpY[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ], gBusTrackCpZ[ gBusDriverSelectedLine[i] ][ gBusDriverCurrentCheckPoint[i] ] ) )
 		{
 			GivePlayerCash(i, floatround(gJobProfit[i], floatround_round));
 			DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= floatround(gJobProfit[i], floatround_round);
 			SaveFData(FACTIONID_GOVERNMENT, "Bank");
 		
-			format(string, sizeof(string), "[INFO:] Zarobi³eœ za tê trase %d$", floatround(gJobProfit[i],floatround_round));
+			format(string, sizeof(string), "[INFO:] Zarobi³eœ za tê trase $%d", floatround(gJobProfit[i],floatround_round));
 			SendClientMessage(i, COLOR_LIGHTYELLOW2, string);
 			
 			gBusDriverOnDuty[i] = 0;
-			DisablePlayerCheckpoint(i);			
-			RemovePlayerFromVehicle(i);		
-			HideProgressBarForPlayer(i, JobProgress[i]);
 			gBusDriverCurrentCheckPoint[i] = 0;
 			
+			DisablePlayerCheckpoint(i);
+			RemovePlayerFromVehicle(i);		
+			HideProgressBarForPlayer(i, JobProgress[i]);
+			
 			UpdateDynamic3DTextLabelText(BusRoute[vehicleID-1], COLOR_LIGHTYELLOW, " ");
-			SetVehicleToRespawn(vehicleID);
+			SetVehicleToRespawnEx(vehicleID);
 			GetVehicleParamsEx(vehicleID, enginedyn, lights, alarm, doors, bonnet, boot, objective);
-			SetVehicleParamsEx(vehicleID,0,lights,alarm,doors,bonnet,boot,objective);
+			SetVehicleParamsEx(vehicleID, 0, 0, alarm, doors, bonnet, boot, objective);
 			gVehData[vehicleID-1][EngineOn] = 0;
-			SaveVehData( vehicleID-1, "EngineOn" );
-			gVehData[vehicleID-1][CarFuel] = float(VehFTank(vehicleID));
-			SaveVehData( vehicleID-1, "CarFuel" );			
+			gVehData[vehicleID-1][LightsOn] = 0;
+			gVehData[vehicleID-1][CarFuel] = float(VehFTank(vehicleID));		
 		}
 	}
 }

@@ -1,10 +1,10 @@
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 					================================
 					Y Sever Includes - Commands Core
 					================================
 Description:
 	Runs commands registered with the system and calls the required functions.
-	Also handles alternate names and prefixes.  Theory based very loosely on dcmd.
+	Also handles alternate names and prefixes.  Based very loosely on dcmd.
 Legal:
 	Version: MPL 1.1
 	
@@ -18,17 +18,17 @@ Legal:
 	for the specific language governing rights and limitations under the
 	License.
 	
-	The Original Code is the SA:MP script information include.
+	The Original Code is the YSI commands include.
 	
 	The Initial Developer of the Original Code is Alex "Y_Less" Cole.
-	Portions created by the Initial Developer are Copyright (C) 2008
+	Portions created by the Initial Developer are Copyright (C) 2011
 	the Initial Developer. All Rights Reserved.
 	
 	Contributors:
-		ZeeX, koolk
+		ZeeX, koolk, JoeBullet/Google63, g_aSlice/Slice
 	
 	Thanks:
-		Peter, Cam - Support.
+		JoeBullet/Google63 - Handy arbitrary ASM jump code using SCTRL.
 		ZeeX - Very productive conversations.
 		koolk - IsPlayerinAreaEx code.
 		TheAlpha - Danish translation.
@@ -43,9 +43,10 @@ Legal:
 		Matite - Pestering me to release it and using it.
 	
 	Very special thanks to:
-		Thiadmer - PAWN.
+		Thiadmer - PAWN, whose limits continue to amaze me!
 		Kye/Kalcor - SA:MP.
 		SA:MP Team past, present and future - SA:MP.
+	
 Version:
 	0.1.4
 Changelog:
@@ -74,8 +75,8 @@ Changelog:
 	12/04/07:
 		Added command removal.
 	11/04/07:
-		Changed system slightly to handle names and alt names separately.  Still need
-		a better way of ignoring names when alt names are used.
+		Changed system slightly to handle names and alt names separately.  Still
+		need a better way of ignoring names when alt names are used.
 	10/04/07:
 		First version.
 Functions:
@@ -158,9 +159,13 @@ Compile options:
 	COMMAND_SENSITIVE - Make commands case sensitive.
 	COMMAND_ACCURATE - Can use '@' in command names.
 	MAX_COMMANDS - The maximum number of commands which can be used.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-#include <YSI\internal\y_version>
+#if defined _INC_y_text
+	#error y_commands must be included before y_text
+#endif
+
+#include "internal\y_version"
 
 #if !defined MAX_COMMANDS
 	#define MAX_COMMANDS                (1024)
@@ -169,42 +174,52 @@ Compile options:
 #define _GROUP_MAKE_NAME_CMD<%0...%1>   %0Command%1
 #define _GROUP_MAKE_LIMIT_CMD           MAX_COMMANDS
 
-#include <YSI\y_master>
-#include <YSI\y_groups>
+#define YSIM_U_DISABLE
+#include "y_master"
+#include "y_groups"
 
-#include <YSI\y_debug>
+#include "y_debug"
+#include "y_hooks"
 
-#include <YSI\y_bintree>
-#include <YSI\y_scripting>
-#include <YSI\y_playerarray>
-#include <YSI\y_utils>
+#include "y_bintree"
+#include "y_amx"
+#include "y_playerarray"
+#include "y_utils"
+
+#include "internal\y_natives"
 
 // Define the CMD: macro.  This uses the prefix "@yC_" as it's 32 bits so allows
 // for fast command string searching in the publics table and makes the commands
 // public without the need for the public keyword.
 /*#if YSIM_HAS_MASTER
-	#if YSIM_IS_CLIENT
-		#define YCMD:%1(%2) static stock yC@_%1(%2)
+	#if _YSIM_IS_CLIENT
+		#define YCMD:%1(%2) static stock @_yC%1(%2)
 	#else
-		#if YSIM_IS_SERVER
-			#define YCMD:%1(%2) forward @yC_%1(a,b[],c);@yC_%1(a,b[],c)U@(8,YSIM_RETURN,yC@_%1(a,b,c));static yC@_%1(%2)
+		#if _YSIM_IS_SERVER
+			#define YCMD:%1(%2) @yC_%1(a,b[],c);@yC_%1(a,b[],c)U@(8,YSIM_RETURN,@_yC%1(a,b,c));static @_yC%1(%2)
 		#else
-			#define YCMD:%1(%2) forward @yC_%1(a,b[],c);@yC_%1(a,b[],c)<>{}@yC_%1(a,b[],c)<_YCM:y>U@(8,YSIM_RETURN,yC@_%1(a,b,c));static yC@_%1(%2)
+			#define YCMD:%1(%2) @yC_%1(a,b[],c);@yC_%1(a,b[],c)<>{}@yC_%1(a,b[],c)<_YCM:y>U@(8,YSIM_RETURN,@_yC%1(a,b,c));static @_yC%1(%2)
 		#endif
 	#endif
 #else
-	#define YCMD:%1(%2) forward @yC_%1(%2);@yC_%1(%2)
+	#define YCMD:%1(%2) @yC_%1(%2);@yC_%1(%2)
 #endif*/
 
-#define YCMD:%0(%1) RC:%0(%1)
+//#define YCMD:%0(%1) RC:%0(%1)
+
+#define _YCMD_0:_YCMD_1:_YCMD_2:%0(%1[]%2) RC:%0(%1[]%2)
+#define _YCMD_1:_YCMD_2:%0, Command_GetID(#%0),
+#define _YCMD_2:%0)  Command_GetID(#%0))
+
+#define YCMD: _YCMD_0:_YCMD_1:_YCMD_2:
 
 // ZCMD compatibility.
 #define CMD:%0(%1) RC:%0(%1,_h_e_l_p_)if(_h_e_l_p_)return 0;else
 #define COMMAND CMD
 
-// This is opposite Scripting_FastString as that's in C, not packed, order.
+// This is opposite AMX_FastString as that's in C, not packed, order.
 #define Command_FastString(%1,%2,%3,%4) \
-	(((%1) << 24) | ((%2) << 16) | ((%3) << 8) | ((%4) << 0))
+	(((%1)<<24)|((%2)<<16)|((%3)<<8)|((%4)<<0))
 
 #define MAX_COMMAND_LENGTH              (32)
 
@@ -214,16 +229,16 @@ Compile options:
 	#define TOLOWER(%0) (%0)
 	#define COMMAND_END_CMP (0)
 #else
-	#if defined COMMAND_ACCURATE
+	//#if defined COMMAND_ACCURATE
+	//	#define TOLOWER(%0) ((%0) | 0x20)
+	//	#define COMMAND_END_CMP (0x20)
+	//#else
 		#define TOLOWER(%0) tolower(%0)
 		#define COMMAND_END_CMP (0)
-	#else
-		#define TOLOWER(%0) ((%0) | 0x20)
-		#define COMMAND_END_CMP (0x20)
-	#endif
+	//#endif
 #endif
 
-// Don't forget the Scripting_FastString below if you change this.
+// Don't forget the AMX_FastString below if you change this.
 #define COMMAND_FUNCTION_PREFIX         (Command_FastString('@', 'y', 'C', '_'))
 
 // Reset both of these when you remove a command.
@@ -242,30 +257,38 @@ enum e_COMM_FLAG (<<= 1)
 	e_COMM_FLAG_USE_SHORTCUTS,
 	e_COMM_FLAG_DISCONNECT,
 	e_COMM_FLAG_ILLEGAL,
-	e_COMM_FLAG_OPCT,
-	e_COMM_FLAG_OPC,
 	e_COMM_FLAG_COLLISION,
 	e_COMM_FLAG_UNKNOWN,
-	e_COMM_FLAG_MULPRO
+	e_COMM_FLAG_MULPRO,
+	// Can't easilly add more flags now...
+	e_COMM_FLAG_OPCP = 0x07C00000, // 0b00000111110..0
+	e_COMM_FLAG_OPCP_ADD = 0x00400000, // Low bit of above flag.
+	e_COMM_FLAG_OPCR = 0xF8000000, // 0b11111000000..0
+	e_COMM_FLAG_OPCR_ADD = 0x08000000  // Low bit of above flag.
 }
 
 enum E_COMMANDS
 {
 	E_COMMANDS_FUNCTION[MAX_COMMAND_LENGTH char],
 	PlayerArray:E_COMMANDS_PLAYERS<MAX_PLAYERS>,
-	E_COMMANDS_FUNC_POINTER,
-	E_COMMANDS_MASTERS
+	#if YSIM_HAS_MASTER
+		E_COMMANDS_MASTERS,
+	#endif
+	E_COMMANDS_FUNC_POINTER
+	//E_COMMANDS_AMX_ADDRESS,
 }
 
 static stock
+	#if YSIM_HAS_MASTER
+		YSI_g_sPlayerProvider[MAX_PLAYERS char] = {-1, ...},
+	#endif
 	YSI_g_sCommands[MAX_COMMANDS][E_COMMANDS],
 	BinaryTree:YSI_g_sSearchTree<MAX_COMMANDS>,
 	e_COMM_FLAG:YSI_g_sCommandFlags = e_COMM_FLAG:0xFF,
 	YSI_g_sCommandIndex,
-	YSI_g_sCommandCount,
+	YSI_g_sCommandCount;
 	//YSI_g_sCommandDialog[MAX_PLAYERS] = {-1, ...},
-	YSI_g_sMaster23,
-	YSI_g_sPlayerProvider[MAX_PLAYERS char] = {-1, ...};
+	//YSI_g_sMaster23,
 
 /*Group:Command_InitialiseFromGroups(x)
 {
@@ -273,7 +296,7 @@ static stock
 	PA_Init(YSI_g_sCommands[x][E_COMMANDS_PLAYERS], true, bits<MAX_PLAYERS>);
 }*/
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_Name
 Params:
@@ -282,12 +305,12 @@ Return:
 	-
 Notes:
 	Gets the name of a function from the array.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_Name(%1) \
 	(YSI_g_sCommands[(%1)][E_COMMANDS_FUNCTION][1])
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetFuncName
 Params:
@@ -297,12 +320,12 @@ Return:
 Notes:
 	Gets the full function name for a slot - note that this may not be the right
 	function if this slot points to another one.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_GetFuncName(%1) \
 	(YSI_g_sCommands[(%1)][E_COMMANDS_FUNCTION])
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetPointer
 Params:
@@ -311,12 +334,16 @@ Return:
 	-
 Notes:
 	Gets the pointer for a function from the array.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-#define Command_GetPointer(%1) \
-	(YSI_g_sCommands[(%1)][E_COMMANDS_FUNC_POINTER]&0x00FFFFFF)
-
-/*----------------------------------------------------------------------------*-
+#if YSIM_HAS_MASTER
+	#define Command_GetPointer(%1) \
+		(YSI_g_sCommands[(%1)][E_COMMANDS_FUNC_POINTER]&0x00FFFFFF)
+#else
+	#define Command_GetPointer(%1) \
+		(YSI_g_sCommands[(%1)][E_COMMANDS_FUNC_POINTER])
+#endif
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetProvider
 Params:
@@ -325,12 +352,14 @@ Return:
 	-
 Notes:
 	Gets the unique script in which this version of the command is.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-#define Command_Provider(%1) \
-	(YSI_g_sCommands[(%1)][E_COMMANDS_FUNC_POINTER]>>>24)
+#if YSIM_HAS_MASTER
+	#define Command_Provider(%1) \
+		(YSI_g_sCommands[(%1)][E_COMMANDS_FUNC_POINTER]>>>24)
+#endif
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetProvider
 Params:
@@ -339,12 +368,14 @@ Return:
 	-
 Notes:
 	Gets the unique script in which this version of the command is.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-#define Command_DefaultProvider() \
-	(YSI_g_sCommandFlags & e_COMM_FLAG_PROVIDER)
+#if YSIM_HAS_MASTER
+	#define Command_DefaultProvider() \
+		(YSI_g_sCommandFlags & e_COMM_FLAG_PROVIDER)
+#endif
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetFunction
 Params:
@@ -353,12 +384,12 @@ Return:
 	-
 Notes:
 	Gets the real function for this slot.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_GetFunction(%1) \
 	(Command_GetFuncName(Command_GetPointer((%1))))
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_CheckPlayer
 Params:
@@ -368,14 +399,14 @@ Return:
 	-
 Notes:
 	Gets wether a player can use a command.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_CheckPlayer(%1,%2) \
 	(YSI_g_sCommands[(%1)][E_COMMANDS_PLAYERS][Bit_Slot(%2)+1]&Bit_Mask(%2))
 	//(PA=([E_COMMANDS_PLAYERS], (%2)))
 	//(Bit_Get(YSI_g_sCommands[(%1)][E_COMMANDS_PLAYERS], (%2)))
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_DeniedReturn
 Params:
@@ -384,12 +415,12 @@ Return:
 	e_COMM_FLAG_PERMISSION_RET
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_DeniedReturn() \
 	(YSI_g_sCommandFlags & e_COMM_FLAG_PERMISSION_RET)
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_SetDeniedReturn
 Params:
@@ -398,10 +429,13 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@v:Command_SetDeniedReturn[i](bool:set)
+foreign Command_SetDeniedReturn(bool:set);
+
+global Command_SetDeniedReturn(bool:set)
 {
+	P:2("Command_SetDeniedReturn called: %i", bool:set);
 	if (set)
 	{
 		YSI_g_sCommandFlags |= e_COMM_FLAG_PERMISSION_RET;
@@ -410,32 +444,71 @@ RF@v:Command_SetDeniedReturn[i](bool:set)
 	{
 		YSI_g_sCommandFlags &= ~e_COMM_FLAG_PERMISSION_RET;
 	}
+	return 1;
 }
 
-RF@v:Command_SetProvider[i](p)
-{
-	YSI_g_sCommandFlags = (YSI_g_sCommandFlags & ~e_COMM_FLAG_PROVIDER) | (e_COMM_FLAG:p & e_COMM_FLAG_PROVIDER) | e_COMM_FLAG_MULPRO;
-}
+/*----------------------------------------------------------------------------*\
+Function:
+	Command_SetProvider
+Params:
+	p - Script.
+Return:
+	-
+Notes:
+	Set the current provider to use for all commands being added.  Basically
+	allows us to have the same command name in different scripts and have them
+	do different things, with different players targetting different ones.
+\*----------------------------------------------------------------------------*/
 
-RF:Command_GetProvider[]()
-{
-	return _:Command_DefaultProvider();
-}
-
-RF@v:Command_SetPlayerProvider[ii](playerid,p)
-{
-	if (0 <= playerid < MAX_PLAYERS)
+#if YSIM_HAS_MASTER
+	foreign Command_SetProvider(p);
+	
+	global Command_SetProvider(p)
 	{
-		YSI_g_sPlayerProvider{playerid} = p & 0xFF;
+		P:2("Command_SetProvider called: %i", p);
+		YSI_g_sCommandFlags = (YSI_g_sCommandFlags & ~e_COMM_FLAG_PROVIDER) | (e_COMM_FLAG:p & e_COMM_FLAG_PROVIDER) | e_COMM_FLAG_MULPRO;
+		return 1;
 	}
-}
+	
+	foreign Command_GetProvider();
+	
+	global Command_GetProvider()
+	{
+		P:2("Command_GetProvider called");
+		/*YSI_g_sCommandFlags = (YSI_g_sCommandFlags & ~e_COMM_FLAG_PROVIDER) | (e_COMM_FLAG:p & e_COMM_FLAG_PROVIDER) 
+		if (YSI_g_sCommandFlags & e_COMM_FLAG_MULPRO)
+		{
+			return _:(YSI_g_sCommandFlags & (YSI_g_sCommandFlags & ~e_COMM_FLAG_PROVIDER));
+		}
+		else
+		{
+		}*/
+		// Poorely named, gets the current provider.
+		return _:Command_DefaultProvider();
+	}
+	
+	foreign Command_SetPlayerProvider(playerid,p);
+	
+	global Command_SetPlayerProvider(playerid,p)
+	{
+		P:2("Command_SetPlayerProvider called: %i, %i", playerid, p);
+		if (0 <= playerid < MAX_PLAYERS)
+		{
+			YSI_g_sPlayerProvider{playerid} = p & 0xFF;
+		}
+		return 1;
+	}
+	
+	foreign Command_GetPlayerProvider(playerid);
+	
+	global Command_GetPlayerProvider(playerid)
+	{
+		P:2("Command_GetPlayerProvider called: %i", playerid);
+		return YSI_g_sPlayerProvider{playerid};
+	}
+#endif
 
-RF:Command_GetPlayerProvider[i](playerid)
-{
-	return YSI_g_sPlayerProvider{playerid};
-}
-
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetDeniedReturn
 Params:
@@ -444,14 +517,17 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@t:bool:Command_GetDeniedReturn[]()
+foreign bool:Command_GetDeniedReturn();
+
+global bool:Command_GetDeniedReturn()
 {
+	P:2("bool:Command_GetDeniedReturn called");
 	return bool:Command_DeniedReturn();
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_HasCollisions
 Params:
@@ -460,12 +536,12 @@ Return:
 	e_COMM_FLAG_COLLISION
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_HasCollisions() \
 	(YSI_g_sCommandFlags & e_COMM_FLAG_COLLISION)
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_HasCollisions
 Params:
@@ -474,12 +550,14 @@ Return:
 	e_COMM_FLAG_MULPRO
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-#define Command_HasMultipleProviders() \
-	(YSI_g_sCommandFlags & e_COMM_FLAG_MULPRO)
+#if YSIM_HAS_MASTER
+	#define Command_HasMultipleProviders() \
+		(YSI_g_sCommandFlags & e_COMM_FLAG_MULPRO)
+#endif
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_SetCollisions
 Params:
@@ -488,12 +566,12 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_SetCollisions() \
 	YSI_g_sCommandFlags |= e_COMM_FLAG_COLLISION
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_IllegalReturn
 Params:
@@ -502,12 +580,12 @@ Return:
 	e_COMM_FLAG_ILLEGAL
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_IllegalReturn() \
 	(YSI_g_sCommandFlags & e_COMM_FLAG_ILLEGAL)
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_SetIllegalReturn
 Params:
@@ -516,10 +594,13 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@v:Command_SetIllegalReturn[i](bool:set)
+foreign Command_SetIllegalReturn(bool:set);
+
+global Command_SetIllegalReturn(bool:set)
 {
+	P:2("Command_SetIllegalReturn called: %i", bool:set);
 	if (set)
 	{
 		YSI_g_sCommandFlags |= e_COMM_FLAG_ILLEGAL;
@@ -528,9 +609,10 @@ RF@v:Command_SetIllegalReturn[i](bool:set)
 	{
 		YSI_g_sCommandFlags &= ~e_COMM_FLAG_ILLEGAL;
 	}
+	return 1;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetIllegalReturn
 Params:
@@ -539,14 +621,17 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@t:bool:Command_GetIllegalReturn[]()
+foreign bool:Command_GetIllegalReturn();
+
+global bool:Command_GetIllegalReturn()
 {
+	P:2("bool:Command_GetIllegalReturn called");
 	return bool:Command_IllegalReturn();
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_IllegalReturn
 Params:
@@ -555,12 +640,12 @@ Return:
 	e_COMM_FLAG_ILLEGAL
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_UnknownReturn() \
 	(YSI_g_sCommandFlags & e_COMM_FLAG_UNKNOWN)
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_SetIllegalReturn
 Params:
@@ -569,10 +654,13 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@v:Command_SetUnknownReturn[i](bool:set)
+foreign Command_SetUnknownReturn(bool:set);
+
+global Command_SetUnknownReturn(bool:set)
 {
+	P:2("Command_SetUnknownReturn called: %i", bool:set);
 	if (set)
 	{
 		YSI_g_sCommandFlags |= e_COMM_FLAG_UNKNOWN;
@@ -581,9 +669,10 @@ RF@v:Command_SetUnknownReturn[i](bool:set)
 	{
 		YSI_g_sCommandFlags &= ~e_COMM_FLAG_UNKNOWN;
 	}
+	return 1;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetIllegalReturn
 Params:
@@ -592,14 +681,17 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@t:bool:Command_GetUnknownReturn[]()
+foreign bool:Command_GetUnknownReturn();
+
+global bool:Command_GetUnknownReturn()
 {
+	P:2("bool:Command_GetUnknownReturn called");
 	return bool:Command_UnknownReturn();
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_DisconnectReturn
 Params:
@@ -608,12 +700,12 @@ Return:
 	e_COMM_FLAG_DISCONNECT
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_DisconnectReturn() \
 	(YSI_g_sCommandFlags & e_COMM_FLAG_DISCONNECT)
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_SetDisconnectReturn
 Params:
@@ -622,10 +714,13 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@v:Command_SetDisconnectReturn[i](bool:set)
+foreign Command_SetDisconnectReturn(bool:set);
+
+global Command_SetDisconnectReturn(bool:set)
 {
+	P:2("Command_SetDisconnectReturn called: %i", bool:set);
 	if (set)
 	{
 		YSI_g_sCommandFlags |= e_COMM_FLAG_DISCONNECT;
@@ -634,9 +729,10 @@ RF@v:Command_SetDisconnectReturn[i](bool:set)
 	{
 		YSI_g_sCommandFlags &= ~e_COMM_FLAG_DISCONNECT;
 	}
+	return 1;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetDisconnectReturn
 Params:
@@ -645,14 +741,17 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@t:bool:Command_GetDisconnectReturn[]()
+foreign bool:Command_GetDisconnectReturn();
+
+global bool:Command_GetDisconnectReturn()
 {
+	P:2("bool:Command_GetDisconnectReturn called");
 	return bool:Command_DisconnectReturn();
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_DeniedDisplay
 Params:
@@ -661,12 +760,12 @@ Return:
 	e_COMM_FLAG_PERMISSION_WARN
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_DeniedDisplay() \
 	(YSI_g_sCommandFlags & e_COMM_FLAG_PERMISSION_WARN)
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_SetDeniedDisplay
 Params:
@@ -675,10 +774,13 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@v:Command_SetDeniedDisplay[i](bool:set)
+foreign Command_SetDeniedDisplay(bool:set);
+
+global Command_SetDeniedDisplay(bool:set)
 {
+	P:2("Command_SetDeniedDisplay called: %i", bool:set);
 	if (set)
 	{
 		YSI_g_sCommandFlags |= e_COMM_FLAG_PERMISSION_WARN;
@@ -687,9 +789,10 @@ RF@v:Command_SetDeniedDisplay[i](bool:set)
 	{
 		YSI_g_sCommandFlags &= ~e_COMM_FLAG_PERMISSION_WARN;
 	}
+	return 1;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetDeniedDisplay
 Params:
@@ -698,14 +801,17 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@t:bool:Command_GetDeniedDisplay[]()
+foreign bool:Command_GetDeniedDisplay();
+
+global bool:Command_GetDeniedDisplay()
 {
+	P:2("bool:Command_GetDeniedDisplay called");
 	return bool:Command_DeniedDisplay();
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetNameInt
 Params:
@@ -714,10 +820,11 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 /*RF:Command_GetNameInt[i](f)
 {
+	P:2("Command_GetNameInt called: %i", f);
 	if (f >= 0 && f < YSI_g_sCommandIndex)
 	{
 		setproperty(8, "", YSIM_STRING, Command_Name(f));
@@ -726,7 +833,7 @@ Notes:
 	return 0;
 }*/
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetName
 Params:
@@ -737,10 +844,11 @@ Notes:
 
 native Command_GetName(funcid);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 /*stock Command_GetName(funcid)
 {
+	P:3("Command_GetName called: %i", funcid);
 	new
 		buffer[32] = "";
 	if (Command_GetNameInt(funcid))
@@ -751,7 +859,7 @@ native Command_GetName(funcid);
 	return buffer;
 }*/
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_IsSorted
 Params:
@@ -760,12 +868,12 @@ Return:
 	e_COMM_FLAG_SORTED
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_IsSorted() \
 	(YSI_g_sCommandFlags & e_COMM_FLAG_SORTED)
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_Generate
 Params:
@@ -774,14 +882,17 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@v:Command_Generate[]()
+foreign Command_Generate();
+
+global Command_Generate()
 {
+	P:2("Command_Generate called");
 	P:2("Command_Generate called");
 	if (!Command_IsSorted())
 	{
-		P:3("Command_Generate: Count = %d", YSI_g_sCommandCount);
+		P:2("Command_Generate: Count = %d", YSI_g_sCommandCount);
 		new
 			data[MAX_COMMANDS][E_BINTREE_INPUT];
 		// This is only called once, so we know YSI_g_sCommandCount will be
@@ -804,17 +915,61 @@ RF@v:Command_Generate[]()
 				}
 			}
 			C:3(else printf("Command_Generate: Hash = %d", hash););
-			P:3("Command_Generate: Hash = %d", hash);
+			P:2("Command_Generate: Hash = %d", hash);
 			data[i][E_BINTREE_INPUT_VALUE] = hash;
 		}
-		Bintree_Generate(YSI_g_sSearchTree, data, YSI_g_sCommandCount);
+		// WHY THE HECK did I change "Bintree_Generate" to "Bintree_Fill"?  That
+		// skips the whole sorting code before adding things to the binary tree!
+		if (YSI_g_sCommandCount)
+		{
+			//Bintree_Fill(YSI_g_sSearchTree, data, YSI_g_sCommandCount);
+			Bintree_Generate(YSI_g_sSearchTree, data, YSI_g_sCommandCount);
+			//Bintree_Fill(YSI_g_sSearchTree, data, YSI_g_sCommandCount);
+		}
 		P:4("Command_Generate: %d %d %d %d %d", YSI_g_sSearchTree[0][E_BINTREE_TREE_VALUE], YSI_g_sSearchTree[0][E_BINTREE_TREE_LEFT], YSI_g_sSearchTree[0][E_BINTREE_TREE_RIGHT], YSI_g_sSearchTree[0][E_BINTREE_TREE_PARENT], YSI_g_sSearchTree[0][E_BINTREE_TREE_POINTER]);
 		// Set sorted to true.
 		YSI_g_sCommandFlags |= e_COMM_FLAG_SORTED;
 	}
+	return 1;
 }
 
-/*----------------------------------------------------------------------------*-
+foreign Command_IncOPCR();
+
+global Command_IncOPCR()
+{
+	P:2("Command_IncOPCR called");
+	YSI_g_sCommandFlags += e_COMM_FLAG_OPCR_ADD;
+	return 1;
+}
+
+foreign Command_DecOPCR();
+
+global Command_DecOPCR()
+{
+	P:2("Command_DecOPCR called");
+	YSI_g_sCommandFlags -= e_COMM_FLAG_OPCR_ADD;
+	return 1;
+}
+
+foreign Command_IncOPCP();
+
+global Command_IncOPCP()
+{
+	P:2("Command_IncOPCP called");
+	YSI_g_sCommandFlags += e_COMM_FLAG_OPCP_ADD;
+	return 1;
+}
+
+foreign Command_DecOPCP();
+
+global Command_DecOPCP()
+{
+	P:2("Command_DecOPCP called");
+	YSI_g_sCommandFlags -= e_COMM_FLAG_OPCP_ADD;
+	return 1;
+}
+
+/*----------------------------------------------------------------------------*\
 Function:
 	OnScriptInit
 Params:
@@ -823,13 +978,9 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-#if defined FILTERSCRIPT
-	public OnFilterScriptInit()
-#else
-	public OnGameModeInit()
-#endif
+hook OnScriptInit()
 {
 	// Set the default provider as any script.
 	//YSI_g_sCommandFlags = 0xFF;
@@ -837,7 +988,7 @@ Notes:
 	// Initialise the tree.
 	#if YSIM_NOT_CLIENT
 		Bintree_Reset(YSI_g_sSearchTree);
-		YSI_g_sMaster23 = getproperty(8, "x@");
+		//YSI_g_sMaster23 = getproperty(8, "x@");
 	#endif
 	// Make a list of unused commands.
 	for (new i = 0; i != MAX_COMMANDS - 1; ++i)
@@ -852,46 +1003,48 @@ Notes:
 	new
 		buffer[32],
 		idx;
-	// This is the only place where Scripting_FastString is used instead of
+	// This is the only place where AMX_FastString is used instead of
 	// Commands_FastString as the strings in the AMX are not the same as packed
 	// strings - they are in different memory orders.
-	while ((idx = Scripting_GetPublicFast(idx, buffer, (Scripting_FastString('@', 'y', 'C', '_')))))
+	while ((idx = AMX_GetPublicNamePrefix(idx, buffer, _A<@yC_>)))
 	{
 		Command_Add(buffer, _@);
-		P:2("Command_OnScriptInit: Adding %s", buffer);
+		//Command_Add(unpack(buffer), _@);
+		//Command_Add(unpack(buffer), _@);
+		P:2("Command_OnScriptInit: Adding %s", unpack(buffer));
 	}
 	Command_Generate();
 	// Now that all commands have been added to the array, sort it.
 	// Now call the next constructor.
-	if (funcidx("Command_OnPlayerCommandText") != -1)
+	if (funcidx("OnPlayerCommandPerformed") != -1)
 	{
-		YSI_g_sCommandFlags |= e_COMM_FLAG_OPCT;
+		Command_IncOPCP();
 	}
-	if (funcidx("Command_OnPlayerConnect") != -1)
+	if (funcidx("OnPlayerCommandReceived") != -1)
 	{
-		YSI_g_sCommandFlags |= e_COMM_FLAG_OPC;
+		Command_IncOPCR();
 	}
-	CallLocalFunction("Command_OnScriptInit", "");
 }
 
-#if defined FILTERSCRIPT
-	#if defined _ALS_OnFilterScriptInit
-		#undef OnFilterScriptInit
-	#else
-		#define _ALS_OnFilterScriptInit
-	#endif
-	#define OnFilterScriptInit Command_OnScriptInit
-#else
-	#if defined _ALS_OnGameModeInit
-		#undef OnGameModeInit
-	#else
-		#define _ALS_OnGameModeInit
-	#endif
-	#define OnGameModeInit Command_OnScriptInit
-#endif
-forward Command_OnScriptInit();
+// Forwards for initial command callbacks.
+forward OnPlayerCommandReceived(playerid, cmdtext[]); 
+forward OnPlayerCommandPerformed(playerid, cmdtext[], success); 
 
-/*----------------------------------------------------------------------------*-
+hook OnScriptExit()
+{
+	P:1("Commands_OnScriptExit called");
+	if (funcidx("OnPlayerCommandPerformed") != -1)
+	{
+		Command_DecOPCP();
+	}
+	if (funcidx("OnPlayerCommandReceived") != -1)
+	{
+		Command_DecOPCR();
+	}
+	return 1;
+}
+
+/*----------------------------------------------------------------------------*\
 Function:
 	OnScriptClose
 Params:
@@ -900,18 +1053,18 @@ Return:
 	-
 Notes:
 	Called when a script under the control of the master system ends.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-#if YSIM_NOT_CLIENT
-	#if YSIM_CLOUD
+#if YSIM_HAS_MASTER && YSIM_NOT_CLIENT
+	#if _YSIM_IS_CLOUD
 		public OnScriptClose(script) <>
 		{
 			CallLocalFunction("Command_OnScriptClose", "i", script);
 		}
 		
 		public OnScriptClose(script) <_YCM:y>
-	#elseif YSIM_IS_STUB
-		#error y_commands called with YSIM_IS_STUB.
+	#elseif _YSIM_IS_STUB
+		#error y_commands called with _YSIM_IS_STUB.
 	#else
 		public OnScriptClose(script)
 	#endif
@@ -958,7 +1111,7 @@ Notes:
 				--YSI_g_sCommandCount;
 			}*/
 		}
-		YSI_g_sMaster23 = getproperty(8, "x@");
+		//YSI_g_sMaster23 = getproperty(8, "x@");
 		// I can add better removal code later.  Done ^
 		CallLocalFunction("Command_OnScriptClose", "i", script);
 	}
@@ -969,7 +1122,7 @@ Notes:
 	forward Command_OnScriptClose(script);
 #endif
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	OnPlayerConnect
 Params:
@@ -978,33 +1131,19 @@ Return:
 	-
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 // TODO: Rewrite!
 //RA:Command_OnPlayerConnect(playerid)
 
 #if YSIM_NOT_CLIENT
-	#if YSIM_CLOUD
-		public OnPlayerConnect(playerid) <>
-		{
-			YSI_g_sPlayerProvider{playerid} = 0xFF;
-			if (YSI_g_sCommandFlags & e_COMM_FLAG_OPC)
-			{
-				return CallLocalFunction("Command_OnPlayerConnect", "i", playerid);
-			}
-			return 1;
-		}
-		
-		public OnPlayerConnect(playerid) <_YCM:y>
-	#elseif YSIM_IS_STUB
-		#error y_commands called with YSIM_IS_STUB.
-	#else
-		public OnPlayerConnect(playerid)
-	#endif
+	mhook OnPlayerConnect(playerid)
 	{
 		//#if YSIM_NOT_CLIENT
 		//YSI_g_sCommandDialog[playerid] = -1;
-		YSI_g_sPlayerProvider{playerid} = 0xFF;
+		#if YSIM_HAS_MASTER
+			YSI_g_sPlayerProvider{playerid} = 0xFF;
+		#endif
 		NO_GROUPS()
 		{
 			new
@@ -1020,24 +1159,12 @@ Notes:
 		// Groups will ALWAYS be called after this function - so this can reset
 		// player permissions however it likes with the group system then being
 		// able to override anything set in here.
-		if (YSI_g_sCommandFlags & e_COMM_FLAG_OPC)
-		{
-			return CallLocalFunction("Command_OnPlayerConnect", "i", playerid);
-		}
 		return 1;
 		//ALS_CALL<PlayerConnect, i>(playerid)
 	}
-	
-	#if defined _ALS_OnPlayerConnect
-		#undef OnPlayerConnect
-	#else
-		#define _ALS_OnPlayerConnect
-	#endif
-	#define OnPlayerConnect Command_OnPlayerConnect
-	forward Command_OnPlayerConnect(playerid);
 #endif
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_
 Params:
@@ -1046,12 +1173,12 @@ Return:
 	-
 Notes:
 	Deprecated!
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_(%1) \
 	CMD:%1(playerid,params[],help)
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	ycmd
 Params:
@@ -1060,11 +1187,11 @@ Return:
 	-
 Notes:
 	Deprecated!
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define ycmd(%1);
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_FindFast
 Params:
@@ -1074,38 +1201,102 @@ Return:
 	Position in functions array or COMMAND_NOT_FOUND.
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-static stock Command_FindFast(data[], value, provider = 0xFF)
+#if YSIM_HAS_MASTER
+	static stock Command_FindFast(data[], value, provider = 0xFF)
+#else
+	static stock Command_FindFast(data[], value)
+#endif
 {
 	new
 		leaf,
 		pointer;
-	P:5("Command_FindFast: Searching for %s", data);
-	while ((pointer = Bintree_FindValue(YSI_g_sSearchTree, value, leaf)) != BINTREE_NOT_FOUND)
-	{
-		new
-			p = YSI_g_sCommands[pointer][E_COMMANDS_FUNC_POINTER];
-		if (Command_HasMultipleProviders() && (p & 0xFF000000 != 0xFF000000) && (p >>> 24 != provider)) continue;
-		// Don't do an strcmp if there are no collisions.
-		if (!Command_HasCollisions()) return pointer;
-		//if (!strcmp(YSI_g_sCommands[i][E_COMMANDS_FUNCTION][1], funcname) &&
-		if (!strcmp(Command_Name(pointer), data)) return pointer;
-		//if (!strcmp(Command_Name(pointer), data) && (Command_GetProvider(pointer) == 0xFF || Command_GetProvider(pointer) == provider)) return pointer;
-	}
+	#if YSIM_HAS_MASTER
+		P:4("Command_FindFast called: \"%s\", %i, %i", data, value, provider);
+		provider <<= 24;
+		P:5("Command_FindFast: Searching for %s", data);
+		if (Command_HasMultipleProviders())
+		{
+			/*if (provider == 0xFF)
+			{
+				while ((pointer = Bintree_FindValue(YSI_g_sSearchTree, value, leaf)) != BINTREE_NOT_FOUND)
+				{
+					//new
+					//	p = YSI_g_sCommands[pointer][E_COMMANDS_FUNC_POINTER] & 0xFF000000;
+					//P:7("Command_FindFast: providers %d %d %d", Command_HasMultipleProviders(), (p & 0xFF000000 != 0xFF000000), (p >>> 24 != provider));
+					// Any script will do.
+					//if ((YSI_g_sCommands[pointer][E_COMMANDS_FUNC_POINTER] & 0xFF000000) != 0xFF000000) continue;
+					//if (p != 0xFF000000 && p != provider) continue;
+					// Don't do an strcmp if there are no collisions.
+					P:7("Command_FindFast: collisions %d", !Command_HasCollisions());
+					if (!Command_HasCollisions()) return pointer;
+					//if (!strcmp(YSI_g_sCommands[i][E_COMMANDS_FUNCTION][1], funcname) &&
+					P:7("Command_FindFast: strcmp %d", !strcmp(Command_Name(pointer), data));
+					if (!strcmp(Command_Name(pointer), data)) return pointer;
+					//if (!strcmp(Command_Name(pointer), data) && (Command_GetProvider(pointer) == 0xFF || Command_GetProvider(pointer) == provider)) return pointer;
+				}
+			}
+			else
+			{*/
+				while ((pointer = Bintree_FindValue(YSI_g_sSearchTree, value, leaf)) != BINTREE_NOT_FOUND)
+				{
+					//new
+					//	p = YSI_g_sCommands[pointer][E_COMMANDS_FUNC_POINTER] & 0xFF000000;
+					//P:7("Command_FindFast: providers %d %d %d", Command_HasMultipleProviders(), (p & 0xFF000000 != 0xFF000000), (p >>> 24 != provider));
+					//if (p != provider && p != 0xFF000000) continue;
+					// Only one provider will do.
+					if ((YSI_g_sCommands[pointer][E_COMMANDS_FUNC_POINTER] & 0xFF000000) != provider) continue;
+					// Don't do an strcmp if there are no collisions.
+					P:7("Command_FindFast: collisions %d", Command_HasCollisions());
+					if (!Command_HasCollisions()) return pointer;
+					//if (!strcmp(YSI_g_sCommands[i][E_COMMANDS_FUNCTION][1], funcname) &&
+					P:7("Command_FindFast: strcmp %d", !strcmp(Command_Name(pointer), data));
+					if (!strcmp(Command_Name(pointer), data)) return pointer;
+					//if (!strcmp(Command_Name(pointer), data) && (Command_GetProvider(pointer) == 0xFF || Command_GetProvider(pointer) == provider)) return pointer;
+				}
+			//}
+		}
+		else
+		{
+	#endif
+			while ((pointer = Bintree_FindValue(YSI_g_sSearchTree, value, leaf)) != BINTREE_NOT_FOUND)
+			{
+				//new
+				//	p = YSI_g_sCommands[pointer][E_COMMANDS_FUNC_POINTER] & 0xFF000000;
+				//P:7("Command_FindFast: providers %d %d %d", Command_HasMultipleProviders(), (p & 0xFF000000 != 0xFF000000), (p >>> 24 != provider));
+				//if (Command_HasMultipleProviders() && (p != 0xFF000000) && (p != provider)) continue;
+				// Don't do an strcmp if there are no collisions.
+				P:7("Command_FindFast: collisions %d", Command_HasCollisions());
+				if (!Command_HasCollisions()) return pointer;
+				//if (!strcmp(YSI_g_sCommands[i][E_COMMANDS_FUNCTION][1], funcname) &&
+				P:7("Command_FindFast: strcmp %d", !strcmp(Command_Name(pointer), data));
+				if (!strcmp(Command_Name(pointer), data)) return pointer;
+				//if (!strcmp(Command_Name(pointer), data) && (Command_GetProvider(pointer) == 0xFF || Command_GetProvider(pointer) == provider)) return pointer;
+			}
+	#if YSIM_HAS_MASTER
+		}
+	#endif
 	P:5("Command_FindFast: Not found");
 	return COMMAND_NOT_FOUND;
 }
 
 static stock Command_FindFastStrict(data[], value, provider)
 {
+	#if YSIM_HAS_MASTER
+		P:4("Command_FindFastStrict called: \"%s\", %i, %i", data, value, provider);
+	#else
+		#pragma unused provider
+	#endif
 	new
 		leaf,
 		pointer;
 	P:5("Command_FindFast: Searching for %s", data);
 	while ((pointer = Bintree_FindValue(YSI_g_sSearchTree, value, leaf)) != BINTREE_NOT_FOUND)
 	{
-		if (Command_HasMultipleProviders() && (YSI_g_sCommands[pointer][E_COMMANDS_FUNC_POINTER] >>> 24 != provider)) continue;
+		#if YSIM_HAS_MASTER
+			if (Command_HasMultipleProviders() && (YSI_g_sCommands[pointer][E_COMMANDS_FUNC_POINTER] >>> 24 != provider)) continue;
+		#endif
 		// Don't do an strcmp if there are no collisions.
 		if (!Command_HasCollisions()) return pointer;
 		if (!strcmp(Command_Name(pointer), data)) return pointer;
@@ -1114,7 +1305,7 @@ static stock Command_FindFastStrict(data[], value, provider)
 	return COMMAND_NOT_FOUND;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_FindSlow
 Params:
@@ -1124,25 +1315,36 @@ Return:
 Notes:
 	Searches through the array for function linearly - used to set altnames
 	before the data has been sorted.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-static stock Command_FindSlow(funcname[], provider = 0xFF)
+#if YSIM_HAS_MASTER
+	static stock Command_FindSlow(funcname[], provider = 0xFF)
+#else
+	static stock Command_FindSlow(funcname[])
+#endif
 {
+	#if YSIM_HAS_MASTER
+		P:4("Command_FindSlow called: \"%s\", %i", funcname, provider);
+	#endif
 	for (new i = 0; i != MAX_COMMANDS; ++i)
 	{
-		new
-			p = YSI_g_sCommands[i][E_COMMANDS_FUNC_POINTER];
-		if (((p & 0x00FFFFFF == i) || (YSI_g_sCommands[i][E_COMMANDS_MASTERS] == -1)) &&
-			(!Command_HasMultipleProviders() || (p & 0xFF000000 == 0xFF000000) || (p >>> 24 == provider)) &&
-			!strcmp(Command_Name(i), funcname))
-		{
-			return i;
-		}
+		#if YSIM_HAS_MASTER
+			new
+				p = YSI_g_sCommands[i][E_COMMANDS_FUNC_POINTER];
+			if (((p & 0x00FFFFFF == i) || (YSI_g_sCommands[i][E_COMMANDS_MASTERS] == -1)) &&
+				(!Command_HasMultipleProviders() || (p & 0xFF000000 == 0xFF000000) || (p >>> 24 == provider)) &&
+				!strcmp(Command_Name(i), funcname))
+		#else
+			if (YSI_g_sCommands[i][E_COMMANDS_FUNC_POINTER] == i && !strcmp(Command_Name(i), funcname))
+		#endif
+			{
+				return i;
+			}
 	}
 	return COMMAND_NOT_FOUND;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_FindSlowStrict
 Params:
@@ -1152,26 +1354,37 @@ Return:
 Notes:
 	Searches through the array for function linearly - used to set altnames
 	before the data has been sorted.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 static stock Command_FindSlowStrict(funcname[], provider)
 {
+	#if YSIM_HAS_MASTER
+		P:4("Command_FindSlowStrict called: \"%s\", %i", funcname, provider);
+	#else
+		#pragma unused provider
+	#endif
+	P:2("Command_FindSlowStrict: Searching for %s", unpack(funcname));
 	for (new i = 0; i != MAX_COMMANDS; ++i)
 	{
-		new
-			p = YSI_g_sCommands[i][E_COMMANDS_FUNC_POINTER];
-		// This needs additional checks that the item is valid.
-		if (((p & 0x00FFFFFF == i) || (YSI_g_sCommands[i][E_COMMANDS_MASTERS] == -1)) &&
-			(!Command_HasMultipleProviders() || (p >>> 24 == provider)) &&
-			!strcmp(Command_Name(i), funcname))
-		{
-			return i;
-		}
+		#if YSIM_HAS_MASTER
+			new
+				p = YSI_g_sCommands[i][E_COMMANDS_FUNC_POINTER];
+			P:6("Command_FindSlowStrict: %s %08x %d %d", unpack(funcname), Command_Name(i), p & 0xFFFFFF, i);
+			// This needs additional checks that the item is valid.
+			if (((p & 0x00FFFFFF == i) || (YSI_g_sCommands[i][E_COMMANDS_MASTERS] == -1)) &&
+				(!Command_HasMultipleProviders() || (p >>> 24 == provider)) &&
+				!strcmp(Command_Name(i), funcname))
+		#else
+			if (YSI_g_sCommands[i][E_COMMANDS_FUNC_POINTER] == i && !strcmp(Command_Name(i), funcname))
+		#endif
+			{
+				return i;
+			}
 	}
 	return COMMAND_NOT_FOUND;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_AddHash
 Params:
@@ -1182,10 +1395,11 @@ Return:
 	hash value.
 Notes:
 	Hashes a string and copies it to a destination at the same time.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 static stock Command_AddHash(command[], dest[], idx)
 {
+	P:4("Command_AddHash called: \"%s\", %i, %i", command, dest, idx);
 	// Skip the function name prefix.
 	new
 		hash = -1,
@@ -1225,7 +1439,62 @@ static stock Command_AddHash(command[], dest[], idx)
 	return hash;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
+Function:
+	Command_AddHashPacked
+Params:
+	command[] - Packed command text to hash.
+	dest[] - Array to copy to.
+	idx - Point to start copying from.
+Return:
+	hash value.
+Notes:
+	Hashes a string and copies it to a destination at the same time.
+\*----------------------------------------------------------------------------*/
+
+static stock Command_AddHashPacked(command[], dest[], idx)
+{
+	P:4("Command_AddHashPacked called: \"%s\", %i, %i", command, dest, idx);
+	// Skip the function name prefix.
+	new
+		hash = -1,
+		ch,
+		dx = 1,
+		end = idx + 28;
+	// Copy and hash at the same time.
+	do
+	{
+		/*ch = TOLOWER(command[idx++]);
+		// Always NULL terminate.
+		if ((dest[dx] = ch << 24) == COMMAND_END_CMP << 24)
+		{
+			// Fixes a bug with commands multiples of 4 chars long.
+			dest[dx] = 0;
+			break;
+		}*/
+		ch = TOLOWER(command{idx++});
+		if (ch == COMMAND_END_CMP) break;
+		dest[dx] = ch << 24;
+		hash = hash * 33 + ch; //Command_ToUpper(ch);
+		ch = TOLOWER(command{idx++});
+		if (ch == COMMAND_END_CMP) break;
+		dest[dx] |= ch << 16;
+		hash = hash * 33 + ch; //Command_ToUpper(ch);
+		ch = TOLOWER(command{idx++});
+		if (ch == COMMAND_END_CMP) break;
+		dest[dx] |= ch << 8;
+		hash = hash * 33 + ch; //Command_ToUpper(ch);
+		ch = TOLOWER(command{idx++});
+		if (ch == COMMAND_END_CMP) break;
+		dest[dx] |= ch << 0;
+		hash = hash * 33 + ch; //Command_ToUpper(ch);
+		++dx;
+	}
+	while (idx < end);
+	return hash;
+}
+
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_FastHash
 Params:
@@ -1234,10 +1503,11 @@ Return:
 	hash value.
 Notes:
 	Just hashes the passed string.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 static stock Command_FastHash(command[])
 {
+	P:4("Command_FastHash called: \"%s\"", command);
 	new
 		index = 0,
 		hash = -1,
@@ -1246,7 +1516,7 @@ static stock Command_FastHash(command[])
 	return hash;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_PackHash
 Params:
@@ -1255,10 +1525,11 @@ Return:
 	hash value.
 Notes:
 	Hashes packed strings.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 static stock Command_PackHash(command[])
 {
+	P:4("Command_PackHash called: \"%s\"", command);
 	new
 		index = 0,
 		hash = -1,
@@ -1306,7 +1577,7 @@ static stock Command_PackHash(command[])
 	return hash;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_Hash
 Params:
@@ -1318,10 +1589,11 @@ Return:
 Notes:
 	Hashes a string using space delimiters and returns information such as the
 	length of the string hased and the start point of the next word.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 static stock Command_Hash(command[], &index, &length)
 {
+	P:4("Command_Hash called: \"%s\", %i, %i", command, index, length);
 	new
 		hash = -1,
 		ch;
@@ -1340,7 +1612,7 @@ static stock Command_Hash(command[], &index, &length)
 	return hash;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_Find
 Params:
@@ -1349,39 +1621,55 @@ Return:
 	Position in functions array or COMMAND_NOT_FOUND.
 Notes:
 	Used by API functions to avoid repeated sorting checks.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-static stock Command_Find(function[], provider = -1)
+#if YSIM_HAS_MASTER
+	static stock Command_Find(function[], provider = -1)
+#else
+	static stock Command_Find(function[])
+#endif
 {
-	if (provider == -1)
-	{
-		provider = _:Command_DefaultProvider();
-		// Find the ID of the command.
-		if (Command_IsSorted())
+	#if YSIM_HAS_MASTER
+		P:4("Command_Find called: \"%s\", %i", function, provider);
+		if (provider == -1)
 		{
-			return Command_FindFast(function, Command_FastHash(function), provider);
+			provider = _:Command_DefaultProvider();
+			// Find the ID of the command.
+			if (Command_IsSorted())
+			{
+				return Command_FindFast(function, Command_FastHash(function), provider);
+			}
+			else
+			{
+				return Command_FindSlow(function, provider);
+			}
 		}
 		else
 		{
-			return Command_FindSlow(function, provider);
+			provider &= 0xFF;
+			// Find the ID of the command.
+			if (Command_IsSorted())
+			{
+				return Command_FindFastStrict(function, Command_FastHash(function), provider);
+			}
+			else
+			{
+				return Command_FindSlowStrict(function, provider);
+			}
 		}
-	}
-	else
-	{
-		provider &= 0xFF;
-		// Find the ID of the command.
+	#else
 		if (Command_IsSorted())
 		{
-			return Command_FindFastStrict(function, Command_FastHash(function), provider);
+			return Command_FindFast(function, Command_FastHash(function));
 		}
 		else
 		{
-			return Command_FindSlowStrict(function, provider);
+			return Command_FindSlow(function);
 		}
-	}
+	#endif
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetID
 Params:
@@ -1393,14 +1681,17 @@ Notes:
 
 native Command_GetID(function[])
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@p:Command_GetID[s](function[])<function>
+foreign Command_GetID(string:function[]);
+
+global Command_GetID(string:function[])
 {
+	P:2("Command_GetID called: \"%s\"", function);
 	return Command_Find(function);
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_SetPlayer
 Params:
@@ -1414,23 +1705,28 @@ Notes:
 
 native bool:Command_SetPlayer(command, playerid, bool:set);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@pv:Command_SetPlayer[iii](c,p,bool:s)<c,p,s>
+foreign Command_SetPlayer(c,p,bool:s);
+
+global Command_SetPlayer(c,p,bool:s)
 {
+	P:2("Command_SetPlayer called: %i, %i, %i", c, p, s);
 //	if (c < 0 || c >= YSI_g_sCommandIndex)
 	if (0 <= c < MAX_COMMANDS)
 	{
 		//Bit_Set(YSI_g_sCommands[c][E_COMMANDS_PLAYERS], p, s, bits<MAX_PLAYERS>);
-		if (s) PA+(YSI_g_sCommands[c][E_COMMANDS_PLAYERS], p);
-		else PA-(YSI_g_sCommands[c][E_COMMANDS_PLAYERS], p);
+		//if (s) PA+(YSI_g_sCommands[c][E_COMMANDS_PLAYERS], p);
+		//else PA-(YSI_g_sCommands[c][E_COMMANDS_PLAYERS], p);
+		PA_Set(YSI_g_sCommands[c][E_COMMANDS_PLAYERS], p, s);
 		// Not in range,
 //		return false;
 	}
+	return 1;
 //	return s;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_SetPlayerNamed
 Params:
@@ -1444,14 +1740,18 @@ Notes:
 
 native bool:Command_SetPlayerNamed(funcname[], playerid, bool:set);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@pv:Command_SetPlayerNamed[sii](f[],p,bool:s)<f,p,s>
+foreign Command_SetPlayerNamed(string:f[],p,bool:s);
+
+global Command_SetPlayerNamed(string:f[],p,bool:s)
 {
+	P:2("Command_SetPlayerNamed called: \"%s\", %i, %i", f, p, s);
 	Command_SetPlayer(Command_Find(f), p, s);
+	return 1;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetPlayer
 Params:
@@ -1464,10 +1764,13 @@ Notes:
 
 native bool:Command_GetPlayer(command, playerid);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@t:bool:Command_GetPlayer[ii](command, playerid)
+foreign bool:Command_GetPlayer(command, playerid);
+
+global bool:Command_GetPlayer(command, playerid)
 {
+	P:2("bool:Command_GetPlayer called: %i, %i", command, playerid);
 	if (0 <= command < MAX_COMMANDS)
 	{
 		return bool:Command_CheckPlayer(command, playerid);
@@ -1476,7 +1779,7 @@ RF@t:bool:Command_GetPlayer[ii](command, playerid)
 	return false;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetPlayerNamed
 Params:
@@ -1489,14 +1792,17 @@ Notes:
 
 native bool:Command_GetPlayerNamed(funcname[], playerid);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@pt:bool:Command_GetPlayerNamed[si](func[], playerid)<func, playerid>
+foreign bool:Command_GetPlayerNamed(string:func[], playerid);
+
+global bool:Command_GetPlayerNamed(string:func[], playerid)
 {
+	P:2("bool:Command_GetPlayerNamed called: \"%s\", %i", func, playerid);
 	return Command_GetPlayer(Command_Find(func), playerid);
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_Remove
 Params:
@@ -1507,10 +1813,11 @@ Notes:
 
 native Command_Remove(func);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 static stock Command_RemoveFromBintree(func)
 {
+	P:4("Command_RemoveFromBintree called: %i", func);
 	if (!Command_IsSorted()) return;
 	// This function has to find the right index in the binary tree, as that's
 	// not in the same order at all.
@@ -1529,9 +1836,11 @@ static stock Command_RemoveFromBintree(func)
 	}
 }
 
-RF:Command_Remove[i](func)
+foreign Command_Remove(func);
+
+global Command_Remove(func)
 {
-	P:2("Command_Remove called (%d)", func);
+	P:2("Command_Remove called: %i", func);
 	if (0 <= func < MAX_COMMANDS)
 	{
 		if (Command_GetPointer(func) == func)
@@ -1545,7 +1854,9 @@ RF:Command_Remove[i](func)
 					YSI_g_sCommands[i][E_COMMANDS_FUNC_POINTER] = YSI_g_sCommandIndex;
 					YSI_g_sCommandIndex = i;
 					// Mark it as invalid in this instance.
-					YSI_g_sCommands[i][E_COMMANDS_MASTERS] = 0;
+					#if YSIM_HAS_MASTER
+						YSI_g_sCommands[i][E_COMMANDS_MASTERS] = 0;
+					#endif
 					// Reduce the number of commands.
 					//Bintree_Delete(YSI_g_sSearchTree, i, YSI_g_sCommandCount);
 					Command_RemoveFromBintree(i);
@@ -1553,28 +1864,29 @@ RF:Command_Remove[i](func)
 				}
 			}
 		}
-		else if (YSI_g_sCommands[func][E_COMMANDS_MASTERS] == -1)
-		{
-			// Remove a single alternate name.
-			YSI_g_sCommands[func][E_COMMANDS_FUNC_POINTER] = YSI_g_sCommandIndex;
-			YSI_g_sCommandIndex = func;
+		// Remove a single alternate name.
+		YSI_g_sCommands[func][E_COMMANDS_FUNC_POINTER] = YSI_g_sCommandIndex;
+		YSI_g_sCommandIndex = func;
+		#if YSIM_HAS_MASTER
 			YSI_g_sCommands[func][E_COMMANDS_MASTERS] = 0;
-			//Bintree_Delete(YSI_g_sSearchTree, func, YSI_g_sCommandCount);
-			Command_RemoveFromBintree(func);
-			--YSI_g_sCommandCount;
-		}
+		#endif
+		//Bintree_Delete(YSI_g_sSearchTree, func, YSI_g_sCommandCount);
+		Command_RemoveFromBintree(func);
+		--YSI_g_sCommandCount;
 		return 1;
 	}
 	return 0;
 }
 
-RF@p:Command_RemoveNamed[s](func[])<func>
+foreign Command_RemoveNamed(string:func[]);
+
+global Command_RemoveNamed(string:func[])
 {
-	P:2("Command_RemoveNamed called (%s)", func);
+	P:2("Command_RemoveNamed called: \"%s\"", func);
 	return Command_Remove(Command_Find(func));
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_Add
 Params:
@@ -1589,24 +1901,47 @@ Notes:
 
 native Command_Add(funcname[], script);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@pv:Command_Add[si](f[],s)<f,s>
+foreign Command_Add(string:f[],s);
+
+global Command_Add(string:f[],s)
 {
-	P:2("Command_Add called");
+	#if !YSIM_HAS_MASTER
+		#pragma unused s
+	#endif
+	P:2("Command_Add called: \"%s\", %i", f, s);
 	if (YSI_g_sCommandCount < MAX_COMMANDS && YSI_g_sCommandIndex != -1)
 	{
+		#if !YSIM_HAS_MASTER
+			static
+				provider = -1;
+		#endif
 		new
-			hash = Command_AddHash(f, YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION], 4),
-			provider = _:Command_DefaultProvider();
+			#if YSIM_HAS_MASTER
+				provider = _:Command_DefaultProvider(),
+			#endif
+			//hash = Command_AddHashPacked(f, YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION], 4),
+			// Because of the way the master system works, packed strings are
+			// unpacked when they are passed remotely, but not when they are
+			// passed locally.  The unpacking is done by "CallRemoteFunction",
+			// not anything we outselves do...
+			offset = f[0] == '@' ? 4 : 1,
+			hash = f[0] == '@' ?
+				Command_AddHash(f, YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION], 4) :
+				Command_AddHashPacked(f, YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION], 4);
+		//printf("%s", unpack(YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION][1]));
 		if (Command_IsSorted())
 		{
 			new
-				idx = Command_FindFastStrict(f[4], hash, provider);
+				idx = Command_FindFastStrict(f[offset], hash, provider);
 			if (idx != COMMAND_NOT_FOUND)
 			{
-				YSI_g_sCommands[idx][E_COMMANDS_MASTERS] |= 1 << s;
-				return;
+				P:4("Command_Add: Command exists");
+				#if YSIM_HAS_MASTER
+					YSI_g_sCommands[idx][E_COMMANDS_MASTERS] |= 1 << s;
+				#endif
+				return 0;
 			}
 			if (!Command_HasCollisions())
 			{
@@ -1622,32 +1957,54 @@ RF@pv:Command_Add[si](f[],s)<f,s>
 		else
 		{
 			new
-				idx = Command_FindSlowStrict(f[4], provider);
+				idx = Command_FindSlowStrict(f[offset], provider);
 			if (idx != COMMAND_NOT_FOUND)
 			{
-				YSI_g_sCommands[idx][E_COMMANDS_MASTERS] |= 1 << s;
-				return;
+				P:4("Command_Add: Command exists");
+				#if YSIM_HAS_MASTER
+					YSI_g_sCommands[idx][E_COMMANDS_MASTERS] |= 1 << s;
+				#endif
+				return 0;
 			}
 		}
 		YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION][0] = COMMAND_FUNCTION_PREFIX;
 		//Bit_SetAll(YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_PLAYERS], true, bits<MAX_PLAYERS>);
 		//Command_InitialiseFromGroups(YSI_g_sCommandIndex);
+		PA_FastInit(YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_PLAYERS]);
 		NO_GROUPS(YSI_g_sCommandIndex)
 		{
 			PA_Init(YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_PLAYERS], true);
 		}
 		// Swap these.
-		YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_MASTERS] = 1 << s;
+		#if YSIM_HAS_MASTER
+			YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_MASTERS] = 1 << s;
+		#endif
+		P:2("Command_Add: Command added in %d (%d)", YSI_g_sCommandIndex, hash);
 		hash = YSI_g_sCommandIndex;
 		// Set this command as usable in any script.
-		YSI_g_sCommandIndex = YSI_g_sCommands[hash][E_COMMANDS_FUNC_POINTER];
-		YSI_g_sCommands[hash][E_COMMANDS_FUNC_POINTER] = hash | (provider << 24);
-		// Now some complex debug rubbish.
-		P:2("Command_Add: Command added in %d", YSI_g_sCommandIndex);
 		P:4("Command_Add: %08x%08x%08x%08x", YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION][0], YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION][1], YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION][2], YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION][3]);
+		YSI_g_sCommandIndex = YSI_g_sCommands[hash][E_COMMANDS_FUNC_POINTER];
+		#if YSIM_HAS_MASTER
+			YSI_g_sCommands[hash][E_COMMANDS_FUNC_POINTER] = hash | (provider << 24);
+		#else
+			YSI_g_sCommands[hash][E_COMMANDS_FUNC_POINTER] = hash;
+		#endif
+		/*#if YSIM_HAS_MASTER
+			if (s == _@)
+		#endif
+			{
+				new
+					addr = funcidx(f) * 8 + AMX_HEADER_PUBLICS;
+				#emit LREF.S.pri addr
+				#emit STOR.S.pri addr
+				YSI_g_sCommands[hash][E_COMMANDS_AMX_ADDRESS] = addr;
+			}
+		#pragma tabsize 4*/
+		// Now some complex debug rubbish.
 		C:4(new str[32];strpack(str, f);printf("Command_Add: %08x%08x%08x%08x", str[0], str[1], str[2], str[3]););
 		++YSI_g_sCommandCount;
 	}
+	return 1;
 	/*else
 	{
 		// Not all hope is lost - check if this command name already exists.
@@ -1675,7 +2032,7 @@ RF@pv:Command_Add[si](f[],s)<f,s>
 	return COMMAND_NOT_FOUND;*/
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_AddAlt
 Params:
@@ -1690,16 +2047,24 @@ Notes:
 
 native Command_AddAlt(funcidx, altname[]);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@p:Command_AddAlt[is](oidx, altname[])<oidx, altname>
+foreign Command_AddAlt(oidx, string:altname[]);
+
+global Command_AddAlt(oidx, string:altname[])
 {
+	P:2("Command_AddAlt called: %i, \"%s\"", oidx, altname);
 	if (!Command_IsValid(oidx))
 	{
 		return COMMAND_NOT_FOUND;
 	}
-	new
-		provider = _:Command_DefaultProvider();
+	#if YSIM_HAS_MASTER
+		new
+			provider = _:Command_DefaultProvider();
+	#else
+		static
+			provider = -1;
+	#endif
 	if (YSI_g_sCommandCount < MAX_COMMANDS && YSI_g_sCommandIndex != -1)
 	{
 		new
@@ -1718,6 +2083,22 @@ RF@p:Command_AddAlt[is](oidx, altname[])<oidx, altname>
 					return COMMAND_NOT_FOUND;
 				}
 				return pos;
+			}
+			if (!Command_HasCollisions())
+			{
+				// Check for an existing command with this hash.
+				//if (Bintree_FindValue(YSI_g_sSearchTree, hash) != BINTREE_NOT_FOUND)
+				//{
+				//	Command_SetCollisions();
+				//}
+				new
+					leaf;
+				while ((pos = Bintree_FindValue(YSI_g_sSearchTree, hash, leaf)) != BINTREE_NOT_FOUND)
+				{
+					// Don't have collisions if the providers are different.
+					if ((YSI_g_sCommands[pos][E_COMMANDS_FUNC_POINTER] >>> 24) != provider) continue;
+					Command_SetCollisions();
+				}
 			}
 			// Command doesn't exist already - good!
 			Bintree_Add(YSI_g_sSearchTree, YSI_g_sCommandIndex, hash, YSI_g_sCommandIndex);
@@ -1740,16 +2121,24 @@ RF@p:Command_AddAlt[is](oidx, altname[])<oidx, altname>
 		YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_FUNCTION][0] = COMMAND_FUNCTION_PREFIX;
 		//Bit_SetAll(YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_PLAYERS], true, bits<MAX_PLAYERS>);
 		//Command_InitialiseFromGroups(YSI_g_sCommandIndex);
+		PA_FastInit(YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_PLAYERS]);
 		NO_GROUPS(YSI_g_sCommandIndex)
 		{
 			PA_Init(YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_PLAYERS], true);
 		}
 		++YSI_g_sCommandCount;
-		// This doesn't have real masters.
-		YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_MASTERS] = -1;
+		#if YSIM_HAS_MASTER
+			// This doesn't have real masters.
+			YSI_g_sCommands[YSI_g_sCommandIndex][E_COMMANDS_MASTERS] = -1;
+		#endif
+		P:2("Command_AddAlt: Command added in %d as %d", YSI_g_sCommandIndex, oidx);
 		hash = YSI_g_sCommandIndex;
 		YSI_g_sCommandIndex = YSI_g_sCommands[hash][E_COMMANDS_FUNC_POINTER];
-		YSI_g_sCommands[hash][E_COMMANDS_FUNC_POINTER] = oidx | (provider << 24);
+		#if YSIM_HAS_MASTER
+			YSI_g_sCommands[hash][E_COMMANDS_FUNC_POINTER] = oidx | (provider << 24);
+		#else
+			YSI_g_sCommands[hash][E_COMMANDS_FUNC_POINTER] = oidx;
+		#endif
 		return hash;
 	}
 	else
@@ -1781,7 +2170,7 @@ RF@p:Command_AddAlt[is](oidx, altname[])<oidx, altname>
 	return COMMAND_NOT_FOUND;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_AddAltNamed
 Params:
@@ -1794,14 +2183,17 @@ Notes:
 
 native Command_AddAltNamed(function[], altname[]);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@p:Command_AddAltNamed[ss](function[], altname[])<function, altname>
+foreign Command_AddAltNamed(string:function[], string:altname[]);
+
+global Command_AddAltNamed(string:function[], string:altname[])
 {
+	P:2("Command_AddAltNamed called: \"%s\", \"%s\"", function, altname);
 	return Command_AddAlt(Command_Find(function), altname);
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_Debug
 Params:
@@ -1810,10 +2202,11 @@ Return:
 	-
 Notes:
 	Print some random information about commands if _DEBUG is set.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 stock Command_Debug()
 {
+	P:3("Command_Debug called: %i");
 	#if _DEBUG > 0
 		printf("Command_Debug: Start");
 		for (new i = 0; i != MAX_COMMANDS; ++i)
@@ -1837,7 +2230,7 @@ stock Command_Debug()
 	#endif
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	OnPlayerCommandText
 Params:
@@ -1847,47 +2240,60 @@ Return:
 	true - success or hidden fail, false - fail.
 Notes:
 	Calls the Command_Process function if this is not a client.
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #if YSIM_NOT_CLIENT
-	#if YSIM_CLOUD
-		public OnPlayerCommandText(playerid, cmdtext[]) <>
-		{
-			if (YSI_g_sCommandFlags & e_COMM_FLAG_OPCT)
-			{
-				return CallLocalFunction("Command_OnPlayerCommandText", "is", playerid, cmdtext);
-			}
-			return 0;
-		}
-		
-		public OnPlayerCommandText(playerid, cmdtext[]) <_YCM:y>
-	#elseif YSIM_IS_STUB
-		#error y_commands called with YSIM_IS_STUB.
-	#else
-		public OnPlayerCommandText(playerid, cmdtext[])
-	#endif
+	mhook OnPlayerCommandText(playerid, cmdtext[])
 	{
-		if (Command_Process(playerid, cmdtext, 0))
+		P:1("Commands_OnPlayerCommandText");
+		if (YSI_g_sCommandFlags & e_COMM_FLAG_OPCR)
 		{
-			return 1;
+			switch (CallRemoteFunction("OnPlayerCommandReceived", "is", playerid, cmdtext))
+			{
+				case 0:
+					// Handle normally, as in ZCMD.
+					return 1;
+				case -1:
+					// Allow them to stop processing but return 0.
+					return 0;
+				// Do nothing on 1.
+			}
 		}
-		if (YSI_g_sCommandFlags & e_COMM_FLAG_OPCT)
+		if (YSI_g_sCommandFlags & e_COMM_FLAG_OPCP)
 		{
-			return CallLocalFunction("Command_OnPlayerCommandText", "is", playerid, cmdtext);
+			new
+				ret = Command_Process(playerid, cmdtext, 0);
+			switch (CallRemoteFunction("OnPlayerCommandPerformed", "isi", playerid, cmdtext, ret))
+			{
+				case 0:
+					return 0;
+				case 1:
+					return 1;
+				//default:
+					// Return the original return on -1.
+			}
+			return ret;
 		}
-		return 0;
+		else
+		{
+			/*switch (Command_Process(playerid, cmdtext, 0))
+			{
+				case 1:
+					// Found the command, processed.
+					return 1;
+				case -1:
+					// Found the command, but want to return 0 anyway.
+					return 0;
+				// Do nothing on 0.
+			}*/
+			return Command_Process(playerid, cmdtext, 0);
+		}
+		// This can never actually be reached!
+		//return 0;
 	}
-	
-	#if defined _ALS_OnPlayerCommandText
-		#undef OnPlayerCommandText
-	#else
-		#define _ALS_OnPlayerCommandText
-	#endif
-	#define OnPlayerCommandText Command_OnPlayerCommandText
-	forward Command_OnPlayerCommandText(playerid, cmdtext[]);
 #endif
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_ReProcess
 Params:
@@ -1898,14 +2304,17 @@ Return:
 	true - success or hidden fail, false - fail.
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF@p:Command_ReProcess[isi](p,c[],h)<p,c,h>
+foreign Command_ReProcess(p,string:c[],h);
+
+global Command_ReProcess(p,string:c[],h)
 {
+	P:2("Command_ReProcess called: %i, \"%s\", %i", p, c, h);
 	return Command_Process(p,c,h);
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_Process
 Params:
@@ -1916,26 +2325,27 @@ Return:
 	true - success or hidden fail, false - fail.
 Notes:
 	-
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
 #define Command_CallR(%1,%2) \
-	CallRemoteFunction(Command_GetFunction((%1)), "isii", playerid, %2, help, master)
+	CallRemoteFunction(Command_GetFuncName((%1)), "isii", playerid, %2, help, script)
 
 #define Command_CallL(%1,%2) \
-	CallLocalFunction(Command_GetFunction((%1)), "isi", playerid, %2, help)
+	CallLocalFunction(Command_GetFuncName((%1)), "isi", playerid, %2, help)
 
 static stock Command_Process(playerid, cmdtext[], help)
 {
+	P:4("Command_Process FS called: %i, \"%s\", %i", playerid, cmdtext, help);
 	// Support for very old problems!
 	// TODO: Add back.
 	P:2("Command_Process called: %d %s", playerid, cmdtext);
-	#if !_DEBUG && !defined _YSI_SPECIAL_DEBUG
+	/*#if !_DEBUG && !defined _YSI_SPECIAL_DEBUG
 		// For testing purposes.
 		if (!IsPlayerConnected(playerid))
 		{
 			return Command_DisconnectReturn();
 		}
-	#endif
+	#endif*/
 	P:4("Command_Process: Connected");
 	new
 		idx,
@@ -1953,28 +2363,32 @@ static stock Command_Process(playerid, cmdtext[], help)
 		new
 			length,
 			hash = Command_Hash(cmdtext, index, length);
-		P:3("Command_Process: Hash = %d, Length = %d", hash, length);
+		P:2("Command_Process: Hash = %d, Length = %d", hash, length);
 		// NOTE: No prefix support here.
 		cmdtext[length + prelen] = '\0';
-		P:3("Command_Process: Provider: %d", YSI_g_sPlayerProvider{playerid});
-		idx = Command_FindFast(cmdtext[prelen], hash, YSI_g_sPlayerProvider{playerid});
+		#if YSIM_HAS_MASTER
+			length = YSI_g_sPlayerProvider{playerid};
+			P:2("Command_Process: Provider: %d", length);
+			idx = Command_FindFast(cmdtext[prelen], hash, length);
+			if (idx == COMMAND_NOT_FOUND && length != 0xFF)
+			{
+				// Check default commands if no specialised commands were found.
+				idx = Command_FindFast(cmdtext[prelen], hash);
+			}
+		#else
+			idx = Command_FindFast(cmdtext[prelen], hash);
+		#endif
 		// TODO: Replace!
 		//idx = Command_FindSlow(cmdtext[prelen]);//, hash);
 	}
-	P:3("Command_Process: Index = %d", idx);
+	P:2("Command_Process: Index = %d", idx);
 	if (idx != COMMAND_NOT_FOUND)
 	{
 		// Get the master data for the underlying command, not the possibly
 		// changed name.
 		new
-			pointer = Command_GetPointer(idx),
-			master = YSI_g_sCommands[pointer][E_COMMANDS_MASTERS];
-		if (!master)
-		{
-			// No scripts can serve the code.
-			return Command_UnknownReturn();
-		}
-		P:4("Command_Process: Found %d", idx);
+			pointer = Command_GetPointer(idx);
+		P:4("Command_Process: Found %d, %d", idx, pointer);
 		// Found a command with this name - check the permissions.
 		//if (Bit_Get(YSI_g_sCommands[idx][E_COMMANDS_PLAYERS], playerid))
 		if (Command_CheckPlayer(idx, playerid))
@@ -1984,13 +2398,26 @@ static stock Command_Process(playerid, cmdtext[], help)
 			// this may well be the same as "idx", but we loose no time.
 			#if YSIM_HAS_MASTER
 				P:4("Command_Process: %08x%08x%08x%08x", YSI_g_sCommands[idx][E_COMMANDS_FUNCTION][0], YSI_g_sCommands[idx][E_COMMANDS_FUNCTION][1], YSI_g_sCommands[idx][E_COMMANDS_FUNCTION][2], YSI_g_sCommands[idx][E_COMMANDS_FUNCTION][3]);
-				if (master & 1 << YSI_g_sMaster23)
+				//if (master & 1 << YSI_g_sMaster23)
+				//{
+				//	master = YSI_g_sMaster23;
+				//}
+				//else
+				//{
+				new
+					script = Command_Provider(idx);
+				if (script == 0xFF)
 				{
-					master = YSI_g_sMaster23;
-				}
-				else
-				{
-					// Find the lowest set bit.
+					script = YSI_g_sCommands[pointer][E_COMMANDS_MASTERS];
+					if (!script)
+					{
+						// No scripts can serve the code.
+						return Command_UnknownReturn();
+					}
+					// Find the lowest set bit.  We use this to broadcastfunc the
+					// command.  If it uses MASTER 23, this will select only
+					// one script to use.  If it doesn't use MASTER 23, this is
+					// ignored as a parameter and _YCM is used instead.
 					static const
 						scDeBruijn[] =
 							{
@@ -1998,18 +2425,50 @@ static stock Command_Process(playerid, cmdtext[], help)
 								31, 27, 13, 23, 21, 19, 16, 7,  26, 12, 18, 6,  11, 5,  10, 9
 							};
 					// http://supertech.csail.mit.edu/papers/debruijn.pdf
-					master = scDeBruijn[((master & -master) * 0x077CB531) >>> 27];
+					script = scDeBruijn[((script & -script) * 0x077CB531) >>> 27];
 				}
-				P:3("Command_Process: master = %d", master);
-				if (cmdtext[index])
-				{
-					// Call it!
-					Command_CallR(pointer, cmdtext[index]);
-				}
-				else
-				{
-					Command_CallR(pointer, NULL);
-				}
+				//}
+				P:2("Command_Process: script = %d", script);
+				//if (master == _@)
+				//{
+			/*#endif
+					// This script has it!
+					addr = YSI_g_sCommands[pointer][E_COMMANDS_AMX_ADDRESS];
+					P:4("Command_Process: %04x%04x", addr >>> 16, addr & 0xFFFF);
+					// Make sure all the "#emits" are together as they don't
+					// seem to be affected by pre-processor directives.
+					#emit PUSH.S     master
+					#emit PUSH.S     help
+					#emit LOAD.S.alt cmdtext
+					#emit LOAD.S.pri index
+					#emit SMUL.C     4
+					#emit ADD
+					#emit PUSH.pri
+					#emit PUSH.S     playerid
+					#emit PUSH.C     16
+					#emit LCTRL      6
+					#emit ADD.C      28
+					#emit PUSH.pri
+					#emit LOAD.S.pri addr
+					#emit SCTRL      6
+					#emit STOR.S.pri addr
+			#if YSIM_HAS_MASTER*/
+				//}
+				//else
+				//{
+					#pragma tabsize 4
+					P:2("Command_Process: call %s (%d, %d)", unpack(Command_GetFuncName(pointer)), pointer, script);
+					if (cmdtext[index])
+					{
+						// Call it!
+						Command_CallR(pointer, cmdtext[index]);
+					}
+					else
+					{
+						Command_CallR(pointer, NULL);
+					}
+					#pragma tabsize 4
+				//}
 				// Get the real return.
 				P:1("Command_Process: return: %d", getproperty(8, YSIM_RETURN));
 				return getproperty(8, YSIM_RETURN);
@@ -2023,6 +2482,7 @@ static stock Command_Process(playerid, cmdtext[], help)
 				{
 					return Command_CallL(pointer, NULL);
 				}
+				//return addr;
 			#endif
 		}
 		else
@@ -2034,7 +2494,7 @@ static stock Command_Process(playerid, cmdtext[], help)
 	return Command_UnknownReturn();
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetName
 Params:
@@ -2045,10 +2505,13 @@ Notes:
 
 native Command_GetName(funcid);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RS:Command_GetName[i](funcid)
+foreign string:Command_GetName(funcid);
+
+global string:Command_GetName(funcid)
 {
+	P:2("Command_GetName called: %i", funcid);
 	new
 		buffer[YSI_MAX_STRING] = "";
 	if (Command_IsValid(funcid))
@@ -2058,7 +2521,7 @@ RS:Command_GetName[i](funcid)
 	return buffer;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetDisplay
 Params:
@@ -2071,10 +2534,13 @@ Notes:
 
 native Command_GetDisplay(funcid, playerid);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RS:Command_GetDisplay[ii](funcid, playerid)
+foreign string:Command_GetDisplay(funcid, playerid);
+
+global string:Command_GetDisplay(funcid, playerid)
 {
+	P:2("Command_GetDisplay called: %i, %i", funcid, playerid);
 	new
 		buffer[YSI_MAX_STRING] = "";
 	if (Command_IsValid(funcid))
@@ -2105,7 +2571,7 @@ RS:Command_GetDisplay[ii](funcid, playerid)
 	return buffer;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetDisplayNamed
 Params:
@@ -2118,13 +2584,15 @@ Notes:
 	expose users to the master system's odd way of returning strings.  This is
 	the only part I've not yet fixed up to be nice and hidden.
 
-native Command_GetDisplayNamed(funcid[], playerid);
+native string:Command_GetDisplayNamed(string:funcid[], playerid);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RS@p:Command_GetDisplayNamed[si](func[], playerid)<func, playerid>
+foreign string:Command_GetDisplayNamed(string:func[], playerid);
+
+global string:Command_GetDisplayNamed(string:func[], playerid)
 {
-	P:1("Command_GetDisplayNamed called %d", _@);
+	P:1("Command_GetDisplayNamed called: \"%s\", %i", func, playerid);
 	new
 		pointer = Command_Find(func),
 		buffer[YSI_MAX_STRING] = "";
@@ -2155,7 +2623,7 @@ RS@p:Command_GetDisplayNamed[si](func[], playerid)<func, playerid>
 	return buffer;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetPlayerCommandCount
 Params:
@@ -2167,10 +2635,13 @@ Notes:
 
 native Command_GetPlayerCommandCount(playerid);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RF:Command_GetPlayerCommandCount[i](playerid)
+foreign Command_GetPlayerCommandCount(playerid);
+
+global Command_GetPlayerCommandCount(playerid)
 {
+	P:2("Command_GetPlayerCommandCount called: %i", playerid);
 	new
 		slot = Bit_Slot(playerid) + 1,
 		Bit:mask = Bit_Mask(playerid),
@@ -2185,7 +2656,7 @@ RF:Command_GetPlayerCommandCount[i](playerid)
 	return count;
 }
 
-/*----------------------------------------------------------------------------*-
+/*----------------------------------------------------------------------------*\
 Function:
 	Command_GetNext
 Params:
@@ -2198,10 +2669,13 @@ Notes:
 
 native Command_GetNext(index, playerid);
 
--*----------------------------------------------------------------------------*/
+\*----------------------------------------------------------------------------*/
 
-RS:Command_GetNext[ii](index, playerid)
+foreign string:Command_GetNext(index, playerid);
+
+global string:Command_GetNext(index, playerid)
 {
+	P:2("Command_GetNext called: %i, %i", index, playerid);
 	new
 		buffer[YSI_MAX_STRING] = "";
 	if (0 <= index < MAX_COMMANDS)
@@ -2234,19 +2708,16 @@ RS:Command_GetNext[ii](index, playerid)
 
 //#undef _YCM
 
-#if defined _YSIM_MANUAL_SET
-	// This is to allow callback chaining.  When the user includes y_groups and
-	// other libraries, the function names will be reset to their custom ones
-	// after every inclusion, however if you then include another YSI library
-	// you need to revert to the previous library names to get the chaining to
-	// work.
-	#define YSI_GROUPS_LAST 25
-	#include <YSI\internal\y_grouprevert>
-#else
-	// Define a numbered master to use for user commands, without them needing
-	// to know about the master system.  This should default to cloud mode,
-	// unless global settings have been applied.
-	#define MASTER 23
-	#include <YSI\y_master>
-	//#define _YSIM_FAKE_MANUAL_SET
-#endif
+// This is to allow callback chaining.  When the user includes y_groups and
+// other libraries, the function names will be reset to their custom ones after
+// every inclusion, however if you then include another YSI library you need to
+// revert to the previous library names to get the chaining to work.  However I
+// think this is completely pointless now thanks to "y_hooks".
+
+//#define YSI_SET_LAST_GROUP 25
+#include "internal\y_grouprevert"
+
+// So we can use custom syntax on these two functions and allow command names to
+// be sort of used...
+//#define Group_SetCommand(%0,YCMD:%2,%3) Group_SetCommand(%0,Command_GetID(#%2),%3)
+//#define Group_SetGlobalCommand(YCMD:%2,%3) Group_SetGlobalCommand(Command_GetID(#%2),%3)

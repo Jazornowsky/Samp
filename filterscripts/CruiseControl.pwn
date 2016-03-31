@@ -28,16 +28,6 @@ new CCKey = KEY_ACTION; //Cruise Control Key - change this if you need
 
 forward CruiseControl(playerid);
 
-public OnFilterScriptInit()
-{
-	return 1;
-}
-
-public OnFilterScriptExit()
-{
-	return 1;
-}
-
 public OnPlayerCommandText(playerid, cmdtext[])
 {
     new cmd[256];
@@ -53,12 +43,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
       	return 1;
     }
 	return 0;
-}
-
-public OnPlayerConnect(playerid)
-{
-	//SendClientMessage(playerid, COLOR_MESSAGE_YELLOW, "* Cruise Control by mick88 - type /CruiseControl for more info");
-	return 1;
 }
 
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)

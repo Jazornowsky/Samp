@@ -1,3 +1,13 @@
+/***
+*
+* File: wp_saveloadjobdata.inc
+* Auth: Damian Wojdat
+* Date: 15.09.2011
+* Desc: Loading functions.
+* TODO: Transfer this to a better place.
+*
+*************************************************************************************************************/
+
 LoadDetectiveJob()
 {
 	new arrCoords[7][64];
@@ -15,9 +25,13 @@ LoadDetectiveJob()
 		DetectiveJobPosition[Angle] = floatstr(arrCoords[5]);
 		DetectiveJobPosition[PickupID] = strval(arrCoords[6]);
 		DetectiveJobPosition[PickupID] = CreateDynamicPickup(1239,1,DetectiveJobPosition[X],DetectiveJobPosition[Y],DetectiveJobPosition[Z]);
-        print("[INFO:] Detective job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Detective job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load detectivejob.cfg");
 	return 1;
 }
 
@@ -34,8 +48,13 @@ SaveDetectiveJob()
 	DetectiveJobPosition[Angle],
 	DetectiveJobPosition[PickupID]);
 	file2 = fopen("jobs/detectivejob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save detectivejob.cfg");
 	return 1;
 }
 
@@ -55,10 +74,14 @@ LoadLawyerJob()
 		LawyerJobPosition[Interior] = strval(arrCoords[4]);
 		LawyerJobPosition[Angle] = floatstr(arrCoords[5]);
 		LawyerJobPosition[PickupID] = strval(arrCoords[6]);
+		fclose(file);
 		LawyerJobPosition[PickupID] = CreateDynamicPickup(1239,1,LawyerJobPosition[X],LawyerJobPosition[Y],LawyerJobPosition[Z]);
-        print("[INFO:] Lawyer job loaded");
+		#if defined DEBUG
+			print("[INFO:] Lawyer job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load lawyerjob.cfg");
 	return 1;
 }
 
@@ -75,8 +98,13 @@ SaveLawyerJob()
 	LawyerJobPosition[Angle],
 	LawyerJobPosition[PickupID]);
 	file2 = fopen("jobs/lawyerjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save lawyerjob.cfg ");
 	return 1;
 }
 
@@ -97,9 +125,13 @@ LoadBodyJob()
 		BodyJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		BodyJob[TakeJobPickupID] = strval(arrCoords[6]);
         BodyJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,BodyJob[TakeJobX],BodyJob[TakeJobY],BodyJob[TakeJobZ]);
-        print("[INFO:] BoxGuard job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] BoxGuard job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load bodyjob.cfg");
 	return 1;
 }
 
@@ -116,8 +148,13 @@ SaveBodyJob()
 	BodyJob[TakeJobAngle],
 	BodyJob[TakeJobPickupID]);
 	file2 = fopen("jobs/bodyjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save bodyjob.cfg ");
 	return 1;
 }
 
@@ -138,9 +175,13 @@ LoadRapistJob()
 		RapistJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		RapistJob[TakeJobPickupID] = strval(arrCoords[6]);
         RapistJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,RapistJob[TakeJobX],RapistJob[TakeJobY],RapistJob[TakeJobZ]);
-        print("[INFO:] Rapist job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Rapist job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load rapistjob.cfg");
 	return 1;
 }
 
@@ -157,8 +198,13 @@ SaveRapistJob()
 	RapistJob[TakeJobAngle],
 	RapistJob[TakeJobPickupID]);
 	file2 = fopen("jobs/rapistjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save rapistjob.cfg ");
 	return 1;
 }
 
@@ -179,9 +225,13 @@ LoadBoxerJob()
 		BoxerJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		BoxerJob[TakeJobPickupID] = strval(arrCoords[6]);
         BoxerJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,BoxerJob[TakeJobX],BoxerJob[TakeJobY],BoxerJob[TakeJobZ]);
-        print("[INFO:] Boxer job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Boxer job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load boxerjob.cfg");
 	return 1;
 }
 
@@ -198,8 +248,13 @@ SaveBoxerJob()
 	BoxerJob[TakeJobAngle],
 	BoxerJob[TakeJobPickupID]);
 	file2 = fopen("jobs/boxerjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save boxerjob.cfg ");
 	return 1;
 }
 
@@ -220,9 +275,13 @@ LoadDirJob()
 		DirJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		DirJob[TakeJobPickupID] = strval(arrCoords[6]);
         DirJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,DirJob[TakeJobX],DirJob[TakeJobY],DirJob[TakeJobZ]);
-        print("[INFO:] Dir job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Dir job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load dirjob.cfg");
 	return 1;
 }
 
@@ -239,8 +298,13 @@ SaveDirJob()
 	DirJob[TakeJobAngle],
 	DirJob[TakeJobPickupID]);
 	file2 = fopen("jobs/dirjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save dirjob.cfg ");
 	return 1;
 }
 
@@ -261,9 +325,13 @@ LoadWhoreJob()
 		WhoreJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		WhoreJob[TakeJobPickupID] = strval(arrCoords[6]);
         WhoreJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,WhoreJob[TakeJobX],WhoreJob[TakeJobY],WhoreJob[TakeJobZ]);
-        print("[INFO:] Whore job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Whore job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load whirejob.cfg");
 	return 1;
 }
 
@@ -280,8 +348,13 @@ SaveWhoreJob()
 	WhoreJob[TakeJobAngle],
 	WhoreJob[TakeJobPickupID]);
 	file2 = fopen("jobs/whorejob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save whorejob.cfg ");
 	return 1;
 }
 
@@ -302,9 +375,13 @@ LoadStuntJob()
 		StuntJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		StuntJob[TakeJobPickupID] = strval(arrCoords[6]);
         StuntJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,StuntJob[TakeJobX],StuntJob[TakeJobY],StuntJob[TakeJobZ]);
-        print("[INFO:] Stunt job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Stunt job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load stuntjob.cfg");
 	return 1;
 }
 
@@ -321,8 +398,13 @@ SaveStuntJob()
 	StuntJob[TakeJobAngle],
 	StuntJob[TakeJobPickupID]);
 	file2 = fopen("jobs/stuntjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save stuntjob.cfg");
 	return 1;
 }
 
@@ -343,9 +425,13 @@ LoadCarjackJob()
 		CarjackJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		CarjackJob[TakeJobPickupID] = strval(arrCoords[6]);
         CarjackJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,CarjackJob[TakeJobX],CarjackJob[TakeJobY],CarjackJob[TakeJobZ]);
-        print("[INFO:] Carjack job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Carjack job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load carjackjob.cfg");
 	return 1;
 }
 
@@ -362,8 +448,13 @@ SaveCarjackJob()
 	CarjackJob[TakeJobAngle],
 	CarjackJob[TakeJobPickupID]);
 	file2 = fopen("jobs/carjackjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save carjackjob.cfg");
 	return 1;
 }
 
@@ -383,9 +474,13 @@ LoadProductsSellerJob()
 		ProductsSellerJob[TakeJobInterior] = strval(arrCoords[4]);
 		ProductsSellerJob[TakeJobAngle] = floatstr(arrCoords[5]);
         ProductsSellerJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,ProductsSellerJob[TakeJobX],ProductsSellerJob[TakeJobY],ProductsSellerJob[TakeJobZ]);
-        print("[INFO:] Products seller job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Products seller job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load productsellersjob.cfg");
 	return 1;
 }
 
@@ -402,8 +497,13 @@ SaveProductsSellerJob()
 	ProductsSellerJob[TakeJobAngle]);
 
 	file2 = fopen("jobs/productsellersjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save productsellersjob.cfg");
 	return 1;
 }
 
@@ -424,9 +524,13 @@ LoadMechanicJob()
 		MechanicJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		MechanicJob[TakeJobPickupID] = strval(arrCoords[6]);
         MechanicJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,MechanicJob[TakeJobX],MechanicJob[TakeJobY],MechanicJob[TakeJobZ]);
-        print("[INFO:] Mechanic job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Mechanic job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load mechanicjob.cfg");
 	return 1;
 }
 
@@ -444,14 +548,19 @@ SaveMechanicJob()
 	MechanicJob[TakeJobPickupID]);
 
 	file2 = fopen("jobs/mechanicjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save mechanicjob.cfg");
 	return 1;
 }
 
 LoadMechanicJob1()
 {
-	new arrCoords[6][64];
+	new arrCoords[36][64];
 	new strFromFile2[256];
 	new File: file = fopen("jobs/mechanicjob1.cfg", io_read);
 	if (file)
@@ -464,28 +573,107 @@ LoadMechanicJob1()
 		MechanicJob1[RepairPointX2] = floatstr(arrCoords[3]);
 		MechanicJob1[RepairPointY2] = floatstr(arrCoords[4]);
 		MechanicJob1[RepairPointZ2] = floatstr(arrCoords[5]);
+		MechanicJob1[RepairPointX3][0] = floatstr(arrCoords[6]);
+		MechanicJob1[RepairPointY3][0] = floatstr(arrCoords[7]);
+		MechanicJob1[RepairPointZ3][0] = floatstr(arrCoords[8]);
+		MechanicJob1[RepairPointX3][1] = floatstr(arrCoords[9]);
+		MechanicJob1[RepairPointY3][1] = floatstr(arrCoords[10]);
+		MechanicJob1[RepairPointZ3][1] = floatstr(arrCoords[11]);
+		MechanicJob1[RepairPointX3][2] = floatstr(arrCoords[12]);
+		MechanicJob1[RepairPointY3][2] = floatstr(arrCoords[13]);
+		MechanicJob1[RepairPointZ3][2] = floatstr(arrCoords[14]);
+		MechanicJob1[RepairPointX3][3] = floatstr(arrCoords[15]);
+		MechanicJob1[RepairPointY3][3] = floatstr(arrCoords[16]);
+		MechanicJob1[RepairPointZ3][3] = floatstr(arrCoords[17]);
+		MechanicJob1[RepairPointX3][4] = floatstr(arrCoords[18]);
+		MechanicJob1[RepairPointY3][4] = floatstr(arrCoords[19]);
+		MechanicJob1[RepairPointZ3][4] = floatstr(arrCoords[20]);
+		MechanicJob1[RepairPointX3][5] = floatstr(arrCoords[21]);
+		MechanicJob1[RepairPointY3][5] = floatstr(arrCoords[23]);
+		MechanicJob1[RepairPointZ3][5] = floatstr(arrCoords[23]);
+		MechanicJob1[RepairPointX3][6] = floatstr(arrCoords[24]);
+		MechanicJob1[RepairPointY3][6] = floatstr(arrCoords[25]);
+		MechanicJob1[RepairPointZ3][6] = floatstr(arrCoords[26]);
+		MechanicJob1[RepairPointX3][7] = floatstr(arrCoords[27]);
+		MechanicJob1[RepairPointY3][7] = floatstr(arrCoords[28]);
+		MechanicJob1[RepairPointZ3][7] = floatstr(arrCoords[29]);
+		MechanicJob1[RepairPointX3][8] = floatstr(arrCoords[30]);
+		MechanicJob1[RepairPointY3][8] = floatstr(arrCoords[31]);
+		MechanicJob1[RepairPointZ3][8] = floatstr(arrCoords[33]);
+		MechanicJob1[RepairPointX3][9] = floatstr(arrCoords[33]);
+		MechanicJob1[RepairPointY3][9] = floatstr(arrCoords[34]);
+		MechanicJob1[RepairPointZ3][9] = floatstr(arrCoords[35]);
 		MechanicJob1[RepairPointPickupID] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX],MechanicJob1[RepairPointY],MechanicJob1[RepairPointZ]);
 		MechanicJob1[RepairPointPickupID2] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX2],MechanicJob1[RepairPointY2],MechanicJob1[RepairPointZ2]);
-		print("[INFO:] Mechanic job point 1 and 2 loaded");
+		MechanicJob1[RepairPointPickupID3][0] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][0],MechanicJob1[RepairPointY3][0],MechanicJob1[RepairPointZ3][0]);
+		MechanicJob1[RepairPointPickupID3][1] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][1],MechanicJob1[RepairPointY3][1],MechanicJob1[RepairPointZ3][1]);
+		MechanicJob1[RepairPointPickupID3][2] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][2],MechanicJob1[RepairPointY3][2],MechanicJob1[RepairPointZ3][2]);
+		MechanicJob1[RepairPointPickupID3][3] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][3],MechanicJob1[RepairPointY3][3],MechanicJob1[RepairPointZ3][3]);
+		MechanicJob1[RepairPointPickupID3][4] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][4],MechanicJob1[RepairPointY3][4],MechanicJob1[RepairPointZ3][4]);
+		MechanicJob1[RepairPointPickupID3][5] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][5],MechanicJob1[RepairPointY3][5],MechanicJob1[RepairPointZ3][5]);
+		MechanicJob1[RepairPointPickupID3][6] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][6],MechanicJob1[RepairPointY3][6],MechanicJob1[RepairPointZ3][6]);
+		MechanicJob1[RepairPointPickupID3][7] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][7],MechanicJob1[RepairPointY3][7],MechanicJob1[RepairPointZ3][7]);
+		MechanicJob1[RepairPointPickupID3][8] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][8],MechanicJob1[RepairPointY3][8],MechanicJob1[RepairPointZ3][8]);
+		MechanicJob1[RepairPointPickupID3][9] = CreateDynamicPickup(1239,1,MechanicJob1[RepairPointX3][9],MechanicJob1[RepairPointY3][9],MechanicJob1[RepairPointZ3][9]);
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Mechanic job point 1 to 10 loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load mechanicjob1.cfg");
 	return 1;
 }
 
-SaveMechanicJob1()
+stock SaveMechanicJob1()
 {
 	new File: file2;
 	new coordsstring[512];
-	format(coordsstring, sizeof(coordsstring), "%f|%f|%f|%f|%f|%f\n",
+	format(coordsstring, sizeof(coordsstring), "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f\n",
 	MechanicJob1[RepairPointX],
 	MechanicJob1[RepairPointY],
 	MechanicJob1[RepairPointZ],
 	MechanicJob1[RepairPointX2],
 	MechanicJob1[RepairPointY2],
-	MechanicJob1[RepairPointZ2]);
+	MechanicJob1[RepairPointZ2],
+	MechanicJob1[RepairPointX3][0],
+	MechanicJob1[RepairPointY3][0],
+	MechanicJob1[RepairPointZ3][0],
+	MechanicJob1[RepairPointX3][1],
+	MechanicJob1[RepairPointY3][1],
+	MechanicJob1[RepairPointZ3][1],
+	MechanicJob1[RepairPointX3][2],
+	MechanicJob1[RepairPointY3][2],
+	MechanicJob1[RepairPointZ3][2],
+	MechanicJob1[RepairPointX3][3],
+	MechanicJob1[RepairPointY3][3],
+	MechanicJob1[RepairPointZ3][3],
+	MechanicJob1[RepairPointX3][4],
+	MechanicJob1[RepairPointY3][4],
+	MechanicJob1[RepairPointZ3][4],
+	MechanicJob1[RepairPointX3][5],
+	MechanicJob1[RepairPointY3][5],
+	MechanicJob1[RepairPointZ3][5],
+	MechanicJob1[RepairPointX3][6],
+	MechanicJob1[RepairPointY3][6],
+	MechanicJob1[RepairPointZ3][6],
+	MechanicJob1[RepairPointX3][7],
+	MechanicJob1[RepairPointY3][7],
+	MechanicJob1[RepairPointZ3][7],
+	MechanicJob1[RepairPointX3][8],
+	MechanicJob1[RepairPointY3][8],
+	MechanicJob1[RepairPointZ3][8],
+	MechanicJob1[RepairPointX3][9],
+	MechanicJob1[RepairPointY3][9],
+	MechanicJob1[RepairPointZ3][9]);
 	file2 = fopen("jobs/mechanicjob1.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save mechanicjob1.cfg");
 	return 1;
 }
 LoadMechanicJob2()
@@ -505,9 +693,13 @@ LoadMechanicJob2()
 		MechanicJob2[BuyProductsAngle] = floatstr(arrCoords[5]);
 		MechanicJob2[BuyProductsPickupID] = strval(arrCoords[6]);
         MechanicJob2[BuyProductsPickupID] = CreateDynamicPickup(1239,1,MechanicJob2[BuyProductsX],MechanicJob2[BuyProductsY],MechanicJob2[BuyProductsZ]);
-        print("[INFO:] Mechanic job point 2 loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Mechanic job point 2 loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load mechanicjob2.cfg");
 	return 1;
 }
 
@@ -525,8 +717,13 @@ SaveMechanicJob2()
 	MechanicJob2[BuyProductsPickupID]);
 
 	file2 = fopen("jobs/mechanicjob2.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save mechanicjob2.cfg");
 	return 1;
 }
 
@@ -563,9 +760,13 @@ LoadGunJob()
 		GunJob[DeliverAngle] = floatstr(arrCoords[19]);
 		GunJob[DeliverPickupID] = strval(arrCoords[20]);
         GunJob[DeliverPickupID] = CreateDynamicPickup(1239,1,GunJob[DeliverX],GunJob[DeliverY],GunJob[DeliverZ]);
-        print("[INFO:] Gun job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Gun job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load gunjob.cfg");
 	return 1;
 }
 
@@ -597,8 +798,13 @@ SaveGunJob()
 	GunJob[DeliverPickupID]);
 
 	file2 = fopen("jobs/gunjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save gunjob.cfg");
 	return 1;
 }
 
@@ -635,9 +841,13 @@ LoadDrugJob()
 		DrugJob[DeliverAngle] = floatstr(arrCoords[19]);
 		DrugJob[DeliverPickupID] = strval(arrCoords[20]);
         DrugJob[DeliverPickupID] = CreateDynamicPickup(1239,1,DrugJob[DeliverX],DrugJob[DeliverY],DrugJob[DeliverZ]);
-        print("[INFO:] Drug job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Drug job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load drugjob.cfg");
 	return 1;
 }
 
@@ -669,8 +879,13 @@ SaveDrugJob()
 	DrugJob[DeliverPickupID]);
 
 	file2 = fopen("jobs/drugjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);	
+	}
+	else
+		ErrorLog("[ERROR:] Can't save drugjob.cfg");
 	return 1;
 }
 
@@ -690,10 +905,14 @@ LoadMzgkJob()
 		MzgkJob[TakeJobInterior] = strval(arrCoords[4]);
 		MzgkJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		MzgkJob[TakeJobPickupID] = strval(arrCoords[6]);
+		fclose(file);
         MzgkJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,MzgkJob[TakeJobX],MzgkJob[TakeJobY],MzgkJob[TakeJobZ]);
-		print("[INFO:] Mzgk job loaded");
+		#if defined DEBUG
+			print("[INFO:] Mzgk job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load mzgkjob.cfg");
 	return 1;
 }
 
@@ -709,9 +928,15 @@ SaveMzgkJob()
 	MzgkJob[TakeJobInterior],
 	MzgkJob[TakeJobAngle],
 	MzgkJob[TakeJobPickupID]);
+	
 	file2 = fopen("jobs/mzgkJob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save mzgkjob.cfg");
 	return 1;
 }
 
@@ -732,9 +957,13 @@ LoadSweeperJob()
 		SweeperJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		SweeperJob[TakeJobPickupID] = strval(arrCoords[6]);
         SweeperJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,SweeperJob[TakeJobX],SweeperJob[TakeJobY],SweeperJob[TakeJobZ]);
-		print("[INFO:] Sweeper job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Sweeper job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load sweeperjob.cfg");
 	return 1;
 }
 
@@ -750,9 +979,15 @@ SaveSweeperJob()
 	SweeperJob[TakeJobInterior],
 	SweeperJob[TakeJobAngle],
 	SweeperJob[TakeJobPickupID]);
+	
 	file2 = fopen("jobs/SweeperJob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save sweeperjob.cfg");
 	return 1;
 }
 
@@ -773,9 +1008,13 @@ LoadBusJob()
 		BusJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		BusJob[TakeJobPickupID] = strval(arrCoords[6]);
         BusJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,BusJob[TakeJobX],BusJob[TakeJobY],BusJob[TakeJobZ]);
-		print("[INFO:] Bus job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Bus job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load busjob.cfg");
 	return 1;
 }
 
@@ -791,9 +1030,15 @@ SaveBusJob()
 	BusJob[TakeJobInterior],
 	BusJob[TakeJobAngle],
 	BusJob[TakeJobPickupID]);
+	
 	file2 = fopen("jobs/busjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save busjob.cfg");
 	return 1;
 }
 
@@ -814,9 +1059,13 @@ LoadSellerJob()
 		SellerJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		SellerJob[TakeJobPickupID] = strval(arrCoords[6]);
         SellerJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,SellerJob[TakeJobX],SellerJob[TakeJobY],SellerJob[TakeJobZ]);
-		print("[INFO:] Seller job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Seller job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load sellerjob.cfg");
 	return 1;
 }
 
@@ -832,9 +1081,15 @@ SaveSellerJob()
 	SellerJob[TakeJobInterior],
 	SellerJob[TakeJobAngle],
 	SellerJob[TakeJobPickupID]);
+	
 	file2 = fopen("jobs/sellerjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);	
+	}
+	else
+		ErrorLog("[ERROR:] Can't save sellerjob.cfg");
 	return 1;
 }
 
@@ -855,9 +1110,13 @@ LoadAccountantJob()
 		AccountantJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		AccountantJob[TakeJobPickupID] = strval(arrCoords[6]);
         AccountantJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,AccountantJob[TakeJobX],AccountantJob[TakeJobY],AccountantJob[TakeJobZ]);
-		print("[INFO:] Accountant job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Accountant job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load accountantjob.cfg");
 	return 1;
 }
 
@@ -873,9 +1132,15 @@ SaveAccountantJob()
 	AccountantJob[TakeJobInterior],
 	AccountantJob[TakeJobAngle],
 	AccountantJob[TakeJobPickupID]);
+	
 	file2 = fopen("jobs/accountantjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);	
+	}
+	else
+		ErrorLog("[ERROR:] Can't save accountantjob.cfg");
 	return 1;
 }
 
@@ -896,9 +1161,13 @@ LoadTaxiJob()
 		TaxiJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		TaxiJob[TakeJobPickupID] = strval(arrCoords[6]);
         TaxiJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,TaxiJob[TakeJobX],TaxiJob[TakeJobY],TaxiJob[TakeJobZ]);
-		print("[INFO:] Taxi job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Taxi job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load taxijob.cfg");
 	return 1;
 }
 
@@ -918,9 +1187,19 @@ LoadWFWorkerJob()
 		WFWorkerJob[TakeJobInterior] = strval(arrCoords[4]);
 		WFWorkerJob[TakeJobAngle] = floatstr(arrCoords[5]);
 		WFWorkerJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,WFWorkerJob[TakeJobX],WFWorkerJob[TakeJobY],WFWorkerJob[TakeJobZ]);
-		print("[INFO:] WFWorker job loaded");
+		WFWorkerJob[TakeJobPickupID2] = CreateDynamicPickup(1239,1,203.94,-63.99,15.7);
+		WFWorkerJob[TakeJobPickupID3] = CreateDynamicPickup(1239,1,-2072.56,8.33,35.32);
+		WFWorkerJob[TakeJobPickupID4] = CreateDynamicPickup(1239,1,2463.55, -2119.38,13.55);
+		WFWorkerJob[TakeJobPickupID5] = CreateDynamicPickup(1239,1,2817.54, 972.72, 10.75);
+		WFWorkerJob[TakeJobPickupID6] = CreateDynamicPickup(1239,1,-2116.61, -2290.94, 30.63);
+		WFWorkerJob[TakeJobPickupID7] = CreateDynamicPickup(1239,1,-1534.55, 2609.32, 55.83);
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] WFWorker job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load wfworkerjob.cfg");
 	return 1;
 }
 
@@ -935,9 +1214,15 @@ SaveWFactoryJob()
 	WFWorkerJob[TakeJobWorld],
 	WFWorkerJob[TakeJobInterior],
 	WFWorkerJob[TakeJobAngle]);
+	
 	file2 = fopen("jobs/wfworkerjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save wfworkerjob.cfg");
 	return 1;
 }
 
@@ -959,9 +1244,13 @@ LoadNewsBoyJob()
         NewsBoyJob[TakeJobPickupID] = CreateDynamicPickup(1239,1,NewsBoyJob[TakeJobX],NewsBoyJob[TakeJobY],NewsBoyJob[TakeJobZ]);
 		NewsBoyJob[TakeJobPapersCount] = strval(arrCoords[7]);
 		NewsBoyJob[TakeJobReward] = strval(arrCoords[8]);
-		print("[INFO:] NewsBoy job loaded");
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] NewsBoy job loaded");
+		#endif
 	}
-	fclose(file);
+	else
+		ErrorLog("[ERROR:] Can't load newsboyjob.cfg");
 	return 1;
 }
 
@@ -979,9 +1268,15 @@ SaveNewsBoyJob()
 	NewsBoyJob[TakeJobPickupID],
 	NewsBoyJob[TakeJobPapersCount],
 	NewsBoyJob[TakeJobReward]);
+	
 	file2 = fopen("jobs/newsboyjob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save newsboyjob.cfg");
 	return 1;
 }
 
@@ -997,8 +1292,14 @@ SaveTaxiJob()
 	TaxiJob[TakeJobInterior],
 	TaxiJob[TakeJobAngle],
 	TaxiJob[TakeJobPickupID]);
+	
 	file2 = fopen("jobs/taxijob.cfg", io_write);
-	fwrite(file2, coordsstring);
-	fclose(file2);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save taxijob.cfg");
 	return 1;
 }

@@ -1,3 +1,12 @@
+/***
+*
+* File: wp_wfactory_itemfncs.inc
+* Auth: Damian Wojdat
+* Date: 12.10.2012
+* Desc: Weapon factory item related functions.
+*
+*************************************************************************************************************/
+
 /* 
 * Checks if player have apropriate items for weapon/part/ammo production
 * If possible take item from faction storage 
