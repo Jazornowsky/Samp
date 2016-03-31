@@ -1,0 +1,224 @@
+=================================
+============== DANE =============
+=================================
+
+Area IDS
+San Fierro - 0
+Los Santos 1 - 1
+Los Santos 2 - 2
+Angel Pine - 3
+Montgomery - 4
+Palomino Creek - 5
+Bounty Bay - 6
+Dilimore - 7
+Fort Carson - 8
+Los Santos 3 - 9
+Los Santos 4 - 10
+Los Santos 5 - 11
+Los Santos 6 - 12
+Los Santos 7 - 13
+Blueberry - 14
+
+
+[CarType] = 1; // Nauka Jazdy
+[CarType] = 2; // Autobus
+[CarType] = 3; // Auta w INT
+[CarType] = 4; // Œmieciarka
+[CarType] = 5; // Sweeper
+[CarType] = 6; // £ódŸ
+[CarType] = 7; // Rower
+[CarType] = 8; //
+[CarType] = 9; // Frakcyjne
+[CarType] = 10; // Mechanik
+[CarType] = 11; // Farmer
+
+[fType] = 1; // frakcje stojace po stronie prawa i uzywajace broni - domyœlna
+[fType] = 2; // urzad - domyœlna
+[fType] = 3; // gangi - dynamiczne
+[fType] = 4; // medycy + straz - domyœlna
+[fType] = 5; // hitman - domyœlna
+[fType] = 6; // taxi - domyœlna
+[fType] = 7; // rafineria - domyœlna
+[fType] = 8; // publiczne
+[fType] = 9; // firma
+
+[BizType] = 1; // restauracja
+[BizType] = 2; // sieæ komórkowa
+[BizType] = 3; // sklep 24/7
+[BizType] = 4; // sklep z broni¹
+[BizType] = 5; // studio reklamowe
+[BizType] = 6; // sklep z ubraniami
+[BizType] = 7; // bar/club
+[BizType] = 8; // studio nagraniowe
+[BizType] = 9; // studio
+[BizType] = 10; // salon samochodowy
+[BizType] = 11; // stacja paliwowa
+
+[pJob] = 1; // Diler broni
+[pJob] = 2; // Diler narkotyków
+[pJob] = 3; // Detektyw
+[pJob] = 4; // Prawnik
+[pJob] = 5; // Sprzedawca produktów
+[pJob] = 6; // Praca dziwki
+[pJob] = 7; // Boxer
+[pJob] = 8; // Gwa³ciciel
+[pJob] = 9; // Ochroniarz
+[pJob] = 10; // Z³odziej samochodów
+[pJob] = 11; // Kaskader
+[pJob] = 12; // Re¿yser
+[pJob] = 13; // Kierowca autobusu
+[pJob] = 14; // Kierowca œmieciarki
+[pJob] = 15; // Kierowca myjki drogowej
+[pJob] = 16; // Taksówkarz
+[pJob] = 17; // Mechanik
+[pJob] = 18; // Farmer
+[pJob] = 19; // Sprzedawca/ekspedient
+[pJob] = 20; // Ksiêgowy
+[pJob] = 21; // Roznosiciel gazet
+[pJob] = 22; // Praca sk³adacza broni :)
+
+[pFaction] = 0; // Policja
+[pFaction] = 1; // FBI
+[pFaction] = 2; // Medycy
+[pFaction] = 3; // Hitman
+[pFaction] = 4; // HALO Taxi
+[pFaction] = 5; // Straz pozarna
+[pFaction] = 6; // Wojsko
+[pFaction] = 7; // Yakuza
+[pFaction] = 8; // CZA KING
+[pFaction] = 9; // Urzad
+[pFaction] = 10; // Varios Los Aztecas
+[pFaction] = 11; // Rafineria
+
+gPickupEventPrizeType = 0; // cash
+gPickupEventPrizeType = 1; // item
+gPickupEventPrizeType = 2; // vip item
+gPickupEventPrizeType = 3; // cash + item
+
+gXXXXXTrackCpType[x][y] = 0 // start CP
+gXXXXXTrackCpType[x][y] = 1 // normal CP
+gXXXXXTrackCpType[x][y] = 2 // finish CP
+
+gRaceStatus[x][mRaceState] = 0; // race not enabled
+gRaceStatus[x][mRaceState] = 1; // racords started
+gRaceStatus[x][mRaceState] = 2; // race started
+gRaceStatus[x][mRaceState] = 3; // countdown to finish started
+gRaceStatus[x][mRaceState] = 4; // finished
+
+gRaceStatus[x][mRaceEntrantXStatus] = 0; // slot free
+gRaceStatus[x][mRaceEntrantXStatus] = 1; // player joined
+gRaceStatus[x][mRaceEntrantXStatus] = 2; // player left during race
+gRaceStatus[x][mRaceEntrantXStatus] = 3; // finished
+
+
+
+[pPartsMade] = 0; // nothing
+[pPartsMade] = 1; // weapon
+	[pPartsEndID] = 0; // nothing
+	[pPartsEndID] = 1; // 9MM
+	[pPartsEndID] = 2; // 9MM SIL
+	[pPartsEndID] = 3; // DesEagle
+	[pPartsEndID] = 4; // MicroSMG
+	[pPartsEndID] = 5; // MP5
+	[pPartsEndID] = 6; // Tec9
+	[pPartsEndID] = 7; // Shotgun
+	[pPartsEndID] = 8; // AK-47
+	[pPartsEndID] = 9; // M4
+	[pPartsEndID] = 10; // Rifle
+	[pPartsEndID] = 11; // SRifle
+	[pPartsEndID] = 12; // SCharge
+[pPartsMade] = 2; // ammo
+	[pPartsEndID] = 0; // nothing
+	[pPartsEndID] = 1; // 9MM Ammo
+	[pPartsEndID] = 2; // 50AE Ammo
+	[pPartsEndID] = 3; // Buckshot
+	[pPartsEndID] = 4; // 7.62MM Ammo
+	[pPartsEndID] = 5; // 1.27MM Ammo
+	[pPartsEndID] = 6; // KGP 66MM Ammo
+	[pPartsEndID] = 7; // Napalm
+[pPartsMade] = 3; // main part
+	[pPartsEndID] = 0; // nothing
+	[pPartsEndID] = 1; // PistolPart1
+	[pPartsEndID] = 2; // PistolPart2
+	[pPartsEndID] = 3; // PistolPart3
+	[pPartsEndID] = 4; // PistolPart4
+	[pPartsEndID] = 5; // PistolPart5
+	[pPartsEndID] = 6; // RiflePart1
+	[pPartsEndID] = 7; // RiflePart2
+	[pPartsEndID] = 8; // RiflePart3
+	[pPartsEndID] = 9; // RiflePart4
+	[pPartsEndID] = 10; // RiflePart5
+	[pPartsEndID] = 11; // RiflePart6
+	[pPartsEndID] = 12; // RiflePart7
+
+
+
+[pItemXtype] = 1; // normal
+[pItemX] = 1; // ³om
+[pItemX] = 2; // kostka
+[pItemX] = 3; // creditcard
+[pItemX] = 4; // ksiazka tel
+[pItemX] = 5; // plecak
+[pItemX] = 6; // petardy
+[pItemX] = 7; // ¿arówka
+[pItemX] = 8; // fireworks
+
+[pItemXtype] = 2; // vehicles
+
+[pItemXtype] = 3; // with paramater
+	[pItemX] = 1; // kanister
+		[pItemXparam] = pojemnosc
+	[pItemX] = 2; // walkie talkie
+	[pItemX] = 3; // telefon bez fm
+		[pItemXparam] = on/off
+		[pItemXparam2] = nr tel
+		[pItemXparam3] = biz ID
+		[pItemXparam4] = simID
+		[pItemXparam5] = "Pusty"
+	[pItemX] = 4; // telefon z fm
+	[pItemX] = 5; // dowod
+		[pItemXparam5] = "Imie_Nazwisko"
+	[pItemX] = 6; // prawko
+		[pItemXparam5] = "Imie_Nazwisko"
+	[pItemX] = 7; // okulary
+		[pITemXparam1] = model
+	[pItemX] = 16; // karta SIM
+		[pItemXparam1] = nr tel
+		[pItemXparam2] = biz ID
+		[pItemXparam3] = simID
+	[pItemX] = 17; // karta do³adowanai SIM
+		[pItemXparam1] = value
+		[pItemXparam2] = time
+		[pItemXparam3] = biz ID
+	[pItemX] = 19; // dowód rejestracyjny pojazdu
+		[pItemXparam1] = rejestracja pojazdu
+		[pItemXparam2] = numer VIN pojazdu
+		[pItemXparam3] = oc value;
+		[pItemXparam4] = ac value;
+		[pItemXparam5] = wlasciciel
+[pItemXtype] = 4; // houses
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OTHER
+P: Kto mo¿e posiadaæ biznes z broni¹ ?
+O: Ka¿dy kto nie jest jednoczeœnie liderem frakcji typu F_POLICE
+
+
+UNTAZED
+
+drzwi pojazdu - kod binarny jako tekst

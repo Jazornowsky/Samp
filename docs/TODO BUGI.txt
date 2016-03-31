@@ -1,0 +1,45 @@
+- telefon do taxi
+- ubezpieczenie
+- ustawic wrescie porzadnie pkt od wymiany opon , dodac cmd od tego, oraz jakis znaczek do tego
+- przestawic pkt naprawy ten co jest na 0 0 0
+
+Nowe : 
+
+- dowod rejestracyjny
+
+- dodac kilka nowych aku
+
+- oddac kilka nowych jedzien z roznymi czasami glodu np cheeessburrgeeer z 2x serem to tam troche dluzej od dajmy batona  a to sie wiaze ze trzeba w resta dac wybor co sie je i zmiane ceny :P
+
+- pkt organizacyjny frakcji znika po paydayu, sprawdzalem dane w bazie cos tam niby jest check  a ja sie dowiem wiecej moze
+
+- afactionname , po zmianie nazwy oraz odczekaniu 10 min, w bazie sie zapisuje nazwa nowa ale na pasku na dole od stanu niestety nie odswieza trzeba reloga zrobic, sprawdzic tez czy nowa pobiera w chatach frakcyjnych
+
+- podczas wpisywania hasla dodac guzik od wyjscia z gry (po co ?? :d pomylilem nick i nie mam jak wyjsc :) ) albo poprostu jak sie tam napisze /q to wywala
+ 
+- abizentrance - gdy jest kupiony biznes to usuwa ownera , sprawdzilem w bazie i wcina naprawde :P 
+
+- sprawdzic rafinerie, oplacanie rachunkow za paliwo all typy trza sprawdzic podobno nabija nie wlasciwa ilosc a potem jeszcze nie usuwa sie wartosc z bazy ze juz sie zaplacilo itd
+propozyje rozwiazania : wpierw wyczyscic wpisy, mozliwe jest ze ciagnie jszcze ze starych wpisow jak bylo z 300 biznesow naliczenia
+potem sprawdzic od nowa 
+
+- looknac sprzedajbiznes podobno nie oddaje kasy : ta, sprzedajac biznes jest informacja nawet ze sprzedales biznes za 0$ ble !!! :P
+
+- zmiejszyc dmg piescie troche chyba jest z 15 to tak do 8-9, tam mowia ze nie moga ustawek zrobic miedzy gangami na piesci itd
+
+- dodac do additem : 
+SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] TYPE 1 : 1 - £OM , 2 - KOSTKA, 3 - KARTA KREDYTOWA, 4 - KSIAZKA TEL, 5 - PLECAK, 6 - RAKIETA, 7- ZAROWKA ");
+SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] TYPE 1 : 8 - ZESTAW FAJER, 9 - BATON, 10 - HAK, 11 - ALARM, 12 - CYGARO., 105 - MAPA , 106 - RADIO ");
+SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] TYPE 2 : Klucze do samochodu, TYPE 4 - Klucze do domu");
+
+oraz do additemex :
+SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] TYPE 1 ; 1 - £OM , 2 - KOSTKA, 3 - KARTA KREDYTOWA, 4 - KSIAZKA TEL, 5 - PLECAK, 6 - RAKIETA, 7- ZAROWKA ");
+SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] TYPE 1 : 8 - ZESTAW FAJER, 9 - BATON, 10 - HAK, 11 - ALARM, 12 - CYGARO., 105 - MAPA , 106 - RADIO ");
+SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] TYPE 2 : Klucze do samochodu, TYPE 4 - Klucze do domu");
+SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Parametr 6 - iloœæ");
+
+-ladowanie aku oraz cos tam jeszcze - made by soldi
+
+- payday - warunek powyzej 50 h nie dziala, potwierzone
+
+- wynajmnijdom -  Otó¿ gdy usi³ujê ustaliæ cenê wynajmu, ten shit k³óci siê ze mn¹, ¿e nale¿y byæ w domu (a jestem) opis Forge , http://iv.pl/images/44190022245640949103.png

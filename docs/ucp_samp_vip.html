@@ -1,0 +1,510 @@
+<!-- INCLUDE ucp_header.html -->
+
+<h2>{L_TITLE}</h2>
+
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+		<!-- IF VIP_SELECTED == 0 -->
+			<h2>Ogólne informacje</h2>
+			<p style="color:red;">PRZED AKTYWACJĄ USłUGI NALEŻY WYLOGOWAĆ SIĘ Z GRY !<br />
+								W PRZECIWNYM RAZIE STATUS VIP NIE ZOSTANIE ZAPISANY ! NIE UWZGLĘDNIAMY W TAKIM WYPADKU REKLAMACJI !<br />
+								<br/> W PRZYPADKU NIE OTRZYMANIA SMS, REKLAMACJE PROSZĘ KIEROWAĆ DO DOTPAY.PL - http://www.dotpay.pl/reklamacja</p>
+			
+			<h3>Punkty WParty</h3>
+			<table width="100%" style="padding:top: 10px;">
+				<tr><td style="padding-right:15px;"><h4>Twoja aktualna liczba punktów WParty: {VIP_POINTS}</h4></td></tr>
+				<!--<tr><td style="padding-right: 15px;"><b>Nie można w tej chwili wykopować nowych punktów. Obecne punkty zostaną zachowane.-->
+				<tr><td style="padding-right:15px;"><b>1780 punktów WParty</b></td><td><a href="{VIP_890PTS}"><img style="float: right" src="/images/icons/misc/dotpay_b9_195x97_2.jpg" /></a></tr>
+				<tr><td style="padding-right:15px;"><b>3560 punktów WParty + <span style="color:green">GRATIS 250 punktów</span></b></td><td><a href="{VIP_1780PTS}"><img style="float: right" src="/images/icons/misc/dotpay_b9_195x97_2.jpg" /></a></tr>
+				<tr><td style="padding-right:15px;"><b>4450 punktów WParty + <span style="color:green">GRATIS 500 punktów</span></b></td><td><a href="{VIP_3560PTS}"><img style="float: right" src="/images/icons/misc/dotpay_b9_195x97_2.jpg" /></a></tr>
+				<tr><td style="padding-right:15px;"><b>8900 punktów WParty + <span style="color:green">GRATIS 1000 punktów</span></b></td><td><a href="{VIP_4450PTS}"><img style="float: right" src="/images/icons/misc/dotpay_b9_195x97_2.jpg" /></a></tr>
+				<!--<tr><td style="padding-right:15px;"><h3>Punkty za przelew</h></td></tr>
+				<tr><td style="padding-right:15px;"><b>2314 punktów WParty + <span style="color:green">GRATIS 162 punkty</span></b></td><td><a href="{VIP_2314PTS}"><img style="float: right" src="/images/icons/misc/dotpay_b10_195x97.png" /></a></tr>
+				<tr><td style="padding-right:15px;"><b>6764 punktów WParty + <span style="color:green">GRATIS 473 punkty</span></b></td><td><a href="{VIP_6764PTS}"><img style="float: right" src="/images/icons/misc/dotpay_b10_195x97.png" /></a></tr>
+				<tr><td style="padding-right:15px;"><b>8900 punktów WParty + <span style="color:green">GRATIS 623 punkty</span></b></td><td><a href="{VIP_8900PTS}"><img style="float: right" src="/images/icons/misc/dotpay_b10_195x97.png" /></a></tr>-->
+			</table>
+			<h3>Podstawowe konto VIP</h3>
+			<table width="100%" style="padding-top: 10px;">
+				<tr>
+					<td style="padding-right:15px;">
+						<b>AFK</b> - gracz nie zostanie wyrzucony z serwa przez system za dłuższą nieaktywność w grze - aktywne na 30 dni (w przypadku zaplanowanej aktualizacji uzytkownik zostaniej o niej powiadomiony przez forum lub w grze z conajmniej 1 godzinnym wyprzedzeniem)<br />
+						<b>Fioletowy kolor nicku w grze</b> - wyróżnij się spośród innych oraz zyskaj prestiż !<br />
+						<b>Ponad 50% zniżka na bilety autobusowe</b> - poruszaj się komunikacją miejską prawie za darmo !<br />
+						<b>Dostęp do unikalnych modeli czapek i okularów</b> - zadecyduj o swoim wyglądzie !<br />
+						<b>Aktywowany na 30 dni</b><br />
+					</td>
+					<td>
+						<a href="{URL_VIPALL}"><input type="button" class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a>
+					</td>
+				</tr>
+			</table>
+			
+			<h3>VIP Item</h3>
+			<table width="100%" style="padding-top: 10px;">
+				<tr>
+					<td style="padding-right: 15px;">
+						Dzięki VIP Item gracz uzyskuje 5 dodatkowych slotów na itemy w /mi bez potrzeby przenoszenia plecaka.<br />
+						Aktywowany na 30 dni<br />
+					</td>
+					<td>
+						<a href="{URL_VIPITEM}"><input type="button" class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a>
+					</td>
+				</tr>
+			</table>
+			
+			<h3>Wkrzeszenie postaci</h3>
+			<table width="100%" style="padding-top: 10px;">
+				<tr>
+					<td style="padding-right: 15px;">
+						Jeśli Twoja postać umarła możesz ją wskrzesić korzystając z tej usługi.<br />
+					</td>
+					<td>
+						<a href="{URL_VIPRES}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a>
+					</td>
+				</tr>
+			</table>
+			
+			<h3>Garaż</h3>
+			<table width="100%" style="padding-top: 10px;">
+				<tr>
+					<td style="padding-right:15px;">
+						W garażu można przetrzymywać samochód lub motor. Przeznaczony on jest na jeden pojazd.<br />
+						Po wykupieniu garażu gracz ma możliwość ustawienia jednego garażu za pomocą komendy /ustawgaraz .<br />
+						Garaż jednakże nie może zostać ustawiony na środku drogi. Musi także znajdowac się odpowiednio blisko wykupionego domu postaci.<br />
+						Garaż należy postawić przy widocznym obiekcie w grze typu garaż.<br />
+					</td>
+					<td>
+						<a href="{URL_VIPGAR}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a>
+					</td>
+				</tr>
+			</table>
+			
+			<h3>Pakiet 25 obiektów</h3>
+			<table width="100%" style="padding-top: 10px;">
+				<tr>
+					<td style="padding-right:15px;">
+						Pakiet 25 obiektów pozwala na postawienie 25 obiektów w grze.<br />
+					</td>
+					<td>
+						<a href="{URL_VIPOBJ}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a>
+					</td>
+				</tr>
+			</table>
+			
+			<h3>Obiekty do pojazdów</h3>
+			Zasada działania obiektów do pojazdów polega na ich doczepieniu i zachowaniu przy pojeździe aż do momentu zniszczenia lub zdemontowania przez gracza gdzie wtedy obiekt traktowany jest jako normalny item i możliwe jest jego ponownego wykorzystania w innym pojeździe.<br />
+			Gracz po wybraniu obiektu otrzymuje jego 2 sztuki.<br />
+			Neony można dowolnie ustawiać (pozycja oraz obrót w ograniczonym zakresie tak aby ograniczyć możliwość doczepiania obiektu poza pojazdem).<br />
+			Niektóre obiekty generują sobą światło. Po pewnym kontem tego światła nie widać i jest to ograniczenie możliwości samej gry.<br />
+			Obiekty można montować w dowolnego typu pojeździe.<br />
+			Dostępne komendy: /doczepobiektpoj - /ustawobiektpoj - /obrocobiektpoj - /zdemontujobiektzpoj<br />
+			Lista komend dostępna jest także w /komendypojazdow.
+			<ul class="topiclist cplist pmlist">
+			<table width="100%" style="padding-top: 10px;">
+				<tr>
+					<td><label>Neon czerwony</label></td>
+					<td><a href="{URL_VIPNEOR}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Neon niebieski</label></td>
+					<td><a href="{URL_VIPNEOB}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Neon zielony</label></td>
+					<td><a href="{URL_VIPNEOG}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Neon żółty</label></td>
+					<td><a href="{URL_VIPNEOY}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Neon różowy</label></td>
+					<td><a href="{URL_VIPNEOP}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Neon biały</label></td>
+					<td><a href="{URL_VIPNEOW}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Lampa halogenowa</label></td>
+					<td><a href="{URL_VIPHALLIGHT}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Dioda biała</label></td>
+					<td><a href="{URL_VIPPOINTWHITE}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Dioda czerwona</label></td>
+					<td><a href="{URL_VIPPOINTRED}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Dioda zielona</label></td>
+					<td><a href="{URL_VIPPOINTGREEN}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+				<tr>
+					<td><label>Dioda niebieska</label></td>
+					<td><a href="{URL_VIPPOINTBLUE}"><input type=button class="button1" value="AKTYWUJ" style="float:right; width:90px; height:50px"/></a></td>
+				</tr>
+			</table>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 1 and POINTS_BOUGHT == 0 -->
+			<h2>1780 punktów WParty</h2>
+			<!-- IF WRONG_CODE == 1 -->
+			<span style="color: red">Kod niepoprawny !</span><br /><br />
+			<!-- ENDIF -->
+			<form action="{VIP_890PTS}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aby dokupić punkty (1780 punktów) musisz wpisać kod</label></dt>
+						<dd><input type=text name="check" size=10 maxlength=8 /></dd>
+					</dl>
+					<br />
+					<input class="button1" type=submit value="Kup">
+				</fieldset>
+			</form>
+			<br />
+			<ul class="topiclist cplist pmlist">
+				Aby uzyskać kod wyślij sms o treści:<br />
+				AP.WPA1<br />
+				na numer 75068<br />
+				Koszt 6,15zł brutto<br />
+				Płatności obsługuje Dotpay (<a href="http://www.dotpay.pl/Informacje/Regulaminy_serwisu_Dotpay/Regulamin_serwisow_sms">regulamin</a>, <a href="http://www.dotpay.pl/reklamacje">reklamacje</a>).
+				Obsługiwane sieci: T-mobile, Plus, Orange, Play<br />
+				Właściciel serwisu: xtremedeblin@gmail.com
+			</ul>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 2 and POINTS_BOUGHT == 0 -->
+			<h2>3560 punktów WParty + GRATIS 250 punktów</h2>
+			<!-- IF WRONG_CODE == 1 -->
+			<span style="color: red">Kod niepoprawny !</span><br /><br />
+			<!-- ENDIF -->
+			<form action="{VIP_1780PTS}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aby dokupić punkty (3810 punktów) musisz wpisać kod</label></dt>
+						<dd><input type=text name="check" size=10 maxlength=8 /></dd>
+					</dl>
+					<br />
+					<input class="button1" type=submit value="Kup">
+				</fieldset>
+			</form>
+			<br />
+			<ul class="topiclist cplist pmlist">
+				Aby uzyskać kod wyślij sms o treści:<br />
+				AP.WPA2<br />
+				na numer 91058<br />
+				Koszt 12,3zł brutto<br />
+				Płatności obsługuje Dotpay (<a href="http://www.dotpay.pl/Informacje/Regulaminy_serwisu_Dotpay/Regulamin_serwisow_sms">regulamin</a>, <a href="http://www.dotpay.pl/reklamacje">reklamacje</a>).
+				Obsługiwane sieci: T-mobile, Plus, Orange, Play<br />
+				Właściciel serwisu: xtremedeblin@gmail.com
+			</ul>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 3 and POINTS_BOUGHT == 0 -->
+			<h2>4450 punktów WParty + GRATIS 500 punktów</h2>
+			<!-- IF WRONG_CODE == 1 -->
+			<span style="color: red">Kod niepoprawny !</span><br /><br />
+			<!-- ENDIF -->
+			<form action="{VIP_3560PTS}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aby dokupić punkty (4950 punktów) musisz wpisać kod</label></dt>
+						<dd><input type=text name="check" size=10 maxlength=8 /></dd>
+					</dl>
+					<br />
+					<input class="button1" type=submit value="Kup">
+				</fieldset>
+			</form>
+			<br />
+			<ul class="topiclist cplist pmlist">
+				Aby uzyskać kod wyślij sms o treści:<br />
+				AP.WPA3<br />
+				na numer 92058<br />
+				Koszt 24,6zł brutto<br />
+				Płatności obsługuje Dotpay (<a href="http://www.dotpay.pl/Informacje/Regulaminy_serwisu_Dotpay/Regulamin_serwisow_sms">regulamin</a>, <a href="http://www.dotpay.pl/reklamacje">reklamacje</a>).
+				Obsługiwane sieci: T-mobile, Plus, Orange, Play<br />
+				Właściciel serwisu: xtremedeblin@gmail.com
+			</ul>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 4 and POINTS_BOUGHT == 0 -->
+			<h2>8900 punktów WParty + GRATIS 1000 punktów</h2>
+			<!-- IF WRONG_CODE == 1 -->
+			<span style="color: red">Kod niepoprawny !</span><br /><br />
+			<!-- ENDIF -->
+			<form action="{VIP_4450PTS}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aby dokupić punkty (9900 punktów) musisz wpisać kod</label></dt>
+						<dd><input type=text name="check" size=10 maxlength=8 /></dd>
+					</dl>
+					<br />
+					<input class="button1" type=submit value="Kup">
+				</fieldset>
+			</form>
+			<br />
+			<ul class="topiclist cplist pmlist">
+				Aby uzyskać kod wyślij sms o treści:<br />
+				AP.WPA4<br />
+				na numer 92578<br />
+				Koszt 30,75zł brutto<br />
+				Płatności obsługuje Dotpay (<a href="http://www.dotpay.pl/Informacje/Regulaminy_serwisu_Dotpay/Regulamin_serwisow_sms">regulamin</a>, <a href="http://www.dotpay.pl/reklamacje">reklamacje</a>).
+				Obsługiwane sieci: T-mobile, Plus, Orange, Play<br />
+				Właściciel serwisu: xtremedeblin@gmail.com
+			</ul>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 5 and POINTS_BOUGHT == 0 -->
+			<h2>2314 punktów WParty + GRATIS 162 punkty</h2>
+			<!-- IF WRONG_CODE == 1 -->
+			<span style="color: red">Kod niepoprawny !</span><br /><br />
+			<!-- ENDIF -->
+			<!-- IF EMPTY_CODE == 1 -->
+			<span style="color: red">Nie wpisałeś kodu !</span><br /><br />
+			<!-- ENDIF -->
+			<form action="{VIP_2314PTS}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aby dokupić punkty (2476 punktów) musisz wpisać kod</label></dt>
+						<dd><input type=text name="check" size=10 maxlength=8 /></dd>
+					</dl>
+				<br />
+				<input class="button1" type=submit value="Aktywuj">
+				</fieldset>
+			</form>
+			<br />
+			Aby uzyskać kod musisz opłacić daną usługe przechodząc pod adres:<br />
+			<a href="https://ssl.dotpay.pl/?id=37999&code=wprp1">https://ssl.dotpay.pl/?id=37999&code=wprp1</a>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 6 and POINTS_BOUGHT == 0 -->
+			<h2>6764 punktów WParty + GRATIS 473 punkty</h2>
+			<!-- IF WRONG_CODE == 1 -->
+			<span style="color: red">Kod niepoprawny !</span><br /><br />
+			<!-- ENDIF -->
+			<!-- IF EMPTY_CODE == 1 -->
+			<span style="color: red">Nie wpisałeś kodu !</span><br /><br />
+			<!-- ENDIF -->
+			<form action="{VIP_6764PTS}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aby dokupić punkty (7237 punktów) musisz wpisać kod</label></dt>
+						<dd><input type=text name="check" size=10 maxlength=8 /></dd>
+					</dl>
+				<br />
+				<input class="button1" type=submit value="Aktywuj">
+				</fieldset>
+			</form>
+			<br />
+			Aby uzyskać kod musisz opłacić daną usługe przechodząc pod adres:<br />
+			<a href="https://ssl.dotpay.pl/?id=37999&code=wprp2">https://ssl.dotpay.pl/?id=37999&code=wprp2</a>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 7 and POINTS_BOUGHT == 0 -->
+			<h2>8900 punktów WParty + GRATIS 623 punkty</h2>
+			<!-- IF WRONG_CODE == 1 -->
+			<span style="color: red">Kod niepoprawny !</span><br /><br />
+			<!-- ENDIF -->
+			<!-- IF EMPTY_CODE == 1 -->
+			<span style="color: red">Nie wpisałeś kodu !</span><br /><br />
+			<!-- ENDIF -->
+			<form action="{VIP_8900PTS}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aby dokupić punkty (9523 punktów) musisz wpisać kod</label></dt>
+						<dd><input type=text name="check" size=10 maxlength=8 /></dd>
+					</dl>
+				<br />
+				<input class="button1" type=submit value="Aktywuj">
+				</fieldset>
+			</form>
+			<br />
+			Aby uzyskać kod musisz opłacić daną usługe przechodząc pod adres:<br />
+			<a href="https://ssl.dotpay.pl/?id=37999&code=wprp3">https://ssl.dotpay.pl/?id=37999&code=wprp3</a>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 8 and VIP_ACTIVATED == 0 -->
+			<h2>VIP</h2>
+			<!-- IF EMPTY_NAME == 1 -->
+				<span style="color: red">Nie podałeś nazwy postaci !</span><br /><br />
+			<!-- ENDIF -->
+			<!-- IF LOW_POINTS -->
+				<span style="color: red">Niewystarczająca liczba punktów do aktywowania usługi !</span><br />
+			<!-- ENDIF -->
+			<form action="{URL_FORM_VIPALLSSPR}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aktualnie posiadana ilość punktów WParty: {VIP_POINTS}</label></dt>
+						<dt><label>Koszt: 1750 pkt WParty</label></dt>
+					</dl>
+					<dl>
+						<dt><label>Wybierz postać u której ma być aktywowany VIP</label></dt>
+						<dd><select name="character" ><!-- BEGIN account_vipall --><!-- IF not account_vipall.CHARACTER_BANNED --><option>{account_vipall.CHARACTER_NAME}</option><!-- ENDIF --><!-- END account_vipall --></select></dd>
+					</dl>
+					<br />
+					<input class="button1" type=submit value="Aktywuj">
+				</fieldset>
+			</form>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 9 and GARAGE_ACTIVATED == 0 -->
+			<h2>Garaż</h2>
+			<!-- IF EMPTY_NAME == 1 -->
+				<span style="color: red">Nie podałeś nazwy postaci !</span><br /><br />
+			<!-- ENDIF -->
+			<!-- IF LOW_POINTS -->
+				<span style="color: red">Niewystarczająca liczba punktów do aktywowania usługi !</span><br />
+			<!-- ENDIF -->
+			<form action="{URL_FORM_VIPALLSSPR}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aktualnie posiadana ilość punktów WParty: {VIP_POINTS}</label></dt>
+						<dt><label>Koszt: 3400 pkt WParty</label></dt>
+					</dl>
+					<dl>
+						<dt><label>Wybierz postać u której ma być dodany garaż</label></dt>
+						<dd><select name="character" ><!-- BEGIN account_vipall --><!-- IF not account_vipall.CHARACTER_BANNED --><option>{account_vipall.CHARACTER_NAME}</option><!-- ENDIF --><!-- END account_vipall --></select></dd>
+					</dl>
+				<br />
+				<input class="button1" type=submit value="Aktywuj">
+				</fieldset>
+			</form>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 12 and NEON_ACTIVATED == 0 -->
+			<!-- IF NEON_COLOR == 1 --><h2>Neon - czerwony</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 2 --><h2>Neon - niebieski</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 3 --><h2>Neon - zielony</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 4 --><h2>Neon - żółty</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 5 --><h2>Neon - różowy</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 6 --><h2>Neon - biały</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 7 --><h2>Lampa halogenowa</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 8 --><h2>Dioda biała</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 9 --><h2>Dioda czerwona</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 10 --><h2>Dioda zielona</h2><!-- ENDIF -->
+			<!-- IF NEON_COLOR == 11 --><h2>Dioda niebieska</h2><!-- ENDIF -->
+			<!-- IF EMPTY_NAME == 1 -->
+				<span style="color: red">Nie podałeś nazwy postaci !</span><br /><br />
+			<!-- ENDIF -->
+			<!-- IF LOW_POINTS -->
+				<span style="color: red">Niewystarczająca liczba punktów do aktywowania usługi !</span><br />
+			<!-- ENDIF -->
+			<form action="{U_VIEW_SAMP_VIPNEOSSPR}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aktualnie posiadana ilość punktów WParty: {VIP_POINTS}
+						<dt><label>Koszt: 800 pkt WParty</label></dt>
+					</dl>
+					<dl>
+						<dt><label>Wybierz postać u której ma być dodany obiekt</label></dt>
+						<dd><select name="character" ><!-- BEGIN account_vipall --><!-- IF not account_vipall.CHARACTER_BANNED --><option>{account_vipall.CHARACTER_NAME}</option><!-- ENDIF --><!-- END account_vipall --></select></dd>
+					</dl>
+				<br />
+				<input class="button1" type=submit value="Aktywuj">
+				</fieldset>
+			</form>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 10 and VIPITEM_ACTIVATED == 0 -->
+			<h2>VIP Item</h2>
+			<!-- IF EMPTY_NAME == 1 -->
+				<span style="color: red">Nie podałeś nazwy postaci !</span><br /><br />
+			<!-- ENDIF -->
+			<!-- IF LOW_POINTS -->
+				<span style="color: red">Niewystarczająca liczba punktów do aktywowania usługi !</span><br />
+			<!-- ENDIF -->
+			<form action="{URL_FORM_VIPALLSSPR}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aktualnie posiadana ilość punktów WParty: {VIP_POINTS}
+						<dt><label>Koszt: 600 pkt WParty</label></dt>
+					</dl>
+					<dl>
+						<dt><label>Wybierz postać u której ma być aktywowany VIP Item</label></dt>
+						<dd><select name="character" ><!-- BEGIN account_vipall --><!-- IF not account_vipall.CHARACTER_BANNED --><option>{account_vipall.CHARACTER_NAME}</option><!-- ENDIF --><!-- END account_vipall --></select></dd>
+					</dl>
+					<br />
+					<input class="button1" type=submit value="Aktywuj">
+				</fieldset>
+			</form>
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 11 and RES_ACTIVATED == 0 -->
+			<h2>Wskrzeszenie postaci</h2>
+			<!-- IF EMPTY_NAME == 1 -->
+				<span style="color: red">Nie podałeś nazwy postaci !</span><br /><br />
+			<!-- ENDIF -->
+			<!-- IF LOW_POINTS -->
+				<span style="color: red">Niewystarczająca liczba punktów do aktywowania usługi !</span><br />
+			<!-- ENDIF -->
+			<!-- IF CHARACTERS_D_COUNT == 0 -->
+				Nie posiadasz martwych postaci !<br />
+			<!-- ELSE -->
+			<form action="{URL_FORM_VIPALLSSPR}" method="post">
+				<fieldset>
+					<input type="hidden" name="charDeath" value="{CHARACTERS_D_COUNT}" />
+					<dl>
+						<dt><label>Aktualnie posiadana ilość punktów WParty: {VIP_POINTS}</label></dt>
+						<dt><label>Koszt: 600 pkt WParty</label></dt>
+					</dl>
+					<dl>
+						<dt><label>Wybierz postać którą chcesz wskrzesić</label></dt>
+						<dd><select name="character" ><!-- BEGIN account_vipall --><!-- IF not account_vipall.CHARACTER_BANNED and account_vipall.CHARACTER_DEATH > 0 --><option>{account_vipall.CHARACTER_NAME}</option><!-- ENDIF --><!-- END account_vipall --></select></dd>
+					</dl>
+					<br />
+					<input class="button1" type=submit value="Aktywuj">
+				</fieldset>
+			</form>
+			<br />
+			<ul class="topiclist cplist pmlist">
+				Aby uzyskać kod wyślij sms o treści:<br />
+				AP.PGE4<br />
+				na numer 75068<br />
+				Koszt 6,15zł brutto<br />
+				Płatności obsługuje Dotpay (<a href="http://www.dotpay.pl/Informacje/Regulaminy_serwisu_Dotpay/Regulamin_serwisow_sms">regulamin</a>, <a href="http://www.dotpay.pl/reklamacje">reklamacje</a>).
+				Obsługiwane sieci: T-mobile, Plus, Orange, Play<br />
+				Właściciel serwisu: xtremedeblin@gmail.com
+			</ul>
+			<!-- ENDIF -->
+		<!-- ENDIF -->
+		<!-- IF VIP_SELECTED == 14 and OBJECTS_ACTIVATED == 0 -->
+			<h2>Pakiet 25 obiektów</h2>
+			<!-- IF EMPTY_NAME == 1 -->
+				<span style="color: red">Nie podałeś nazwy postaci !</span><br /><br />
+			<!-- ENDIF -->
+			<!-- IF LOW_POINTS -->
+				<span style="color: red">Niewystarczająca liczba punktów do aktywowania usługi !</span><br />
+			<!-- ENDIF -->
+			<form action="{URL_FORM_VIPALLSSPR}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label>Aktualnie posiadana ilość punktów WParty: {VIP_POINTS}</label></dt>
+						<dt><label>Koszt: 2000 pkt WParty</label></dt>
+					</dl>
+					<dl>
+						<dt><label>Wybierz postać do której mają być dodane obiekty.</label></dt>
+						<dd><select name="character" ><!-- BEGIN account_vipall --><!-- IF not account_vipall.CHARACTER_BANNED --><option>{account_vipall.CHARACTER_NAME}</option><!-- ENDIF --><!-- END account_vipall --></select></dd>
+					</dl>
+					<br />
+					<input class="button1" type=submit value="Aktywuj">
+				</fieldset>
+			</form>
+		<!-- ENDIF -->
+		<!-- IF POINTS_BOUGHT -->
+			Wykupiłeś nowe punkty !
+		<!-- ENDIF -->
+		<!-- IF RES_ACTIVATED -->
+			Wskrzesiłeś postać !<br />
+		<!-- ENDIF -->
+		<!-- IF VIPITEM_ACTIVATED -->
+			Aktywowałeś VIP Item !<br />
+			Aby sprawdzić ile czasu pozostało do końca VIPa można użyć komendy /statystyki w grze.
+		<!-- ENDIF -->
+		<!-- IF VIP_ACTIVATED || VIP2_ACTIVATED -->
+			Aktywowałeś VIPa !<br />
+			Aby sprawdzić ile czasu pozostało do końca VIPa można użyć komendy /statystyki w grze.
+		<!-- ENDIF -->
+		<!-- IF GARAGE_ACTIVATED -->
+			Wykupiłeś garaż !
+		<!-- ENDIF -->
+		<!-- IF OBJECTS_ACTIVATED -->
+			Wykupiłeś pakiet obiektów !
+		<!-- ENDIF -->
+		<!-- IF NEON_ACTIVATED -->
+			Wykupiłeś pakiet neonów !
+		<!-- ENDIF -->
+		<span class="corners-bottom"><span></span></span>
+	</div>
+</div>
+
+<!-- INCLUDE ucp_footer.html -->

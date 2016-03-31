@@ -1,0 +1,199 @@
+[size=150]Typ 1[/size]
+1. ³om
+2. kostka
+3. karta kredytowa
+4. ksi¹¿ka telefoniczna
+5. plecak
+6. rakieta
+7. ¿arówka H7
+8. zestaw fajerwerków
+9. baton WParty
+10. hak holowniczy
+11. alarm
+12. cygaro
+13. granat
+14. gas pieprzowy
+15. koktail mo³otowa
+16. pistolet 9mm
+17. pistolet 9mm z t³umikiem
+18. pistolet Desert Eagle
+19. shotgun
+20. obrzyn
+21. shotgun bojowy
+22. pistolet maszynowy micro SMG
+23. pistolet maszynowy MP5
+24. karabinek AK-47
+25. karabinek M4
+26. Tec9
+27. karabin
+28. karabin snajperski
+29. wyrzutnia rakiet
+30. wyrzutnia rakiet z HS
+31. miotacz ognia
+32. minigun
+33. ³adunek wybuchowy
+34. spray
+35. gaœnica
+36. nabój 9mm
+37. nabój .50 AE
+38. œrut
+39. nabój 7.62mm
+40. nabój 12.7mm
+41. KGP 66mm
+42. napalm
+43. pocisk 9mm
+44. ³uska 9mm
+45. proch admidowy
+46. sp³onka 9mm
+47. o³ów
+48. szkielet broni
+49. zespó³ zamka
+50. magazynek
+51. sprê¿yna powrotna
+52. komplet œrubek
+53. szkielet broni karabinowej
+54. zespó³ zamka karabinu
+55. magazynek karabinu
+56. sprê¿yna powrotna karabinu
+57. kolba
+58. komplet œrubek karabinu
+59. t³umik
+60. luneta
+61. lufa
+62. mechanizm spustowo-uderzeniowy
+63. nak³adki z tworzywa sztucznego
+64. mechanizm iglicy
+65. bezpiecznik typu listkowego
+66. przyrz¹dy celownicze
+67. szkielet
+68. stopka
+69. wew. sprê¿yna
+70. dosy³acz
+71. lufa karabinu
+72. mechanizm spustowo-uderzeniowy karabinu
+73. mechanizm iglicy karabinu
+74. bezpiecznik typu listkowego karabinu
+75. szkielet karabinu
+76. stopka karabinu
+77. wew. sprê¿yna karabinu
+78. dosy³acz karabinu
+79. szkielet lunety
+80. szkielet lunety
+81. soczewki
+82. zestaw monta¿owy Tec9
+83. skrzynka monta¿owa MP5
+84. zestaw monta¿owy AK-47
+85. skrzynka monta¿owa M4
+86. rêkojeœæ prze³adowania
+87. carbon
+88. skrzynka monta¿owa karabinu
+89. siatka maskuj¹ca
+90. ³uska do strzelby
+91. proch œwiszcz¹cy
+92. sp³onka do strzelby
+93. pocisk 7.62mm
+94. ³uska 7.62mm
+95. proch czarny
+96. sp³onka 7.62mm
+97. pocisk 12.7mm
+98. ³uska 12.7mm
+99. proch bobinit
+100. sp³onka 12.7mm
+101. pocisk .50 AE
+102. ³uska .50 AE
+103. proch ignis volatilis
+104. sp³onka .50 AE
+105. Mapa San Andreas
+106. radioodbiornik[b]
+107. zegarek Classy z³oty, bia³a tarcza
+108. zegarek Classy srebrny, czarna tarcza
+109. zegarek Classy miedziany, czarna tarcza
+110. zegarek Classy z³oty, czarna tarcza
+111. zegarek Classy srebrny, bia³a tarcza
+112. zegarek Fashio fioletowy, czarna tarcza
+113. zegarek Fashio czerwony, czarna tarcza
+114. zegarek Fashio zielony, czarna tarcza
+115. zegarek Fashio ciemny fiolet, czarna tarcza
+116. zegarek Fashio Limited E1, czarna tarcza
+117. zegarek Fashio Limited E2, czaarna tarcza
+118. zegarek Fashio Limited E3, czaarna tarcza
+119. zegarek Fashio Limited E4, czaarna tarcza
+120. zegarek Fashio Limited E5, czaarna tarcza
+121. zegarek Fashio Limited E6, czaarna tarcza
+122. Samochodowy Komputer Policyjny
+123. CB Radio C
+124. CB Radio SE
+125. Cola WParty
+126. woda mineralna
+127. woda Ÿródlana
+128. baton Leon
+129. czekolada WParty
+130. jab³ko
+131. marchewka
+132. mandarynka
+133. mleko
+134. atat
+135. 2kace
+136. Pigó³ka Cud
+137. Krople ¿o³¹dkowe
+138. MultiVit
+139. Untoxin
+140. PowerBuild
+141. OutOff
+142. Lewatyks[/b]
+
+[size=150]Typ 2[/size]
+Klucze od pojazdów
+
+[size=150]Typ 3[/size]
+1. kanister
+2. krótkofalówka
+3. telefon bez radia FM
+4. telefon z radiem FM
+5. dowód
+6. prawo jazdy
+7. okulary
+8. linka holownicza
+9. czapka
+10. kupon szczêœliwej loterii[b]
+11. dokument ukoñczenia egzaminu na prawo jazdy
+12. GPS
+13. krótkofalówka SE[/b]
+
+[size=150]Typ 4[/size]
+Klucze od domów
+
+[size=150]Typ 5[/size]
+[b]1. kurczak z ziemniakami
+2. kebak z frytkami
+3. pizza z makaronem
+4. pizza WParty
+5. ziemniaki z kotletem
+6. sa³atka owocowa
+7. sa³atka jajeczna z porem
+8. hamburger
+9. cheesburger
+10. lody w kubku
+11. perski kebab
+12. meksykañska tortilla
+13. kawa luwak
+14. schebab po kapitañsku
+15. placek mazura
+16. sa³atka z tuñczykiem
+17. lin w œmietanie
+18. kie³basa z grila
+19. zapiekanka z PRL-u
+20. gruszka œnie¿na
+21. kapusta szparagowa
+22. szpinak
+23. EnergyKons[/b]
+
+[size=150]Typ 6[/size]
+[b]1. Janiec (piwo jasne)
+2. Jagutka (piwo ciemne)
+3. Denaturat 99%
+4. Vojtat (wódka 40%)
+5. Czerwony Byk (wino)
+6. Jasna Pokrzywka (jabol)
+7. Czerna Per³a (rum)
+8. Ró¿owa Wró¿ka (wódka zio³owa)[/b]

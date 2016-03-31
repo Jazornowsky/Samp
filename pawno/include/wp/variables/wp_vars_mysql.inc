@@ -7,10 +7,10 @@
 *
 *************************************************************************************************************/
 
-new db_host[10] = "127.0.0.1";
+new db_host[12] = "192.168.1.1";
 new db_user[5] = "root";
 new db_database[12] = "wparty_samp";
-new db_pass[9] = "password";
+new db_pass[9] = "comanche";
 
 new db_result[1024];
 new db_con1;

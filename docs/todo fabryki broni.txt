@@ -1,0 +1,47 @@
+Do pracy w fabryce broni/ammo
+
+Punkty:
+1. Poboru czêœci
+2. Montowania czêœci
+3. Montowanie pod czesci
+4. Wysylanie
+5. Zlozenie dokumentow 
+6. Magazynowania gotowych produktów
+7. Miejsce skupu broni/ammo
+
+ad 1 
+2572 -1285 10 38
+
+ad 2 
+2558 -1291 1044
+2554 -1291 1044
+2544 -1291 1044
+2541 -1291 1044
+2558 -1296 1044
+2554 -1296 1044
+2544 -1296 1044
+2542 -1296 1044
+
+ad 3
+
+2542 -1303 1044
+2550 -1303 1044
+2558 -1303 1044
+2560 -1284 1044
+2552 -1284 1044
+2544 -1284 1044
+
+ad 4 
+2525 -1297 1048
+2525 -1291 1048
+2525 -1283 1048
+
+5.
+2524 -1285 1048
+2524 -1295 1048
+
+6. i 7.
+To jest magazyn, tutaj beda pobierac liderzy bron do magazynu frakcji
+312 -166 1000 
+
+Trzeba copy paste houseint 34 i businessint 25 przerobic na buildingint zeby bylo jako budynek

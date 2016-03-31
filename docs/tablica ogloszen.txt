@@ -1,0 +1,3 @@
+model obiektu: 3335
+ilosc dostepnych linii: 10 (odstep po 2)
+ilosc znakow w jednej linii: 65

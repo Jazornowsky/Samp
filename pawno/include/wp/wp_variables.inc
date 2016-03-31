@@ -12,8 +12,8 @@
 #endif
 #define _WP_VARIABLES
 
-// #define DEBUG
-// #define DEBUG2
+#define DEBUG
+#define DEBUG2
 
 #define CUSTOM_MAX_PLAYERS 100						// Manualy set server slot amout for functions, variables, etc.
 

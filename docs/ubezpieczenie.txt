@@ -1,0 +1,10 @@
+1. Dane ubezpieczenia zapisane s¹ przy kluczyku
+2. Przepisanie ubezpieczenia odbêdzie siê na takie samej zasadzie jak nadanie nowego ubezpieczenia
+	a) wed³ug ceny pojazdu ustalane bêdzie ubezpieczenie
+	b) ubezpieczenie mo¿e byæ przepisane tylko w przypadku gdy kwota ubezpieczenia zgadza siê z danym pojazdem oraz dany pojazd nale¿y do w³aœciciela (/acarowner) oraz rejestracja w bazie ubezpieczeñ zgadza siê z rejestracj¹ w danych kluczyka
+
+
+1. Po zniszczeniu pojazdu resetuje siê tablica na 0
+2. Po zniszczeniu pojazdu usuwa siê wpis z tabeli samp_vehicles_ensurance z dan¹ rejestracj¹
+
+1. Po zmianie rejestracji pojazdu modyfikuje siê w pis w samp_vehicles_ensurance

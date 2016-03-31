@@ -1,0 +1,5 @@
+Praca roznosiciela gazet
+1. Punkt poboru pracy
+2. /komendypracy
+3. /pobierzgazety - pobieranie w miejscu pobierania pracy
+4. /rzucgazete - wykrywanie na wzor komendy /wejdz

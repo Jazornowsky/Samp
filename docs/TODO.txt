@@ -1,0 +1,50 @@
+- [DONE] pobieranie op³aty za rentable house
+- [DONE] mechanizm kopiowania kluczy
+- mechanizm wymiany zamkow
+- schodzenie foodow na vipie
+- zapis zyskow/strat w biznesie
+- prowizja za iloœæ przewiezionych pasa¿erów
+
+
+bugi : 
+pidi 
+[MANDATÓW CZY PUNKTÓW KARNYCH ?] nie mozna dawac mandatow, koles mial na kat b 30 cos dni ale nie mozna bylo mu dac !!!
+
+[FIXED - DO SPRAWDZENIA] majac bron 22, ktora sluzy jako szuszara, napis 0 km/h sam sie wyswietla nawet sie nie naciska prawego co przycelowania (screen)
+
+rozmowa miedzy cv a cbv nie ma, radia sie nie widzia, sprawdzic jeszcze raz, kanal 41
+
+
+Salon : 
+przy sciaganiu pojazdow kazdy moze go odpalic, poprawic zabezpieczenie oraz zeby sprzedawca mogl jezdzic !!!
+sprawdzic czy przy kazdym sprowadzonym pojezdzie jest wbudowany cb i kopnij policjanta
+
+fs od kol przebijania : 
+niby poo 8 min same sie naprawiaja, jest szansa ze jest desych, bo jak ktos wejdzie inny to na nowo sa przebite - sprawdzic powoli
+
+[UBEZPIECZENIE POJAZDÓW JEST WY£¥CZONE] ssprawdzic sprawedzanie oc, na ktorych slotach klucze czy tam co tam (screen)
+
+[ALE CO KONKRETNIE ? NIE BÊDÊ OD TAK SOBIE PRZEGL¥DAÆ CA£EJ CMD...] sprawdzic kupowanie wozow dla frakcji oraz ich sprzedarz
+
+[JEST - /komendypojazdow] brak informacji jak wylaczyc cb/cbv ogolnie brak informacji, trzeba dodac tak jak przyczyms tam a przy radiu, 
+
+[FIXED] pigu³ka cud nie likwiduje krecenia sie glowy jak atat !!!
+
+[BO NIE POCZEKAL KOLEJNEGO DNIA ?] mam problem z rejestrem dluznikow ... na koncie posiadam 20 k chce kupic auto a tu komunikat "Znajdujesz siê w rejestrze d³u¿ników nie mo¿esz kupiæ pojazdu
+
+[KTÓRA ?] sprawdzic tez cmd urzedasow podobno szwankuje
+
+[FIXED] Opis: Na kanale CB policyjnym dostajemy tak¿e wezwania taxi
+
+[06.06.2013r]
+
+esportujpojazd - mozna eksportowac w dowolnym pkt, a nalezy byc w cheakponcie jednym z trzech, rowniez jak pojazd ma typ 1 (pewnie tez jak iinne) to nie niszczy tylko pojawia sie ponownie, czyli moga w chuj kasy wyciagnac jak z wordu zajebia pojazd,
+
+sprawdznumer - po chuj to ?? :D nie wiem jak to dziala pokjazuje aby id pojazdu ktore mozna miec przez /dl...
+   
+problem z akumulatorem - zmianie sie status z slabego na bardzo dobry po zaladowaniu go cmd adminowska
+/ww (wezwijwsparcie) dodac akcje rp ze tam przez krotkofalowke podaje kod 22-10 czy tam jakis tam inny
+
+w hurtowaniach dodac o ile jeszcze tego nie ma ze nie mozna kupowac produktow za zero dolcow 
+  
+ 
