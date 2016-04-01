@@ -33,16 +33,16 @@ LoadDynamicCars()
 	new string[128];
 
 	format(string, sizeof(string), "SELECT * FROM samp_vehicles ORDER BY `ID` ASC");
-	wp_mysql_query(string, LOAD_DYNAMIC_CARS, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_DYNAMIC_CARS, INVALID_PLAYER_ID, db_con2);
 
 	format(string, sizeof(string), "SELECT * FROM `samp_carsdata`");
-	wp_mysql_query(string, LOAD_CARSDATA, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_CARSDATA, INVALID_PLAYER_ID, db_con2);
 	
 	format(string, sizeof(string), "SELECT * FROM `samp_cars_cparts`");
-	wp_mysql_query(string, LOAD_CARS_CPARTS, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_CARS_CPARTS, INVALID_PLAYER_ID, db_con2);
 	
 	format(string, sizeof(string), "SELECT * FROM `samp_vehicles_customize` ORDER BY `ID` ASC");
-	wp_mysql_query(string, LOAD_CARS_CUSTOMIZE, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_CARS_CUSTOMIZE, INVALID_PLAYER_ID, db_con2);
 
 	return 1;
 }
@@ -52,7 +52,7 @@ LoadDynamicZones()
 	new string[128];
 	
 	format(string, sizeof(string), "SELECT * FROM samp_gang_zones ORDER BY `ID` ASC");
-	wp_mysql_query(string, LOAD_GANG_ZONES, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_GANG_ZONES, INVALID_PLAYER_ID, db_con2);
 	
 	return 1;
 }
@@ -309,7 +309,7 @@ LoadRafinery()
 	new string[64];
 
 	format(string, sizeof(string), "SELECT * FROM `samp_rafinery`");
-	wp_mysql_query(string, LOAD_RAFINERY, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_RAFINERY, INVALID_PLAYER_ID, db_con2);
 
 	return 1;
 }
@@ -319,11 +319,9 @@ SaveRafinery()
 	new string[256];
 
 	format(string, sizeof(string), "UPDATE `samp_rafinery` SET `ResourcePetrol` = '%d' , `PetrolLtrCost` = '%d' , `EmployerReward` = '%d' , `MaxResources` = '%d' ", gRafinery[RafResourcePetrol], gRafinery[RafPetrolLtrCost], gRafinery[RafRefuelReward], gRafinery[RafMaxResources]);
-	wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-	format(string, sizeof(string), "UPDATE `samp_rafinery` SET `ResourceOil` = '%d' , `ResourceGas` = '%d' , `OilLtrCost` = '%d' , `GasLtrCost` = '%d' , `FlyLtrCost` = '%d' ", gRafinery[RafResourceOil], gRafinery[RafResourceGas], gRafinery[RafOilLtrCost], gRafinery[RafGasLtrCost], gRafinery[RafFlyLtrCost]);
-	wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-	format(string, sizeof(string), "UPDATE `samp_rafinery` SET `ResourceFly` = '%d'", gRafinery[RafResourceFly]);
-	wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+	format(string, sizeof(string), "UPDATE `samp_rafinery` SET `ResourceOil` = '%d' , `ResourceGas` = '%d' , `OilLtrCost` = '%d' , `GasLtrCost` = '%d' ", gRafinery[RafResourceOil], gRafinery[RafResourceGas], gRafinery[RafOilLtrCost], gRafinery[RafGasLtrCost]);
+	mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 	return 1;
 }
@@ -333,7 +331,7 @@ LoadWFactoryLegal() // fabryka broni
 	new string[64];
 	
 	format(string, sizeof(string), "SELECT * FROM `samp_wfactorylegal`");
-	wp_mysql_query(string, LOAD_WFACTORYLEGAL, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_WFACTORYLEGAL, INVALID_PLAYER_ID, db_con2);
 	
 	return 1;
 }
@@ -343,37 +341,37 @@ LoadGasStations()
 	new string[128];
 
 	format(string, sizeof(string), "SELECT * FROM `samp_gas_stations`");
-	wp_mysql_query(string, LOAD_GAS_STATIONS, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_GAS_STATIONS, INVALID_PLAYER_ID, db_con2);
 
 	return 1;
 }
 
 SaveGasStations()
 {
-	new string[256];
+	new string[128];
 
 	for(new i = 0; i < sizeof(GasStations); i++)
 	{
 		format(string, sizeof(string), "UPDATE `samp_gas_stations` SET `BusinessID` = '%d' , `PetrolResourceValue` = '%f' WHERE `ID` = '%d' ", GasStations[i][BusinessID], GasStations[i][PetrolResourceValue], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		format(string, sizeof(string), "UPDATE `samp_gas_stations` SET `MaxPetrolResourceValue` = '%f' , `RefuelPetrolResources` = '%d' WHERE `ID` = '%d' ", GasStations[i][MaxPetrolResourceValue], GasStations[i][RefuelPetrolResources], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		format(string, sizeof(string), "UPDATE `samp_gas_stations` SET `PetrolPrice` = '%d' , `posX` = '%f' WHERE `ID` = '%d' ", GasStations[i][PetrolPrice], GasStations[i][GSposX], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		format(string, sizeof(string), "UPDATE `samp_gas_stations` SET `posY` = '%f' , `posZ` = '%f' WHERE `ID` = '%d' ", GasStations[i][GSposY], GasStations[i][GSposZ], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 		
 		format(string, sizeof(string), "UPDATE `samp_gas_stations` SET `OilResourceValue` = '%f' , `GasResourceValue` = '%f' WHERE `ID` = '%d' ", GasStations[i][OilResourceValue], GasStations[i][GasResourceValue], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 		
 		format(string, sizeof(string), "UPDATE `samp_gas_stations` SET `MaxOilResourceValue` = '%f' , `MaxGasResourceValue` = '%f' WHERE `ID` = '%d' ", GasStations[i][MaxOilResourceValue], GasStations[i][MaxGasResourceValue], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 		
 		format(string, sizeof(string), "UPDATE `samp_gas_stations` SET `OilPrice` = '%d' , `GasPrice` = '%d' WHERE `ID` = '%d' ", GasStations[i][OilPrice], GasStations[i][GasPrice], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 	}
 	return 1;
 }
@@ -383,7 +381,7 @@ LoadPayRank()
 	new string[128];
 
 	format(string, sizeof(string), " SELECT * FROM `samp_factions_payrank` ");
-	wp_mysql_query(string, LOAD_FACTIONS_PAYRANK, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_FACTIONS_PAYRANK, INVALID_PLAYER_ID, db_con2);
 
 	return 1;
 }
@@ -395,22 +393,22 @@ SavePayRank()
 	for(new i = 0; i < sizeof(DynamicFactions); i++)
 	{
 		format(string, sizeof(string), "UPDATE `samp_factions_payrank` SET `FactionID` = '%d' , `Rank1` = '%d' WHERE `FactionID` = '%d' ", PayRank[i][FactionID], PayRank[i][Rank1], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		format(string, sizeof(string), "UPDATE `samp_factions_payrank` SET `Rank2` = '%d' , `Rank3` = '%d' WHERE `FactionID` = '%d' ", PayRank[i][Rank2], PayRank[i][Rank3], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		format(string, sizeof(string), "UPDATE `samp_factions_payrank` SET `Rank4` = '%d' , `Rank5` = '%d' WHERE `FactionID` = '%d' ", PayRank[i][Rank4], PayRank[i][Rank5], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		format(string, sizeof(string), "UPDATE `samp_factions_payrank` SET `Rank6` = '%d' , `Rank7` = '%d' WHERE `FactionID` = '%d' ", PayRank[i][Rank6], PayRank[i][Rank7], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		format(string, sizeof(string), "UPDATE `samp_factions_payrank` SET `Rank8` = '%d' , `Rank9` = '%d' WHERE `FactionID` = '%d' ", PayRank[i][Rank8], PayRank[i][Rank9], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		format(string, sizeof(string), "UPDATE `samp_factions_payrank` SET `Rank10` = '%d' WHERE `FactionID` = '%d' ", PayRank[i][Rank10], i);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 	}
 	return 1;
 }
@@ -420,7 +418,7 @@ LoadVariables()
 	new string[128];
 
 	format(string, sizeof(string), "SELECT * FROM `samp_variables`");
-	wp_mysql_query(string, LOAD_VARIABLES, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_VARIABLES, INVALID_PLAYER_ID, db_con2);
 
 	return 1;
 }
@@ -432,29 +430,29 @@ LoadVariables()
 	// for(new i = 0; i < sizeof(DBVariables); i++)
 	// {
 		// format(string, sizeof(string), "UPDATE `samp_variables` SET `varName` = '%s', `varType` = '%s' WHERE `ID` = '%d'", DBVariables[i][varName], DBVariables[i][varType], i+1);
-		// wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		// mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		// format(string, sizeof(string), "UPDATE `samp_variables` SET `varDValue` = '%d', `varFValue` = '%f' WHERE `ID` = '%d'", DBVariables[i][varDValue], DBVariables[i][varFValue], i+1);
-		// wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		// mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
 		// format(string, sizeof(string), "UPDATE `samp_variables` SET `varSValue` = '%s' WHERE `ID` = '%d'", DBVariables[i][varSValue], i+1);
-		// wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		// mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 	// }
 	// return 1;
 // }
 
 LoadDynamicFactions()
-{	
+{
 	new string[128];
-	
+
 	format(string, sizeof(string), "SELECT * FROM samp_factions ORDER BY `ID` ASC");
-	wp_mysql_query(string, LOAD_DYNAMIC_FACTIONS, INVALID_PLAYER_ID, db_con2);
-	
+	mysql_query(string, LOAD_DYNAMIC_FACTIONS, INVALID_PLAYER_ID, db_con2);
+
 	format(string, sizeof(string), "SELECT * FROM samp_factions_weapons ORDER BY `FactionID` ASC");
-	wp_mysql_query(string, LOAD_DYNAMIC_FACTIONS_WEAPONS, INVALID_PLAYER_ID, db_con2);
-	
+	mysql_query(string, LOAD_DYNAMIC_FACTIONS_WEAPONS, INVALID_PLAYER_ID, db_con2);
+
 	format(string, sizeof(string), "SELECT * FROM samp_factions_weapons2 ORDER BY `FactionID` ASC");
-	wp_mysql_query(string, LOAD_DYNAMIC_FACTIONS_WEAPONS2, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_DYNAMIC_FACTIONS_WEAPONS2, INVALID_PLAYER_ID, db_con2);
 
 	return 1;
 }
@@ -466,34 +464,37 @@ SaveDynamicFactions()
 	for(new i = 0; i < sizeof(DynamicFactions); i++)
 	{
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `Name` = '%s' , `X` = '%f' , `Y` = '%f' , `Z` = '%f' WHERE `ID` = '%d'", DynamicFactions[i][Name], DynamicFactions[i][m_fX], DynamicFactions[i][m_fY], DynamicFactions[i][m_fZ], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+
+		format(string, sizeof(string), "UPDATE `samp_factions` SET `Materials` = '%d' , `Drugs` = '%d' , `Bank` = '%d' WHERE `ID` = '%d'", DynamicFactions[i][fMaterials], DynamicFactions[i][fDrugs], DynamicFactions[i][fBank], i+1);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `Rank1` = '%s' , `Rank2` = '%s' , `Rank3` = '%s' WHERE `ID` = '%d'", DynamicFactions[i][fRank1], DynamicFactions[i][fRank2], DynamicFactions[i][fRank3], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `Rank4` = '%s' , `Rank5` = '%s' , `Rank6` = '%s' WHERE `ID` = '%d'", DynamicFactions[i][fRank4], DynamicFactions[i][fRank5], DynamicFactions[i][fRank6], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `Rank7` = '%s' , `Rank8` = '%s' , `Rank9` = '%s' WHERE `ID` = '%d'", DynamicFactions[i][fRank7], DynamicFactions[i][fRank8], DynamicFactions[i][fRank10], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `Rank10` = '%s' , `Skin1` = '%d' , `Skin2` = '%d' , `Skin3` = '%d' WHERE `ID` = '%d'", DynamicFactions[i][fRank10], DynamicFactions[i][fSkin1], DynamicFactions[i][fSkin2], DynamicFactions[i][fSkin3], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `Skin4` = '%d' , `Skin5` = '%d' , `Skin6` = '%d' , `Skin7` = '%d' WHERE `ID` = '%d'", DynamicFactions[i][fSkin4], DynamicFactions[i][fSkin5], DynamicFactions[i][fSkin6], DynamicFactions[i][fSkin7], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `Skin8` = '%d' , `Skin9` = '%d' , `Skin10` = '%d' , `JoinRank` = '%d' WHERE `ID` = '%d'", DynamicFactions[i][fSkin8], DynamicFactions[i][fSkin9], DynamicFactions[i][fSkin10], DynamicFactions[i][fJoinRank], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `UseSkins` = '%d' , `Type` = '%d' , `RankAmount` = '%d' , `Color` = '%d' WHERE `ID` = '%d'", DynamicFactions[i][fUseSkins], DynamicFactions[i][fType], DynamicFactions[i][fRankAmount], DynamicFactions[i][fColor], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `MaxCars` = '%d' , `CarsCount` = '%d' , `XDuty` = '%f' , `YDuty` = '%f' WHERE `ID` = '%d'", DynamicFactions[i][fMaxCars], DynamicFactions[i][fCarsCount], DynamicFactions[i][fXDuty], DynamicFactions[i][fYDuty], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 
 		format(string, sizeof(string), "UPDATE `samp_factions` SET `ZDuty` = '%f' , `WorldDuty` = '%d' WHERE `ID` = '%d'", DynamicFactions[i][fZDuty], DynamicFactions[i][fWorldDuty], i+1);
-		wp_mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
+		mysql_query(string, SAVE2, INVALID_PLAYER_ID, db_con3);
 	}
 	return 1;
 }
@@ -503,7 +504,34 @@ LoadBuildings()
 	new string[128];
 
 	format(string, sizeof(string), "SELECT * FROM samp_buildings LIMIT %d", MAX_BUILDINGS);
-	wp_mysql_query(string, LOAD_BUILDINGS, INVALID_PLAYER_ID, db_con2);
+	mysql_query(string, LOAD_BUILDINGS, INVALID_PLAYER_ID, db_con2);
+	return 1;
+}
+
+SaveBuildings()
+{
+	new string[256];
+	
+	for(new i = 0; i < sizeof(Building); i++)
+	{	
+		format(string, sizeof(string), "UPDATE `samp_buildings` SET `BuildingName` = '%s' , `EnterX` = '%f' , `EnterY` = '%f' WHERE `ID` = '%d'", Building[i][BuildingName], Building[i][EnterX], Building[i][EnterY], i+1 );
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		
+		format(string, sizeof(string), "UPDATE `samp_buildings` SET `EnterZ` = '%f' , `EntranceFee` = %d , `EnterWorld` = %d WHERE `ID` = '%d'", Building[i][EnterZ], Building[i][EntranceFee], Building[i][EnterWorld], i+1 );
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		
+		format(string, sizeof(string), "UPDATE `samp_buildings` SET `EnterInterior` = %d , `EnterAngle` = %f , `ExitX` = %f WHERE `ID` = '%d'", Building[i][EnterInterior], Building[i][EnterAngle], Building[i][ExitX], i+1 );
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		
+		format(string, sizeof(string), "UPDATE `samp_buildings` SET `ExitY` = %f , `ExitInterior` = %d , `ExitAngle` = '%f' WHERE `ID` = '%d'", Building[i][ExitY], Building[i][ExitInterior], Building[i][ExitAngle], i+1 );
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		
+		format(string, sizeof(string), "UPDATE `samp_buildings` SET `Locked` = %d , `Opened` = %d , `Closed` = %d WHERE `ID` = '%d'", Building[i][Locked], Building[i][Opened], Building[i][Closed], i+1 );
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		
+		format(string, sizeof(string), "UPDATE `samp_buildings` SET `ObjectID` = %d , `BuildingType` = %d , `ShowIcon` = %d , `IconType` = %d WHERE `ID` = '%d'", Building[i][ObjectID], Building[i][BuildingType], i+1 );
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+	}		
 	return 1;
 }
 
@@ -513,14 +541,14 @@ LoadHouses(hsource)
 	{
 		new string[128];
 
-		format(string, sizeof(string), "SELECT * FROM samp_houses ORDER BY `ID` ASC LIMIT 1500");
-		wp_mysql_query(string, LOAD_HOUSES, INVALID_PLAYER_ID, db_con2);
+		format(string, sizeof(string), "SELECT * FROM samp_houses ORDER BY `ID` LIMIT 500");
+		mysql_query(string, LOAD_HOUSES, INVALID_PLAYER_ID, db_con2);
 		
-		format(string, sizeof(string), "SELECT * FROM samp_houses_items ORDER BY `ID` ASC LIMIT 1500");
-		wp_mysql_query(string, LOAD_HOUSES_ITEMS, INVALID_PLAYER_ID, db_con2);
+		format(string, sizeof(string), "SELECT * FROM samp_houses_items ORDER BY `ID` LIMIT 500");
+		mysql_query(string, LOAD_HOUSES_ITEMS, INVALID_PLAYER_ID, db_con2);
 		
-		format(string, sizeof(string), "SELECT * FROM samp_houses_data ORDER BY `ID` ASC");
-		wp_mysql_query(string, LOAD_HOUSES_DATA, INVALID_PLAYER_ID, db_con2);
+		format(string, sizeof(string), "SELECT * FROM samp_houses_data ORDER BY `id`");
+		mysql_query(string, LOAD_HOUSES_DATA, INVALID_PLAYER_ID, db_con2);
 	}
 	return 1;
 }
@@ -529,8 +557,44 @@ LoadBusinesses()
 {
 	new string[128];
 
-	format(string, sizeof(string), "SELECT * FROM samp_businesses ORDER BY `ID` LIMIT 1000");
-	wp_mysql_query(string, LOAD_BUSINESSES, INVALID_PLAYER_ID, db_con2);
+	format(string, sizeof(string), "SELECT * FROM samp_businesses");
+	mysql_query(string, LOAD_BUSINESSES, INVALID_PLAYER_ID, db_con2);
+	return 1;
+}
+
+SaveBusinesses()
+{
+	new string[256];
+
+	for(new i = 0; i < sizeof(Businesses); i++)
+	{
+		format(string, sizeof(string), "UPDATE `samp_businesses` SET `BusinessName` = '%s' , `Owner` = '%s' , `EnterX` = '%f' WHERE `ID` = '%d'", Businesses[i][BusinessName], Businesses[i][Owner], Businesses[i][EnterX], i+1);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+
+		format(string, sizeof(string), "UPDATE `samp_businesses` SET `EnterY` = '%f' , `EnterZ` = '%f' , `EnterWorld` = '%d' WHERE `ID` = '%d'", Businesses[i][EnterY], Businesses[i][EnterZ], Businesses[i][EnterWorld], i+1);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+
+		format(string, sizeof(string), "UPDATE `samp_businesses` SET `EnterInterior` = '%d' , `EnterAngle` = '%f' , `ExitX` = '%f' WHERE `ID` = '%d'", Businesses[i][EnterInterior], Businesses[i][EnterAngle], Businesses[i][ExitX], i+1);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+
+		format(string, sizeof(string), "UPDATE `samp_businesses` SET `ExitY` = '%f' , `ExitZ` = '%f' , `ExitInterior` = '%d' WHERE `ID` = '%d'", Businesses[i][ExitY], Businesses[i][ExitZ], Businesses[i][ExitInterior], i+1);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+
+		format(string, sizeof(string), "UPDATE `samp_businesses` SET `ExitAngle` = '%f' , `Owned` = '%d' , `Enterable` = '%d' WHERE `ID` = '%d'", Businesses[i][ExitAngle], Businesses[i][Owned], Businesses[i][Enterable], i+1);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+
+		format(string, sizeof(string), "UPDATE `samp_businesses` SET `BizPrice` = '%d' , `EntranceCost` = '%d' , `Till` = '%d' WHERE `ID` = '%d'", Businesses[i][BizPrice], Businesses[i][EntranceCost], Businesses[i][Till], i+1);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+
+		format(string, sizeof(string), "UPDATE `samp_businesses` SET `Locked` = '%d' , `BizType` = '%d' , `Products` = '%d' WHERE `ID` = '%d'", Businesses[i][Locked], Businesses[i][BizType], Businesses[i][Products], i+1);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+
+		format(string, sizeof(string), "UPDATE `samp_businesses` SET `PickupID` = '%d' , `VehicleSpawned` = '%d' , `VehicleCount` = '%d' WHERE `ID` = '%d'", Businesses[i][PickupID], Businesses[i][VehicleSpawned], Businesses[i][VehicleCount], i+1);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+
+		format(string, sizeof(string), "UPDATE `samp_businesses` SET `MaxVehicles` = '%d' , `VehicleOrderCount` = '%d' WHERE `ID` = '%d'", Businesses[i][MaxVehicles], Businesses[i][VehicleOrderCount], i+1);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+	}
 	return 1;
 }
 
@@ -575,6 +639,144 @@ SaveCivilianSpawn()
 	}
 	else
 		ErrorLog("[ERROR:] Can't save civilianspawn.cfg");
+	return 1;
+}
+
+LoadBankPosition()
+{
+	new arrCoords[7][64];
+	new strFromFile2[256];
+	new File: file = fopen("locations/banklocation.cfg", io_read);
+	if (file)
+	{
+		fread(file, strFromFile2);
+		split2(strFromFile2, arrCoords, '|');
+		BankPosition[X] = floatstr(arrCoords[0]);
+		BankPosition[Y] = floatstr(arrCoords[1]);
+		BankPosition[Z] = floatstr(arrCoords[2]);
+		BankPosition[World] = strval(arrCoords[3]);
+		BankPosition[Interior] = strval(arrCoords[4]);
+		BankPosition[Angle] = floatstr(arrCoords[5]);
+		BankPosition[PickupID] = strval(arrCoords[6]);
+		//Creating Pickup
+        BankPosition[PickupID] = CreateDynamicPickup(1239,1,BankPosition[X],BankPosition[Y],BankPosition[Z]);
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Bank location loaded");
+		#endif
+	}
+	else
+		ErrorLog("[ERROR:] Can't load banklocation.cfg");
+	return 1;
+}
+
+SaveBankPosition()
+{
+	new File: file2;
+	new coordsstring[512];
+	format(coordsstring, sizeof(coordsstring), "%f|%f|%f|%d|%d|%f|%d\n",
+	BankPosition[X],
+	BankPosition[Y],
+	BankPosition[Z],
+	BankPosition[World],
+	BankPosition[Interior],
+	BankPosition[Angle],
+	BankPosition[PickupID]);
+	file2 = fopen("locations/banklocation.cfg", io_write);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save banklocation.cfg");
+	return 1;
+}
+
+LoadBankPosition2()
+{
+	new arrCoords[30][64];
+	new strFromFile2[256];
+	new File: file = fopen("locations/banklocation2.cfg", io_read);
+	if (file)
+	{
+		fread(file, strFromFile2);
+		split2(strFromFile2, arrCoords, '|');
+		BankPosition2[X] = floatstr(arrCoords[0]);
+		BankPosition2[Y] = floatstr(arrCoords[1]);
+		BankPosition2[Z] = floatstr(arrCoords[2]);
+		BankPosition3[X] = floatstr(arrCoords[3]);
+		BankPosition3[Y] = floatstr(arrCoords[4]);
+		BankPosition3[Z] = floatstr(arrCoords[5]);
+		BankPosition4[X] = floatstr(arrCoords[6]);
+		BankPosition4[Y] = floatstr(arrCoords[7]);
+		BankPosition4[Z] = floatstr(arrCoords[8]);
+		BankPosition5[X] = floatstr(arrCoords[9]);
+		BankPosition5[Y] = floatstr(arrCoords[10]);
+		BankPosition5[Z] = floatstr(arrCoords[11]);
+		BankPosition6[X] = floatstr(arrCoords[12]);
+		BankPosition6[Y] = floatstr(arrCoords[13]);
+		BankPosition6[Z] = floatstr(arrCoords[14]);
+		BankPosition7[X] = floatstr(arrCoords[15]);
+		BankPosition7[Y] = floatstr(arrCoords[16]);
+		BankPosition7[Z] = floatstr(arrCoords[17]);
+		BankPosition8[X] = floatstr(arrCoords[18]);
+		BankPosition8[Y] = floatstr(arrCoords[19]);
+		BankPosition8[Z] = floatstr(arrCoords[20]);
+		BankPosition9[X] = floatstr(arrCoords[21]);
+		BankPosition9[Y] = floatstr(arrCoords[22]);
+		BankPosition9[Z] = floatstr(arrCoords[23]);
+		BankPosition10[X] = floatstr(arrCoords[24]);
+		BankPosition10[Y] = floatstr(arrCoords[25]);
+		BankPosition10[Z] = floatstr(arrCoords[26]);
+		BankPosition11[X] = floatstr(arrCoords[27]);
+		BankPosition11[Y] = floatstr(arrCoords[28]);
+		BankPosition11[Z] = floatstr(arrCoords[29]);
+		
+		//Creating Pickup
+        BankPosition[PickupID] = CreateDynamicPickup(1239,1,BankPosition[X],BankPosition[Y],BankPosition[Z]);
+        BankPosition2[PickupID] = CreateDynamicPickup(1239,1,BankPosition2[X],BankPosition2[Y],BankPosition2[Z]);
+        BankPosition2[PickupID] = CreateDynamicPickup(1239,1,BankPosition3[X],BankPosition3[Y],BankPosition3[Z]);
+        BankPosition3[PickupID] = CreateDynamicPickup(1239,1,BankPosition4[X],BankPosition4[Y],BankPosition4[Z]);
+        BankPosition4[PickupID] = CreateDynamicPickup(1239,1,BankPosition5[X],BankPosition5[Y],BankPosition5[Z]);
+        BankPosition5[PickupID] = CreateDynamicPickup(1239,1,BankPosition6[X],BankPosition6[Y],BankPosition6[Z]);
+        BankPosition6[PickupID] = CreateDynamicPickup(1239,1,BankPosition7[X],BankPosition7[Y],BankPosition7[Z]);
+        BankPosition7[PickupID] = CreateDynamicPickup(1239,1,BankPosition8[X],BankPosition8[Y],BankPosition8[Z]);
+        BankPosition8[PickupID] = CreateDynamicPickup(1239,1,BankPosition9[X],BankPosition9[Y],BankPosition9[Z]);
+        BankPosition9[PickupID] = CreateDynamicPickup(1239,1,BankPosition10[X],BankPosition10[Y],BankPosition10[Z]);
+        BankPosition10[PickupID] = CreateDynamicPickup(1239,1,BankPosition11[X],BankPosition11[Y],BankPosition11[Z]);
+		
+		fclose(file);
+		
+		#if defined DEBUG
+			print("[INFO:] Bank location loaded");
+		#endif
+	}
+	else
+		ErrorLog("[ERROR:] Can't load banklocation2.cfg");
+	return 1;
+}
+
+SaveBankPosition2()
+{
+	new File: file2;
+	new coordsstring[512];
+	format(coordsstring, sizeof(coordsstring), "%f|%f|%f|%d|%d|%f|%d\n",
+	BankPosition2[X],
+	BankPosition2[Y],
+	BankPosition2[Z],
+	BankPosition2[World],
+	BankPosition2[Interior],
+	BankPosition2[Angle],
+	BankPosition2[PickupID]);
+	file2 = fopen("locations/banklocation2.cfg", io_write);
+	if(file2)
+	{
+		fwrite(file2, coordsstring);
+		fclose(file2);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save banklocation2.cfg");
 	return 1;
 }
 
@@ -1016,31 +1218,31 @@ SaveSkillPositionc()
 LoadSkillPositiond()
 {
 	new arrCoords[16][64];
-	new strFromFile2[256];
+	new strFromFile2[128];
 	new File: file = fopen("locations/skilllocationd.cfg", io_read);
 	if (file)
 	{
 		fread(file, strFromFile2);
 		split2(strFromFile2, arrCoords, '|');
-		SkillPosition[XTech] = floatstr(arrCoords[0]);
-		SkillPosition[YTech] = floatstr(arrCoords[1]);
-		SkillPosition[ZTech] = floatstr(arrCoords[2]);
-		SkillPosition[XLaw] = floatstr(arrCoords[3]);
-		SkillPosition[YLaw] = floatstr(arrCoords[4]);
-		SkillPosition[ZLaw] = floatstr(arrCoords[5]);
+		SkillPosition[XAng] = floatstr(arrCoords[0]);
+		SkillPosition[YAng] = floatstr(arrCoords[1]);
+		SkillPosition[ZAng] = floatstr(arrCoords[2]);
+		SkillPosition[XWf] = floatstr(arrCoords[3]);
+		SkillPosition[YWf] = floatstr(arrCoords[4]);
+		SkillPosition[ZWf] = floatstr(arrCoords[5]);
 		SkillPosition[XMat] = floatstr(arrCoords[6]);
 		SkillPosition[YMat] = floatstr(arrCoords[7]);
 		SkillPosition[ZMat] = floatstr(arrCoords[8]);
 		SkillPosition[XPol] = floatstr(arrCoords[9]);
 		SkillPosition[YPol] = floatstr(arrCoords[10]);
 		SkillPosition[ZPol] = floatstr(arrCoords[11]);
-		SkillPosition[PickupIDTech] = strval(arrCoords[12]);
-		SkillPosition[PickupIDLaw] = strval(arrCoords[13]);
+		SkillPosition[PickupIDAng] = strval(arrCoords[12]);
+		SkillPosition[PickupIDWf] = strval(arrCoords[13]);
 		SkillPosition[PickupIDMat] = strval(arrCoords[14]);
 		SkillPosition[PickupIDPol] = strval(arrCoords[15]);
 		//Creating Pickup
-		SkillPosition[PickupIDTech] = CreateDynamicPickup(1239,1,SkillPosition[XTech],SkillPosition[YTech],SkillPosition[ZTech]);
-		SkillPosition[PickupIDLaw] = CreateDynamicPickup(1239,1,SkillPosition[XLaw],SkillPosition[YLaw],SkillPosition[ZLaw]);
+		SkillPosition[PickupIDAng] = CreateDynamicPickup(1239,1,SkillPosition[XAng],SkillPosition[YAng],SkillPosition[ZAng]);
+		SkillPosition[PickupIDWf] = CreateDynamicPickup(1239,1,SkillPosition[XWf],SkillPosition[YWf],SkillPosition[ZWf]);
 		SkillPosition[PickupIDMat] = CreateDynamicPickup(1239,1,SkillPosition[XMat],SkillPosition[YMat],SkillPosition[ZMat]);
 		SkillPosition[PickupIDPol] = CreateDynamicPickup(1239,1,SkillPosition[XPol],SkillPosition[YPol],SkillPosition[ZPol]);
 		fclose(file);
@@ -1056,22 +1258,22 @@ LoadSkillPositiond()
 SaveSkillPositiond()
 {
 	new File: file2;
-	new coordsstring[256];
+	new coordsstring[128];
 	format(coordsstring, sizeof(coordsstring), "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%d|%d|%d|%d\n",
-	SkillPosition[XTech],
-	SkillPosition[YTech],
-	SkillPosition[ZTech],
-	SkillPosition[XLaw],
-	SkillPosition[YLaw],
-	SkillPosition[ZLaw],
+	SkillPosition[XAng],
+	SkillPosition[YAng],
+	SkillPosition[ZAng],
+	SkillPosition[XWf],
+	SkillPosition[YWf],
+	SkillPosition[ZWf],
 	SkillPosition[XMat],
 	SkillPosition[YMat],
 	SkillPosition[ZMat],
 	SkillPosition[XPol],
 	SkillPosition[YPol],
 	SkillPosition[ZPol],
-	SkillPosition[PickupIDTech],
-	SkillPosition[PickupIDLaw],
+	SkillPosition[PickupIDAng],
+	SkillPosition[PickupIDWf],
 	SkillPosition[PickupIDMat],
 	SkillPosition[PickupIDPol]);
 	file2 = fopen("locations/skilllocationd.cfg", io_write);
@@ -1107,9 +1309,9 @@ LoadSkillPositione()
 		SkillPosition[PickupIDFiz] = strval(arrCoords[10]);
 		SkillPosition[PickupIDBio] = strval(arrCoords[11]);
 		//Creating Pickup
-		//SkillPosition[PickupIDHis] = CreateDynamicPickup(1239, 1, SkillPosition[XHis], SkillPosition[YHis], SkillPosition[ZHis]);
-		SkillPosition[PickupIDFiz] = CreateDynamicPickup(1239, 1, SkillPosition[XFiz], SkillPosition[YFiz], SkillPosition[ZFiz]);
-		SkillPosition[PickupIDBio] = CreateDynamicPickup(1239, 1, SkillPosition[XBio], SkillPosition[YBio], SkillPosition[ZBio]);
+		SkillPosition[PickupIDHis] = CreateDynamicPickup(1239,1,SkillPosition[XHis],SkillPosition[YHis],SkillPosition[ZHis]);
+		SkillPosition[PickupIDFiz] = CreateDynamicPickup(1239,1,SkillPosition[XFiz],SkillPosition[YFiz],SkillPosition[ZFiz]);
+		SkillPosition[PickupIDBio] = CreateDynamicPickup(1239,1,SkillPosition[XBio],SkillPosition[YBio],SkillPosition[ZBio]);
 		fclose(file);
 		#if defined DEBUG
 			print("[INFO:] Skill 5 location loaded");
@@ -1145,50 +1347,6 @@ SaveSkillPositione()
 	}
 	else
 		ErrorLog("[ERROR:] Can't save skillpositione.cfg");
-	return 1;
-}
-
-LoadSkillPositionf()
-{
-	new arrCoords[3][64];
-	new strFromFile2[128];
-	new File: file = fopen("locations/skilllocationf.cfg", io_read);
-	if (file)
-	{
-		fread(file, strFromFile2);
-		split2(strFromFile2, arrCoords, '|');
-		
-		SkillPosition[XHighSchool] = floatstr(arrCoords[0]);
-		SkillPosition[YHighSchool] = floatstr(arrCoords[1]);
-		SkillPosition[ZHighSchool] = floatstr(arrCoords[2]);
-
-		SkillPosition[PickupIDHighSchool] = CreateDynamicPickup(1239,1,SkillPosition[XHighSchool],SkillPosition[YHighSchool],SkillPosition[ZHighSchool]);
-		fclose(file);
-		#if defined DEBUG
-			print("[INFO:] Skill 1 location loaded");
-		#endif
-	}
-	else
-		ErrorLog("[ERROR:] Can't load skillpositiond.cfg");
-	return 1;
-}
-
-SaveSkillPositionf()
-{
-	new File: file2;
-	new coordsstring[128];
-	format(coordsstring, sizeof(coordsstring), "%f|%f|%f\n",
-	SkillPosition[XHighSchool],
-	SkillPosition[YHighSchool],
-	SkillPosition[ZHighSchool]);
-	file2 = fopen("locations/skilllocationf.cfg", io_write);
-	if(file2)
-	{
-		fwrite(file2, coordsstring);
-		fclose(file2);
-	}
-	else
-		ErrorLog("[ERROR:] Can't save skillpositiond.cfg");
 	return 1;
 }
 
@@ -1344,11 +1502,102 @@ SaveWeaponLicensePosition()
 	return 1;
 }
 
+LoadWheelChangePosition()
+{
+	new arrCoords[24][64];
+	new strFromFile[256];
+	new File: file = fopen("locations/wheelchangeposition.cfg", io_read);
+	if(file)
+	{
+		fread(file, strFromFile);
+		split2(strFromFile, arrCoords, '|');
+		gWheelChangePos[pos1X] = floatstr(arrCoords[0]);
+		gWheelChangePos[pos1Y] = floatstr(arrCoords[1]);
+		gWheelChangePos[pos1Z] = floatstr(arrCoords[2]);
+		gWheelChangePos[pos2X] = floatstr(arrCoords[3]);
+		gWheelChangePos[pos2Y] = floatstr(arrCoords[4]);
+		gWheelChangePos[pos2Z] = floatstr(arrCoords[5]);
+		gWheelChangePos[pos3X] = floatstr(arrCoords[6]);
+		gWheelChangePos[pos3Y] = floatstr(arrCoords[7]);
+		gWheelChangePos[pos3Z] = floatstr(arrCoords[8]);
+		gWheelChangePos[pos4X] = floatstr(arrCoords[9]);
+		gWheelChangePos[pos4Y] = floatstr(arrCoords[10]);
+		gWheelChangePos[pos4Z] = floatstr(arrCoords[11]);
+		gWheelChangePos[pos5X] = floatstr(arrCoords[12]);
+		gWheelChangePos[pos5Y] = floatstr(arrCoords[13]);
+		gWheelChangePos[pos5Z] = floatstr(arrCoords[14]);
+		gWheelChangePos[pos6X] = floatstr(arrCoords[15]);
+		gWheelChangePos[pos6Y] = floatstr(arrCoords[16]);
+		gWheelChangePos[pos6Z] = floatstr(arrCoords[17]);
+		gWheelChangePos[pos7X] = floatstr(arrCoords[18]);
+		gWheelChangePos[pos7Y] = floatstr(arrCoords[19]);
+		gWheelChangePos[pos7Z] = floatstr(arrCoords[20]);
+		gWheelChangePos[pos8X] = floatstr(arrCoords[21]);
+		gWheelChangePos[pos8Y] = floatstr(arrCoords[22]);
+		gWheelChangePos[pos8Z] = floatstr(arrCoords[23]);
+		gWheelChangePos[pickup1] = CreateDynamicPickup(1239, 1, gWheelChangePos[pos1X], gWheelChangePos[pos1Y], gWheelChangePos[pos1Z]);
+		gWheelChangePos[pickup2] = CreateDynamicPickup(1239, 1, gWheelChangePos[pos2X], gWheelChangePos[pos2Y], gWheelChangePos[pos2Z]);
+		gWheelChangePos[pickup3] = CreateDynamicPickup(1239, 1, gWheelChangePos[pos3X], gWheelChangePos[pos3Y], gWheelChangePos[pos3Z]);
+		gWheelChangePos[pickup4] = CreateDynamicPickup(1239, 1, gWheelChangePos[pos4X], gWheelChangePos[pos4Y], gWheelChangePos[pos4Z]);
+		gWheelChangePos[pickup5] = CreateDynamicPickup(1239, 1, gWheelChangePos[pos5X], gWheelChangePos[pos5Y], gWheelChangePos[pos5Z]);
+		gWheelChangePos[pickup6] = CreateDynamicPickup(1239, 1, gWheelChangePos[pos6X], gWheelChangePos[pos6Y], gWheelChangePos[pos6Z]);
+		gWheelChangePos[pickup7] = CreateDynamicPickup(1239, 1, gWheelChangePos[pos7X], gWheelChangePos[pos7Y], gWheelChangePos[pos7Z]);
+		gWheelChangePos[pickup8] = CreateDynamicPickup(1239, 1, gWheelChangePos[pos8X], gWheelChangePos[pos8Y], gWheelChangePos[pos8Z]);
+		fclose(file);
+		#if defined DEBUG
+			print("[INFO:] Wheel change locations loaded");
+		#endif
+	}
+	else
+		ErrorLog("[ERROR:] Can't load wheelchangeposition.cfg ");
+	return 1;
+}
+
+SaveWheelChangePosition()
+{
+	new File: file;
+	new coordstring[512];
+	format(coordstring, sizeof(coordstring), "%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f|%f\n",
+	gWheelChangePos[pos1X],
+	gWheelChangePos[pos1Y],
+	gWheelChangePos[pos1Z],
+	gWheelChangePos[pos2X],
+	gWheelChangePos[pos2Y],
+	gWheelChangePos[pos2Z],
+	gWheelChangePos[pos3X],
+	gWheelChangePos[pos3Y],
+	gWheelChangePos[pos3Z],
+	gWheelChangePos[pos4X],
+	gWheelChangePos[pos4Y],
+	gWheelChangePos[pos4Z],
+	gWheelChangePos[pos5X],
+	gWheelChangePos[pos5Y],
+	gWheelChangePos[pos5Z],
+	gWheelChangePos[pos6X],
+	gWheelChangePos[pos6Y],
+	gWheelChangePos[pos6Z],
+	gWheelChangePos[pos7X],
+	gWheelChangePos[pos7Y],
+	gWheelChangePos[pos7Z],
+	gWheelChangePos[pos8X],
+	gWheelChangePos[pos8Y],
+	gWheelChangePos[pos8Z]);
+	file = fopen("locations/wheelchangeposition.cfg", io_write);
+	if(file)
+	{
+		fwrite(file, coordstring);
+		fclose(file);
+	}
+	else
+		ErrorLog("[ERROR:] Can't save wheelchangeposition.cfg ");
+	return 1;
+}
+
 // LoadWantedList()
 // {
 	// new string[128];
 	// format(string, sizeof(string), "SELECT * FROM samp_wanted LIMIT 1000");
-	// wp_mysql_query(string, LOAD_WANTED_LIST, INVALID_PLAYER_ID, db_con1);
+	// mysql_query(string, LOAD_WANTED_LIST, INVALID_PLAYER_ID, db_con1);
 	// return 1;
 // }
 
@@ -1405,10 +1654,10 @@ LoadBusTracks()
 	new string[128];
 	
 	format( string, sizeof(string), "SELECT * FROM `samp_bus_tracks`" );
-	wp_mysql_query( string, LOAD_BUS_TRACKS, INVALID_PLAYER_ID, db_con2 );
+	mysql_query( string, LOAD_BUS_TRACKS, INVALID_PLAYER_ID, db_con2 );
 	
 	format( string, sizeof(string), "SELECT * FROM `samp_bus_tracks_data`" );
-	wp_mysql_query( string, LOAD_BUS_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
+	mysql_query( string, LOAD_BUS_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
 	
 	return 1;
 }
@@ -1418,10 +1667,10 @@ LoadTrashTracks()
 	new string[128];
 	
 	format( string, sizeof(string), "SELECT * FROM `samp_trash_tracks`" );
-	wp_mysql_query( string, LOAD_TRASH_TRACKS, INVALID_PLAYER_ID, db_con2 );
+	mysql_query( string, LOAD_TRASH_TRACKS, INVALID_PLAYER_ID, db_con2 );
 	
 	format( string, sizeof(string), "SELECT * FROM `samp_trash_tracks_data`" );
-	wp_mysql_query( string, LOAD_TRASH_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
+	mysql_query( string, LOAD_TRASH_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
 	
 	return 1;
 }
@@ -1431,10 +1680,10 @@ LoadSweeperTracks()
 	new string[128];
 	
 	format( string, sizeof(string), "SELECT * FROM `samp_sweeper_tracks`" );
-	wp_mysql_query( string, LOAD_SWEEPER_TRACKS, INVALID_PLAYER_ID, db_con2 );
+	mysql_query( string, LOAD_SWEEPER_TRACKS, INVALID_PLAYER_ID, db_con2 );
 	
 	format( string, sizeof(string), "SELECT * FROM `samp_sweeper_tracks_data`" );
-	wp_mysql_query( string, LOAD_SWEEPER_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
+	mysql_query( string, LOAD_SWEEPER_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
 	
 	return 1;
 }
@@ -1444,10 +1693,10 @@ LoadFarmerTracks()
 	new string[128];
 	
 	format( string, sizeof(string), "SELECT * FROM `samp_farmer_tracks`" );
-	wp_mysql_query( string, LOAD_FARMER_TRACKS, INVALID_PLAYER_ID, db_con2 );
+	mysql_query( string, LOAD_FARMER_TRACKS, INVALID_PLAYER_ID, db_con2 );
 	
 	format( string, sizeof(string), "SELECT * FROM `samp_farmer_tracks_data`" );
-	wp_mysql_query( string, LOAD_FARMER_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
+	mysql_query( string, LOAD_FARMER_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
 	
 	return 1;
 }
@@ -1457,7 +1706,7 @@ LoadLuckyLottery()
 	new string[128];
 	
 	format( string, sizeof(string), "SELECT * FROM `samp_lucky_lottery`" );
-	wp_mysql_query( string, LOAD_LUCKY_LOTTERY, INVALID_PLAYER_ID, db_con2 );
+	mysql_query( string, LOAD_LUCKY_LOTTERY, INVALID_PLAYER_ID, db_con2 );
 	
 	new arrCoords[8][32];
 	new strFromFile[256];
@@ -1488,8 +1737,8 @@ LoadCustomObjects()
 {
 	new string[128];
 	
-	format(string, sizeof(string), "SELECT * FROM `samp_objects` ORDER BY `ID` ASC");
-	wp_mysql_query(string, LOAD_CUSTOM_OBJECTS, INVALID_PLAYER_ID, db_con2);
+	format(string, sizeof(string), "SELECT * FROM `samp_objects` ORDER BY `id` ASC");
+	mysql_query(string, LOAD_CUSTOM_OBJECTS, INVALID_PLAYER_ID, db_con2);
 	
 	return 1;
 }
@@ -1498,8 +1747,8 @@ LoadItemFactories()
 {
 	new string[128];
 	
-	format(string, sizeof(string), "SELECT * FROM `samp_item_factories` ORDER BY `ID`");
-	wp_mysql_query(string, LOAD_ITEM_FACTORIES, INVALID_PLAYER_ID, db_con2);
+	format(string, sizeof(string), "SELECT * FROM `samp_item_factories` ORDER BY `id`");
+	mysql_query(string, LOAD_ITEM_FACTORIES, INVALID_PLAYER_ID, db_con2);
 	
 	return 1;
 }
@@ -1570,11 +1819,11 @@ LoadRaces()
 {
 	new string[128];
 	
-	format(string, sizeof(string), "SELECT * FROM `samp_races_tracks` ORDER BY `ID` ASC");
-	wp_mysql_query(string, LOAD_RACES_TRACKS, INVALID_PLAYER_ID, db_con2 );
+	format(string, sizeof(string), "SELECT * FROM `samp_races_tracks` ORDER BY `id` ASC");
+	mysql_query(string, LOAD_RACES_TRACKS, INVALID_PLAYER_ID, db_con2 );
 	
-	format(string, sizeof(string), "SELECT * FROM `samp_races_tracks_data` ORDER BY `ID` ASC");
-	wp_mysql_query(string, LOAD_RACES_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
+	format(string, sizeof(string), "SELECT * FROM `samp_races_tracks_data` ORDER BY `id` ASC");
+	mysql_query(string, LOAD_RACES_TRACKS_DATA, INVALID_PLAYER_ID, db_con2 );
 	
 	return 1;
 }
@@ -1584,56 +1833,7 @@ LoadWeed()
 	new string[128];
 	
 	format(string, sizeof(string), "SELECT * FROM `samp_weed`");
-	wp_mysql_query(string, LOAD_WEED, INVALID_PLAYER_ID, db_con2 );
+	mysql_query(string, LOAD_WEED, INVALID_PLAYER_ID, db_con2 );
 	
-	return 1;
-}
-
-LoadMapIcons()
-{
-	#if defined DEBUG
-		printf("[DEBUG:] LoadMapIcons started");
-	#endif
-	
-	new string[128];
-
-	format(string, sizeof(string), "SELECT * FROM `samp_map_icons` LIMIT %d", MAX_MAP_ICONS);
-	wp_mysql_query(string, LOAD_MAP_ICONS, INVALID_PLAYER_ID, db_con2);
-	return 1;
-}
-
-LoadPublicAds()
-{
-	#if defined DEBUG
-		printf("[DEBUG:] LoadPublicAds started");
-	#endif
-
-	new string[128];
-
-	format(string, sizeof(string), "SELECT * FROM `samp_public_ads` LIMIT %d", MAX_MAP_ICONS);
-	wp_mysql_query(string, LOAD_PUBLIC_ADS, INVALID_PLAYER_ID, db_con2);
-	return 1;
-}
-
-stock LoadPickupInfos()
-{
-	#if defined DEBUG
-		printf("[DEBUG:] LoadPickupInfos started");
-	#endif
-
-	new string[128];
-
-	format(string, sizeof(string), "SELECT * FROM `samp_pickup_infos` LIMIT %d", MAX_PICKUP_INFOS);
-	wp_mysql_query(string, LOAD_PICKUP_INFOS, INVALID_PLAYER_ID, db_con2);
-	return 1;
-}
-
-stock LoadNews()
-{
-	new string[128];
-
-	format(string, sizeof(string), "SELECT * FROM `samp_news` ORDER BY `ID` ASC");
-	wp_mysql_query(string, LOAD_NEWS, INVALID_PLAYER_ID, db_con2);
-
 	return 1;
 }

@@ -4,19 +4,9 @@
 * Auth: Damian Wojdat
 * Date: 15.09.2011
 * Desc: Mysql functions.
+* TODO: Fix loading player gas station debts.
 *
 *************************************************************************************************************/
-
-wp_mysql_query(query[], resultid = -1, extraid = -1, connectionHandle = 1) {
-	//mysql_query_callback(resultid, query, "OnQueryFinish", extraid, connectionHandle);
-	mysql_function_query(connectionHandle, query, true, "OnQueryFinish", "iii", resultid, extraid, connectionHandle);
-}
-
-/*wp_mysql_free_result(connectionHandle) {
-	if(!mysql_free_result(connectionHandle)) {
-		printf("[ERROR:][MYSQL:] Couldn't free result ! connection handle = %d", connectionHandle);
-	}
-}*/
 
 /*public OnMysqlQueryArray(resultid, extravars[], MySQL:handle)
 {
@@ -54,7 +44,7 @@ wp_mysql_query(query[], resultid = -1, extraid = -1, connectionHandle = 1) {
 			if(mysql_num_rows(db_con2) == 0 && playerid < CUSTOM_MAX_PLAYERS)
 			{
 				format(string, sizeof(string), "INSERT INTO `samp_users_fueled` (`PlayerName`, `BizID`) VALUES ('%s', '%d')", PlayerNameTMP, bizID );
-				wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 			}
 			else
 			{
@@ -65,29 +55,27 @@ wp_mysql_query(query[], resultid = -1, extraid = -1, connectionHandle = 1) {
 				gPlayerData[playerid][pGasStationRefOil][bizID] = floatstr(arrCoords[4]);
 				gPlayerData[playerid][pGasStationRefGas][bizID] = floatstr(arrCoords[5]);
 			}
-			wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 	}
 	return 1;
 }*/
 
-public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
+public OnQueryError(errorid, error[], resultid, extraid, callback[], query[], connectionHandle)
 {
-	printf("[ERROR:] MySQL: %s, connection id: %d", error);
+	printf("[ERROR:] MySQL: %s, connection id: %d", error, resultid);
 	printf("[ERROR:] Query: %s", query);
 	return 1;
 }
 
 // public OnMysqlQuery(query[], resultid, spareid, MySQL:handle)
-// public OnQueryFinish(query[], resultid, extraid, connectionHandle)
-public OnQueryFinish(resultid, extraid, connectionHandle)
+public OnQueryFinish(query[], resultid, extraid, connectionHandle)
 {
 	static
 		arrCoords[153][64],
 		PlayerNameTMP[128],
 		string[1324],
 		string2[128],
-		password[512],
 		playerid
 	;
 	playerid = extraid;
@@ -98,51 +86,218 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 	GetPlayerName(playerid, PlayerNameTMP, sizeof(PlayerNameTMP));
 	switch(resultid)
 	{
+		case PLAYER_DATA_LOAD_NAME_MYSQL:
+		{
+			#if defined DEBUG
+				printf("[DEBUG:][PLAYER_LOAD_NAME_MYSQL] pid = %d, pname = %s", playerid, PlayerNameTMP);
+			#endif
+			if(!mysql_store_result(db_con4))
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_NAME_MYSQL");
+				return 1;
+			}
+			mysql_fetch_row_format(db_result, "|", db_con4);
+
+			if(mysql_num_rows(db_con4) == 0 )
+			{
+				mysql_free_result(db_con4);
+				format(string, sizeof(string), "[PAYDAY:] Player ID %d not exist, increasing ID, loop ID: %d", gPayDayID, gPayDayLoop);
+				PayDayLog(string);
+				gPayDayLoop++;
+				if(gPayDayLoop <= gPayDayCount)
+				{
+					format(string, sizeof(string), "SELECT `Key`,`ID`,`PlayerName`,`Level`,`AdminLevel`,`DonateRank`,`Registered`,`Sex`,`Age`,`Experience`,`Money`,`Bank`,`Skin`,`PlayingHours`,`AllowedPayday`,`PayCheck`,`Faction`,`Rank`,`Banned`");
+					strcat( string, ",`Warnings`,`Jailed`,`JailTime`,`CrashX`,`CrashY`,`CrashZ`,`CrashInt`,`CrashW`,`Crashed`,`Wins`,`Loses`,`InvWeapon`,`InvAmmo`,`Tutorial`,`Moderator`,`WantedLvl`,`FirstCar`,`FirstReanimation`,`FirstPhone`,`FirstLeader`" );
+					strcat( string, ",`CrashAngle`,`HourAssist`,`JoinedFaction`,`HoursOnDuty`,`HoursOnDutyHelper`,`WarnCooldown`,`SpeedLimiter`,`AdminDuty`,`CharDescription`,`CharDescriptionColor`, `FirstJob`, `FirstID`, `FirstBuy`, `FirstHouse`, `FirstDescription`" );
+					strcat( string, ", `FirstAction`, `FirstBankUse`, `FirstStats`, `FirstJail`, `FirstStudy`" );
+					format( string, sizeof(string), "%s FROM `samp_users` WHERE `Banned` = '0' LIMIT %d , 1", string, gPayDayLoop);
+					mysql_query(string, PLAYER_DATA_LOAD_NAME_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+				}
+				return 1;
+			}
+
+			mysql_fetch_field_row(gPlayerData[CUSTOM_MAX_PLAYERS][pName], "PlayerName", db_con4);
+			mysql_fetch_field_row(string, "Level", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pLevel] = strval(string);
+			mysql_fetch_field_row(string, "AdminLevel", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pAdmin] = strval(string);
+			mysql_fetch_field_row(string, "DonateRank", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pDonateRank] = strval(string);
+			mysql_fetch_field_row(string, "Registered", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pRegistered] = strval(string);
+			mysql_fetch_field_row(string, "Sex", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pSex] = strval(string);
+			mysql_fetch_field_row(string, "Age", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pAge] = strval(string);
+			mysql_fetch_field_row(string, "Experience", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pExp] = strval(string);
+			mysql_fetch_field_row(string, "Money", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pCash] = strval(string);
+			mysql_fetch_field_row(string, "Bank", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pBank] = strval(string);
+			mysql_fetch_field_row(string, "Skin", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pSkin] = strval(string);
+			mysql_fetch_field_row(string, "PlayingHours", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pPlayingHours] = strval(string);
+			mysql_fetch_field_row(string, "AllowedPayday", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pAllowedPayday] = strval(string);
+			mysql_fetch_field_row(string, "PayCheck", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pPayCheck] = strval(string);
+			mysql_fetch_field_row(string, "Faction", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFaction] = strval(string);
+			mysql_fetch_field_row(string, "Rank", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pRank] = strval(string);
+			mysql_fetch_field_row(string, "Banned", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pBanned] = strval(string);
+			mysql_fetch_field_row(string, "Warnings", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pWarnings] = strval(string);
+			mysql_fetch_field_row(string, "Jailed", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pJailed] = strval(string);
+			mysql_fetch_field_row(string, "JailTime", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pJailTime] = strval(string);
+			mysql_fetch_field_row(string, "CrashX", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pCrashX] = floatstr(string);
+			mysql_fetch_field_row(string, "CrashY", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pCrashY] = floatstr(string);
+			mysql_fetch_field_row(string, "CrashZ", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pCrashZ] = floatstr(string);
+			mysql_fetch_field_row(string, "CrashInt", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pCrashInt] = strval(string);
+			mysql_fetch_field_row(string, "CrashW", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pCrashW] = strval(string);
+			mysql_fetch_field_row(string, "Crashed", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pCrashed] = strval(string);
+			mysql_fetch_field_row(string, "Wins", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pWins] = strval(string);
+			mysql_fetch_field_row(string, "Loses", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pLoses] = strval(string);
+			mysql_fetch_field_row(string, "InvWeapon", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pInvWeapon] = strval(string);
+			mysql_fetch_field_row(string, "InvAmmo", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pInvAmmo] = strval(string);
+			mysql_fetch_field_row(string, "Moderator", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pModerator] = strval(string);
+			mysql_fetch_field_row(string, "WantedLvl", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pWantedLvl] = strval(string);
+			mysql_fetch_field_row(string, "FirstCar", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstCar] = strval(string);
+			mysql_fetch_field_row(string, "FirstReanimation", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstReanimation] = strval(string);
+			mysql_fetch_field_row(string, "FirstPhone", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstPhone] = strval(string);
+			mysql_fetch_field_row(string, "FirstLeader", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstLeader] = strval(string);
+			mysql_fetch_field_row(string, "FirstJob", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstJob] = strval(string);
+			mysql_fetch_field_row(string, "FirstID", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstID] = strval(string);
+			mysql_fetch_field_row(string, "FirstBuy", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstBuy] = strval(string);
+			mysql_fetch_field_row(string, "FirstHouse", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstHouse] = strval(string);
+			mysql_fetch_field_row(string, "FirstDescription", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstDescription] = strval(string);
+			mysql_fetch_field_row(string, "FirstAction", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstAction] = strval(string);
+			mysql_fetch_field_row(string, "FirstBankUse", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstBankUse] = strval(string);
+			mysql_fetch_field_row(string, "FirstStats", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstStats] = strval(string);
+			mysql_fetch_field_row(string, "FirstJail", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstJail] = strval(string);
+			mysql_fetch_field_row(string, "FirstStudy", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pFirstStudy] = strval(string);
+			mysql_fetch_field_row(string, "CrashAngle", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pCrashAngle] = floatstr(string);
+			mysql_fetch_field_row(string, "HourAssist", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pHourAssist] = strval(string);
+			mysql_fetch_field_row(string, "JoinedFaction", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pJoinedFaction] = strval(string);
+			mysql_fetch_field_row(string, "HoursOnDuty", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pHoursOnDuty] = strval(string);
+			mysql_fetch_field_row(string, "HoursOnDutyHelper", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pHoursOnDutyHelper] = strval(string);
+			mysql_fetch_field_row(string, "WarnCooldown", db_con4);
+			gPlayerData[CUSTOM_MAX_PLAYERS][pWarnCooldown] = strval(string);
+
+			mysql_free_result(db_con4);
+
+			format(string, sizeof(string), "[PAYDAY:] gPayDayLoop = %d, Player name: %s",  gPayDayLoop, gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			PayDayLog(string);
+
+			format( string, sizeof(string), "SELECT * FROM `samp_users_keys` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_KEYS_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+
+			// format( string, sizeof(string), "SELECT * FROM `samp_users_other` WHERE `PlayerName` = '%s' ", gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			// mysql_query(string, PLAYER_DATA_LOAD_OTHER_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+
+			// format( string, sizeof(string), "SELECT * FROM `samp_users_items` WHERE `PlayerName` = '%s' ", gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			// mysql_query(string, PLAYER_DATA_LOAD_ITEMS_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+
+			// format( string, sizeof(string), "SELECT * FROM `samp_users_items2` WHERE `PlayerName` = '%s' ", gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			// mysql_query(string, PLAYER_DATA_LOAD_ITEMS2_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+
+			// format( string, sizeof(string), "SELECT * FROM `samp_users_items3` WHERE `PlayerName` = '%s' ", gPlayerData[CUSTOM_MAX_PLAYERS][pName]) ;
+			// mysql_query(string, PLAYER_DATA_LOAD_ITEMS3_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+
+			// format( string, sizeof(string), "SELECT * FROM `samp_users_jobs` WHERE `PlayerName` = '%s' ", gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			// mysql_query(string, PLAYER_DATA_LOAD_JOB_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+
+			// format( string, sizeof(string), "SELECT * FROM `samp_users_lic` WHERE `PlayerName` = '%s' ", gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			// mysql_query(string, PLAYER_DATA_LOAD_LIC_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+
+			// format( string, sizeof(string), "SELECT * FROM `samp_users_notes` WHERE `PlayerName` = '%s' ", gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			// mysql_query(string, PLAYER_DATA_LOAD_NOTES_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+
+			// format( string, sizeof(string), "SELECT * FROM `samp_users_vip` WHERE `PlayerName` = '%s'", gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			// mysql_query(string, PLAYER_DATA_LOAD_VIP_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+
+			// format( string, sizeof(string), "SELECT * FROM `samp_users_other2` WHERE `PlayerName` = '%s'", gPlayerData[CUSTOM_MAX_PLAYERS][pName] );
+			// mysql_query(string, PLAYER_DATA_LOAD_OTHER2_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
+		}
 		case PLAYER_DATA_LOAD_FIRST_MYSQL:
 		{
 			#if defined DEBUG
-				printf("[DEBUG:][PLAYER_DATA_LOAD_FIRST_MYSQL] pid = %d, pname = %s", playerid, PlayerNameTMP);
+				printf("[DEBUG:][PLAYER_LOAD_FIRST_MYSQL] pid = %d, pname = %s", playerid, PlayerNameTMP);
 			#endif
-			
 			ClearScreen(playerid);
-			
-			mysql_store_result(db_con4);
-
-			if(mysql_num_rows(db_con4) == 0)
+			if(!mysql_store_result(db_con4))
 			{
-				gPlayerData[playerid][pLoading] = 0;
-			
-				format(string, sizeof(string), "{FFFFFF}Witaj na serwerze WParty !\n\n");
-				strcat(string, "Aby siê zalogowaæ wpisz swoje has³o do postaci.\n\n\n");
-				strcat(string, "{F52222}Ta nazwa postaci nie jest zarejestrowana !\nJeœli nie posiadasz jeszcze postaci musisz wpierw zarejestrowaæ swoje konto\nna forum WParty.eu a nastêpnie utworzyæ postaæ\npostêpuj¹æ wed³ug podanych tam wskazówek.\n\n");
-				strcat(string, "{FAEC25}Jeœli zapomnia³eœ has³a do postaci mo¿esz je zmieniæ loguj¹c siê na forum\na nastêpnie przechodz¹c do panelu zarz¹dzania postaciami.\n\n\n");
-				strcat(string, "{FFFFFF}Wpisz has³o:");
-				
-				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, ""#COLOR_TITLE"Logowanie", string, "Zaloguj", "");
-				
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_FIRST_MYSQL");
 				return 1;
 			}
 
-			mysql_retrieve_row(db_con4);
-			
-			mysql_fetch_field_row(string, "Key", db_con4);
-			format(password, 512, string);
-			
-			GetPlayerName(playerid, PlayerNameTMP, sizeof(PlayerNameTMP));
-			if(strlen(PlayerNameTMP) < 5)
+			/* Check if row exist */
+			if(mysql_num_rows(db_con4) == 0)
 			{
 				format( string, sizeof(string), "{FFFFFF}Witaj na serwerze WParty !\n\n" );
 				strcat( string, "Aby siê zalogowaæ wpisz swoje has³o do postaci.\n\n\n" );
-				strcat( string, "{F52222}Ta nazwa postaci jest za krótka !\nAby utworzyæ inn¹ postaæ o d³u¿ej nazwie przejdŸ na strone WParty.eu a nastêpnie w panelu zarz¹dzania postaciami utwórz\nnow¹ postaæ o odpowiednio d³ugiej nazwie.\n\n" );
+				strcat( string, "{F52222}Ta nazwa postaci nie jest zarejestrowana !\nJeœli nie posiadasz jeszcze postaci musisz wpierw zarejestrowaæ swoje konto\nna forum WParty.pl a nastêpnei utworzyæ postaæ\npostêpuj¹æ wed³ug podanych tam wskazówek.\n\n" );
 				strcat( string, "{FAEC25}Jeœli zapomnia³eœ has³a do postaci mo¿esz je zmieniæ loguj¹c siê na forum\na nastêpnie przechodz¹c do panelu zarz¹dzania postaciami.\n\n\n" );
 				strcat( string, "{FFFFFF}Wpisz has³o:" );
 				gPlayerData[playerid][pLoading] = 0;
-				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, ""#COLOR_TITLE"Logowanie", string, "Zaloguj", "");
+				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Logowanie", string, "Zaloguj", "");
+				mysql_free_result(db_con4);
 				return 1;
 			}
-			
+			mysql_fetch_row_format(db_result, "|", db_con4);
+			split2(db_result, arrCoords, '|');
+			mysql_fetch_field_row(string, "Key", db_con2);
+			format(arrCoords[0], 512, string);
+			mysql_free_result(db_con4);
+			if(strlen(arrCoords[1]) < 5)
+			{
+				format( string, sizeof(string), "{FFFFFF}Witaj na serwerze WParty !\n\n" );
+				strcat( string, "Aby siê zalogowaæ wpisz swoje has³o do postaci.\n\n\n" );
+				strcat( string, "{F52222}Ta nazwa postaci jest za krótka !\nAby utworzyæ inn¹ postaæ o d³u¿ej nazwie przejdŸ na strone WParty.pl a nastêpnie w panelu zarz¹dzania postaciami utwórz\nnow¹ postaæ o odpowiednio d³ugiej nazwie.\n\n" );
+				strcat( string, "{FAEC25}Jeœli zapomnia³eœ has³a do postaci mo¿esz je zmieniæ loguj¹c siê na forum\na nastêpnie przechodz¹c do panelu zarz¹dzania postaciami.\n\n\n" );
+				strcat( string, "{FFFFFF}Wpisz has³o:" );
+				gPlayerData[playerid][pLoading] = 0;
+				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Logowanie", string, "Zaloguj", "");
+				return 1;
+			}
 			WP_Hash(gPasswd[playerid], 145, gPasswd[playerid]);
-			if(strcmp(password, gPasswd[playerid], true) != 0 || strlen(gPasswd[playerid]) <= 0)
+			if(strcmp(arrCoords[0], gPasswd[playerid], true) != 0 || strlen(gPasswd[playerid]) <= 0)
 			{
 				format( string, sizeof(string), "{FFFFFF}Witaj na serwerze WParty !\n\n" );
 				strcat( string, "Aby siê zalogowaæ wpisz swoje has³o do postaci.\n\n\n" );
@@ -156,11 +311,10 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					return 1;
 				}
 				gPlayerData[playerid][pLoading] = 0;
-				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, ""#COLOR_TITLE"Logowanie", string, "Zaloguj", "");
+				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Logowanie", string, "Zaloguj", "");
 				return 1;
 			}
-			
-			if(strcmp(gPlayerData[playerid][pSName], PlayerNameTMP, false, 32) != 0)
+			if( strcmp( gPlayerData[playerid][pSName], PlayerNameTMP, false, 32 ) != 0 )
 			{
 				format( string, sizeof(string), "{FFFFFF}Witaj na serwerze WParty !\n\n" );
 				strcat( string, "Aby siê zalogowaæ wpisz swoje has³o do postaci.\n\n\n" );
@@ -168,2161 +322,1621 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				strcat( string, "{F52222}NIEZGODNA NAZWA U¯YTKOWNIKA !\n" );
 				strcat( string, "{FFFFFF}Wpisz ponownie has³o:" );
 				gPlayerData[playerid][pLoading] = 0;
-				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, ""#COLOR_TITLE"Logowanie", string, "Zaloguj", "");
+				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Logowanie", string, "Zaloguj", "");
 				return 1;
 			}
 
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych...");
 
-			format(string, sizeof(string), "SELECT");
-			strcat(string, " `samp_users`.*");
-			strcat(string, ", `samp_users_items`.*");
-			strcat(string, ", `samp_users_items2`.*");
-			strcat(string, ", `samp_users_items3`.*");
-			strcat(string, ", `samp_users_jobs`.*");
-			strcat(string, ", `samp_users_lic`.*");
-			strcat(string, ", `samp_users_notes`.*");
-			strcat(string, ", `samp_users_other`.*");
-			strcat(string, ", `samp_users_other2`.*");
-			strcat(string, ", `samp_users_vip`.*");
-			strcat(string, " FROM `samp_users`");
-			strcat(string, " JOIN `samp_users_items` ON `samp_users_items`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_items2` ON `samp_users_items2`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_items3` ON `samp_users_items3`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_jobs` ON `samp_users_jobs`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_lic` ON `samp_users_lic`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_notes` ON `samp_users_notes`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_other` ON `samp_users_other`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_other2` ON `samp_users_other2`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_vip` ON `samp_users_vip`.PlayerName = `samp_users`.PlayerName");
-			format(string, sizeof(string), "%s WHERE `samp_users`.PlayerName = '%s'", string, PlayerNameTMP);
-			
-			wp_mysql_query(string, PLAYER_DATA_LOAD_ALL, playerid, db_con4);
+			format(string, sizeof(string), "SELECT `Key`,`ID`,`PlayerName`,`Level`,`AdminLevel`,`DonateRank`,`Registered`,`Sex`,`Age`,`Experience`,`Money`,`Bank`,`Skin`,`PlayingHours`,`AllowedPayday`,`PayCheck`,`Faction`,`Rank`,`Banned`");
+			strcat( string, ",`Warnings`,`Jailed`,`JailTime`,`CrashX`,`CrashY`,`CrashZ`,`CrashInt`,`CrashW`,`Crashed`,`Wins`,`Loses`,`InvWeapon`,`InvAmmo`,`Tutorial`,`Moderator`,`WantedLvl`,`FirstCar`,`FirstReanimation`,`FirstPhone`,`FirstLeader`" );
+			strcat( string, ",`CrashAngle`,`HourAssist`,`JoinedFaction`,`HoursOnDuty`,`HoursOnDutyHelper`,`WarnCooldown`,`SpeedLimiter`,`AdminDuty`,`CharDescription`,`CharDescriptionColor`, `FirstJob`, `FirstID`, `FirstBuy`, `FirstHouse`, `FirstDescription`" );
+			strcat( string, ", `FirstAction`, `FirstBankUse`, `FirstStats`, `FirstJail`, `FirstStudy`" );
+			format( string, sizeof(string), "%s FROM `samp_users` WHERE `PlayerName` = '%s' LIMIT 1", string, PlayerNameTMP);
+			mysql_query(string, PLAYER_DATA_LOAD_USER_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_keys` WHERE `PlayerName` = '%s' ", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_KEYS_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_other` WHERE `PlayerName` = '%s' ", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_OTHER_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_items` WHERE `PlayerName` = '%s' ", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_ITEMS_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_items2` WHERE `PlayerName` = '%s' ", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_ITEMS2_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_items3` WHERE `PlayerName` = '%s' ", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_ITEMS3_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_jobs` WHERE `PlayerName` = '%s' ", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_JOB_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_lic` WHERE `PlayerName` = '%s' ", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_LIC_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_notes` WHERE `PlayerName` = '%s' ", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_NOTES_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_vip` WHERE `PlayerName` = '%s'", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_VIP_MYSQL, playerid, db_con4);
+
+			// format(string, sizeof(string), "SELECT * FROM `samp_users_other2` WHERE `PlayerName` = '%s'", PlayerNameTMP);
+			// mysql_query(string, PLAYER_DATA_LOAD_OTHER2_MYSQL, playerid, db_con4);
 
 			return 1;
 		}
-		case PLAYER_DATA_LOAD_OOCNAME_MYSQL:
+		case PLAYER_DATA_LOAD_USER_MYSQL:
 		{
-			#if defined DEBUG
-				printf("[DEBUG:][PLAYER_DATA_LOAD_OOCNAME_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
-			#endif
-			
-			mysql_store_result(db_con4);
-			
-			mysql_retrieve_row(db_con4);
-			
-			mysql_fetch_field_row(string, "username", db_con4);
-			format(gPlayerData[playerid][pOOCName], 255, string);
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [dane podstawowe]...");
+
+			if( !mysql_store_result(db_con4) )
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_USER_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
+			}
+			mysql_fetch_row_format(db_result, "|", db_con4);
+			mysql_fetch_field_row(gPlayerData[playerid][pName], "PlayerName", db_con4);
+			mysql_fetch_field_row(string, "Level", db_con4);
+			gPlayerData[playerid][pLevel] = strval(string);
+			mysql_fetch_field_row(string, "AdminLevel", db_con4);
+			gPlayerData[playerid][pAdmin] = strval(string);
+			mysql_fetch_field_row(string, "DonateRank", db_con4);
+			gPlayerData[playerid][pDonateRank] = strval(string);
+			mysql_fetch_field_row(string, "Registered", db_con4);
+			gPlayerData[playerid][pRegistered] = strval(string);
+			mysql_fetch_field_row(string, "Sex", db_con4);
+			gPlayerData[playerid][pSex] = strval(string);
+			mysql_fetch_field_row(string, "Age", db_con4);
+			gPlayerData[playerid][pAge] = strval(string);
+			mysql_fetch_field_row(string, "Experience", db_con4);
+			gPlayerData[playerid][pExp] = strval(string);
+			mysql_fetch_field_row(string, "Money", db_con4);
+			gPlayerData[playerid][pCash] = strval(string);
+			mysql_fetch_field_row(string, "Bank", db_con4);
+			gPlayerData[playerid][pBank] = strval(string);
+			mysql_fetch_field_row(string, "Skin", db_con4);
+			gPlayerData[playerid][pSkin] = strval(string);
+			mysql_fetch_field_row(string, "PlayingHours", db_con4);
+			gPlayerData[playerid][pPlayingHours] = strval(string);
+			mysql_fetch_field_row(string, "AllowedPayday", db_con4);
+			gPlayerData[playerid][pAllowedPayday] = strval(string);
+			mysql_fetch_field_row(string, "PayCheck", db_con4);
+			gPlayerData[playerid][pPayCheck] = strval(string);
+			mysql_fetch_field_row(string, "Faction", db_con4);
+			gPlayerData[playerid][pFaction] = strval(string);
+			mysql_fetch_field_row(string, "Rank", db_con4);
+			gPlayerData[playerid][pRank] = strval(string);
+			mysql_fetch_field_row(string, "Banned", db_con4);
+			gPlayerData[playerid][pBanned] = strval(string);
+			mysql_fetch_field_row(string, "Warnings", db_con4);
+			gPlayerData[playerid][pWarnings] = strval(string);
+			mysql_fetch_field_row(string, "Jailed", db_con4);
+			gPlayerData[playerid][pJailed] = strval(string);
+			mysql_fetch_field_row(string, "JailTime", db_con4);
+			gPlayerData[playerid][pJailTime] = strval(string);
+			mysql_fetch_field_row(string, "CrashX", db_con4);
+			gPlayerData[playerid][pCrashX] = floatstr(string);
+			mysql_fetch_field_row(string, "CrashY", db_con4);
+			gPlayerData[playerid][pCrashY] = floatstr(string);
+			mysql_fetch_field_row(string, "CrashZ", db_con4);
+			gPlayerData[playerid][pCrashZ] = floatstr(string);
+			mysql_fetch_field_row(string, "CrashInt", db_con4);
+			gPlayerData[playerid][pCrashInt] = strval(string);
+			mysql_fetch_field_row(string, "CrashW", db_con4);
+			gPlayerData[playerid][pCrashW] = strval(string);
+			mysql_fetch_field_row(string, "Crashed", db_con4);
+			gPlayerData[playerid][pCrashed] = strval(string);
+			mysql_fetch_field_row(string, "Wins", db_con4);
+			gPlayerData[playerid][pWins] = strval(string);
+			mysql_fetch_field_row(string, "Loses", db_con4);
+			gPlayerData[playerid][pLoses] = strval(string);
+			mysql_fetch_field_row(string, "InvWeapon", db_con4);
+			gPlayerData[playerid][pInvWeapon] = strval(string);
+			mysql_fetch_field_row(string, "InvAmmo", db_con4);
+			gPlayerData[playerid][pInvAmmo] = strval(string);
+			mysql_fetch_field_row(string, "Moderator", db_con4);
+			gPlayerData[playerid][pModerator] = strval(string);
+			mysql_fetch_field_row(string, "WantedLvl", db_con4);
+			gPlayerData[playerid][pWantedLvl] = strval(string);
+			mysql_fetch_field_row(string, "FirstCar", db_con4);
+			gPlayerData[playerid][pFirstCar] = strval(string);
+			mysql_fetch_field_row(string, "FirstReanimation", db_con4);
+			gPlayerData[playerid][pFirstReanimation] = strval(string);
+			mysql_fetch_field_row(string, "FirstPhone", db_con4);
+			gPlayerData[playerid][pFirstPhone] = strval(string);
+			mysql_fetch_field_row(string, "FirstLeader", db_con4);
+			gPlayerData[playerid][pFirstLeader] = strval(string);
+			mysql_fetch_field_row(string, "FirstJob", db_con4);
+			gPlayerData[playerid][pFirstJob] = strval(string);
+			mysql_fetch_field_row(string, "FirstID", db_con4);
+			gPlayerData[playerid][pFirstID] = strval(string);
+			mysql_fetch_field_row(string, "FirstBuy", db_con4);
+			gPlayerData[playerid][pFirstBuy] = strval(string);
+			mysql_fetch_field_row(string, "FirstHouse", db_con4);
+			gPlayerData[playerid][pFirstHouse] = strval(string);
+			mysql_fetch_field_row(string, "FirstDescription", db_con4);
+			gPlayerData[playerid][pFirstDescription] = strval(string);
+			mysql_fetch_field_row(string, "FirstAction", db_con4);
+			gPlayerData[playerid][pFirstAction] = strval(string);
+			mysql_fetch_field_row(string, "FirstBankUse", db_con4);
+			gPlayerData[playerid][pFirstBankUse] = strval(string);
+			mysql_fetch_field_row(string, "FirstStats", db_con4);
+			gPlayerData[playerid][pFirstStats] = strval(string);
+			mysql_fetch_field_row(string, "FirstJail", db_con4);
+			gPlayerData[playerid][pFirstJail] = strval(string);
+			mysql_fetch_field_row(string, "FirstStudy", db_con4);
+			gPlayerData[playerid][pFirstStudy] = strval(string);
+			mysql_fetch_field_row(string, "CrashAngle", db_con4);
+			gPlayerData[playerid][pCrashAngle] = floatstr(string);
+			mysql_fetch_field_row(string, "HourAssist", db_con4);
+			gPlayerData[playerid][pHourAssist] = strval(string);
+			mysql_fetch_field_row(string, "JoinedFaction", db_con4);
+			gPlayerData[playerid][pJoinedFaction] = strval(string);
+			mysql_fetch_field_row(string, "HoursOnDuty", db_con4);
+			gPlayerData[playerid][pHoursOnDuty] = strval(string);
+			mysql_fetch_field_row(string, "HoursOnDutyHelper", db_con4);
+			gPlayerData[playerid][pHoursOnDutyHelper] = strval(string);
+			mysql_fetch_field_row(string, "WarnCooldown", db_con4);
+			gPlayerData[playerid][pWarnCooldown] = strval(string);
+			mysql_fetch_field_row(string, "AdminDuty", db_con4);
+			AdminDuty[playerid] = strval(string);
+			mysql_fetch_field_row(gPlayerData[playerid][pCharDescription], "CharDescription", db_con4);
+			mysql_fetch_field_row(string, "CharDescriptionColor", db_con4);
+			gPlayerData[playerid][pCharDescriptionColor] = strval(string);
+
+			mysql_free_result(db_con4);
+
+			format( string, sizeof(string), "SELECT * FROM `samp_users_keys` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_KEYS_MYSQL, playerid, db_con4);
 		}
-		case PLAYER_DATA_LOAD_ALL:
+		case PLAYER_DATA_LOAD_KEYS_MYSQL:
 		{
-			#if defined DEBUG
-				printf("[DEBUG:][PLAYER_LOAD_OTHER2_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
-			#endif
-			
-			if(playerid < CUSTOM_MAX_PLAYERS)
+			// printf("[DEBUG:][PLAYER_LOAD_KEYS_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			if(playerid != CUSTOM_MAX_PLAYERS)
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [klucze]...");
+			if(!mysql_store_result(db_con4))
 			{
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [finalizacja]...");
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_KEYS_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
 			}
-			
-			mysql_store_result(db_con4);
-			
-			mysql_retrieve_row(db_con4);
-			
-			// samp_users
+			if(mysql_num_rows(db_con4) == 0)
 			{
-				mysql_fetch_field_row(string, "PlayerName", db_con4);
-				format(gPlayerData[playerid][pName], MAX_PLAYER_NAME, string);
-				mysql_fetch_field_row(string, "Level", db_con4);
-				gPlayerData[playerid][pLevel] = strval(string);
-				mysql_fetch_field_row(string, "AdminLevel", db_con4);
-				gPlayerData[playerid][pAdmin] = strval(string);
-				mysql_fetch_field_row(string, "DonateRank", db_con4);
-				gPlayerData[playerid][pDonateRank] = strval(string);
-				mysql_fetch_field_row(string, "Registered", db_con4);
-				gPlayerData[playerid][pRegistered] = strval(string);
-				mysql_fetch_field_row(string, "Sex", db_con4);
-				gPlayerData[playerid][pSex] = strval(string);
-				mysql_fetch_field_row(string, "Age", db_con4);
-				gPlayerData[playerid][pAge] = strval(string);
-				mysql_fetch_field_row(string, "Experience", db_con4);
-				gPlayerData[playerid][pExp] = strval(string);
-				mysql_fetch_field_row(string, "Money", db_con4);
-				gPlayerData[playerid][pCash] = strval(string);
-				mysql_fetch_field_row(string, "Bank", db_con4);
-				gPlayerData[playerid][pBank] = strval(string);
-				mysql_fetch_field_row(string, "Skin", db_con4);
-				gPlayerData[playerid][pSkin] = strval(string);
-				mysql_fetch_field_row(string, "PlayingHours", db_con4);
-				gPlayerData[playerid][pPlayingHours] = strval(string);
-				mysql_fetch_field_row(string, "AllowedPayday", db_con4);
-				gPlayerData[playerid][pAllowedPayday] = strval(string);
-				mysql_fetch_field_row(string, "PayCheck", db_con4);
-				gPlayerData[playerid][pPayCheck] = strval(string);
-				mysql_fetch_field_row(string, "Faction", db_con4);
-				gPlayerData[playerid][pFaction] = strval(string);
-				mysql_fetch_field_row(string, "Rank", db_con4);
-				gPlayerData[playerid][pRank] = strval(string);
-				mysql_fetch_field_row(string, "Banned", db_con4);
-				gPlayerData[playerid][pBanned] = strval(string);
-				mysql_fetch_field_row(string, "Warnings", db_con4);
-				gPlayerData[playerid][pWarnings] = strval(string);
-				mysql_fetch_field_row(string, "Jailed", db_con4);
-				gPlayerData[playerid][pJailed] = strval(string);
-				mysql_fetch_field_row(string, "JailTime", db_con4);
-				gPlayerData[playerid][pJailTime] = strval(string);
-				mysql_fetch_field_row(string, "CrashX", db_con4);
-				gPlayerData[playerid][pCrashX] = floatstr(string);
-				mysql_fetch_field_row(string, "CrashY", db_con4);
-				gPlayerData[playerid][pCrashY] = floatstr(string);
-				mysql_fetch_field_row(string, "CrashZ", db_con4);
-				gPlayerData[playerid][pCrashZ] = floatstr(string);
-				mysql_fetch_field_row(string, "CrashInt", db_con4);
-				gPlayerData[playerid][pCrashInt] = strval(string);
-				mysql_fetch_field_row(string, "CrashW", db_con4);
-				gPlayerData[playerid][pCrashW] = strval(string);
-				mysql_fetch_field_row(string, "Crashed", db_con4);
-				gPlayerData[playerid][pCrashed] = strval(string);
-				mysql_fetch_field_row(string, "Wins", db_con4);
-				gPlayerData[playerid][pWins] = strval(string);
-				mysql_fetch_field_row(string, "Loses", db_con4);
-				gPlayerData[playerid][pLoses] = strval(string);
-				mysql_fetch_field_row(string, "InvWeapon", db_con4);
-				gPlayerData[playerid][pInvWeapon] = strval(string);
-				mysql_fetch_field_row(string, "InvAmmo", db_con4);
-				gPlayerData[playerid][pInvAmmo] = strval(string);
-				mysql_fetch_field_row(string, "Moderator", db_con4);
-				gPlayerData[playerid][pModerator] = strval(string);
-				mysql_fetch_field_row(string, "WantedLvl", db_con4);
-				gPlayerData[playerid][pWantedLvl] = strval(string);
-				mysql_fetch_field_row(string, "FirstCar", db_con4);
-				gPlayerData[playerid][pFirstCar] = strval(string);
-				mysql_fetch_field_row(string, "FirstReanimation", db_con4);
-				gPlayerData[playerid][pFirstReanimation] = strval(string);
-				mysql_fetch_field_row(string, "FirstPhone", db_con4);
-				gPlayerData[playerid][pFirstPhone] = strval(string);
-				mysql_fetch_field_row(string, "FirstLeader", db_con4);
-				gPlayerData[playerid][pFirstLeader] = strval(string);
-				mysql_fetch_field_row(string, "FirstJob", db_con4);
-				gPlayerData[playerid][pFirstJob] = strval(string);
-				mysql_fetch_field_row(string, "FirstID", db_con4);
-				gPlayerData[playerid][pFirstID] = strval(string);
-				mysql_fetch_field_row(string, "FirstBuy", db_con4);
-				gPlayerData[playerid][pFirstBuy] = strval(string);
-				mysql_fetch_field_row(string, "FirstHouse", db_con4);
-				gPlayerData[playerid][pFirstHouse] = strval(string);
-				mysql_fetch_field_row(string, "FirstDescription", db_con4);
-				gPlayerData[playerid][pFirstDescription] = strval(string);
-				mysql_fetch_field_row(string, "FirstAction", db_con4);
-				gPlayerData[playerid][pFirstAction] = strval(string);
-				mysql_fetch_field_row(string, "FirstBankUse", db_con4);
-				gPlayerData[playerid][pFirstBankUse] = strval(string);
-				mysql_fetch_field_row(string, "FirstStats", db_con4);
-				gPlayerData[playerid][pFirstStats] = strval(string);
-				mysql_fetch_field_row(string, "FirstJail", db_con4);
-				gPlayerData[playerid][pFirstJail] = strval(string);
-				mysql_fetch_field_row(string, "FirstStudy", db_con4);
-				gPlayerData[playerid][pFirstStudy] = strval(string);
-				mysql_fetch_field_row(string, "CrashAngle", db_con4);
-				gPlayerData[playerid][pCrashAngle] = floatstr(string);
-				mysql_fetch_field_row(string, "HourAssist", db_con4);
-				gPlayerData[playerid][pHourAssist] = strval(string);
-				mysql_fetch_field_row(string, "JoinedFaction", db_con4);
-				gPlayerData[playerid][pJoinedFaction] = strval(string);
-				mysql_fetch_field_row(string, "HoursOnDuty", db_con4);
-				gPlayerData[playerid][pHoursOnDuty] = strval(string);
-				mysql_fetch_field_row(string, "HoursOnDutyHelper", db_con4);
-				gPlayerData[playerid][pHoursOnDutyHelper] = strval(string);
-				mysql_fetch_field_row(string, "WarnCooldown", db_con4);
-				gPlayerData[playerid][pWarnCooldown] = strval(string);
-				mysql_fetch_field_row(string, "AdminDuty", db_con4);
-				AdminDuty[playerid] = strval(string);
-				mysql_fetch_field_row(string, "CharDescription", db_con4);
-				format(gPlayerData[playerid][pCharDescription], 128, string);
-				mysql_fetch_field_row(string, "CharDescriptionColor", db_con4);
-				format(gPlayerData[playerid][pCharDescriptionColor], 32, string);
-			}
-			
-			// samp_users_items
-			{
-				mysql_fetch_field_row(string, "Item1", db_con4);
-				gPlayerData[playerid][pItem1] = strval(string);
-				mysql_fetch_field_row(string, "Item2", db_con4);
-				gPlayerData[playerid][pItem2] = strval(string);
-				mysql_fetch_field_row(string, "Item3", db_con4);
-				gPlayerData[playerid][pItem3] = strval(string);
-				mysql_fetch_field_row(string, "Item4", db_con4);
-				gPlayerData[playerid][pItem4] = strval(string);
-				mysql_fetch_field_row(string, "Item5", db_con4);
-				gPlayerData[playerid][pItem5] = strval(string);
-				mysql_fetch_field_row(string, "Item1type", db_con4);
-				gPlayerData[playerid][pItem1type] = strval(string);
-				mysql_fetch_field_row(string, "Item2type", db_con4);
-				gPlayerData[playerid][pItem2type] = strval(string);
-				mysql_fetch_field_row(string, "Item3type", db_con4);
-				gPlayerData[playerid][pItem3type] = strval(string);
-				mysql_fetch_field_row(string, "Item4type", db_con4);
-				gPlayerData[playerid][pItem4type] = strval(string);
-				mysql_fetch_field_row(string, "Item5type", db_con4);
-				gPlayerData[playerid][pItem5type] = strval(string);
-				mysql_fetch_field_row(string, "Item1param", db_con4);
-				gPlayerData[playerid][pItem1param] = strval(string);
-				mysql_fetch_field_row(string, "Item2param", db_con4);
-				gPlayerData[playerid][pItem2param] = strval(string);
-				mysql_fetch_field_row(string, "Item3param", db_con4);
-				gPlayerData[playerid][pItem3param] = strval(string);
-				mysql_fetch_field_row(string, "Item4param", db_con4);
-				gPlayerData[playerid][pItem4param] = strval(string);
-				mysql_fetch_field_row(string, "Item5param", db_con4);
-				gPlayerData[playerid][pItem5param] = strval(string);
-				mysql_fetch_field_row(string, "Item1param2", db_con4);
-				gPlayerData[playerid][pItem1param2] = strval(string);
-				mysql_fetch_field_row(string, "Item2param2", db_con4);
-				gPlayerData[playerid][pItem2param2] = strval(string);
-				mysql_fetch_field_row(string, "Item3param2", db_con4);
-				gPlayerData[playerid][pItem3param2] = strval(string);
-				mysql_fetch_field_row(string, "Item4param2", db_con4);
-				gPlayerData[playerid][pItem4param2] = strval(string);
-				mysql_fetch_field_row(string, "Item5param2", db_con4);
-				gPlayerData[playerid][pItem5param2] = strval(string);
-				mysql_fetch_field_row(string, "Item1param3", db_con4);
-				gPlayerData[playerid][pItem1param3] = strval(string);
-				mysql_fetch_field_row(string, "Item2param3", db_con4);
-				gPlayerData[playerid][pItem2param3] = strval(string);
-				mysql_fetch_field_row(string, "Item3param3", db_con4);
-				gPlayerData[playerid][pItem3param3] = strval(string);
-				mysql_fetch_field_row(string, "Item4param3", db_con4);
-				gPlayerData[playerid][pItem4param3] = strval(string);
-				mysql_fetch_field_row(string, "Item5param3", db_con4);
-				gPlayerData[playerid][pItem5param3] = strval(string);
-				mysql_fetch_field_row(string, "Item1param4", db_con4);
-				gPlayerData[playerid][pItem1param4] = strval(string);
-				mysql_fetch_field_row(string, "Item2param4", db_con4);
-				gPlayerData[playerid][pItem2param4] = strval(string);
-				mysql_fetch_field_row(string, "Item3param4", db_con4);
-				gPlayerData[playerid][pItem3param4] = strval(string);
-				mysql_fetch_field_row(string, "Item4param4", db_con4);
-				gPlayerData[playerid][pItem4param4] = strval(string);
-				mysql_fetch_field_row(string, "Item5param4", db_con4);
-				gPlayerData[playerid][pItem5param4] = strval(string);
-				mysql_fetch_field_row(string, "Item1param5", db_con4);
-				format(gPlayerData[playerid][pItem1param5], 64, string);
-				mysql_fetch_field_row(string, "Item2param5", db_con4);
-				format(gPlayerData[playerid][pItem2param5], 64, string);
-				mysql_fetch_field_row(string, "Item3param5", db_con4);
-				format(gPlayerData[playerid][pItem3param5], 64, string);
-				mysql_fetch_field_row(string, "Item4param5", db_con4);
-				format(gPlayerData[playerid][pItem4param5], 64, string);
-				mysql_fetch_field_row(string, "Item5param5", db_con4);
-				format(gPlayerData[playerid][pItem5param5], 64, string);
-				mysql_fetch_field_row(string, "Item1param6", db_con4);
-				gPlayerData[playerid][pItem1param6] = strval(string);
-				mysql_fetch_field_row(string, "Item2param6", db_con4);
-				gPlayerData[playerid][pItem2param6] = strval(string);
-				mysql_fetch_field_row(string, "Item3param6", db_con4);
-				gPlayerData[playerid][pItem3param6] = strval(string);
-				mysql_fetch_field_row(string, "Item4param6", db_con4);
-				gPlayerData[playerid][pItem4param6] = strval(string);
-				mysql_fetch_field_row(string, "Item5param6", db_con4);
-				gPlayerData[playerid][pItem5param6] = strval(string);
-			}
-			
-			// samp_users_items2
-			{
-				mysql_fetch_field_row(string, "Item6", db_con4);
-				gPlayerData[playerid][pItem6] = strval(string);
-				mysql_fetch_field_row(string, "Item7", db_con4);
-				gPlayerData[playerid][pItem7] = strval(string);
-				mysql_fetch_field_row(string, "Item8", db_con4);
-				gPlayerData[playerid][pItem8] = strval(string);
-				mysql_fetch_field_row(string, "Item9", db_con4);
-				gPlayerData[playerid][pItem9] = strval(string);
-				mysql_fetch_field_row(string, "Item10", db_con4);
-				gPlayerData[playerid][pItem10] = strval(string);
-				mysql_fetch_field_row(string, "Item6type", db_con4);
-				gPlayerData[playerid][pItem6type] = strval(string);
-				mysql_fetch_field_row(string, "Item7type", db_con4);
-				gPlayerData[playerid][pItem7type] = strval(string);
-				mysql_fetch_field_row(string, "Item8type", db_con4);
-				gPlayerData[playerid][pItem8type] = strval(string);
-				mysql_fetch_field_row(string, "Item9type", db_con4);
-				gPlayerData[playerid][pItem9type] = strval(string);
-				mysql_fetch_field_row(string, "Item10type", db_con4);
-				gPlayerData[playerid][pItem10type] = strval(string);
-				mysql_fetch_field_row(string, "Item6param", db_con4);
-				gPlayerData[playerid][pItem6param] = strval(string);
-				mysql_fetch_field_row(string, "Item7param", db_con4);
-				gPlayerData[playerid][pItem7param] = strval(string);
-				mysql_fetch_field_row(string, "Item8param", db_con4);
-				gPlayerData[playerid][pItem8param] = strval(string);
-				mysql_fetch_field_row(string, "Item9param", db_con4);
-				gPlayerData[playerid][pItem9param] = strval(string);
-				mysql_fetch_field_row(string, "Item10param", db_con4);
-				gPlayerData[playerid][pItem10param] = strval(string);
-				mysql_fetch_field_row(string, "Item6param2", db_con4);
-				gPlayerData[playerid][pItem6param2] = strval(string);
-				mysql_fetch_field_row(string, "Item7param2", db_con4);
-				gPlayerData[playerid][pItem7param2] = strval(string);
-				mysql_fetch_field_row(string, "Item8param2", db_con4);
-				gPlayerData[playerid][pItem8param2] = strval(string);
-				mysql_fetch_field_row(string, "Item9param2", db_con4);
-				gPlayerData[playerid][pItem9param2] = strval(string);
-				mysql_fetch_field_row(string, "Item10param2", db_con4);
-				gPlayerData[playerid][pItem10param2] = strval(string);
-				mysql_fetch_field_row(string, "Item6param3", db_con4);
-				gPlayerData[playerid][pItem6param3] = strval(string);
-				mysql_fetch_field_row(string, "Item7param3", db_con4);
-				gPlayerData[playerid][pItem7param3] = strval(string);
-				mysql_fetch_field_row(string, "Item8param3", db_con4);
-				gPlayerData[playerid][pItem8param3] = strval(string);
-				mysql_fetch_field_row(string, "Item9param3", db_con4);
-				gPlayerData[playerid][pItem9param3] = strval(string);
-				mysql_fetch_field_row(string, "Item10param3", db_con4);
-				gPlayerData[playerid][pItem10param3] = strval(string);
-				mysql_fetch_field_row(string, "Item6param4", db_con4);
-				gPlayerData[playerid][pItem6param4] = strval(string);
-				mysql_fetch_field_row(string, "Item7param4", db_con4);
-				gPlayerData[playerid][pItem7param4] = strval(string);
-				mysql_fetch_field_row(string, "Item8param4", db_con4);
-				gPlayerData[playerid][pItem8param4] = strval(string);
-				mysql_fetch_field_row(string, "Item9param4", db_con4);
-				gPlayerData[playerid][pItem9param4] = strval(string);
-				mysql_fetch_field_row(string, "Item10param4", db_con4);
-				gPlayerData[playerid][pItem10param4] = strval(string);
-				mysql_fetch_field_row(string, "Item6param5", db_con4);
-				format(gPlayerData[playerid][pItem6param5], 64, string);
-				mysql_fetch_field_row(string, "Item7param5", db_con4);
-				format(gPlayerData[playerid][pItem7param5], 64, string);
-				mysql_fetch_field_row(string, "Item8param5", db_con4);
-				format(gPlayerData[playerid][pItem8param5], 64, string);
-				mysql_fetch_field_row(string, "Item9param5", db_con4);
-				format(gPlayerData[playerid][pItem9param5], 64, string);
-				mysql_fetch_field_row(string, "Item10param5", db_con4);
-				format(gPlayerData[playerid][pItem10param5], 64, string);
-				mysql_fetch_field_row(string, "Item6param6", db_con4);
-				gPlayerData[playerid][pItem6param6] = strval(string);
-				mysql_fetch_field_row(string, "Item7param6", db_con4);
-				gPlayerData[playerid][pItem7param6] = strval(string);
-				mysql_fetch_field_row(string, "Item8param6", db_con4);
-				gPlayerData[playerid][pItem8param6] = strval(string);
-				mysql_fetch_field_row(string, "Item9param6", db_con4);
-				gPlayerData[playerid][pItem9param6] = strval(string);
-				mysql_fetch_field_row(string, "Item10param6", db_con4);
-				gPlayerData[playerid][pItem10param6] = strval(string);
-			}
-			
-			// samp_users_items3
-			{
-				mysql_fetch_field_row(string, "Item11", db_con4);
-				gPlayerData[playerid][pItem11] = strval(string);
-				mysql_fetch_field_row(string, "Item12", db_con4);
-				gPlayerData[playerid][pItem12] = strval(string);
-				mysql_fetch_field_row(string, "Item13", db_con4);
-				gPlayerData[playerid][pItem13] = strval(string);
-				mysql_fetch_field_row(string, "Item14", db_con4);
-				gPlayerData[playerid][pItem14] = strval(string);
-				mysql_fetch_field_row(string, "Item15", db_con4);
-				gPlayerData[playerid][pItem15] = strval(string);
-				mysql_fetch_field_row(string, "Item16", db_con4);
-				gPlayerData[playerid][pItem16] = strval(string);
-				mysql_fetch_field_row(string, "Item17", db_con4);
-				gPlayerData[playerid][pItem17] = strval(string);
-				mysql_fetch_field_row(string, "Item18", db_con4);
-				gPlayerData[playerid][pItem18] = strval(string);
-				mysql_fetch_field_row(string, "Item19", db_con4);
-				gPlayerData[playerid][pItem19] = strval(string);
-				mysql_fetch_field_row(string, "Item20", db_con4);
-				gPlayerData[playerid][pItem20] = strval(string);
-				mysql_fetch_field_row(string, "Item21", db_con4);
-				gPlayerData[playerid][pItem21] = strval(string);
-				mysql_fetch_field_row(string, "Item22", db_con4);
-				gPlayerData[playerid][pItem22] = strval(string);
-				mysql_fetch_field_row(string, "Item23", db_con4);
-				gPlayerData[playerid][pItem23] = strval(string);
-				mysql_fetch_field_row(string, "Item24", db_con4);
-				gPlayerData[playerid][pItem24] = strval(string);
-				mysql_fetch_field_row(string, "Item25", db_con4);
-				gPlayerData[playerid][pItem25] = strval(string);
-				mysql_fetch_field_row(string, "Item11type", db_con4);
-				gPlayerData[playerid][pItem11type] = strval(string);
-				mysql_fetch_field_row(string, "Item12type", db_con4);
-				gPlayerData[playerid][pItem12type] = strval(string);
-				mysql_fetch_field_row(string, "Item13type", db_con4);
-				gPlayerData[playerid][pItem13type] = strval(string);
-				mysql_fetch_field_row(string, "Item14type", db_con4);
-				gPlayerData[playerid][pItem14type] = strval(string);
-				mysql_fetch_field_row(string, "Item15type", db_con4);
-				gPlayerData[playerid][pItem15type] = strval(string);
-				mysql_fetch_field_row(string, "Item16type", db_con4);
-				gPlayerData[playerid][pItem16type] = strval(string);
-				mysql_fetch_field_row(string, "Item17type", db_con4);
-				gPlayerData[playerid][pItem17type] = strval(string);
-				mysql_fetch_field_row(string, "Item18type", db_con4);
-				gPlayerData[playerid][pItem18type] = strval(string);
-				mysql_fetch_field_row(string, "Item19type", db_con4);
-				gPlayerData[playerid][pItem19type] = strval(string);
-				mysql_fetch_field_row(string, "Item20type", db_con4);
-				gPlayerData[playerid][pItem20type] = strval(string);
-				mysql_fetch_field_row(string, "Item21type", db_con4);
-				gPlayerData[playerid][pItem21type] = strval(string);
-				mysql_fetch_field_row(string, "Item22type", db_con4);
-				gPlayerData[playerid][pItem22type] = strval(string);
-				mysql_fetch_field_row(string, "Item23type", db_con4);
-				gPlayerData[playerid][pItem23type] = strval(string);
-				mysql_fetch_field_row(string, "Item24type", db_con4);
-				gPlayerData[playerid][pItem24type] = strval(string);
-				mysql_fetch_field_row(string, "Item25type", db_con4);
-				gPlayerData[playerid][pItem25type] = strval(string);
-				mysql_fetch_field_row(string, "Item11param", db_con4);
-				gPlayerData[playerid][pItem11param] = strval(string);
-				mysql_fetch_field_row(string, "Item12param", db_con4);
-				gPlayerData[playerid][pItem12param] = strval(string);
-				mysql_fetch_field_row(string, "Item13param", db_con4);
-				gPlayerData[playerid][pItem13param] = strval(string);
-				mysql_fetch_field_row(string, "Item14param", db_con4);
-				gPlayerData[playerid][pItem14param] = strval(string);
-				mysql_fetch_field_row(string, "Item15param", db_con4);
-				gPlayerData[playerid][pItem15param] = strval(string);
-				mysql_fetch_field_row(string, "Item16param", db_con4);
-				gPlayerData[playerid][pItem16param] = strval(string);
-				mysql_fetch_field_row(string, "Item17param", db_con4);
-				gPlayerData[playerid][pItem17param] = strval(string);
-				mysql_fetch_field_row(string, "Item18param", db_con4);
-				gPlayerData[playerid][pItem18param] = strval(string);
-				mysql_fetch_field_row(string, "Item19param", db_con4);
-				gPlayerData[playerid][pItem19param] = strval(string);
-				mysql_fetch_field_row(string, "Item20param", db_con4);
-				gPlayerData[playerid][pItem20param] = strval(string);
-				mysql_fetch_field_row(string, "Item21param", db_con4);
-				gPlayerData[playerid][pItem21param] = strval(string);
-				mysql_fetch_field_row(string, "Item22param", db_con4);
-				gPlayerData[playerid][pItem22param] = strval(string);
-				mysql_fetch_field_row(string, "Item23param", db_con4);
-				gPlayerData[playerid][pItem23param] = strval(string);
-				mysql_fetch_field_row(string, "Item24param", db_con4);
-				gPlayerData[playerid][pItem24param] = strval(string);
-				mysql_fetch_field_row(string, "Item25param", db_con4);
-				gPlayerData[playerid][pItem25param] = strval(string);
-				mysql_fetch_field_row(string, "Item11param2", db_con4);
-				gPlayerData[playerid][pItem11param2] = strval(string);
-				mysql_fetch_field_row(string, "Item12param2", db_con4);
-				gPlayerData[playerid][pItem12param2] = strval(string);
-				mysql_fetch_field_row(string, "Item13param2", db_con4);
-				gPlayerData[playerid][pItem13param2] = strval(string);
-				mysql_fetch_field_row(string, "Item14param2", db_con4);
-				gPlayerData[playerid][pItem14param2] = strval(string);
-				mysql_fetch_field_row(string, "Item15param2", db_con4);
-				gPlayerData[playerid][pItem15param2] = strval(string);
-				mysql_fetch_field_row(string, "Item16param2", db_con4);
-				gPlayerData[playerid][pItem16param2] = strval(string);
-				mysql_fetch_field_row(string, "Item17param2", db_con4);
-				gPlayerData[playerid][pItem17param2] = strval(string);
-				mysql_fetch_field_row(string, "Item18param2", db_con4);
-				gPlayerData[playerid][pItem18param2] = strval(string);
-				mysql_fetch_field_row(string, "Item19param2", db_con4);
-				gPlayerData[playerid][pItem19param2] = strval(string);
-				mysql_fetch_field_row(string, "Item20param2", db_con4);
-				gPlayerData[playerid][pItem20param2] = strval(string);
-				mysql_fetch_field_row(string, "Item21param2", db_con4);
-				gPlayerData[playerid][pItem21param2] = strval(string);
-				mysql_fetch_field_row(string, "Item22param2", db_con4);
-				gPlayerData[playerid][pItem22param2] = strval(string);
-				mysql_fetch_field_row(string, "Item23param2", db_con4);
-				gPlayerData[playerid][pItem23param2] = strval(string);
-				mysql_fetch_field_row(string, "Item24param2", db_con4);
-				gPlayerData[playerid][pItem24param2] = strval(string);
-				mysql_fetch_field_row(string, "Item25param2", db_con4);
-				gPlayerData[playerid][pItem25param2] = strval(string);
-				mysql_fetch_field_row(string, "Item11param3", db_con4);
-				gPlayerData[playerid][pItem11param3] = strval(string);
-				mysql_fetch_field_row(string, "Item12param3", db_con4);
-				gPlayerData[playerid][pItem12param3] = strval(string);
-				mysql_fetch_field_row(string, "Item13param3", db_con4);
-				gPlayerData[playerid][pItem13param3] = strval(string);
-				mysql_fetch_field_row(string, "Item14param3", db_con4);
-				gPlayerData[playerid][pItem14param3] = strval(string);
-				mysql_fetch_field_row(string, "Item15param3", db_con4);
-				gPlayerData[playerid][pItem15param3] = strval(string);
-				mysql_fetch_field_row(string, "Item16param3", db_con4);
-				gPlayerData[playerid][pItem16param3] = strval(string);
-				mysql_fetch_field_row(string, "Item17param3", db_con4);
-				gPlayerData[playerid][pItem17param3] = strval(string);
-				mysql_fetch_field_row(string, "Item18param3", db_con4);
-				gPlayerData[playerid][pItem18param3] = strval(string);
-				mysql_fetch_field_row(string, "Item19param3", db_con4);
-				gPlayerData[playerid][pItem19param3] = strval(string);
-				mysql_fetch_field_row(string, "Item20param3", db_con4);
-				gPlayerData[playerid][pItem20param3] = strval(string);
-				mysql_fetch_field_row(string, "Item21param3", db_con4);
-				gPlayerData[playerid][pItem21param3] = strval(string);
-				mysql_fetch_field_row(string, "Item22param3", db_con4);
-				gPlayerData[playerid][pItem22param3] = strval(string);
-				mysql_fetch_field_row(string, "Item23param3", db_con4);
-				gPlayerData[playerid][pItem23param3] = strval(string);
-				mysql_fetch_field_row(string, "Item24param3", db_con4);
-				gPlayerData[playerid][pItem24param3] = strval(string);
-				mysql_fetch_field_row(string, "Item25param3", db_con4);
-				gPlayerData[playerid][pItem25param3] = strval(string);
-				mysql_fetch_field_row(string, "Item11param4", db_con4);
-				gPlayerData[playerid][pItem11param4] = strval(string);
-				mysql_fetch_field_row(string, "Item12param4", db_con4);
-				gPlayerData[playerid][pItem12param4] = strval(string);
-				mysql_fetch_field_row(string, "Item13param4", db_con4);
-				gPlayerData[playerid][pItem13param4] = strval(string);
-				mysql_fetch_field_row(string, "Item14param4", db_con4);
-				gPlayerData[playerid][pItem14param4] = strval(string);
-				mysql_fetch_field_row(string, "Item15param4", db_con4);
-				gPlayerData[playerid][pItem15param4] = strval(string);
-				mysql_fetch_field_row(string, "Item16param4", db_con4);
-				gPlayerData[playerid][pItem16param4] = strval(string);
-				mysql_fetch_field_row(string, "Item17param4", db_con4);
-				gPlayerData[playerid][pItem17param4] = strval(string);
-				mysql_fetch_field_row(string, "Item18param4", db_con4);
-				gPlayerData[playerid][pItem18param4] = strval(string);
-				mysql_fetch_field_row(string, "Item19param4", db_con4);
-				gPlayerData[playerid][pItem19param4] = strval(string);
-				mysql_fetch_field_row(string, "Item20param4", db_con4);
-				gPlayerData[playerid][pItem20param4] = strval(string);
-				mysql_fetch_field_row(string, "Item21param4", db_con4);
-				gPlayerData[playerid][pItem21param4] = strval(string);
-				mysql_fetch_field_row(string, "Item22param4", db_con4);
-				gPlayerData[playerid][pItem22param4] = strval(string);
-				mysql_fetch_field_row(string, "Item23param4", db_con4);
-				gPlayerData[playerid][pItem23param4] = strval(string);
-				mysql_fetch_field_row(string, "Item24param4", db_con4);
-				gPlayerData[playerid][pItem24param4] = strval(string);
-				mysql_fetch_field_row(string, "Item25param4", db_con4);
-				gPlayerData[playerid][pItem25param4] = strval(string);
-				mysql_fetch_field_row(string, "Item11param5", db_con4);
-				format(gPlayerData[playerid][pItem11param5], 64, string);
-				mysql_fetch_field_row(string, "Item12param5", db_con4);
-				format(gPlayerData[playerid][pItem12param5], 64, string);
-				mysql_fetch_field_row(string, "Item13param5", db_con4);
-				format(gPlayerData[playerid][pItem13param5], 64, string);
-				mysql_fetch_field_row(string, "Item14param5", db_con4);
-				format(gPlayerData[playerid][pItem14param5], 64, string);
-				mysql_fetch_field_row(string, "Item15param5", db_con4);
-				format(gPlayerData[playerid][pItem15param5], 64, string);
-				mysql_fetch_field_row(string, "Item16param5", db_con4);
-				format(gPlayerData[playerid][pItem16param5], 64, string);
-				mysql_fetch_field_row(string, "Item17param5", db_con4);
-				format(gPlayerData[playerid][pItem17param5], 64, string);
-				mysql_fetch_field_row(string, "Item18param5", db_con4);
-				format(gPlayerData[playerid][pItem18param5], 64, string);
-				mysql_fetch_field_row(string, "Item19param5", db_con4);
-				format(gPlayerData[playerid][pItem19param5], 64, string);
-				mysql_fetch_field_row(string, "Item20param5", db_con4);
-				format(gPlayerData[playerid][pItem20param5], 64, string);
-				mysql_fetch_field_row(string, "Item21param5", db_con4);
-				format(gPlayerData[playerid][pItem21param5], 64, string);
-				mysql_fetch_field_row(string, "Item22param5", db_con4);
-				format(gPlayerData[playerid][pItem22param5], 64, string);
-				mysql_fetch_field_row(string, "Item23param5", db_con4);
-				format(gPlayerData[playerid][pItem23param5], 64, string);
-				mysql_fetch_field_row(string, "Item24param5", db_con4);
-				format(gPlayerData[playerid][pItem24param5], 64, string);
-				mysql_fetch_field_row(string, "Item25param5", db_con4);
-				format(gPlayerData[playerid][pItem25param5], 64, string);
-				mysql_fetch_field_row(string, "Item11param6", db_con4);
-				gPlayerData[playerid][pItem11param6] = strval(string);
-				mysql_fetch_field_row(string, "Item12param6", db_con4);
-				gPlayerData[playerid][pItem12param6] = strval(string);
-				mysql_fetch_field_row(string, "Item13param6", db_con4);
-				gPlayerData[playerid][pItem13param6] = strval(string);
-				mysql_fetch_field_row(string, "Item14param6", db_con4);
-				gPlayerData[playerid][pItem14param6] = strval(string);
-				mysql_fetch_field_row(string, "Item15param6", db_con4);
-				gPlayerData[playerid][pItem15param6] = strval(string);
-				mysql_fetch_field_row(string, "Item16param6", db_con4);
-				gPlayerData[playerid][pItem16param6] = strval(string);
-				mysql_fetch_field_row(string, "Item17param6", db_con4);
-				gPlayerData[playerid][pItem17param6] = strval(string);
-				mysql_fetch_field_row(string, "Item18param6", db_con4);
-				gPlayerData[playerid][pItem18param6] = strval(string);
-				mysql_fetch_field_row(string, "Item19param6", db_con4);
-				gPlayerData[playerid][pItem19param6] = strval(string);
-				mysql_fetch_field_row(string, "Item20param6", db_con4);
-				gPlayerData[playerid][pItem20param6] = strval(string);
-				mysql_fetch_field_row(string, "Item21param6", db_con4);
-				gPlayerData[playerid][pItem21param6] = strval(string);
-				mysql_fetch_field_row(string, "Item22param6", db_con4);
-				gPlayerData[playerid][pItem22param6] = strval(string);
-				mysql_fetch_field_row(string, "Item23param6", db_con4);
-				gPlayerData[playerid][pItem23param6] = strval(string);
-				mysql_fetch_field_row(string, "Item24param6", db_con4);
-				gPlayerData[playerid][pItem24param6] = strval(string);
-				mysql_fetch_field_row(string, "Item25param6", db_con4);
-				gPlayerData[playerid][pItem25param6] = strval(string);
-			}
-			
-			// samp_users_jobs
-			{
-				mysql_fetch_field_row(string, "Job", db_con4);
-				gPlayerData[playerid][pJob] = strval(string);
-				mysql_fetch_field_row(string, "JobLvl", db_con4);
-				gPlayerData[playerid][pJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "MzgkJobLvl", db_con4);
-				gPlayerData[playerid][pMzgkJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "SweeperJobLvl", db_con4);
-				gPlayerData[playerid][pSweeperJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "CarJackerJobLvl", db_con4);
-				gPlayerData[playerid][pCarJackerJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "MechanicJobLvl", db_con4);
-				gPlayerData[playerid][pMechanicJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "FarmerJobLvl", db_con4);
-				gPlayerData[playerid][pFarmerJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "BusJobPoints", db_con4);
-				gPlayerData[playerid][pBusJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "MzgkJobPoints", db_con4);
-				gPlayerData[playerid][pMzgkJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "SweeperJobPoints", db_con4);
-				gPlayerData[playerid][pSweeperJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "CarJackerJobPoints", db_con4);
-				gPlayerData[playerid][pCarJackerJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "MechanicJobPoints", db_con4);
-				gPlayerData[playerid][pMechanicJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "FarmerJobPoints", db_con4);
-				gPlayerData[playerid][pFarmerJobPoints] = strval(string);
-			}
-			
-			// samp_users_lic
-			{
-				mysql_fetch_field_row(string, "BoatLic", db_con4);
-				gPlayerData[playerid][pBoatLic] = strval(string);
-				mysql_fetch_field_row(string, "PlaneLic", db_con4);
-				gPlayerData[playerid][pPlaneLic] = strval(string);
-				mysql_fetch_field_row(string, "HeliLic", db_con4);
-				gPlayerData[playerid][pHeliLic] = strval(string);
-				mysql_fetch_field_row(string, "WepLic", db_con4);
-				gPlayerData[playerid][pWepLic] = strval(string);
-				mysql_fetch_field_row(string, "PenaltyPointsA", db_con4);
-				gPlayerData[playerid][pPenaltyPointsA] = strval(string);
-				mysql_fetch_field_row(string, "PenaltyPointsB", db_con4);
-				gPlayerData[playerid][pPenaltyPointsB] = strval(string);
-				mysql_fetch_field_row(string, "PenaltyPointsCE", db_con4);
-				gPlayerData[playerid][pPenaltyPointsCE] = strval(string);
-			}
-			
-			// samp_users_notes
-			{
-				mysql_fetch_field_row(string, "Note1", db_con4);
-				format(gPlayerData[playerid][pNote1], 128, string);
-				mysql_fetch_field_row(string, "Note1s", db_con4);
-				gPlayerData[playerid][pNote1s] = strval(string);
-				mysql_fetch_field_row(string, "Note2", db_con4);
-				format(gPlayerData[playerid][pNote2], 128, string);
-				mysql_fetch_field_row(string, "Note2s", db_con4);
-				gPlayerData[playerid][pNote2s] = strval(string);
-				mysql_fetch_field_row(string, "Note3", db_con4);
-				format(gPlayerData[playerid][pNote3], 128, string);
-				mysql_fetch_field_row(string, "Note3s", db_con4);
-				gPlayerData[playerid][pNote3s] = strval(string);
-				mysql_fetch_field_row(string, "Note4", db_con4);
-				format(gPlayerData[playerid][pNote4], 128, string);
-				mysql_fetch_field_row(string, "Note4s", db_con4);
-				gPlayerData[playerid][pNote4s] = strval(string);
-				mysql_fetch_field_row(string, "Note5", db_con4);
-				format(gPlayerData[playerid][pNote5], 128, string);
-				mysql_fetch_field_row(string, "Note5s", db_con4);
-				gPlayerData[playerid][pNote5s] = strval(string);
-			}
-			
-			// samp_users_vip
-			{
-				mysql_fetch_field_row(string, "VipCar", db_con4);
-				gPlayerData[playerid][pVipCar] = strval(string);
-				mysql_fetch_field_row(string, "VipAFK", db_con4);
-				gPlayerData[playerid][pVipAFK] = strval(string);
-				mysql_fetch_field_row(string, "VipAFKT", db_con4);
-				gPlayerData[playerid][pVipAFKT] = strval(string);
-				mysql_fetch_field_row(string, "VipExp", db_con4);
-				gPlayerData[playerid][pVipExp] = strval(string);
-				mysql_fetch_field_row(string, "VipExpT", db_con4);
-				gPlayerData[playerid][pVipExpT] = strval(string);
-				mysql_fetch_field_row(string, "CharacterDeath", db_con4);
-				gPlayerData[playerid][pCharacterDeath] = strval(string);
-				mysql_fetch_field_row(string, "CharacterDying", db_con4);
-				gPlayerData[playerid][pCharacterDying] = strval(string);
-				mysql_fetch_field_row(string, "VipItem", db_con4);
-				gPlayerData[playerid][pVipItem] = strval(string);
-				mysql_fetch_field_row(string, "AccountOwnerID", db_con4);
-				gPlayerData[playerid][pAccountOwnerID] = strval(string);
-				mysql_fetch_field_row(string, "VipGarage", db_con4);
-				gPlayerData[playerid][pVipGarage] = strval(string);
-				mysql_fetch_field_row(string, "VipGarageBig", db_con4);
-				gPlayerData[playerid][pVipGarageBig] = strval(string);
-				mysql_fetch_field_row(string, "VipRedNeon", db_con4);
-				gPlayerData[playerid][pVipRedNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipBlueNeon", db_con4);
-				gPlayerData[playerid][pVipBlueNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipGreenNeon", db_con4);
-				gPlayerData[playerid][pVipGreenNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipYellowNeon", db_con4);
-				gPlayerData[playerid][pVipYellowNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipPinkNeon", db_con4);
-				gPlayerData[playerid][pVipPinkNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipWhiteNeon", db_con4);
-				gPlayerData[playerid][pVipWhiteNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipCustomObjects", db_con4);
-				gPlayerData[playerid][pVipCustomObjects] = strval(string);
-				mysql_fetch_field_row(string, "VipHalogenLight", db_con4);
-				gPlayerData[playerid][pVipHalogenLight] = strval(string);
-				mysql_fetch_field_row(string, "VipWhitePointLight", db_con4);
-				gPlayerData[playerid][pVipWhitePointLight] = strval(string);
-				mysql_fetch_field_row(string, "VipRedPointLight", db_con4);
-				gPlayerData[playerid][pVipRedPointLight] = strval(string);
-				mysql_fetch_field_row(string, "VipGreenPointLight", db_con4);
-				gPlayerData[playerid][pVipGreenPointLight] = strval(string);
-				mysql_fetch_field_row(string, "VipBluePointLight", db_con4);
-				gPlayerData[playerid][pVipBluePointLight] = strval(string);
-			}
-			
-			// samp_users_other
-			{
-				mysql_fetch_field_row(string, "ListNumber", db_con4);
-				gPlayerData[playerid][pListNumber] = strval(string);
-				mysql_fetch_field_row(string, "Donator", db_con4);
-				gPlayerData[playerid][pDonator] = strval(string);
-				mysql_fetch_field_row(string, "Drugs", db_con4);
-				gPlayerData[playerid][pDrugs] = strval(string);
-				mysql_fetch_field_row(string, "DrugsEffect", db_con4);
-				gPlayerData[playerid][pDrugsEffect] = strval(string);
-				mysql_fetch_field_row(string, "DrugsTaken", db_con4);
-				gPlayerData[playerid][pDrugsTaken] = strval(string);
-				mysql_fetch_field_row(string, "DrugsAddicted", db_con4);
-				gPlayerData[playerid][pDrugsAddicted] = strval(string);
-				mysql_fetch_field_row(string, "Goggles", db_con4);
-				gPlayerData[playerid][pGoggles] = strval(string);
-				mysql_fetch_field_row(string, "Cost", db_con4);
-				gPlayerData[playerid][pCost] = strval(string);
-				mysql_fetch_field_row(string, "Ticket", db_con4);
-				gPlayerData[playerid][pTicket] = strval(string);
-				mysql_fetch_field_row(string, "HP", db_con4);
-				gPlayerData[playerid][pHP] = strval(string);
-				mysql_fetch_field_row(string, "Armour", db_con4);
-				gPlayerData[playerid][pArmour] = strval(string);
-				mysql_fetch_field_row(string, "Head", db_con4);
-				gPlayerData[playerid][pHead] = strval(string);
-				mysql_fetch_field_row(string, "Torso", db_con4);
-				gPlayerData[playerid][pTorso] = strval(string);
-				mysql_fetch_field_row(string, "Legs", db_con4);
-				gPlayerData[playerid][pLegs] = strval(string);
-				mysql_fetch_field_row(string, "Detoks", db_con4);
-				gPlayerData[playerid][pDetoks] = strval(string);
-				mysql_fetch_field_row(string, "WSlot0", db_con4);
-				gPlayerData[playerid][pWSlot0] = strval(string);
-				mysql_fetch_field_row(string, "WSlot0Ammo", db_con4);
-				gPlayerData[playerid][pWSlot0Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot1", db_con4);
-				gPlayerData[playerid][pWSlot1] = strval(string);
-				mysql_fetch_field_row(string, "WSlot1Ammo", db_con4);
-				gPlayerData[playerid][pWSlot1Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot2", db_con4);
-				gPlayerData[playerid][pWSlot2] = strval(string);
-				mysql_fetch_field_row(string, "WSlot2Ammo", db_con4);
-				gPlayerData[playerid][pWSlot2Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot3", db_con4);
-				gPlayerData[playerid][pWSlot3] = strval(string);
-				mysql_fetch_field_row(string, "WSlot3Ammo", db_con4);
-				gPlayerData[playerid][pWSlot3Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot4", db_con4);
-				gPlayerData[playerid][pWSlot4] = strval(string);
-				mysql_fetch_field_row(string, "WSlot4Ammo", db_con4);
-				gPlayerData[playerid][pWSlot4Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot5", db_con4);
-				gPlayerData[playerid][pWSlot5] = strval(string);
-				mysql_fetch_field_row(string, "WSlot5Ammo", db_con4);
-				gPlayerData[playerid][pWSlot5Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot6", db_con4);
-				gPlayerData[playerid][pWSlot6] = strval(string);
-				mysql_fetch_field_row(string, "WSlot6Ammo", db_con4);
-				gPlayerData[playerid][pWSlot6Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot7", db_con4);
-				gPlayerData[playerid][pWSlot7] = strval(string);
-				mysql_fetch_field_row(string, "WSlot7Ammo", db_con4);
-				gPlayerData[playerid][pWSlot7Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot8", db_con4);
-				gPlayerData[playerid][pWSlot8] = strval(string);
-				mysql_fetch_field_row(string, "WSlot8Ammo", db_con4);
-				gPlayerData[playerid][pWSlot8Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot9", db_con4);
-				gPlayerData[playerid][pWSlot9] = strval(string);
-				mysql_fetch_field_row(string, "WSlot9Ammo", db_con4);
-				gPlayerData[playerid][pWSlot9Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot10", db_con4);
-				gPlayerData[playerid][pWSlot10] = strval(string);
-				mysql_fetch_field_row(string, "WSlot10Ammo", db_con4);
-				gPlayerData[playerid][pWSlot10Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot11", db_con4);
-				gPlayerData[playerid][pWSlot11] = strval(string);
-				mysql_fetch_field_row(string, "WSlot11Ammo", db_con4);
-				gPlayerData[playerid][pWSlot11Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot12", db_con4);
-				gPlayerData[playerid][pWSlot12] = strval(string);
-				mysql_fetch_field_row(string, "WSlot12Ammo", db_con4);
-				gPlayerData[playerid][pWSlot12Ammo] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus1", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][0] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus2", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][1] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus3", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][2] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus4", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][3] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus5", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][4] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus6", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][5] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus7", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][6] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus8", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][7] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus9", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][8] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus10", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][9] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus11", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][10] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus12", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][11] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus13", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][12] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus14", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][13] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus15", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][14] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus16", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][15] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus17", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][16] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus18", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][17] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus19", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][18] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus20", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][19] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventRewardReceived", db_con4);
-				gPlayerData[playerid][mPickupEventRewardReceived] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventID", db_con4);
-				gPlayerData[playerid][mPickupEventID] = strval(string);
-				mysql_fetch_field_row(string, "RPCount", db_con4);
-				gPlayerData[playerid][pRPCount] = strval(string);
-				mysql_fetch_field_row(string, "DeathCount", db_con4);
-				gPlayerData[playerid][pDeathCount] = strval(string);
-				mysql_fetch_field_row(string, "Score", db_con4);
-				gPlayerData[playerid][pScore] = strval(string);
-				mysql_fetch_field_row(string, "MechanicCoolDown", db_con4);
-				gPlayerData[playerid][pMechanicCoolDown] = strval(string);
-				mysql_fetch_field_row(string, "FirstATest", db_con4);
-				gPlayerData[playerid][pFirstATest] = strval(string);
-				mysql_fetch_field_row(string, "FirstBTest", db_con4);
-				gPlayerData[playerid][pFirstBTest] = strval(string);
-				mysql_fetch_field_row(string, "FirstCETest", db_con4);
-				gPlayerData[playerid][pFirstCETest] = strval(string);
-				mysql_fetch_field_row(string, "MaxWeight", db_con4);
-				gPlayerData[playerid][pMaxWeight] = strval(string);
-				mysql_fetch_field_row(string, "Hunger", db_con4);
-				gPlayerData[playerid][pHunger] = strval(string);
-				mysql_fetch_field_row(string, "Thirst", db_con4);
-				gPlayerData[playerid][pThirst] = strval(string);
-				mysql_fetch_field_row(string, "Poison", db_con4);
-				gPlayerData[playerid][pPoison] = strval(string);
-				mysql_fetch_field_row(string, "Fat", db_con4);
-				gPlayerData[playerid][pFat] = strval(string);
-				mysql_fetch_field_row(string, "Stomach", db_con4);
-				gPlayerData[playerid][pStomach] = strval(string);
-				mysql_fetch_field_row(string, "Vitamins", db_con4);
-				gPlayerData[playerid][pVitamins] = strval(string);
-				mysql_fetch_field_row(string, "Energy", db_con4);
-				gPlayerData[playerid][pEnergy] = strval(string);
-				mysql_fetch_field_row(string, "Drunk", db_con4);
-				gPlayerData[playerid][pDrunk] = strval(string);
-				mysql_fetch_field_row(string, "Narcotic", db_con4);
-				gPlayerData[playerid][pNarcotic] = strval(string);
-				mysql_fetch_field_row(string, "ShowHealthBars", db_con4);
-				gPlayerData[playerid][pShowHealthBars] = strval(string);
-				mysql_fetch_field_row(string, "SubMealEaten", db_con4);
-				gPlayerData[playerid][pSubMealEaten] = strval(string);
-				mysql_fetch_field_row(string, "OOCChanell", db_con4);
-				gPlayerData[playerid][pOOCChanell] = strval(string);
-				mysql_fetch_field_row(string, "TestAreaTimeLeft", db_con4);
-				gPlayerData[playerid][pTestAreaTimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "NewVersion", db_con4);
-				gPlayerData[playerid][pNewVersion] = strval(string);
-				mysql_fetch_field_row(string, "PainKiller", db_con4);
-				gPlayerData[playerid][pPainKiller] = strval(string);
-				mysql_fetch_field_row(string, "Slimming", db_con4);
-				gPlayerData[playerid][pSlimming] = strval(string);
-				mysql_fetch_field_row(string, "StomachDrops", db_con4);
-				gPlayerData[playerid][pStomachDrops] = strval(string);
-				mysql_fetch_field_row(string, "AchieveTickets", db_con4);
-				gPlayerData[playerid][pAchieveTickets] = strval(string);
-				mysql_fetch_field_row(string, "AchieveArrests", db_con4);
-				gPlayerData[playerid][pAchieveArrests] = strval(string);
-				mysql_fetch_field_row(string, "AchieveDistance", db_con4);
-				gPlayerData[playerid][pAchieveDistance] = strval(string);
-				mysql_fetch_field_row(string, "BankOld", db_con4);
-				gPlayerData[playerid][pBankOld] = strval(string);
-				mysql_fetch_field_row(string, "BankIncome", db_con4);
-				gPlayerData[playerid][pBankIncome] = strval(string);
-				mysql_fetch_field_row(string, "BankLoose", db_con4);
-				gPlayerData[playerid][pBankLoose] = strval(string);
-				mysql_fetch_field_row(string, "BankNew", db_con4);
-				gPlayerData[playerid][pBankNew] = strval(string);
-				mysql_fetch_field_row(string, "PayDayMessage", db_con4);
-				gPlayerData[playerid][pPayDayMessage] = strval(string);
-				mysql_fetch_field_row(string, "Faction2", db_con4);
-				gPlayerData[playerid][pFaction2] = strval(string);
-				mysql_fetch_field_row(string, "Rank2", db_con4);
-				gPlayerData[playerid][pRank2] = strval(string);
-				mysql_fetch_field_row(string, "Quiz", db_con4);
-				gPlayerData[playerid][pQuiz] = strval(string);
-				mysql_fetch_field_row(string, "SetToDelete", db_con4);
-				gPlayerData[playerid][pSetToDelete] = strval(string);
-				mysql_fetch_field_row(string, "IsOnVacation", db_con4);
-				gPlayerData[playerid][pIsOnVacation] = strval(string);
-				mysql_fetch_field_row(string, "BroadCastMessages", db_con4);
-				gPlayerData[playerid][mBroadCastMessages] = strval(string);
-				// mysql_fetch_field_row(string, "IsLogged", db_con4);
-				// gPlayerData[playerid][pIsLogged] = strval(string);
-			}
-			
-			// samp_users_other2
-			{
-				mysql_fetch_field_row(string, "Parts", db_con4);
-				gPlayerData[playerid][pParts] = strval(string);
-				mysql_fetch_field_row(string, "JobTimeChange", db_con4);
-				gPlayerData[playerid][pJobTimeChange] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevPis", db_con4);
-				gPlayerData[playerid][pSkillLevPis] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSil", db_con4);
-				gPlayerData[playerid][pSkillLevSil] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevDes", db_con4);
-				gPlayerData[playerid][pSkillLevDes] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSho", db_con4);
-				gPlayerData[playerid][pSkillLevSho] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSha", db_con4);
-				gPlayerData[playerid][pSkillLevSha] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSpa", db_con4);
-				gPlayerData[playerid][pSkillLevSpa] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevMic", db_con4);
-				gPlayerData[playerid][pSkillLevMic] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevMp5", db_con4);
-				gPlayerData[playerid][pSkillLevMp5] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevAk", db_con4);
-				gPlayerData[playerid][pSkillLevAk] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevM4", db_con4);
-				gPlayerData[playerid][pSkillLevM4] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSni", db_con4);
-				gPlayerData[playerid][pSkillLevSni] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsPis", db_con4);
-				gPlayerData[playerid][pSkillPointsPis] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSil", db_con4);
-				gPlayerData[playerid][pSkillPointsSil] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsDes", db_con4);
-				gPlayerData[playerid][pSkillPointsDes] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSho", db_con4);
-				gPlayerData[playerid][pSkillPointsSho] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSha", db_con4);
-				gPlayerData[playerid][pSkillPointsSha] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSpa", db_con4);
-				gPlayerData[playerid][pSkillPointsSpa] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsMic", db_con4);
-				gPlayerData[playerid][pSkillPointsMic] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsMp5", db_con4);
-				gPlayerData[playerid][pSkillPointsMp5] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsAk", db_con4);
-				gPlayerData[playerid][pSkillPointsAk] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsM4", db_con4);
-				gPlayerData[playerid][pSkillPointsM4] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSni", db_con4);
-				gPlayerData[playerid][pSkillPointsSni] = strval(string);
-				mysql_fetch_field_row(string, "Pozwolenie", db_con4);
-				gPlayerData[playerid][pPozwolenie] = strval(string);
-				mysql_fetch_field_row(string, "Tech", db_con4);
-				gPlayerData[playerid][pTech] = strval(string);
-				mysql_fetch_field_row(string, "Law", db_con4);
-				gPlayerData[playerid][pLaw] = strval(string);
-				mysql_fetch_field_row(string, "Mat", db_con4);
-				gPlayerData[playerid][pMat] = strval(string);
-				mysql_fetch_field_row(string, "Pol", db_con4);
-				gPlayerData[playerid][pPol] = strval(string);
-				mysql_fetch_field_row(string, "His", db_con4);
-				gPlayerData[playerid][pHis] = strval(string);
-				mysql_fetch_field_row(string, "Fiz", db_con4);
-				gPlayerData[playerid][pFiz] = strval(string);
-				mysql_fetch_field_row(string, "Bio", db_con4);
-				gPlayerData[playerid][pBio] = strval(string);
-				mysql_fetch_field_row(string, "Doktor", db_con4);
-				gPlayerData[playerid][pDoktor] = strval(string);
-				mysql_fetch_field_row(string, "Magister", db_con4);
-				gPlayerData[playerid][pMagister] = strval(string);
-				mysql_fetch_field_row(string, "Inz", db_con4);
-				gPlayerData[playerid][pInz] = strval(string);
-				mysql_fetch_field_row(string, "Dowod", db_con4);
-				gPlayerData[playerid][pDowod] = strval(string);
-				mysql_fetch_field_row(string, "PktTech", db_con4);
-				gPlayerData[playerid][pPktTech] = strval(string);
-				mysql_fetch_field_row(string, "PktLaw", db_con4);
-				gPlayerData[playerid][pPktLaw] = strval(string);
-				mysql_fetch_field_row(string, "PktMat", db_con4);
-				gPlayerData[playerid][pPktMat] = strval(string);
-				mysql_fetch_field_row(string, "PktPol", db_con4);
-				gPlayerData[playerid][pPktPol] = strval(string);
-				mysql_fetch_field_row(string, "PktHis", db_con4);
-				gPlayerData[playerid][pPktHis] = strval(string);
-				mysql_fetch_field_row(string, "PktFiz", db_con4);
-				gPlayerData[playerid][pPktFiz] = strval(string);
-				mysql_fetch_field_row(string, "PktBio", db_con4);
-				gPlayerData[playerid][pPktBio] = strval(string);
-				mysql_fetch_field_row(string, "Duty", db_con4);
-				gPlayerData[playerid][pDuty] = strval(string);
-				mysql_fetch_field_row(string, "PartType", db_con4);
-				gPlayerData[playerid][pPartType] = strval(string);
-				mysql_fetch_field_row(string, "PartItem", db_con4);
-				gPlayerData[playerid][pPartItem] = strval(string);
-				mysql_fetch_field_row(string, "MountsLeft", db_con4);
-				gPlayerData[playerid][pMountsLeft] = strval(string);
-				mysql_fetch_field_row(string, "WFOrderedCount", db_con4);
-				gPlayerData[playerid][pWFOrderedCount] = strval(string);
-				mysql_fetch_field_row(string, "SpeedGunOn", db_con4);
-				gPlayerData[playerid][pSpeedGunOn] = strval(string);
-				mysql_fetch_field_row(string, "PWStatus", db_con4);
-				gPlayerData[playerid][pPWStatus] = strval(string);
-				mysql_fetch_field_row(string, "OOCStatus", db_con4);
-				gPlayerData[playerid][pOOCStatus] = strval(string);
-				mysql_fetch_field_row(string, "JoinInfoStatus", db_con4);
-				gPlayerData[playerid][pJoinInfoStatus] = strval(string);
-				mysql_fetch_field_row(string, "LeaveInfoStatus", db_con4);
-				gPlayerData[playerid][pLeaveInfoStatus] = strval(string);
-				mysql_fetch_field_row(string, "TipsStatus", db_con4);
-				gPlayerData[playerid][pTipsStatus] = strval(string);
-				mysql_fetch_field_row(string, "BackgroundSoundStatus", db_con4);
-				gPlayerData[playerid][pBackgroundSoundStatus] = strval(string);
-				mysql_fetch_field_row(string, "IsDeptor", db_con4);
-				gPlayerData[playerid][pIsDeptor] = strval(string);
-				mysql_fetch_field_row(string, "LastLogged", db_con4);
-				gPlayerData[playerid][pLastLogged] = strval(string);
-				mysql_fetch_field_row(string, "QuizWrongAnsweres", db_con4);
-				gPlayerVars[playerid][mQuizWrongAnsweres] = strval(string);
-				mysql_fetch_field_row(string, "CreditValue", db_con4);
-				gPlayerData[playerid][mCreditValue] = strval(string);
-				mysql_fetch_field_row(string, "CreditRepayment", db_con4);
-				gPlayerData[playerid][mCreditRepayment] = strval(string);
-				mysql_fetch_field_row(string, "CreditPayed", db_con4);
-				gPlayerData[playerid][mCreditPayed] = strval(string);
-				mysql_fetch_field_row(string, "HighSchool", db_con4);
-				gPlayerData[playerid][pHighSchool] = strval(string);
-				mysql_fetch_field_row(string, "SchoolCooldown", db_con4);
-				gPlayerData[playerid][pSchoolCooldown] = strval(string);
-				mysql_fetch_field_row(string, "MountsPasses", db_con4);
-				gPlayerData[playerid][pMountsPasses] = strval(string);
-			}
-			
-			format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `mybb_banned` WHERE `uid` = '%d'", gPlayerData[playerid][pAccountOwnerID]);
-			wp_mysql_query(string, CHECK_ACCOUNT_STATUS, playerid, db_con2);
-			
-			
-		}
-		case PLAYER_DATA_LOAD_ALL_PAYDAY:
-		{
-			#if defined DEBUG
-				printf("[DEBUG:][PLAYER_LOAD_OTHER2_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
-			#endif
-			
-			if(playerid < CUSTOM_MAX_PLAYERS)
-			{
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [finalizacja]...");
-			}
-			
-			mysql_store_result(db_con4);
-			
-			mysql_retrieve_row(db_con4);
-			
-			// samp_users
-			{
-				mysql_fetch_field_row(string, "PlayerName", db_con4);
-				format(gPlayerData[playerid][pName], MAX_PLAYER_NAME, string);
-				mysql_fetch_field_row(string, "Level", db_con4);
-				gPlayerData[playerid][pLevel] = strval(string);
-				mysql_fetch_field_row(string, "AdminLevel", db_con4);
-				gPlayerData[playerid][pAdmin] = strval(string);
-				mysql_fetch_field_row(string, "DonateRank", db_con4);
-				gPlayerData[playerid][pDonateRank] = strval(string);
-				mysql_fetch_field_row(string, "Registered", db_con4);
-				gPlayerData[playerid][pRegistered] = strval(string);
-				mysql_fetch_field_row(string, "Sex", db_con4);
-				gPlayerData[playerid][pSex] = strval(string);
-				mysql_fetch_field_row(string, "Age", db_con4);
-				gPlayerData[playerid][pAge] = strval(string);
-				mysql_fetch_field_row(string, "Experience", db_con4);
-				gPlayerData[playerid][pExp] = strval(string);
-				mysql_fetch_field_row(string, "Money", db_con4);
-				gPlayerData[playerid][pCash] = strval(string);
-				mysql_fetch_field_row(string, "Bank", db_con4);
-				gPlayerData[playerid][pBank] = strval(string);
-				mysql_fetch_field_row(string, "Skin", db_con4);
-				gPlayerData[playerid][pSkin] = strval(string);
-				mysql_fetch_field_row(string, "PlayingHours", db_con4);
-				gPlayerData[playerid][pPlayingHours] = strval(string);
-				mysql_fetch_field_row(string, "AllowedPayday", db_con4);
-				gPlayerData[playerid][pAllowedPayday] = strval(string);
-				mysql_fetch_field_row(string, "PayCheck", db_con4);
-				gPlayerData[playerid][pPayCheck] = strval(string);
-				mysql_fetch_field_row(string, "Faction", db_con4);
-				gPlayerData[playerid][pFaction] = strval(string);
-				mysql_fetch_field_row(string, "Rank", db_con4);
-				gPlayerData[playerid][pRank] = strval(string);
-				mysql_fetch_field_row(string, "Banned", db_con4);
-				gPlayerData[playerid][pBanned] = strval(string);
-				mysql_fetch_field_row(string, "Warnings", db_con4);
-				gPlayerData[playerid][pWarnings] = strval(string);
-				mysql_fetch_field_row(string, "Jailed", db_con4);
-				gPlayerData[playerid][pJailed] = strval(string);
-				mysql_fetch_field_row(string, "JailTime", db_con4);
-				gPlayerData[playerid][pJailTime] = strval(string);
-				mysql_fetch_field_row(string, "CrashX", db_con4);
-				gPlayerData[playerid][pCrashX] = floatstr(string);
-				mysql_fetch_field_row(string, "CrashY", db_con4);
-				gPlayerData[playerid][pCrashY] = floatstr(string);
-				mysql_fetch_field_row(string, "CrashZ", db_con4);
-				gPlayerData[playerid][pCrashZ] = floatstr(string);
-				mysql_fetch_field_row(string, "CrashInt", db_con4);
-				gPlayerData[playerid][pCrashInt] = strval(string);
-				mysql_fetch_field_row(string, "CrashW", db_con4);
-				gPlayerData[playerid][pCrashW] = strval(string);
-				mysql_fetch_field_row(string, "Crashed", db_con4);
-				gPlayerData[playerid][pCrashed] = strval(string);
-				mysql_fetch_field_row(string, "Wins", db_con4);
-				gPlayerData[playerid][pWins] = strval(string);
-				mysql_fetch_field_row(string, "Loses", db_con4);
-				gPlayerData[playerid][pLoses] = strval(string);
-				mysql_fetch_field_row(string, "InvWeapon", db_con4);
-				gPlayerData[playerid][pInvWeapon] = strval(string);
-				mysql_fetch_field_row(string, "InvAmmo", db_con4);
-				gPlayerData[playerid][pInvAmmo] = strval(string);
-				mysql_fetch_field_row(string, "Moderator", db_con4);
-				gPlayerData[playerid][pModerator] = strval(string);
-				mysql_fetch_field_row(string, "WantedLvl", db_con4);
-				gPlayerData[playerid][pWantedLvl] = strval(string);
-				mysql_fetch_field_row(string, "FirstCar", db_con4);
-				gPlayerData[playerid][pFirstCar] = strval(string);
-				mysql_fetch_field_row(string, "FirstReanimation", db_con4);
-				gPlayerData[playerid][pFirstReanimation] = strval(string);
-				mysql_fetch_field_row(string, "FirstPhone", db_con4);
-				gPlayerData[playerid][pFirstPhone] = strval(string);
-				mysql_fetch_field_row(string, "FirstLeader", db_con4);
-				gPlayerData[playerid][pFirstLeader] = strval(string);
-				mysql_fetch_field_row(string, "FirstJob", db_con4);
-				gPlayerData[playerid][pFirstJob] = strval(string);
-				mysql_fetch_field_row(string, "FirstID", db_con4);
-				gPlayerData[playerid][pFirstID] = strval(string);
-				mysql_fetch_field_row(string, "FirstBuy", db_con4);
-				gPlayerData[playerid][pFirstBuy] = strval(string);
-				mysql_fetch_field_row(string, "FirstHouse", db_con4);
-				gPlayerData[playerid][pFirstHouse] = strval(string);
-				mysql_fetch_field_row(string, "FirstDescription", db_con4);
-				gPlayerData[playerid][pFirstDescription] = strval(string);
-				mysql_fetch_field_row(string, "FirstAction", db_con4);
-				gPlayerData[playerid][pFirstAction] = strval(string);
-				mysql_fetch_field_row(string, "FirstBankUse", db_con4);
-				gPlayerData[playerid][pFirstBankUse] = strval(string);
-				mysql_fetch_field_row(string, "FirstStats", db_con4);
-				gPlayerData[playerid][pFirstStats] = strval(string);
-				mysql_fetch_field_row(string, "FirstJail", db_con4);
-				gPlayerData[playerid][pFirstJail] = strval(string);
-				mysql_fetch_field_row(string, "FirstStudy", db_con4);
-				gPlayerData[playerid][pFirstStudy] = strval(string);
-				mysql_fetch_field_row(string, "CrashAngle", db_con4);
-				gPlayerData[playerid][pCrashAngle] = floatstr(string);
-				mysql_fetch_field_row(string, "HourAssist", db_con4);
-				gPlayerData[playerid][pHourAssist] = strval(string);
-				mysql_fetch_field_row(string, "JoinedFaction", db_con4);
-				gPlayerData[playerid][pJoinedFaction] = strval(string);
-				mysql_fetch_field_row(string, "HoursOnDuty", db_con4);
-				gPlayerData[playerid][pHoursOnDuty] = strval(string);
-				mysql_fetch_field_row(string, "HoursOnDutyHelper", db_con4);
-				gPlayerData[playerid][pHoursOnDutyHelper] = strval(string);
-				mysql_fetch_field_row(string, "WarnCooldown", db_con4);
-				gPlayerData[playerid][pWarnCooldown] = strval(string);
-				mysql_fetch_field_row(string, "AdminDuty", db_con4);
-				AdminDuty[playerid] = strval(string);
-				mysql_fetch_field_row(string, "CharDescription", db_con4);
-				format(gPlayerData[playerid][pCharDescription], 128, string);
-				mysql_fetch_field_row(string, "CharDescriptionColor", db_con4);
-				format(gPlayerData[playerid][pCharDescriptionColor], 32, string);
-			}
-			
-			// samp_users_items
-			{
-				mysql_fetch_field_row(string, "Item1", db_con4);
-				gPlayerData[playerid][pItem1] = strval(string);
-				mysql_fetch_field_row(string, "Item2", db_con4);
-				gPlayerData[playerid][pItem2] = strval(string);
-				mysql_fetch_field_row(string, "Item3", db_con4);
-				gPlayerData[playerid][pItem3] = strval(string);
-				mysql_fetch_field_row(string, "Item4", db_con4);
-				gPlayerData[playerid][pItem4] = strval(string);
-				mysql_fetch_field_row(string, "Item5", db_con4);
-				gPlayerData[playerid][pItem5] = strval(string);
-				mysql_fetch_field_row(string, "Item1type", db_con4);
-				gPlayerData[playerid][pItem1type] = strval(string);
-				mysql_fetch_field_row(string, "Item2type", db_con4);
-				gPlayerData[playerid][pItem2type] = strval(string);
-				mysql_fetch_field_row(string, "Item3type", db_con4);
-				gPlayerData[playerid][pItem3type] = strval(string);
-				mysql_fetch_field_row(string, "Item4type", db_con4);
-				gPlayerData[playerid][pItem4type] = strval(string);
-				mysql_fetch_field_row(string, "Item5type", db_con4);
-				gPlayerData[playerid][pItem5type] = strval(string);
-				mysql_fetch_field_row(string, "Item1param", db_con4);
-				gPlayerData[playerid][pItem1param] = strval(string);
-				mysql_fetch_field_row(string, "Item2param", db_con4);
-				gPlayerData[playerid][pItem2param] = strval(string);
-				mysql_fetch_field_row(string, "Item3param", db_con4);
-				gPlayerData[playerid][pItem3param] = strval(string);
-				mysql_fetch_field_row(string, "Item4param", db_con4);
-				gPlayerData[playerid][pItem4param] = strval(string);
-				mysql_fetch_field_row(string, "Item5param", db_con4);
-				gPlayerData[playerid][pItem5param] = strval(string);
-				mysql_fetch_field_row(string, "Item1param2", db_con4);
-				gPlayerData[playerid][pItem1param2] = strval(string);
-				mysql_fetch_field_row(string, "Item2param2", db_con4);
-				gPlayerData[playerid][pItem2param2] = strval(string);
-				mysql_fetch_field_row(string, "Item3param2", db_con4);
-				gPlayerData[playerid][pItem3param2] = strval(string);
-				mysql_fetch_field_row(string, "Item4param2", db_con4);
-				gPlayerData[playerid][pItem4param2] = strval(string);
-				mysql_fetch_field_row(string, "Item5param2", db_con4);
-				gPlayerData[playerid][pItem5param2] = strval(string);
-				mysql_fetch_field_row(string, "Item1param3", db_con4);
-				gPlayerData[playerid][pItem1param3] = strval(string);
-				mysql_fetch_field_row(string, "Item2param3", db_con4);
-				gPlayerData[playerid][pItem2param3] = strval(string);
-				mysql_fetch_field_row(string, "Item3param3", db_con4);
-				gPlayerData[playerid][pItem3param3] = strval(string);
-				mysql_fetch_field_row(string, "Item4param3", db_con4);
-				gPlayerData[playerid][pItem4param3] = strval(string);
-				mysql_fetch_field_row(string, "Item5param3", db_con4);
-				gPlayerData[playerid][pItem5param3] = strval(string);
-				mysql_fetch_field_row(string, "Item1param4", db_con4);
-				gPlayerData[playerid][pItem1param4] = strval(string);
-				mysql_fetch_field_row(string, "Item2param4", db_con4);
-				gPlayerData[playerid][pItem2param4] = strval(string);
-				mysql_fetch_field_row(string, "Item3param4", db_con4);
-				gPlayerData[playerid][pItem3param4] = strval(string);
-				mysql_fetch_field_row(string, "Item4param4", db_con4);
-				gPlayerData[playerid][pItem4param4] = strval(string);
-				mysql_fetch_field_row(string, "Item5param4", db_con4);
-				gPlayerData[playerid][pItem5param4] = strval(string);
-				mysql_fetch_field_row(string, "Item1param5", db_con4);
-				format(gPlayerData[playerid][pItem1param5], 64, string);
-				mysql_fetch_field_row(string, "Item2param5", db_con4);
-				format(gPlayerData[playerid][pItem2param5], 64, string);
-				mysql_fetch_field_row(string, "Item3param5", db_con4);
-				format(gPlayerData[playerid][pItem3param5], 64, string);
-				mysql_fetch_field_row(string, "Item4param5", db_con4);
-				format(gPlayerData[playerid][pItem4param5], 64, string);
-				mysql_fetch_field_row(string, "Item5param5", db_con4);
-				format(gPlayerData[playerid][pItem5param5], 64, string);
-				mysql_fetch_field_row(string, "Item1param6", db_con4);
-				gPlayerData[playerid][pItem1param6] = strval(string);
-				mysql_fetch_field_row(string, "Item2param6", db_con4);
-				gPlayerData[playerid][pItem2param6] = strval(string);
-				mysql_fetch_field_row(string, "Item3param6", db_con4);
-				gPlayerData[playerid][pItem3param6] = strval(string);
-				mysql_fetch_field_row(string, "Item4param6", db_con4);
-				gPlayerData[playerid][pItem4param6] = strval(string);
-				mysql_fetch_field_row(string, "Item5param6", db_con4);
-				gPlayerData[playerid][pItem5param6] = strval(string);
-			}
-			
-			// samp_users_items2
-			{
-				mysql_fetch_field_row(string, "Item6", db_con4);
-				gPlayerData[playerid][pItem6] = strval(string);
-				mysql_fetch_field_row(string, "Item7", db_con4);
-				gPlayerData[playerid][pItem7] = strval(string);
-				mysql_fetch_field_row(string, "Item8", db_con4);
-				gPlayerData[playerid][pItem8] = strval(string);
-				mysql_fetch_field_row(string, "Item9", db_con4);
-				gPlayerData[playerid][pItem9] = strval(string);
-				mysql_fetch_field_row(string, "Item10", db_con4);
-				gPlayerData[playerid][pItem10] = strval(string);
-				mysql_fetch_field_row(string, "Item6type", db_con4);
-				gPlayerData[playerid][pItem6type] = strval(string);
-				mysql_fetch_field_row(string, "Item7type", db_con4);
-				gPlayerData[playerid][pItem7type] = strval(string);
-				mysql_fetch_field_row(string, "Item8type", db_con4);
-				gPlayerData[playerid][pItem8type] = strval(string);
-				mysql_fetch_field_row(string, "Item9type", db_con4);
-				gPlayerData[playerid][pItem9type] = strval(string);
-				mysql_fetch_field_row(string, "Item10type", db_con4);
-				gPlayerData[playerid][pItem10type] = strval(string);
-				mysql_fetch_field_row(string, "Item6param", db_con4);
-				gPlayerData[playerid][pItem6param] = strval(string);
-				mysql_fetch_field_row(string, "Item7param", db_con4);
-				gPlayerData[playerid][pItem7param] = strval(string);
-				mysql_fetch_field_row(string, "Item8param", db_con4);
-				gPlayerData[playerid][pItem8param] = strval(string);
-				mysql_fetch_field_row(string, "Item9param", db_con4);
-				gPlayerData[playerid][pItem9param] = strval(string);
-				mysql_fetch_field_row(string, "Item10param", db_con4);
-				gPlayerData[playerid][pItem10param] = strval(string);
-				mysql_fetch_field_row(string, "Item6param2", db_con4);
-				gPlayerData[playerid][pItem6param2] = strval(string);
-				mysql_fetch_field_row(string, "Item7param2", db_con4);
-				gPlayerData[playerid][pItem7param2] = strval(string);
-				mysql_fetch_field_row(string, "Item8param2", db_con4);
-				gPlayerData[playerid][pItem8param2] = strval(string);
-				mysql_fetch_field_row(string, "Item9param2", db_con4);
-				gPlayerData[playerid][pItem9param2] = strval(string);
-				mysql_fetch_field_row(string, "Item10param2", db_con4);
-				gPlayerData[playerid][pItem10param2] = strval(string);
-				mysql_fetch_field_row(string, "Item6param3", db_con4);
-				gPlayerData[playerid][pItem6param3] = strval(string);
-				mysql_fetch_field_row(string, "Item7param3", db_con4);
-				gPlayerData[playerid][pItem7param3] = strval(string);
-				mysql_fetch_field_row(string, "Item8param3", db_con4);
-				gPlayerData[playerid][pItem8param3] = strval(string);
-				mysql_fetch_field_row(string, "Item9param3", db_con4);
-				gPlayerData[playerid][pItem9param3] = strval(string);
-				mysql_fetch_field_row(string, "Item10param3", db_con4);
-				gPlayerData[playerid][pItem10param3] = strval(string);
-				mysql_fetch_field_row(string, "Item6param4", db_con4);
-				gPlayerData[playerid][pItem6param4] = strval(string);
-				mysql_fetch_field_row(string, "Item7param4", db_con4);
-				gPlayerData[playerid][pItem7param4] = strval(string);
-				mysql_fetch_field_row(string, "Item8param4", db_con4);
-				gPlayerData[playerid][pItem8param4] = strval(string);
-				mysql_fetch_field_row(string, "Item9param4", db_con4);
-				gPlayerData[playerid][pItem9param4] = strval(string);
-				mysql_fetch_field_row(string, "Item10param4", db_con4);
-				gPlayerData[playerid][pItem10param4] = strval(string);
-				mysql_fetch_field_row(string, "Item6param5", db_con4);
-				format(gPlayerData[playerid][pItem6param5], 64, string);
-				mysql_fetch_field_row(string, "Item7param5", db_con4);
-				format(gPlayerData[playerid][pItem7param5], 64, string);
-				mysql_fetch_field_row(string, "Item8param5", db_con4);
-				format(gPlayerData[playerid][pItem8param5], 64, string);
-				mysql_fetch_field_row(string, "Item9param5", db_con4);
-				format(gPlayerData[playerid][pItem9param5], 64, string);
-				mysql_fetch_field_row(string, "Item10param5", db_con4);
-				format(gPlayerData[playerid][pItem10param5], 64, string);
-				mysql_fetch_field_row(string, "Item6param6", db_con4);
-				gPlayerData[playerid][pItem6param6] = strval(string);
-				mysql_fetch_field_row(string, "Item7param6", db_con4);
-				gPlayerData[playerid][pItem7param6] = strval(string);
-				mysql_fetch_field_row(string, "Item8param6", db_con4);
-				gPlayerData[playerid][pItem8param6] = strval(string);
-				mysql_fetch_field_row(string, "Item9param6", db_con4);
-				gPlayerData[playerid][pItem9param6] = strval(string);
-				mysql_fetch_field_row(string, "Item10param6", db_con4);
-				gPlayerData[playerid][pItem10param6] = strval(string);
-			}
-			
-			// samp_users_items3
-			{
-				mysql_fetch_field_row(string, "Item11", db_con4);
-				gPlayerData[playerid][pItem11] = strval(string);
-				mysql_fetch_field_row(string, "Item12", db_con4);
-				gPlayerData[playerid][pItem12] = strval(string);
-				mysql_fetch_field_row(string, "Item13", db_con4);
-				gPlayerData[playerid][pItem13] = strval(string);
-				mysql_fetch_field_row(string, "Item14", db_con4);
-				gPlayerData[playerid][pItem14] = strval(string);
-				mysql_fetch_field_row(string, "Item15", db_con4);
-				gPlayerData[playerid][pItem15] = strval(string);
-				mysql_fetch_field_row(string, "Item16", db_con4);
-				gPlayerData[playerid][pItem16] = strval(string);
-				mysql_fetch_field_row(string, "Item17", db_con4);
-				gPlayerData[playerid][pItem17] = strval(string);
-				mysql_fetch_field_row(string, "Item18", db_con4);
-				gPlayerData[playerid][pItem18] = strval(string);
-				mysql_fetch_field_row(string, "Item19", db_con4);
-				gPlayerData[playerid][pItem19] = strval(string);
-				mysql_fetch_field_row(string, "Item20", db_con4);
-				gPlayerData[playerid][pItem20] = strval(string);
-				mysql_fetch_field_row(string, "Item21", db_con4);
-				gPlayerData[playerid][pItem21] = strval(string);
-				mysql_fetch_field_row(string, "Item22", db_con4);
-				gPlayerData[playerid][pItem22] = strval(string);
-				mysql_fetch_field_row(string, "Item23", db_con4);
-				gPlayerData[playerid][pItem23] = strval(string);
-				mysql_fetch_field_row(string, "Item24", db_con4);
-				gPlayerData[playerid][pItem24] = strval(string);
-				mysql_fetch_field_row(string, "Item25", db_con4);
-				gPlayerData[playerid][pItem25] = strval(string);
-				mysql_fetch_field_row(string, "Item11type", db_con4);
-				gPlayerData[playerid][pItem11type] = strval(string);
-				mysql_fetch_field_row(string, "Item12type", db_con4);
-				gPlayerData[playerid][pItem12type] = strval(string);
-				mysql_fetch_field_row(string, "Item13type", db_con4);
-				gPlayerData[playerid][pItem13type] = strval(string);
-				mysql_fetch_field_row(string, "Item14type", db_con4);
-				gPlayerData[playerid][pItem14type] = strval(string);
-				mysql_fetch_field_row(string, "Item15type", db_con4);
-				gPlayerData[playerid][pItem15type] = strval(string);
-				mysql_fetch_field_row(string, "Item16type", db_con4);
-				gPlayerData[playerid][pItem16type] = strval(string);
-				mysql_fetch_field_row(string, "Item17type", db_con4);
-				gPlayerData[playerid][pItem17type] = strval(string);
-				mysql_fetch_field_row(string, "Item18type", db_con4);
-				gPlayerData[playerid][pItem18type] = strval(string);
-				mysql_fetch_field_row(string, "Item19type", db_con4);
-				gPlayerData[playerid][pItem19type] = strval(string);
-				mysql_fetch_field_row(string, "Item20type", db_con4);
-				gPlayerData[playerid][pItem20type] = strval(string);
-				mysql_fetch_field_row(string, "Item21type", db_con4);
-				gPlayerData[playerid][pItem21type] = strval(string);
-				mysql_fetch_field_row(string, "Item22type", db_con4);
-				gPlayerData[playerid][pItem22type] = strval(string);
-				mysql_fetch_field_row(string, "Item23type", db_con4);
-				gPlayerData[playerid][pItem23type] = strval(string);
-				mysql_fetch_field_row(string, "Item24type", db_con4);
-				gPlayerData[playerid][pItem24type] = strval(string);
-				mysql_fetch_field_row(string, "Item25type", db_con4);
-				gPlayerData[playerid][pItem25type] = strval(string);
-				mysql_fetch_field_row(string, "Item11param", db_con4);
-				gPlayerData[playerid][pItem11param] = strval(string);
-				mysql_fetch_field_row(string, "Item12param", db_con4);
-				gPlayerData[playerid][pItem12param] = strval(string);
-				mysql_fetch_field_row(string, "Item13param", db_con4);
-				gPlayerData[playerid][pItem13param] = strval(string);
-				mysql_fetch_field_row(string, "Item14param", db_con4);
-				gPlayerData[playerid][pItem14param] = strval(string);
-				mysql_fetch_field_row(string, "Item15param", db_con4);
-				gPlayerData[playerid][pItem15param] = strval(string);
-				mysql_fetch_field_row(string, "Item16param", db_con4);
-				gPlayerData[playerid][pItem16param] = strval(string);
-				mysql_fetch_field_row(string, "Item17param", db_con4);
-				gPlayerData[playerid][pItem17param] = strval(string);
-				mysql_fetch_field_row(string, "Item18param", db_con4);
-				gPlayerData[playerid][pItem18param] = strval(string);
-				mysql_fetch_field_row(string, "Item19param", db_con4);
-				gPlayerData[playerid][pItem19param] = strval(string);
-				mysql_fetch_field_row(string, "Item20param", db_con4);
-				gPlayerData[playerid][pItem20param] = strval(string);
-				mysql_fetch_field_row(string, "Item21param", db_con4);
-				gPlayerData[playerid][pItem21param] = strval(string);
-				mysql_fetch_field_row(string, "Item22param", db_con4);
-				gPlayerData[playerid][pItem22param] = strval(string);
-				mysql_fetch_field_row(string, "Item23param", db_con4);
-				gPlayerData[playerid][pItem23param] = strval(string);
-				mysql_fetch_field_row(string, "Item24param", db_con4);
-				gPlayerData[playerid][pItem24param] = strval(string);
-				mysql_fetch_field_row(string, "Item25param", db_con4);
-				gPlayerData[playerid][pItem25param] = strval(string);
-				mysql_fetch_field_row(string, "Item11param2", db_con4);
-				gPlayerData[playerid][pItem11param2] = strval(string);
-				mysql_fetch_field_row(string, "Item12param2", db_con4);
-				gPlayerData[playerid][pItem12param2] = strval(string);
-				mysql_fetch_field_row(string, "Item13param2", db_con4);
-				gPlayerData[playerid][pItem13param2] = strval(string);
-				mysql_fetch_field_row(string, "Item14param2", db_con4);
-				gPlayerData[playerid][pItem14param2] = strval(string);
-				mysql_fetch_field_row(string, "Item15param2", db_con4);
-				gPlayerData[playerid][pItem15param2] = strval(string);
-				mysql_fetch_field_row(string, "Item16param2", db_con4);
-				gPlayerData[playerid][pItem16param2] = strval(string);
-				mysql_fetch_field_row(string, "Item17param2", db_con4);
-				gPlayerData[playerid][pItem17param2] = strval(string);
-				mysql_fetch_field_row(string, "Item18param2", db_con4);
-				gPlayerData[playerid][pItem18param2] = strval(string);
-				mysql_fetch_field_row(string, "Item19param2", db_con4);
-				gPlayerData[playerid][pItem19param2] = strval(string);
-				mysql_fetch_field_row(string, "Item20param2", db_con4);
-				gPlayerData[playerid][pItem20param2] = strval(string);
-				mysql_fetch_field_row(string, "Item21param2", db_con4);
-				gPlayerData[playerid][pItem21param2] = strval(string);
-				mysql_fetch_field_row(string, "Item22param2", db_con4);
-				gPlayerData[playerid][pItem22param2] = strval(string);
-				mysql_fetch_field_row(string, "Item23param2", db_con4);
-				gPlayerData[playerid][pItem23param2] = strval(string);
-				mysql_fetch_field_row(string, "Item24param2", db_con4);
-				gPlayerData[playerid][pItem24param2] = strval(string);
-				mysql_fetch_field_row(string, "Item25param2", db_con4);
-				gPlayerData[playerid][pItem25param2] = strval(string);
-				mysql_fetch_field_row(string, "Item11param3", db_con4);
-				gPlayerData[playerid][pItem11param3] = strval(string);
-				mysql_fetch_field_row(string, "Item12param3", db_con4);
-				gPlayerData[playerid][pItem12param3] = strval(string);
-				mysql_fetch_field_row(string, "Item13param3", db_con4);
-				gPlayerData[playerid][pItem13param3] = strval(string);
-				mysql_fetch_field_row(string, "Item14param3", db_con4);
-				gPlayerData[playerid][pItem14param3] = strval(string);
-				mysql_fetch_field_row(string, "Item15param3", db_con4);
-				gPlayerData[playerid][pItem15param3] = strval(string);
-				mysql_fetch_field_row(string, "Item16param3", db_con4);
-				gPlayerData[playerid][pItem16param3] = strval(string);
-				mysql_fetch_field_row(string, "Item17param3", db_con4);
-				gPlayerData[playerid][pItem17param3] = strval(string);
-				mysql_fetch_field_row(string, "Item18param3", db_con4);
-				gPlayerData[playerid][pItem18param3] = strval(string);
-				mysql_fetch_field_row(string, "Item19param3", db_con4);
-				gPlayerData[playerid][pItem19param3] = strval(string);
-				mysql_fetch_field_row(string, "Item20param3", db_con4);
-				gPlayerData[playerid][pItem20param3] = strval(string);
-				mysql_fetch_field_row(string, "Item21param3", db_con4);
-				gPlayerData[playerid][pItem21param3] = strval(string);
-				mysql_fetch_field_row(string, "Item22param3", db_con4);
-				gPlayerData[playerid][pItem22param3] = strval(string);
-				mysql_fetch_field_row(string, "Item23param3", db_con4);
-				gPlayerData[playerid][pItem23param3] = strval(string);
-				mysql_fetch_field_row(string, "Item24param3", db_con4);
-				gPlayerData[playerid][pItem24param3] = strval(string);
-				mysql_fetch_field_row(string, "Item25param3", db_con4);
-				gPlayerData[playerid][pItem25param3] = strval(string);
-				mysql_fetch_field_row(string, "Item11param4", db_con4);
-				gPlayerData[playerid][pItem11param4] = strval(string);
-				mysql_fetch_field_row(string, "Item12param4", db_con4);
-				gPlayerData[playerid][pItem12param4] = strval(string);
-				mysql_fetch_field_row(string, "Item13param4", db_con4);
-				gPlayerData[playerid][pItem13param4] = strval(string);
-				mysql_fetch_field_row(string, "Item14param4", db_con4);
-				gPlayerData[playerid][pItem14param4] = strval(string);
-				mysql_fetch_field_row(string, "Item15param4", db_con4);
-				gPlayerData[playerid][pItem15param4] = strval(string);
-				mysql_fetch_field_row(string, "Item16param4", db_con4);
-				gPlayerData[playerid][pItem16param4] = strval(string);
-				mysql_fetch_field_row(string, "Item17param4", db_con4);
-				gPlayerData[playerid][pItem17param4] = strval(string);
-				mysql_fetch_field_row(string, "Item18param4", db_con4);
-				gPlayerData[playerid][pItem18param4] = strval(string);
-				mysql_fetch_field_row(string, "Item19param4", db_con4);
-				gPlayerData[playerid][pItem19param4] = strval(string);
-				mysql_fetch_field_row(string, "Item20param4", db_con4);
-				gPlayerData[playerid][pItem20param4] = strval(string);
-				mysql_fetch_field_row(string, "Item21param4", db_con4);
-				gPlayerData[playerid][pItem21param4] = strval(string);
-				mysql_fetch_field_row(string, "Item22param4", db_con4);
-				gPlayerData[playerid][pItem22param4] = strval(string);
-				mysql_fetch_field_row(string, "Item23param4", db_con4);
-				gPlayerData[playerid][pItem23param4] = strval(string);
-				mysql_fetch_field_row(string, "Item24param4", db_con4);
-				gPlayerData[playerid][pItem24param4] = strval(string);
-				mysql_fetch_field_row(string, "Item25param4", db_con4);
-				gPlayerData[playerid][pItem25param4] = strval(string);
-				mysql_fetch_field_row(string, "Item11param5", db_con4);
-				format(gPlayerData[playerid][pItem11param5], 64, string);
-				mysql_fetch_field_row(string, "Item12param5", db_con4);
-				format(gPlayerData[playerid][pItem12param5], 64, string);
-				mysql_fetch_field_row(string, "Item13param5", db_con4);
-				format(gPlayerData[playerid][pItem13param5], 64, string);
-				mysql_fetch_field_row(string, "Item14param5", db_con4);
-				format(gPlayerData[playerid][pItem14param5], 64, string);
-				mysql_fetch_field_row(string, "Item15param5", db_con4);
-				format(gPlayerData[playerid][pItem15param5], 64, string);
-				mysql_fetch_field_row(string, "Item16param5", db_con4);
-				format(gPlayerData[playerid][pItem16param5], 64, string);
-				mysql_fetch_field_row(string, "Item17param5", db_con4);
-				format(gPlayerData[playerid][pItem17param5], 64, string);
-				mysql_fetch_field_row(string, "Item18param5", db_con4);
-				format(gPlayerData[playerid][pItem18param5], 64, string);
-				mysql_fetch_field_row(string, "Item19param5", db_con4);
-				format(gPlayerData[playerid][pItem19param5], 64, string);
-				mysql_fetch_field_row(string, "Item20param5", db_con4);
-				format(gPlayerData[playerid][pItem20param5], 64, string);
-				mysql_fetch_field_row(string, "Item21param5", db_con4);
-				format(gPlayerData[playerid][pItem21param5], 64, string);
-				mysql_fetch_field_row(string, "Item22param5", db_con4);
-				format(gPlayerData[playerid][pItem22param5], 64, string);
-				mysql_fetch_field_row(string, "Item23param5", db_con4);
-				format(gPlayerData[playerid][pItem23param5], 64, string);
-				mysql_fetch_field_row(string, "Item24param5", db_con4);
-				format(gPlayerData[playerid][pItem24param5], 64, string);
-				mysql_fetch_field_row(string, "Item25param5", db_con4);
-				format(gPlayerData[playerid][pItem25param5], 64, string);
-				mysql_fetch_field_row(string, "Item11param6", db_con4);
-				gPlayerData[playerid][pItem11param6] = strval(string);
-				mysql_fetch_field_row(string, "Item12param6", db_con4);
-				gPlayerData[playerid][pItem12param6] = strval(string);
-				mysql_fetch_field_row(string, "Item13param6", db_con4);
-				gPlayerData[playerid][pItem13param6] = strval(string);
-				mysql_fetch_field_row(string, "Item14param6", db_con4);
-				gPlayerData[playerid][pItem14param6] = strval(string);
-				mysql_fetch_field_row(string, "Item15param6", db_con4);
-				gPlayerData[playerid][pItem15param6] = strval(string);
-				mysql_fetch_field_row(string, "Item16param6", db_con4);
-				gPlayerData[playerid][pItem16param6] = strval(string);
-				mysql_fetch_field_row(string, "Item17param6", db_con4);
-				gPlayerData[playerid][pItem17param6] = strval(string);
-				mysql_fetch_field_row(string, "Item18param6", db_con4);
-				gPlayerData[playerid][pItem18param6] = strval(string);
-				mysql_fetch_field_row(string, "Item19param6", db_con4);
-				gPlayerData[playerid][pItem19param6] = strval(string);
-				mysql_fetch_field_row(string, "Item20param6", db_con4);
-				gPlayerData[playerid][pItem20param6] = strval(string);
-				mysql_fetch_field_row(string, "Item21param6", db_con4);
-				gPlayerData[playerid][pItem21param6] = strval(string);
-				mysql_fetch_field_row(string, "Item22param6", db_con4);
-				gPlayerData[playerid][pItem22param6] = strval(string);
-				mysql_fetch_field_row(string, "Item23param6", db_con4);
-				gPlayerData[playerid][pItem23param6] = strval(string);
-				mysql_fetch_field_row(string, "Item24param6", db_con4);
-				gPlayerData[playerid][pItem24param6] = strval(string);
-				mysql_fetch_field_row(string, "Item25param6", db_con4);
-				gPlayerData[playerid][pItem25param6] = strval(string);
-			}
-			
-			// samp_users_jobs
-			{
-				mysql_fetch_field_row(string, "Job", db_con4);
-				gPlayerData[playerid][pJob] = strval(string);
-				mysql_fetch_field_row(string, "JobLvl", db_con4);
-				gPlayerData[playerid][pJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "MzgkJobLvl", db_con4);
-				gPlayerData[playerid][pMzgkJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "SweeperJobLvl", db_con4);
-				gPlayerData[playerid][pSweeperJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "CarJackerJobLvl", db_con4);
-				gPlayerData[playerid][pCarJackerJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "MechanicJobLvl", db_con4);
-				gPlayerData[playerid][pMechanicJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "FarmerJobLvl", db_con4);
-				gPlayerData[playerid][pFarmerJobLvl] = strval(string);
-				mysql_fetch_field_row(string, "BusJobPoints", db_con4);
-				gPlayerData[playerid][pBusJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "MzgkJobPoints", db_con4);
-				gPlayerData[playerid][pMzgkJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "SweeperJobPoints", db_con4);
-				gPlayerData[playerid][pSweeperJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "CarJackerJobPoints", db_con4);
-				gPlayerData[playerid][pCarJackerJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "MechanicJobPoints", db_con4);
-				gPlayerData[playerid][pMechanicJobPoints] = strval(string);
-				mysql_fetch_field_row(string, "FarmerJobPoints", db_con4);
-				gPlayerData[playerid][pFarmerJobPoints] = strval(string);
-			}
-			
-			// samp_users_lic
-			{
-				mysql_fetch_field_row(string, "BoatLic", db_con4);
-				gPlayerData[playerid][pBoatLic] = strval(string);
-				mysql_fetch_field_row(string, "PlaneLic", db_con4);
-				gPlayerData[playerid][pPlaneLic] = strval(string);
-				mysql_fetch_field_row(string, "HeliLic", db_con4);
-				gPlayerData[playerid][pHeliLic] = strval(string);
-				mysql_fetch_field_row(string, "WepLic", db_con4);
-				gPlayerData[playerid][pWepLic] = strval(string);
-				mysql_fetch_field_row(string, "PenaltyPointsA", db_con4);
-				gPlayerData[playerid][pPenaltyPointsA] = strval(string);
-				mysql_fetch_field_row(string, "PenaltyPointsB", db_con4);
-				gPlayerData[playerid][pPenaltyPointsB] = strval(string);
-				mysql_fetch_field_row(string, "PenaltyPointsCE", db_con4);
-				gPlayerData[playerid][pPenaltyPointsCE] = strval(string);
-			}
-			
-			// samp_users_notes
-			{
-				mysql_fetch_field_row(string, "Note1", db_con4);
-				format(gPlayerData[playerid][pNote1], 128, string);
-				mysql_fetch_field_row(string, "Note1s", db_con4);
-				gPlayerData[playerid][pNote1s] = strval(string);
-				mysql_fetch_field_row(string, "Note2", db_con4);
-				format(gPlayerData[playerid][pNote2], 128, string);
-				mysql_fetch_field_row(string, "Note2s", db_con4);
-				gPlayerData[playerid][pNote2s] = strval(string);
-				mysql_fetch_field_row(string, "Note3", db_con4);
-				format(gPlayerData[playerid][pNote3], 128, string);
-				mysql_fetch_field_row(string, "Note3s", db_con4);
-				gPlayerData[playerid][pNote3s] = strval(string);
-				mysql_fetch_field_row(string, "Note4", db_con4);
-				format(gPlayerData[playerid][pNote4], 128, string);
-				mysql_fetch_field_row(string, "Note4s", db_con4);
-				gPlayerData[playerid][pNote4s] = strval(string);
-				mysql_fetch_field_row(string, "Note5", db_con4);
-				format(gPlayerData[playerid][pNote5], 128, string);
-				mysql_fetch_field_row(string, "Note5s", db_con4);
-				gPlayerData[playerid][pNote5s] = strval(string);
-			}
-			
-			// samp_users_vip
-			{
-				mysql_fetch_field_row(string, "VipCar", db_con4);
-				gPlayerData[playerid][pVipCar] = strval(string);
-				mysql_fetch_field_row(string, "VipAFK", db_con4);
-				gPlayerData[playerid][pVipAFK] = strval(string);
-				mysql_fetch_field_row(string, "VipAFKT", db_con4);
-				gPlayerData[playerid][pVipAFKT] = strval(string);
-				mysql_fetch_field_row(string, "VipExp", db_con4);
-				gPlayerData[playerid][pVipExp] = strval(string);
-				mysql_fetch_field_row(string, "VipExpT", db_con4);
-				gPlayerData[playerid][pVipExpT] = strval(string);
-				mysql_fetch_field_row(string, "CharacterDeath", db_con4);
-				gPlayerData[playerid][pCharacterDeath] = strval(string);
-				mysql_fetch_field_row(string, "CharacterDying", db_con4);
-				gPlayerData[playerid][pCharacterDying] = strval(string);
-				mysql_fetch_field_row(string, "VipItem", db_con4);
-				gPlayerData[playerid][pVipItem] = strval(string);
-				mysql_fetch_field_row(string, "AccountOwnerID", db_con4);
-				gPlayerData[playerid][pAccountOwnerID] = strval(string);
-				mysql_fetch_field_row(string, "VipGarage", db_con4);
-				gPlayerData[playerid][pVipGarage] = strval(string);
-				mysql_fetch_field_row(string, "VipGarageBig", db_con4);
-				gPlayerData[playerid][pVipGarageBig] = strval(string);
-				mysql_fetch_field_row(string, "VipRedNeon", db_con4);
-				gPlayerData[playerid][pVipRedNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipBlueNeon", db_con4);
-				gPlayerData[playerid][pVipBlueNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipGreenNeon", db_con4);
-				gPlayerData[playerid][pVipGreenNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipYellowNeon", db_con4);
-				gPlayerData[playerid][pVipYellowNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipPinkNeon", db_con4);
-				gPlayerData[playerid][pVipPinkNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipWhiteNeon", db_con4);
-				gPlayerData[playerid][pVipWhiteNeon] = strval(string);
-				mysql_fetch_field_row(string, "VipCustomObjects", db_con4);
-				gPlayerData[playerid][pVipCustomObjects] = strval(string);
-				mysql_fetch_field_row(string, "VipHalogenLight", db_con4);
-				gPlayerData[playerid][pVipHalogenLight] = strval(string);
-				mysql_fetch_field_row(string, "VipWhitePointLight", db_con4);
-				gPlayerData[playerid][pVipWhitePointLight] = strval(string);
-				mysql_fetch_field_row(string, "VipRedPointLight", db_con4);
-				gPlayerData[playerid][pVipRedPointLight] = strval(string);
-				mysql_fetch_field_row(string, "VipGreenPointLight", db_con4);
-				gPlayerData[playerid][pVipGreenPointLight] = strval(string);
-				mysql_fetch_field_row(string, "VipBluePointLight", db_con4);
-				gPlayerData[playerid][pVipBluePointLight] = strval(string);
-			}
-			
-			// samp_users_other
-			{
-				mysql_fetch_field_row(string, "ListNumber", db_con4);
-				gPlayerData[playerid][pListNumber] = strval(string);
-				mysql_fetch_field_row(string, "Donator", db_con4);
-				gPlayerData[playerid][pDonator] = strval(string);
-				mysql_fetch_field_row(string, "Drugs", db_con4);
-				gPlayerData[playerid][pDrugs] = strval(string);
-				mysql_fetch_field_row(string, "DrugsEffect", db_con4);
-				gPlayerData[playerid][pDrugsEffect] = strval(string);
-				mysql_fetch_field_row(string, "DrugsTaken", db_con4);
-				gPlayerData[playerid][pDrugsTaken] = strval(string);
-				mysql_fetch_field_row(string, "DrugsAddicted", db_con4);
-				gPlayerData[playerid][pDrugsAddicted] = strval(string);
-				mysql_fetch_field_row(string, "Goggles", db_con4);
-				gPlayerData[playerid][pGoggles] = strval(string);
-				mysql_fetch_field_row(string, "Cost", db_con4);
-				gPlayerData[playerid][pCost] = strval(string);
-				mysql_fetch_field_row(string, "Ticket", db_con4);
-				gPlayerData[playerid][pTicket] = strval(string);
-				mysql_fetch_field_row(string, "HP", db_con4);
-				gPlayerData[playerid][pHP] = strval(string);
-				mysql_fetch_field_row(string, "Armour", db_con4);
-				gPlayerData[playerid][pArmour] = strval(string);
-				mysql_fetch_field_row(string, "Head", db_con4);
-				gPlayerData[playerid][pHead] = strval(string);
-				mysql_fetch_field_row(string, "Torso", db_con4);
-				gPlayerData[playerid][pTorso] = strval(string);
-				mysql_fetch_field_row(string, "Legs", db_con4);
-				gPlayerData[playerid][pLegs] = strval(string);
-				mysql_fetch_field_row(string, "Detoks", db_con4);
-				gPlayerData[playerid][pDetoks] = strval(string);
-				mysql_fetch_field_row(string, "WSlot0", db_con4);
-				gPlayerData[playerid][pWSlot0] = strval(string);
-				mysql_fetch_field_row(string, "WSlot0Ammo", db_con4);
-				gPlayerData[playerid][pWSlot0Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot1", db_con4);
-				gPlayerData[playerid][pWSlot1] = strval(string);
-				mysql_fetch_field_row(string, "WSlot1Ammo", db_con4);
-				gPlayerData[playerid][pWSlot1Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot2", db_con4);
-				gPlayerData[playerid][pWSlot2] = strval(string);
-				mysql_fetch_field_row(string, "WSlot2Ammo", db_con4);
-				gPlayerData[playerid][pWSlot2Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot3", db_con4);
-				gPlayerData[playerid][pWSlot3] = strval(string);
-				mysql_fetch_field_row(string, "WSlot3Ammo", db_con4);
-				gPlayerData[playerid][pWSlot3Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot4", db_con4);
-				gPlayerData[playerid][pWSlot4] = strval(string);
-				mysql_fetch_field_row(string, "WSlot4Ammo", db_con4);
-				gPlayerData[playerid][pWSlot4Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot5", db_con4);
-				gPlayerData[playerid][pWSlot5] = strval(string);
-				mysql_fetch_field_row(string, "WSlot5Ammo", db_con4);
-				gPlayerData[playerid][pWSlot5Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot6", db_con4);
-				gPlayerData[playerid][pWSlot6] = strval(string);
-				mysql_fetch_field_row(string, "WSlot6Ammo", db_con4);
-				gPlayerData[playerid][pWSlot6Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot7", db_con4);
-				gPlayerData[playerid][pWSlot7] = strval(string);
-				mysql_fetch_field_row(string, "WSlot7Ammo", db_con4);
-				gPlayerData[playerid][pWSlot7Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot8", db_con4);
-				gPlayerData[playerid][pWSlot8] = strval(string);
-				mysql_fetch_field_row(string, "WSlot8Ammo", db_con4);
-				gPlayerData[playerid][pWSlot8Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot9", db_con4);
-				gPlayerData[playerid][pWSlot9] = strval(string);
-				mysql_fetch_field_row(string, "WSlot9Ammo", db_con4);
-				gPlayerData[playerid][pWSlot9Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot10", db_con4);
-				gPlayerData[playerid][pWSlot10] = strval(string);
-				mysql_fetch_field_row(string, "WSlot10Ammo", db_con4);
-				gPlayerData[playerid][pWSlot10Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot11", db_con4);
-				gPlayerData[playerid][pWSlot11] = strval(string);
-				mysql_fetch_field_row(string, "WSlot11Ammo", db_con4);
-				gPlayerData[playerid][pWSlot11Ammo] = strval(string);
-				mysql_fetch_field_row(string, "WSlot12", db_con4);
-				gPlayerData[playerid][pWSlot12] = strval(string);
-				mysql_fetch_field_row(string, "WSlot12Ammo", db_con4);
-				gPlayerData[playerid][pWSlot12Ammo] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus1", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][0] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus2", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][1] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus3", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][2] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus4", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][3] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus5", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][4] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus6", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][5] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus7", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][6] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus8", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][7] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus9", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][8] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus10", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][9] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus11", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][10] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus12", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][11] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus13", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][12] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus14", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][13] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus15", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][14] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus16", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][15] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus17", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][16] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus18", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][17] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus19", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][18] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventPickupStatus20", db_con4);
-				gPlayerData[playerid][mPickupEventPickupStatus][19] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventRewardReceived", db_con4);
-				gPlayerData[playerid][mPickupEventRewardReceived] = strval(string);
-				mysql_fetch_field_row(string, "PickupEventID", db_con4);
-				gPlayerData[playerid][mPickupEventID] = strval(string);
-				mysql_fetch_field_row(string, "RPCount", db_con4);
-				gPlayerData[playerid][pRPCount] = strval(string);
-				mysql_fetch_field_row(string, "DeathCount", db_con4);
-				gPlayerData[playerid][pDeathCount] = strval(string);
-				mysql_fetch_field_row(string, "Score", db_con4);
-				gPlayerData[playerid][pScore] = strval(string);
-				mysql_fetch_field_row(string, "MechanicCoolDown", db_con4);
-				gPlayerData[playerid][pMechanicCoolDown] = strval(string);
-				mysql_fetch_field_row(string, "FirstATest", db_con4);
-				gPlayerData[playerid][pFirstATest] = strval(string);
-				mysql_fetch_field_row(string, "FirstBTest", db_con4);
-				gPlayerData[playerid][pFirstBTest] = strval(string);
-				mysql_fetch_field_row(string, "FirstCETest", db_con4);
-				gPlayerData[playerid][pFirstCETest] = strval(string);
-				mysql_fetch_field_row(string, "MaxWeight", db_con4);
-				gPlayerData[playerid][pMaxWeight] = strval(string);
-				mysql_fetch_field_row(string, "Hunger", db_con4);
-				gPlayerData[playerid][pHunger] = strval(string);
-				mysql_fetch_field_row(string, "Thirst", db_con4);
-				gPlayerData[playerid][pThirst] = strval(string);
-				mysql_fetch_field_row(string, "Poison", db_con4);
-				gPlayerData[playerid][pPoison] = strval(string);
-				mysql_fetch_field_row(string, "Fat", db_con4);
-				gPlayerData[playerid][pFat] = strval(string);
-				mysql_fetch_field_row(string, "Stomach", db_con4);
-				gPlayerData[playerid][pStomach] = strval(string);
-				mysql_fetch_field_row(string, "Vitamins", db_con4);
-				gPlayerData[playerid][pVitamins] = strval(string);
-				mysql_fetch_field_row(string, "Energy", db_con4);
-				gPlayerData[playerid][pEnergy] = strval(string);
-				mysql_fetch_field_row(string, "Drunk", db_con4);
-				gPlayerData[playerid][pDrunk] = strval(string);
-				mysql_fetch_field_row(string, "Narcotic", db_con4);
-				gPlayerData[playerid][pNarcotic] = strval(string);
-				mysql_fetch_field_row(string, "ShowHealthBars", db_con4);
-				gPlayerData[playerid][pShowHealthBars] = strval(string);
-				mysql_fetch_field_row(string, "SubMealEaten", db_con4);
-				gPlayerData[playerid][pSubMealEaten] = strval(string);
-				mysql_fetch_field_row(string, "OOCChanell", db_con4);
-				gPlayerData[playerid][pOOCChanell] = strval(string);
-				mysql_fetch_field_row(string, "TestAreaTimeLeft", db_con4);
-				gPlayerData[playerid][pTestAreaTimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "NewVersion", db_con4);
-				gPlayerData[playerid][pNewVersion] = strval(string);
-				mysql_fetch_field_row(string, "PainKiller", db_con4);
-				gPlayerData[playerid][pPainKiller] = strval(string);
-				mysql_fetch_field_row(string, "Slimming", db_con4);
-				gPlayerData[playerid][pSlimming] = strval(string);
-				mysql_fetch_field_row(string, "StomachDrops", db_con4);
-				gPlayerData[playerid][pStomachDrops] = strval(string);
-				mysql_fetch_field_row(string, "AchieveTickets", db_con4);
-				gPlayerData[playerid][pAchieveTickets] = strval(string);
-				mysql_fetch_field_row(string, "AchieveArrests", db_con4);
-				gPlayerData[playerid][pAchieveArrests] = strval(string);
-				mysql_fetch_field_row(string, "AchieveDistance", db_con4);
-				gPlayerData[playerid][pAchieveDistance] = strval(string);
-				mysql_fetch_field_row(string, "BankOld", db_con4);
-				gPlayerData[playerid][pBankOld] = strval(string);
-				mysql_fetch_field_row(string, "BankIncome", db_con4);
-				gPlayerData[playerid][pBankIncome] = strval(string);
-				mysql_fetch_field_row(string, "BankLoose", db_con4);
-				gPlayerData[playerid][pBankLoose] = strval(string);
-				mysql_fetch_field_row(string, "BankNew", db_con4);
-				gPlayerData[playerid][pBankNew] = strval(string);
-				mysql_fetch_field_row(string, "PayDayMessage", db_con4);
-				gPlayerData[playerid][pPayDayMessage] = strval(string);
-				mysql_fetch_field_row(string, "Faction2", db_con4);
-				gPlayerData[playerid][pFaction2] = strval(string);
-				mysql_fetch_field_row(string, "Rank2", db_con4);
-				gPlayerData[playerid][pRank2] = strval(string);
-				mysql_fetch_field_row(string, "Quiz", db_con4);
-				gPlayerData[playerid][pQuiz] = strval(string);
-				mysql_fetch_field_row(string, "SetToDelete", db_con4);
-				gPlayerData[playerid][pSetToDelete] = strval(string);
-				mysql_fetch_field_row(string, "IsOnVacation", db_con4);
-				gPlayerData[playerid][pIsOnVacation] = strval(string);
-				mysql_fetch_field_row(string, "BroadCastMessages", db_con4);
-				gPlayerData[playerid][mBroadCastMessages] = strval(string);
-				// mysql_fetch_field_row(string, "IsLogged", db_con4);
-				// gPlayerData[playerid][pIsLogged] = strval(string);
-			}
-			
-			// samp_users_other2
-			{
-				mysql_fetch_field_row(string, "Parts", db_con4);
-				gPlayerData[playerid][pParts] = strval(string);
-				mysql_fetch_field_row(string, "JobTimeChange", db_con4);
-				gPlayerData[playerid][pJobTimeChange] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevPis", db_con4);
-				gPlayerData[playerid][pSkillLevPis] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSil", db_con4);
-				gPlayerData[playerid][pSkillLevSil] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevDes", db_con4);
-				gPlayerData[playerid][pSkillLevDes] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSho", db_con4);
-				gPlayerData[playerid][pSkillLevSho] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSha", db_con4);
-				gPlayerData[playerid][pSkillLevSha] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSpa", db_con4);
-				gPlayerData[playerid][pSkillLevSpa] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevMic", db_con4);
-				gPlayerData[playerid][pSkillLevMic] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevMp5", db_con4);
-				gPlayerData[playerid][pSkillLevMp5] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevAk", db_con4);
-				gPlayerData[playerid][pSkillLevAk] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevM4", db_con4);
-				gPlayerData[playerid][pSkillLevM4] = strval(string);
-				mysql_fetch_field_row(string, "SkillLevSni", db_con4);
-				gPlayerData[playerid][pSkillLevSni] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsPis", db_con4);
-				gPlayerData[playerid][pSkillPointsPis] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSil", db_con4);
-				gPlayerData[playerid][pSkillPointsSil] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsDes", db_con4);
-				gPlayerData[playerid][pSkillPointsDes] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSho", db_con4);
-				gPlayerData[playerid][pSkillPointsSho] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSha", db_con4);
-				gPlayerData[playerid][pSkillPointsSha] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSpa", db_con4);
-				gPlayerData[playerid][pSkillPointsSpa] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsMic", db_con4);
-				gPlayerData[playerid][pSkillPointsMic] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsMp5", db_con4);
-				gPlayerData[playerid][pSkillPointsMp5] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsAk", db_con4);
-				gPlayerData[playerid][pSkillPointsAk] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsM4", db_con4);
-				gPlayerData[playerid][pSkillPointsM4] = strval(string);
-				mysql_fetch_field_row(string, "SkillPointsSni", db_con4);
-				gPlayerData[playerid][pSkillPointsSni] = strval(string);
-				mysql_fetch_field_row(string, "Pozwolenie", db_con4);
-				gPlayerData[playerid][pPozwolenie] = strval(string);
-				mysql_fetch_field_row(string, "Tech", db_con4);
-				gPlayerData[playerid][pTech] = strval(string);
-				mysql_fetch_field_row(string, "Law", db_con4);
-				gPlayerData[playerid][pLaw] = strval(string);
-				mysql_fetch_field_row(string, "Mat", db_con4);
-				gPlayerData[playerid][pMat] = strval(string);
-				mysql_fetch_field_row(string, "Pol", db_con4);
-				gPlayerData[playerid][pPol] = strval(string);
-				mysql_fetch_field_row(string, "His", db_con4);
-				gPlayerData[playerid][pHis] = strval(string);
-				mysql_fetch_field_row(string, "Fiz", db_con4);
-				gPlayerData[playerid][pFiz] = strval(string);
-				mysql_fetch_field_row(string, "Bio", db_con4);
-				gPlayerData[playerid][pBio] = strval(string);
-				mysql_fetch_field_row(string, "Doktor", db_con4);
-				gPlayerData[playerid][pDoktor] = strval(string);
-				mysql_fetch_field_row(string, "Magister", db_con4);
-				gPlayerData[playerid][pMagister] = strval(string);
-				mysql_fetch_field_row(string, "Inz", db_con4);
-				gPlayerData[playerid][pInz] = strval(string);
-				mysql_fetch_field_row(string, "Dowod", db_con4);
-				gPlayerData[playerid][pDowod] = strval(string);
-				mysql_fetch_field_row(string, "PktTech", db_con4);
-				gPlayerData[playerid][pPktTech] = strval(string);
-				mysql_fetch_field_row(string, "PktLaw", db_con4);
-				gPlayerData[playerid][pPktLaw] = strval(string);
-				mysql_fetch_field_row(string, "PktMat", db_con4);
-				gPlayerData[playerid][pPktMat] = strval(string);
-				mysql_fetch_field_row(string, "PktPol", db_con4);
-				gPlayerData[playerid][pPktPol] = strval(string);
-				mysql_fetch_field_row(string, "PktHis", db_con4);
-				gPlayerData[playerid][pPktHis] = strval(string);
-				mysql_fetch_field_row(string, "PktFiz", db_con4);
-				gPlayerData[playerid][pPktFiz] = strval(string);
-				mysql_fetch_field_row(string, "PktBio", db_con4);
-				gPlayerData[playerid][pPktBio] = strval(string);
-				mysql_fetch_field_row(string, "Duty", db_con4);
-				gPlayerData[playerid][pDuty] = strval(string);
-				mysql_fetch_field_row(string, "PartType", db_con4);
-				gPlayerData[playerid][pPartType] = strval(string);
-				mysql_fetch_field_row(string, "PartItem", db_con4);
-				gPlayerData[playerid][pPartItem] = strval(string);
-				mysql_fetch_field_row(string, "MountsLeft", db_con4);
-				gPlayerData[playerid][pMountsLeft] = strval(string);
-				mysql_fetch_field_row(string, "WFOrderedCount", db_con4);
-				gPlayerData[playerid][pWFOrderedCount] = strval(string);
-				mysql_fetch_field_row(string, "SpeedGunOn", db_con4);
-				gPlayerData[playerid][pSpeedGunOn] = strval(string);
-				mysql_fetch_field_row(string, "PWStatus", db_con4);
-				gPlayerData[playerid][pPWStatus] = strval(string);
-				mysql_fetch_field_row(string, "OOCStatus", db_con4);
-				gPlayerData[playerid][pOOCStatus] = strval(string);
-				mysql_fetch_field_row(string, "JoinInfoStatus", db_con4);
-				gPlayerData[playerid][pJoinInfoStatus] = strval(string);
-				mysql_fetch_field_row(string, "LeaveInfoStatus", db_con4);
-				gPlayerData[playerid][pLeaveInfoStatus] = strval(string);
-				mysql_fetch_field_row(string, "TipsStatus", db_con4);
-				gPlayerData[playerid][pTipsStatus] = strval(string);
-				mysql_fetch_field_row(string, "BackgroundSoundStatus", db_con4);
-				gPlayerData[playerid][pBackgroundSoundStatus] = strval(string);
-				mysql_fetch_field_row(string, "IsDeptor", db_con4);
-				gPlayerData[playerid][pIsDeptor] = strval(string);
-				mysql_fetch_field_row(string, "LastLogged", db_con4);
-				gPlayerData[playerid][pLastLogged] = strval(string);
-				mysql_fetch_field_row(string, "QuizWrongAnsweres", db_con4);
-				gPlayerVars[playerid][mQuizWrongAnsweres] = strval(string);
-				mysql_fetch_field_row(string, "CreditValue", db_con4);
-				gPlayerData[playerid][mCreditValue] = strval(string);
-				mysql_fetch_field_row(string, "CreditRepayment", db_con4);
-				gPlayerData[playerid][mCreditRepayment] = strval(string);
-				mysql_fetch_field_row(string, "CreditPayed", db_con4);
-				gPlayerData[playerid][mCreditPayed] = strval(string);
-				mysql_fetch_field_row(string, "HighSchool", db_con4);
-				gPlayerData[playerid][pHighSchool] = strval(string);
-				mysql_fetch_field_row(string, "SchoolCooldown", db_con4);
-				gPlayerData[playerid][pSchoolCooldown] = strval(string);
-				mysql_fetch_field_row(string, "MountsPasses", db_con4);
-				gPlayerData[playerid][pMountsPasses] = strval(string);
-			}
-			
-			format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `mybb_banned` WHERE `uid` = '%d'", gPlayerData[playerid][pAccountOwnerID]);
-			wp_mysql_query(string, CHECK_ACCOUNT_STATUS_PAYDAY, playerid, db_con2);
-			
-			
-		}
-		case CHECK_ACCOUNT_STATUS:
-		{
-			mysql_store_result(db_con2);
-			
-			if(mysql_num_rows(db_con2) != 0)
-			{
-				KickPlayer(playerid, "System", "Twoje konto na forum zosta³o zbanowane");
-				
-				return 1;
+				ErrorLog("[ERROR:] No record on PLAYER_DATA_LOAD_KEYS_MYSQL");
+				mysql_free_result(db_con4);
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					format(string, sizeof(string), "INSERT INTO `samp_users_keys` (`PlayerName`) VALUES ('%s')", PlayerNameTMP);
+					mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				}
 			}
 			else
 			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				mysql_free_result(db_con4);
+			}
+			format( string, sizeof(string), "SELECT * FROM `samp_users_other` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[playerid][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_OTHER_MYSQL, playerid, db_con4);
+		}
+		case PLAYER_DATA_LOAD_OTHER_MYSQL:
+		{
+			// printf("[DEBUG:][PLAYER_LOAD_OTHER_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			if(playerid != CUSTOM_MAX_PLAYERS)
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [dane podstawowe]...");
+			if(!mysql_store_result(db_con4))
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_OTHER_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
+			}
+			if(mysql_num_rows(db_con4) == 0)
+			{
+				mysql_free_result(db_con4);
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					format(string, sizeof(string), "INSERT INTO `samp_users_other` (`PlayerName`) VALUES ('%s')", PlayerNameTMP);
+					mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				}
+			}
+			else
+			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				mysql_fetch_field_row(string, "ListNumber", db_con4);
+				gPlayerData[playerid][pListNumber] = strval(string);
+				mysql_fetch_field_row(string, "Donator", db_con4);
+				gPlayerData[playerid][pDonator] = strval(string);
+				mysql_fetch_field_row(string, "Drugs", db_con4);
+				gPlayerData[playerid][pDrugs] = strval(string);
+				mysql_fetch_field_row(string, "DrugsEffect", db_con4);
+				gPlayerData[playerid][pDrugsEffect] = strval(string);
+				mysql_fetch_field_row(string, "DrugsTaken", db_con4);
+				gPlayerData[playerid][pDrugsTaken] = strval(string);
+				mysql_fetch_field_row(string, "DrugsAddicted", db_con4);
+				gPlayerData[playerid][pDrugsAddicted] = strval(string);
+				mysql_fetch_field_row(string, "Materials", db_con4);
+				gPlayerData[playerid][pMaterials] = strval(string);
+				mysql_fetch_field_row(string, "Goggles", db_con4);
+				gPlayerData[playerid][pGoggles] = strval(string);
+				mysql_fetch_field_row(string, "Cost", db_con4);
+				gPlayerData[playerid][pCost] = strval(string);
+				mysql_fetch_field_row(string, "Ticket", db_con4);
+				gPlayerData[playerid][pTicket] = strval(string);
+				mysql_fetch_field_row(string, "HP", db_con4);
+				gPlayerData[playerid][pHP] = strval(string);
+				mysql_fetch_field_row(string, "Armour", db_con4);
+				gPlayerData[playerid][pArmour] = strval(string);
+				mysql_fetch_field_row(string, "Head", db_con4);
+				gPlayerData[playerid][pHead] = strval(string);
+				mysql_fetch_field_row(string, "Torso", db_con4);
+				gPlayerData[playerid][pTorso] = strval(string);
+				mysql_fetch_field_row(string, "Legs", db_con4);
+				gPlayerData[playerid][pLegs] = strval(string);
+				mysql_fetch_field_row(string, "Detoks", db_con4);
+				gPlayerData[playerid][pDetoks] = strval(string);
+				mysql_fetch_field_row(string, "WSlot0", db_con4);
+				gPlayerData[playerid][pWSlot0] = strval(string);
+				mysql_fetch_field_row(string, "WSlot0Ammo", db_con4);
+				gPlayerData[playerid][pWSlot0Ammo] = strval(string);
+				mysql_fetch_field_row(string, "WSlot1", db_con4);
+				gPlayerData[playerid][pWSlot1] = strval(string);
+				mysql_fetch_field_row(string, "WSlot1Ammo", db_con4);
+				gPlayerData[playerid][pWSlot1Ammo] = strval(string);
+				mysql_fetch_field_row(string, "WSlot2", db_con4);
+				gPlayerData[playerid][pWSlot2] = strval(string);
+				mysql_fetch_field_row(string, "WSlot2Ammo", db_con4);
+				gPlayerData[playerid][pWSlot2Ammo] = strval(string);
+				mysql_fetch_field_row(string, "WSlot3", db_con4);
+				gPlayerData[playerid][pWSlot3] = strval(string);
+				mysql_fetch_field_row(string, "WSlot3Ammo", db_con4);
+				gPlayerData[playerid][pWSlot3Ammo] = strval(string);
+				mysql_fetch_field_row(string, "WSlot4", db_con4);
+				gPlayerData[playerid][pWSlot4] = strval(string);
+				mysql_fetch_field_row(string, "WSlot4Ammo", db_con4);
+				gPlayerData[playerid][pWSlot4Ammo] = strval(string);
+				mysql_fetch_field_row(string, "WSlot5", db_con4);
+				gPlayerData[playerid][pWSlot5] = strval(string);
+				mysql_fetch_field_row(string, "WSlot5Ammo", db_con4);
+				gPlayerData[playerid][pWSlot5Ammo] = strval(string);
+				mysql_fetch_field_row(string, "WSlot6", db_con4);
+				gPlayerData[playerid][pWSlot6] = strval(string);
+				mysql_fetch_field_row(string, "WSlot6Ammo", db_con4);
+				gPlayerData[playerid][pWSlot6Ammo] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus1", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][0] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus2", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][1] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus3", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][2] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus4", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][3] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus5", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][4] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus6", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][5] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus7", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][6] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus8", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][7] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus9", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][8] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus10", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][9] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus11", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][10] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus12", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][11] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus13", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][12] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus14", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][13] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus15", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][14] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus16", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][15] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus17", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][16] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus18", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][17] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus19", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][18] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventPickupStatus20", db_con4);
+				gPlayerData[playerid][mPickupEventPickupStatus][19] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventRewardReceived", db_con4);
+				gPlayerData[playerid][mPickupEventRewardReceived] = strval(string);
+				mysql_fetch_field_row(string, "PickupEventID", db_con4);
+				gPlayerData[playerid][mPickupEventID] = strval(string);
+				mysql_fetch_field_row(string, "RPCount", db_con4);
+				gPlayerData[playerid][pRPCount] = strval(string);
+				mysql_fetch_field_row(string, "DeathCount", db_con4);
+				gPlayerData[playerid][pDeathCount] = strval(string);
+				mysql_fetch_field_row(string, "Score", db_con4);
+				gPlayerData[playerid][pScore] = strval(string);
+				mysql_fetch_field_row(string, "MechanicCoolDown", db_con4);
+				gPlayerData[playerid][pMechanicCoolDown] = strval(string);
+				mysql_fetch_field_row(string, "FirstATest", db_con4);
+				gPlayerData[playerid][pFirstATest] = strval(string);
+				mysql_fetch_field_row(string, "FirstBTest", db_con4);
+				gPlayerData[playerid][pFirstBTest] = strval(string);
+				mysql_fetch_field_row(string, "FirstCETest", db_con4);
+				gPlayerData[playerid][pFirstCETest] = strval(string);
+				mysql_fetch_field_row(string, "MaxWeight", db_con4);
+				gPlayerData[playerid][pMaxWeight] = strval(string);
+				mysql_fetch_field_row(string, "Hunger", db_con4);
+				gPlayerData[playerid][pHunger] = strval(string);
+				mysql_fetch_field_row(string, "Thirst", db_con4);
+				gPlayerData[playerid][pThirst] = strval(string);
+				mysql_fetch_field_row(string, "Poison", db_con4);
+				gPlayerData[playerid][pPoison] = strval(string);
+				mysql_fetch_field_row(string, "Fat", db_con4);
+				gPlayerData[playerid][pFat] = strval(string);
+				mysql_fetch_field_row(string, "Stomach", db_con4);
+				gPlayerData[playerid][pStomach] = strval(string);
+				mysql_fetch_field_row(string, "Vitamins", db_con4);
+				gPlayerData[playerid][pVitamins] = strval(string);
+				mysql_fetch_field_row(string, "Energy", db_con4);
+				gPlayerData[playerid][pEnergy] = strval(string);
+				mysql_fetch_field_row(string, "Drunk", db_con4);
+				gPlayerData[playerid][pDrunk] = strval(string);
+				mysql_fetch_field_row(string, "Narcotic", db_con4);
+				gPlayerData[playerid][pNarcotic] = strval(string);
+				mysql_fetch_field_row(string, "ShowHealthBars", db_con4);
+				gPlayerData[playerid][pShowHealthBars] = strval(string);
+				mysql_fetch_field_row(string, "SubMealEaten", db_con4);
+				gPlayerData[playerid][pSubMealEaten] = strval(string);
+				mysql_fetch_field_row(string, "OOCChanell", db_con4);
+				gPlayerData[playerid][pOOCChanell] = strval(string);
+				mysql_fetch_field_row(string, "TestAreaTimeLeft", db_con4);
+				gPlayerData[playerid][pTestAreaTimeLeft] = strval(string);
+				mysql_fetch_field_row(string, "NewVersion", db_con4);
+				gPlayerData[playerid][pNewVersion] = strval(string);
+				mysql_fetch_field_row(string, "PainKiller", db_con4);
+				gPlayerData[playerid][pPainKiller] = strval(string);
+				mysql_fetch_field_row(string, "Slimming", db_con4);
+				gPlayerData[playerid][pSlimming] = strval(string);
+				mysql_fetch_field_row(string, "StomachDrops", db_con4);
+				gPlayerData[playerid][pStomachDrops] = strval(string);
+				mysql_fetch_field_row(string, "AchieveTickets", db_con4);
+				gPlayerData[playerid][pAchieveTickets] = strval(string);
+				mysql_fetch_field_row(string, "AchieveArrests", db_con4);
+				gPlayerData[playerid][pAchieveArrests] = strval(string);
+				mysql_fetch_field_row(string, "AchieveDistance", db_con4);
+				gPlayerData[playerid][pAchieveDistance] = strval(string);
+				mysql_fetch_field_row(string, "BankOld", db_con4);
+				gPlayerData[playerid][pBankOld] = strval(string);
+				mysql_fetch_field_row(string, "BankIncome", db_con4);
+				gPlayerData[playerid][pBankIncome] = strval(string);
+				mysql_fetch_field_row(string, "BankLoose", db_con4);
+				gPlayerData[playerid][pBankLoose] = strval(string);
+				mysql_fetch_field_row(string, "BankNew", db_con4);
+				gPlayerData[playerid][pBankNew] = strval(string);
+				mysql_fetch_field_row(string, "PayDayMessage", db_con4);
+				gPlayerData[playerid][pPayDayMessage] = strval(string);
+				mysql_fetch_field_row(string, "Faction2", db_con4);
+				gPlayerData[playerid][pFaction2] = strval(string);
+				mysql_fetch_field_row(string, "Rank2", db_con4);
+				gPlayerData[playerid][pRank2] = strval(string);
+				mysql_fetch_field_row(string, "Quiz", db_con4);
+				gPlayerData[playerid][pQuiz] = strval(string);
+				mysql_fetch_field_row(string, "SetToDelete", db_con4);
+				gPlayerData[playerid][pSetToDelete] = strval(string);
+				mysql_fetch_field_row(string, "IsOnVacation", db_con4);
+				gPlayerData[playerid][pIsOnVacation] = strval(string);
+
+				mysql_free_result(db_con4);
+			}
+			format( string, sizeof(string), "SELECT * FROM `samp_users_items` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[playerid][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_ITEMS_MYSQL, playerid, db_con4);
+		}
+		case PLAYER_DATA_LOAD_JOB_MYSQL:
+		{
+			// printf("[DEBUG:][PLAYER_LOAD_JOB_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			if(playerid != CUSTOM_MAX_PLAYERS)
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [prace]...");
+			if( !mysql_store_result(db_con4) )
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_JOB_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
+			}
+			if(mysql_num_rows(db_con4) == 0)
+			{
+				mysql_free_result(db_con4);
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					format(string, sizeof(string), "INSERT INTO `samp_users_jobs` (`PlayerName`) VALUES ('%s')", PlayerNameTMP);
+					mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				}
+			}
+			else
+			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				split2(db_result, arrCoords, '|');
+
+				gPlayerData[playerid][pJob] = strval(arrCoords[0]);
+				gPlayerData[playerid][pJobLvl] = strval(arrCoords[1]);
+				gPlayerData[playerid][pMzgkJobLvl] = strval(arrCoords[2]);
+				gPlayerData[playerid][pSweeperJobLvl] = strval(arrCoords[3]);
+				gPlayerData[playerid][pCarJackerJobLvl] = strval(arrCoords[4]);
+				gPlayerData[playerid][pMechanicJobLvl] = strval(arrCoords[5]);
+				gPlayerData[playerid][pFarmerJobLvl] = strval(arrCoords[6]);
+				gPlayerData[playerid][pBusJobPoints] = strval(arrCoords[7]);
+				gPlayerData[playerid][pMzgkJobPoints] = strval(arrCoords[8]);
+				gPlayerData[playerid][pSweeperJobPoints] = strval(arrCoords[9]);
+				gPlayerData[playerid][pCarJackerJobPoints] = strval(arrCoords[10]);
+				gPlayerData[playerid][pMechanicJobPoints] = strval(arrCoords[11]);
+				gPlayerData[playerid][pFarmerJobPoints] = strval(arrCoords[12]);
+
+				mysql_free_result(db_con4);
+			}
+			format( string, sizeof(string), "SELECT * FROM `samp_users_lic` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[playerid][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_LIC_MYSQL, playerid, db_con4);
+			if(playerid < CUSTOM_MAX_PLAYERS)
+			{
+				switch( gPlayerData[playerid][pJob] )
+				{
+					case 13: JobProgress[playerid] = CreateProgressBar(550.0, 130.0, 55.5, 5.0, COLOR_LIGHTBLUE, float(11 + (gPlayerData[playerid][pJobLvl]*5)));
+					case 14: JobProgress[playerid] = CreateProgressBar(550.0, 130.0, 55.5, 5.0, COLOR_LIGHTBLUE, float(11 + (gPlayerData[playerid][pMzgkJobLvl]*5)));
+					case 15: JobProgress[playerid] = CreateProgressBar(550.0, 130.0, 55.5, 5.0, COLOR_LIGHTBLUE, float(11 + (gPlayerData[playerid][pSweeperJobLvl]*5)));
+					case 18: JobProgress[playerid] = CreateProgressBar(550.0, 130.0, 55.5, 5.0, COLOR_LIGHTBLUE, float(15 + (gPlayerData[playerid][pFarmerJobLvl]*5)));
+					default: JobProgress[playerid] = CreateProgressBar(550.0, 130.0, 55.5, 5.0, COLOR_LIGHTBLUE, float(11 + (gPlayerData[playerid][pJobLvl]*5)));
+				}
+			}
+		}
+		case PLAYER_DATA_LOAD_LIC_MYSQL:
+		{
+			// printf("[DEBUG:][PLAYER_LOAD_LIC_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			if(playerid != CUSTOM_MAX_PLAYERS)
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [licencje]...");
+			if(!mysql_store_result(db_con4))
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_LIC_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
+			}
+			if(mysql_num_rows(db_con4) == 0)
+			{
+				mysql_free_result(db_con4);
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					format(string, sizeof(string), "INSERT INTO `samp_users_lic` (`PlayerName`) VALUES ('%s')", PlayerNameTMP);
+					mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				}
+			}
+			else
+			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				split2(db_result, arrCoords, '|');
+
+				gPlayerData[playerid][pBoatLic] = strval(arrCoords[2]);
+				gPlayerData[playerid][pPlaneLic] = strval(arrCoords[3]);
+				gPlayerData[playerid][pHeliLic] = strval(arrCoords[4]);
+				gPlayerData[playerid][pWepLic] = strval(arrCoords[5]);
+				gPlayerData[playerid][pPenaltyPointsA] = strval(arrCoords[6]);
+				gPlayerData[playerid][pPenaltyPointsB] = strval(arrCoords[7]);
+				gPlayerData[playerid][pPenaltyPointsCE] = strval(arrCoords[8]);
+
+				mysql_free_result(db_con4);
+			}
+			format( string, sizeof(string), "SELECT * FROM `samp_users_notes` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[playerid][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_NOTES_MYSQL, playerid, db_con4);
+		}
+		case PLAYER_DATA_LOAD_NOTES_MYSQL:
+		{
+			// printf("[DEBUG:][PLAYER_LOAD_NOTES_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			if(playerid != CUSTOM_MAX_PLAYERS)
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [notatki]...");
+			if(!mysql_store_result(db_con4))
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_NOTES_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
+			}
+			if(mysql_num_rows(db_con4) == 0)
+			{
+				mysql_free_result(db_con4);
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					format(string, sizeof(string), "INSERT INTO `samp_users_notes` (`PlayerName`) VALUES ('%s')", PlayerNameTMP);
+					mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				}
+			}
+			else
+			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				split2(db_result, arrCoords, '|');
+
+				strmid(gPlayerData[playerid][pNote1], arrCoords[0], 0, strlen(arrCoords[0])-1, 255);
+				gPlayerData[playerid][pNote1s] = strval(arrCoords[1]);
+				strmid(gPlayerData[playerid][pNote1], arrCoords[2], 0, strlen(arrCoords[2])-1, 255);
+				gPlayerData[playerid][pNote1s] = strval(arrCoords[3]);
+				strmid(gPlayerData[playerid][pNote1], arrCoords[4], 0, strlen(arrCoords[4])-1, 255);
+				gPlayerData[playerid][pNote1s] = strval(arrCoords[5]);
+				strmid(gPlayerData[playerid][pNote1], arrCoords[6], 0, strlen(arrCoords[6])-1, 255);
+				gPlayerData[playerid][pNote1s] = strval(arrCoords[7]);
+				strmid(gPlayerData[playerid][pNote1], arrCoords[8], 0, strlen(arrCoords[8])-1, 255);
+				gPlayerData[playerid][pNote1s] = strval(arrCoords[9]);
+
+				mysql_free_result(db_con4);
+			}
+			format( string, sizeof(string), "SELECT * FROM `samp_users_vip` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[playerid][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_VIP_MYSQL, playerid, db_con4);
+		}
+		case PLAYER_DATA_LOAD_VIP_MYSQL:
+		{
+			// printf("[DEBUG:][PLAYER_LOAD_VIP_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			if(playerid != CUSTOM_MAX_PLAYERS)
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [dane VIP'a]...");
+			if(!mysql_store_result(db_con4))
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_VIP_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
+			}
+			if(mysql_num_rows(db_con4) == 0)
+			{
+				mysql_free_result(db_con4);
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					format(string, sizeof(string), "INSERT INTO `samp_users_vip` (`PlayerName`) VALUES ('%s')", PlayerNameTMP);
+					mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				}
+
+				gPlayerData[playerid][pVipCar] = 0;
+				gPlayerData[playerid][pVipAFK] = 0;
+				gPlayerData[playerid][pVipAFKT] = 0;
+				gPlayerData[playerid][pVipExp] = 0;
+				gPlayerData[playerid][pVipExpT] = 0;
+				gPlayerData[playerid][pCharacterDeath] = 0;
+				gPlayerData[playerid][pCharacterDying] = 0;
+				gPlayerData[playerid][pVipItem] = 0;
+				gPlayerData[playerid][pAccountOwnerID] = 0;
+				gPlayerData[playerid][pVipGarage] = 0;
+				gPlayerData[playerid][pVipGarageBig] = 0;
+				gPlayerData[playerid][pVipRedNeon] = 0;
+				gPlayerData[playerid][pVipBlueNeon] = 0;
+				gPlayerData[playerid][pVipGreenNeon] = 0;
+				gPlayerData[playerid][pVipYellowNeon] = 0;
+				gPlayerData[playerid][pVipPinkNeon] = 0;
+				gPlayerData[playerid][pVipWhiteNeon] = 0;
+				gPlayerData[playerid][pVipCustomObjects] = 0;
+				gPlayerData[playerid][pVipHalogenLight] = 0;
+				gPlayerData[playerid][pVipWhitePointLight] = 0;
+				gPlayerData[playerid][pVipRedPointLight] = 0;
+				gPlayerData[playerid][pVipGreenPointLight] = 0;
+				gPlayerData[playerid][pVipBluePointLight] = 0;
+			}
+			else
+			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				split2(db_result, arrCoords, '|');
+
+				mysql_free_result(db_con4);
+
+				gPlayerData[playerid][pVipCar] = strval(arrCoords[0]);
+				gPlayerData[playerid][pVipAFK] = strval(arrCoords[1]);
+				gPlayerData[playerid][pVipAFKT] = strval(arrCoords[2]);
+				gPlayerData[playerid][pVipExp] = strval(arrCoords[3]);
+				gPlayerData[playerid][pVipExpT] = strval(arrCoords[4]);
+				gPlayerData[playerid][pCharacterDeath] = strval(arrCoords[5]);
+				gPlayerData[playerid][pCharacterDying] = strval(arrCoords[6]);
+				gPlayerData[playerid][pVipItem] = strval(arrCoords[7]);
+				gPlayerData[playerid][pAccountOwnerID] = strval(arrCoords[10]);
+				gPlayerData[playerid][pVipGarage] = strval(arrCoords[11]);
+				gPlayerData[playerid][pVipGarageBig] = strval(arrCoords[12]);
+				gPlayerData[playerid][pVipRedNeon] = strval(arrCoords[13]);
+				gPlayerData[playerid][pVipBlueNeon] = strval(arrCoords[14]);
+				gPlayerData[playerid][pVipGreenNeon] = strval(arrCoords[15]);
+				gPlayerData[playerid][pVipYellowNeon] = strval(arrCoords[16]);
+				gPlayerData[playerid][pVipPinkNeon] = strval(arrCoords[17]);
+				gPlayerData[playerid][pVipWhiteNeon] = strval(arrCoords[18]);
+				gPlayerData[playerid][pVipCustomObjects] = strval(arrCoords[19]);
+				gPlayerData[playerid][pVipHalogenLight] = strval(arrCoords[20]);
+				gPlayerData[playerid][pVipWhitePointLight] = strval(arrCoords[21]);
+				gPlayerData[playerid][pVipRedPointLight] = strval(arrCoords[22]);
+				gPlayerData[playerid][pVipGreenPointLight] = strval(arrCoords[23]);
+				gPlayerData[playerid][pVipBluePointLight] = strval(arrCoords[24]);
+
+				if( playerid < CUSTOM_MAX_PLAYERS )
+				{
+					format(string, sizeof(string), "SELECT `username` FROM `phpbb_users` WHERE `user_id` = '%d' LIMIT 1", gPlayerData[playerid][pAccountOwnerID]);
+					mysql_query(string, PLAYER_DATA_LOAD_OOCNAME_MYSQL, playerid, db_con4);
+				}
+			}
+			// if( playerid < CUSTOM_MAX_PLAYERS )
+			// {
+				// new dataar[256];
+				// for( new id = 0; id <= BIZ_CPN_ID; id++ )
+				// {
+					// format(dataar, sizeof(dataar), "%d|%d", playerid, id);
+					// format(string, sizeof(string), "SELECT * FROM `samp_users_fueled` WHERE `PlayerName` = '%s' AND `BizID` = '%d'", PlayerNameTMP, id);
+					// mysql_query_array(string, PLAYER_LOAD_FUEL, dataar, db_con2);
+				// }
+			// }
+			format( string, sizeof(string), "SELECT * FROM `samp_users_other2` WHERE `PlayerName` = '%s'", gPlayerData[playerid][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_OTHER2_MYSQL, playerid, db_con4);
+		}
+		case PLAYER_DATA_LOAD_ITEMS_MYSQL:
+		{
+			// printf("[DEBUG:][PLAYER_LOAD_ITEMS_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [itemy 1-5]...");
+			if( !mysql_store_result(db_con4) )
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_ITEMS_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
+			}
+			if(mysql_num_rows(db_con4) == 0)
+			{
+				mysql_free_result(db_con4);
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					format(string, sizeof(string), "INSERT INTO `samp_users_items` (`PlayerName`) VALUES ('%s')", PlayerNameTMP);
+					mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				}
+			}
+			else
+			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				mysql_fetch_field_row(string, "Item1", db_con4);
+				gPlayerData[playerid][pItem1] = strval(string);
+				mysql_fetch_field_row(string, "Item2", db_con4);
+				gPlayerData[playerid][pItem2] = strval(string);
+				mysql_fetch_field_row(string, "Item3", db_con4);
+				gPlayerData[playerid][pItem3] = strval(string);
+				mysql_fetch_field_row(string, "Item4", db_con4);
+				gPlayerData[playerid][pItem4] = strval(string);
+				mysql_fetch_field_row(string, "Item5", db_con4);
+				gPlayerData[playerid][pItem5] = strval(string);
+				mysql_fetch_field_row(string, "Item1type", db_con4);
+				gPlayerData[playerid][pItem1type] = strval(string);
+				mysql_fetch_field_row(string, "Item2type", db_con4);
+				gPlayerData[playerid][pItem2type] = strval(string);
+				mysql_fetch_field_row(string, "Item3type", db_con4);
+				gPlayerData[playerid][pItem3type] = strval(string);
+				mysql_fetch_field_row(string, "Item4type", db_con4);
+				gPlayerData[playerid][pItem4type] = strval(string);
+				mysql_fetch_field_row(string, "Item5type", db_con4);
+				gPlayerData[playerid][pItem5type] = strval(string);
+				mysql_fetch_field_row(string, "Item1param", db_con4);
+				gPlayerData[playerid][pItem1param] = strval(string);
+				mysql_fetch_field_row(string, "Item2param", db_con4);
+				gPlayerData[playerid][pItem2param] = strval(string);
+				mysql_fetch_field_row(string, "Item3param", db_con4);
+				gPlayerData[playerid][pItem3param] = strval(string);
+				mysql_fetch_field_row(string, "Item4param", db_con4);
+				gPlayerData[playerid][pItem4param] = strval(string);
+				mysql_fetch_field_row(string, "Item5param", db_con4);
+				gPlayerData[playerid][pItem5param] = strval(string);
+				mysql_fetch_field_row(string, "Item1param2", db_con4);
+				gPlayerData[playerid][pItem1param2] = strval(string);
+				mysql_fetch_field_row(string, "Item2param2", db_con4);
+				gPlayerData[playerid][pItem2param2] = strval(string);
+				mysql_fetch_field_row(string, "Item3param2", db_con4);
+				gPlayerData[playerid][pItem3param2] = strval(string);
+				mysql_fetch_field_row(string, "Item4param2", db_con4);
+				gPlayerData[playerid][pItem4param2] = strval(string);
+				mysql_fetch_field_row(string, "Item5param2", db_con4);
+				gPlayerData[playerid][pItem5param2] = strval(string);
+				mysql_fetch_field_row(string, "Item1param3", db_con4);
+				gPlayerData[playerid][pItem1param3] = strval(string);
+				mysql_fetch_field_row(string, "Item2param3", db_con4);
+				gPlayerData[playerid][pItem2param3] = strval(string);
+				mysql_fetch_field_row(string, "Item3param3", db_con4);
+				gPlayerData[playerid][pItem3param3] = strval(string);
+				mysql_fetch_field_row(string, "Item4param3", db_con4);
+				gPlayerData[playerid][pItem4param3] = strval(string);
+				mysql_fetch_field_row(string, "Item5param3", db_con4);
+				gPlayerData[playerid][pItem5param3] = strval(string);
+				mysql_fetch_field_row(string, "Item1param4", db_con4);
+				gPlayerData[playerid][pItem1param4] = strval(string);
+				mysql_fetch_field_row(string, "Item2param4", db_con4);
+				gPlayerData[playerid][pItem2param4] = strval(string);
+				mysql_fetch_field_row(string, "Item3param4", db_con4);
+				gPlayerData[playerid][pItem3param4] = strval(string);
+				mysql_fetch_field_row(string, "Item4param4", db_con4);
+				gPlayerData[playerid][pItem4param4] = strval(string);
+				mysql_fetch_field_row(string, "Item5param4", db_con4);
+				gPlayerData[playerid][pItem5param4] = strval(string);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem1param5], "Item1param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem2param5], "Item2param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem3param5], "Item3param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem4param5], "Item4param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem5param5], "Item5param5", db_con4);
+				mysql_fetch_field_row(string, "Item1param6", db_con4);
+				gPlayerData[playerid][pItem1param6] = strval(string);
+				mysql_fetch_field_row(string, "Item2param6", db_con4);
+				gPlayerData[playerid][pItem2param6] = strval(string);
+				mysql_fetch_field_row(string, "Item3param6", db_con4);
+				gPlayerData[playerid][pItem3param6] = strval(string);
+				mysql_fetch_field_row(string, "Item4param6", db_con4);
+				gPlayerData[playerid][pItem4param6] = strval(string);
+				mysql_fetch_field_row(string, "Item5param6", db_con4);
+				gPlayerData[playerid][pItem5param6] = strval(string);
+
+				mysql_free_result(db_con4);
+			}
+			format( string, sizeof(string), "SELECT * FROM `samp_users_items2` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[playerid][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_ITEMS2_MYSQL, playerid, db_con4);
+		}
+		case PLAYER_DATA_LOAD_ITEMS2_MYSQL:
+		{
+			// printf("[DEBUG:][PLAYER_LOAD_ITEMS2_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [itemy 6-10]...");
+			if( !mysql_store_result(db_con4) )
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_ITEMS2_MYSQL");
+				if( playerid != CUSTOM_MAX_PLAYERS )
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+				return 1;
+			}
+			if(mysql_num_rows(db_con4) == 0)
+			{
+				mysql_free_result(db_con4);
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					format(string, sizeof(string), "INSERT INTO `samp_users_items2` (`PlayerName`) VALUES ('%s')", gPlayerData[playerid][pName]);
+					mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				}
+			}
+			else
+			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				mysql_fetch_field_row(string, "Item6", db_con4);
+				gPlayerData[playerid][pItem6] = strval(string);
+				mysql_fetch_field_row(string, "Item7", db_con4);
+				gPlayerData[playerid][pItem7] = strval(string);
+				mysql_fetch_field_row(string, "Item8", db_con4);
+				gPlayerData[playerid][pItem8] = strval(string);
+				mysql_fetch_field_row(string, "Item9", db_con4);
+				gPlayerData[playerid][pItem9] = strval(string);
+				mysql_fetch_field_row(string, "Item10", db_con4);
+				gPlayerData[playerid][pItem10] = strval(string);
+				mysql_fetch_field_row(string, "Item6type", db_con4);
+				gPlayerData[playerid][pItem6type] = strval(string);
+				mysql_fetch_field_row(string, "Item7type", db_con4);
+				gPlayerData[playerid][pItem7type] = strval(string);
+				mysql_fetch_field_row(string, "Item8type", db_con4);
+				gPlayerData[playerid][pItem8type] = strval(string);
+				mysql_fetch_field_row(string, "Item9type", db_con4);
+				gPlayerData[playerid][pItem9type] = strval(string);
+				mysql_fetch_field_row(string, "Item10type", db_con4);
+				gPlayerData[playerid][pItem10type] = strval(string);
+				mysql_fetch_field_row(string, "Item6param", db_con4);
+				gPlayerData[playerid][pItem6param] = strval(string);
+				mysql_fetch_field_row(string, "Item7param", db_con4);
+				gPlayerData[playerid][pItem7param] = strval(string);
+				mysql_fetch_field_row(string, "Item8param", db_con4);
+				gPlayerData[playerid][pItem8param] = strval(string);
+				mysql_fetch_field_row(string, "Item9param", db_con4);
+				gPlayerData[playerid][pItem9param] = strval(string);
+				mysql_fetch_field_row(string, "Item10param", db_con4);
+				gPlayerData[playerid][pItem10param] = strval(string);
+				mysql_fetch_field_row(string, "Item6param2", db_con4);
+				gPlayerData[playerid][pItem6param2] = strval(string);
+				mysql_fetch_field_row(string, "Item7param2", db_con4);
+				gPlayerData[playerid][pItem7param2] = strval(string);
+				mysql_fetch_field_row(string, "Item8param2", db_con4);
+				gPlayerData[playerid][pItem8param2] = strval(string);
+				mysql_fetch_field_row(string, "Item9param2", db_con4);
+				gPlayerData[playerid][pItem9param2] = strval(string);
+				mysql_fetch_field_row(string, "Item10param2", db_con4);
+				gPlayerData[playerid][pItem10param2] = strval(string);
+				mysql_fetch_field_row(string, "Item6param3", db_con4);
+				gPlayerData[playerid][pItem6param3] = strval(string);
+				mysql_fetch_field_row(string, "Item7param3", db_con4);
+				gPlayerData[playerid][pItem7param3] = strval(string);
+				mysql_fetch_field_row(string, "Item8param3", db_con4);
+				gPlayerData[playerid][pItem8param3] = strval(string);
+				mysql_fetch_field_row(string, "Item9param3", db_con4);
+				gPlayerData[playerid][pItem9param3] = strval(string);
+				mysql_fetch_field_row(string, "Item10param3", db_con4);
+				gPlayerData[playerid][pItem10param3] = strval(string);
+				mysql_fetch_field_row(string, "Item6param4", db_con4);
+				gPlayerData[playerid][pItem6param4] = strval(string);
+				mysql_fetch_field_row(string, "Item7param4", db_con4);
+				gPlayerData[playerid][pItem7param4] = strval(string);
+				mysql_fetch_field_row(string, "Item8param4", db_con4);
+				gPlayerData[playerid][pItem8param4] = strval(string);
+				mysql_fetch_field_row(string, "Item9param4", db_con4);
+				gPlayerData[playerid][pItem9param4] = strval(string);
+				mysql_fetch_field_row(string, "Item10param4", db_con4);
+				gPlayerData[playerid][pItem10param4] = strval(string);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem6param5], "Item6param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem7param5], "Item7param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem8param5], "Item8param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem9param5], "Item9param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem10param5], "Item10param5", db_con4);
+				mysql_fetch_field_row(string, "Item6param6", db_con4);
+				gPlayerData[playerid][pItem6param6] = strval(string);
+				mysql_fetch_field_row(string, "Item7param6", db_con4);
+				gPlayerData[playerid][pItem7param6] = strval(string);
+				mysql_fetch_field_row(string, "Item8param6", db_con4);
+				gPlayerData[playerid][pItem8param6] = strval(string);
+				mysql_fetch_field_row(string, "Item9param6", db_con4);
+				gPlayerData[playerid][pItem9param6] = strval(string);
+				mysql_fetch_field_row(string, "Item10param6", db_con4);
+				gPlayerData[playerid][pItem10param6] = strval(string);
+
+				mysql_free_result(db_con4);
+			}
+			format( string, sizeof(string), "SELECT * FROM `samp_users_items3` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[playerid][pName]) ;
+			mysql_query(string, PLAYER_DATA_LOAD_ITEMS3_MYSQL, playerid, db_con4);
+		}
+		case PLAYER_DATA_LOAD_ITEMS3_MYSQL:
+		{
+			// printf("[DEBUG:][PLAYER_LOAD_ITEMS3_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [itemy 11-25]...");
+			if( !mysql_store_result(db_con4) )
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_ITEMS3_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
+			}
+			if(mysql_num_rows(db_con4) == 0)
+			{
+				mysql_free_result(db_con4);
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					format(string, sizeof(string), "INSERT INTO `samp_users_items3` (`PlayerName`) VALUES('%s')", gPlayerData[playerid][pName]);
+					mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				}
+			}
+			else
+			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				mysql_fetch_field_row(string, "Item11", db_con4);
+				gPlayerData[playerid][pItem11] = strval(string);
+				mysql_fetch_field_row(string, "Item12", db_con4);
+				gPlayerData[playerid][pItem12] = strval(string);
+				mysql_fetch_field_row(string, "Item13", db_con4);
+				gPlayerData[playerid][pItem13] = strval(string);
+				mysql_fetch_field_row(string, "Item14", db_con4);
+				gPlayerData[playerid][pItem14] = strval(string);
+				mysql_fetch_field_row(string, "Item15", db_con4);
+				gPlayerData[playerid][pItem15] = strval(string);
+				mysql_fetch_field_row(string, "Item16", db_con4);
+				gPlayerData[playerid][pItem16] = strval(string);
+				mysql_fetch_field_row(string, "Item17", db_con4);
+				gPlayerData[playerid][pItem17] = strval(string);
+				mysql_fetch_field_row(string, "Item18", db_con4);
+				gPlayerData[playerid][pItem18] = strval(string);
+				mysql_fetch_field_row(string, "Item19", db_con4);
+				gPlayerData[playerid][pItem19] = strval(string);
+				mysql_fetch_field_row(string, "Item20", db_con4);
+				gPlayerData[playerid][pItem20] = strval(string);
+				mysql_fetch_field_row(string, "Item21", db_con4);
+				gPlayerData[playerid][pItem21] = strval(string);
+				mysql_fetch_field_row(string, "Item22", db_con4);
+				gPlayerData[playerid][pItem22] = strval(string);
+				mysql_fetch_field_row(string, "Item23", db_con4);
+				gPlayerData[playerid][pItem23] = strval(string);
+				mysql_fetch_field_row(string, "Item24", db_con4);
+				gPlayerData[playerid][pItem24] = strval(string);
+				mysql_fetch_field_row(string, "Item25", db_con4);
+				gPlayerData[playerid][pItem25] = strval(string);
+				mysql_fetch_field_row(string, "Item11type", db_con4);
+				gPlayerData[playerid][pItem11type] = strval(string);
+				mysql_fetch_field_row(string, "Item12type", db_con4);
+				gPlayerData[playerid][pItem12type] = strval(string);
+				mysql_fetch_field_row(string, "Item13type", db_con4);
+				gPlayerData[playerid][pItem13type] = strval(string);
+				mysql_fetch_field_row(string, "Item14type", db_con4);
+				gPlayerData[playerid][pItem14type] = strval(string);
+				mysql_fetch_field_row(string, "Item15type", db_con4);
+				gPlayerData[playerid][pItem15type] = strval(string);
+				mysql_fetch_field_row(string, "Item16type", db_con4);
+				gPlayerData[playerid][pItem16type] = strval(string);
+				mysql_fetch_field_row(string, "Item17type", db_con4);
+				gPlayerData[playerid][pItem17type] = strval(string);
+				mysql_fetch_field_row(string, "Item18type", db_con4);
+				gPlayerData[playerid][pItem18type] = strval(string);
+				mysql_fetch_field_row(string, "Item19type", db_con4);
+				gPlayerData[playerid][pItem19type] = strval(string);
+				mysql_fetch_field_row(string, "Item20type", db_con4);
+				gPlayerData[playerid][pItem20type] = strval(string);
+				mysql_fetch_field_row(string, "Item21type", db_con4);
+				gPlayerData[playerid][pItem21type] = strval(string);
+				mysql_fetch_field_row(string, "Item22type", db_con4);
+				gPlayerData[playerid][pItem22type] = strval(string);
+				mysql_fetch_field_row(string, "Item23type", db_con4);
+				gPlayerData[playerid][pItem23type] = strval(string);
+				mysql_fetch_field_row(string, "Item24type", db_con4);
+				gPlayerData[playerid][pItem24type] = strval(string);
+				mysql_fetch_field_row(string, "Item25type", db_con4);
+				gPlayerData[playerid][pItem25type] = strval(string);
+				mysql_fetch_field_row(string, "Item11param", db_con4);
+				gPlayerData[playerid][pItem11param] = strval(string);
+				mysql_fetch_field_row(string, "Item12param", db_con4);
+				gPlayerData[playerid][pItem12param] = strval(string);
+				mysql_fetch_field_row(string, "Item13param", db_con4);
+				gPlayerData[playerid][pItem13param] = strval(string);
+				mysql_fetch_field_row(string, "Item14param", db_con4);
+				gPlayerData[playerid][pItem14param] = strval(string);
+				mysql_fetch_field_row(string, "Item15param", db_con4);
+				gPlayerData[playerid][pItem15param] = strval(string);
+				mysql_fetch_field_row(string, "Item16param", db_con4);
+				gPlayerData[playerid][pItem16param] = strval(string);
+				mysql_fetch_field_row(string, "Item17param", db_con4);
+				gPlayerData[playerid][pItem17param] = strval(string);
+				mysql_fetch_field_row(string, "Item18param", db_con4);
+				gPlayerData[playerid][pItem18param] = strval(string);
+				mysql_fetch_field_row(string, "Item19param", db_con4);
+				gPlayerData[playerid][pItem19param] = strval(string);
+				mysql_fetch_field_row(string, "Item20param", db_con4);
+				gPlayerData[playerid][pItem20param] = strval(string);
+				mysql_fetch_field_row(string, "Item21param", db_con4);
+				gPlayerData[playerid][pItem21param] = strval(string);
+				mysql_fetch_field_row(string, "Item22param", db_con4);
+				gPlayerData[playerid][pItem22param] = strval(string);
+				mysql_fetch_field_row(string, "Item23param", db_con4);
+				gPlayerData[playerid][pItem23param] = strval(string);
+				mysql_fetch_field_row(string, "Item24param", db_con4);
+				gPlayerData[playerid][pItem24param] = strval(string);
+				mysql_fetch_field_row(string, "Item25param", db_con4);
+				gPlayerData[playerid][pItem25param] = strval(string);
+				mysql_fetch_field_row(string, "Item11param2", db_con4);
+				gPlayerData[playerid][pItem11param2] = strval(string);
+				mysql_fetch_field_row(string, "Item12param2", db_con4);
+				gPlayerData[playerid][pItem12param2] = strval(string);
+				mysql_fetch_field_row(string, "Item13param2", db_con4);
+				gPlayerData[playerid][pItem13param2] = strval(string);
+				mysql_fetch_field_row(string, "Item14param2", db_con4);
+				gPlayerData[playerid][pItem14param2] = strval(string);
+				mysql_fetch_field_row(string, "Item15param2", db_con4);
+				gPlayerData[playerid][pItem15param2] = strval(string);
+				mysql_fetch_field_row(string, "Item16param2", db_con4);
+				gPlayerData[playerid][pItem16param2] = strval(string);
+				mysql_fetch_field_row(string, "Item17param2", db_con4);
+				gPlayerData[playerid][pItem17param2] = strval(string);
+				mysql_fetch_field_row(string, "Item18param2", db_con4);
+				gPlayerData[playerid][pItem18param2] = strval(string);
+				mysql_fetch_field_row(string, "Item19param2", db_con4);
+				gPlayerData[playerid][pItem19param2] = strval(string);
+				mysql_fetch_field_row(string, "Item20param2", db_con4);
+				gPlayerData[playerid][pItem20param2] = strval(string);
+				mysql_fetch_field_row(string, "Item21param2", db_con4);
+				gPlayerData[playerid][pItem21param2] = strval(string);
+				mysql_fetch_field_row(string, "Item22param2", db_con4);
+				gPlayerData[playerid][pItem22param2] = strval(string);
+				mysql_fetch_field_row(string, "Item23param2", db_con4);
+				gPlayerData[playerid][pItem23param2] = strval(string);
+				mysql_fetch_field_row(string, "Item24param2", db_con4);
+				gPlayerData[playerid][pItem24param2] = strval(string);
+				mysql_fetch_field_row(string, "Item25param2", db_con4);
+				gPlayerData[playerid][pItem25param2] = strval(string);
+				mysql_fetch_field_row(string, "Item11param3", db_con4);
+				gPlayerData[playerid][pItem11param3] = strval(string);
+				mysql_fetch_field_row(string, "Item12param3", db_con4);
+				gPlayerData[playerid][pItem12param3] = strval(string);
+				mysql_fetch_field_row(string, "Item13param3", db_con4);
+				gPlayerData[playerid][pItem13param3] = strval(string);
+				mysql_fetch_field_row(string, "Item14param3", db_con4);
+				gPlayerData[playerid][pItem14param3] = strval(string);
+				mysql_fetch_field_row(string, "Item15param3", db_con4);
+				gPlayerData[playerid][pItem15param3] = strval(string);
+				mysql_fetch_field_row(string, "Item16param3", db_con4);
+				gPlayerData[playerid][pItem16param3] = strval(string);
+				mysql_fetch_field_row(string, "Item17param3", db_con4);
+				gPlayerData[playerid][pItem17param3] = strval(string);
+				mysql_fetch_field_row(string, "Item18param3", db_con4);
+				gPlayerData[playerid][pItem18param3] = strval(string);
+				mysql_fetch_field_row(string, "Item19param3", db_con4);
+				gPlayerData[playerid][pItem19param3] = strval(string);
+				mysql_fetch_field_row(string, "Item20param3", db_con4);
+				gPlayerData[playerid][pItem20param3] = strval(string);
+				mysql_fetch_field_row(string, "Item21param3", db_con4);
+				gPlayerData[playerid][pItem21param3] = strval(string);
+				mysql_fetch_field_row(string, "Item22param3", db_con4);
+				gPlayerData[playerid][pItem22param3] = strval(string);
+				mysql_fetch_field_row(string, "Item23param3", db_con4);
+				gPlayerData[playerid][pItem23param3] = strval(string);
+				mysql_fetch_field_row(string, "Item24param3", db_con4);
+				gPlayerData[playerid][pItem24param3] = strval(string);
+				mysql_fetch_field_row(string, "Item25param3", db_con4);
+				gPlayerData[playerid][pItem25param3] = strval(string);
+				mysql_fetch_field_row(string, "Item11param4", db_con4);
+				gPlayerData[playerid][pItem11param4] = strval(string);
+				mysql_fetch_field_row(string, "Item12param4", db_con4);
+				gPlayerData[playerid][pItem12param4] = strval(string);
+				mysql_fetch_field_row(string, "Item13param4", db_con4);
+				gPlayerData[playerid][pItem13param4] = strval(string);
+				mysql_fetch_field_row(string, "Item14param4", db_con4);
+				gPlayerData[playerid][pItem14param4] = strval(string);
+				mysql_fetch_field_row(string, "Item15param4", db_con4);
+				gPlayerData[playerid][pItem15param4] = strval(string);
+				mysql_fetch_field_row(string, "Item16param4", db_con4);
+				gPlayerData[playerid][pItem16param4] = strval(string);
+				mysql_fetch_field_row(string, "Item17param4", db_con4);
+				gPlayerData[playerid][pItem17param4] = strval(string);
+				mysql_fetch_field_row(string, "Item18param4", db_con4);
+				gPlayerData[playerid][pItem18param4] = strval(string);
+				mysql_fetch_field_row(string, "Item19param4", db_con4);
+				gPlayerData[playerid][pItem19param4] = strval(string);
+				mysql_fetch_field_row(string, "Item20param4", db_con4);
+				gPlayerData[playerid][pItem20param4] = strval(string);
+				mysql_fetch_field_row(string, "Item21param4", db_con4);
+				gPlayerData[playerid][pItem21param4] = strval(string);
+				mysql_fetch_field_row(string, "Item22param4", db_con4);
+				gPlayerData[playerid][pItem22param4] = strval(string);
+				mysql_fetch_field_row(string, "Item23param4", db_con4);
+				gPlayerData[playerid][pItem23param4] = strval(string);
+				mysql_fetch_field_row(string, "Item24param4", db_con4);
+				gPlayerData[playerid][pItem24param4] = strval(string);
+				mysql_fetch_field_row(string, "Item25param4", db_con4);
+				gPlayerData[playerid][pItem25param4] = strval(string);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem11param5], "Item11param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem12param5], "Item12param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem13param5], "Item13param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem14param5], "Item14param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem15param5], "Item15param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem16param5], "Item16param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem17param5], "Item17param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem18param5], "Item18param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem19param5], "Item19param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem20param5], "Item20param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem21param5], "Item21param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem22param5], "Item22param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem23param5], "Item23param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem24param5], "Item24param5", db_con4);
+				mysql_fetch_field_row(gPlayerData[playerid][pItem25param5], "Item25param5", db_con4);
+				mysql_fetch_field_row(string, "Item11param6", db_con4);
+				gPlayerData[playerid][pItem11param6] = strval(string);
+				mysql_fetch_field_row(string, "Item12param6", db_con4);
+				gPlayerData[playerid][pItem12param6] = strval(string);
+				mysql_fetch_field_row(string, "Item13param6", db_con4);
+				gPlayerData[playerid][pItem13param6] = strval(string);
+				mysql_fetch_field_row(string, "Item14param6", db_con4);
+				gPlayerData[playerid][pItem14param6] = strval(string);
+				mysql_fetch_field_row(string, "Item15param6", db_con4);
+				gPlayerData[playerid][pItem15param6] = strval(string);
+				mysql_fetch_field_row(string, "Item16param6", db_con4);
+				gPlayerData[playerid][pItem16param6] = strval(string);
+				mysql_fetch_field_row(string, "Item17param6", db_con4);
+				gPlayerData[playerid][pItem17param6] = strval(string);
+				mysql_fetch_field_row(string, "Item18param6", db_con4);
+				gPlayerData[playerid][pItem18param6] = strval(string);
+				mysql_fetch_field_row(string, "Item19param6", db_con4);
+				gPlayerData[playerid][pItem19param6] = strval(string);
+				mysql_fetch_field_row(string, "Item20param6", db_con4);
+				gPlayerData[playerid][pItem20param6] = strval(string);
+				mysql_fetch_field_row(string, "Item21param6", db_con4);
+				gPlayerData[playerid][pItem21param6] = strval(string);
+				mysql_fetch_field_row(string, "Item22param6", db_con4);
+				gPlayerData[playerid][pItem22param6] = strval(string);
+				mysql_fetch_field_row(string, "Item23param6", db_con4);
+				gPlayerData[playerid][pItem23param6] = strval(string);
+				mysql_fetch_field_row(string, "Item24param6", db_con4);
+				gPlayerData[playerid][pItem24param6] = strval(string);
+				mysql_fetch_field_row(string, "Item25param6", db_con4);
+				gPlayerData[playerid][pItem25param6] = strval(string);
+
+				mysql_free_result(db_con4);
+			}
+			format( string, sizeof(string), "SELECT * FROM `samp_users_jobs` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[playerid][pName] );
+			mysql_query(string, PLAYER_DATA_LOAD_JOB_MYSQL, playerid, db_con4);
+		}
+		case PLAYER_DATA_LOAD_OOCNAME_MYSQL:
+		{
+			if(!mysql_store_result(db_con4))
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_OOCNAME_MYSQL");
+				if( playerid != CUSTOM_MAX_PLAYERS )
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+				return 1;
+			}
+			mysql_fetch_row_format(db_result, "|", db_con4);
+
+			split2(db_result, arrCoords, '|');
+
+			strdel(gPlayerData[playerid][pOOCName], 0, 64);
+			strins(gPlayerData[playerid][pOOCName], arrCoords[0], 0, 64);
+
+			mysql_free_result(db_con4);
+		}
+		case PLAYER_DATA_LOAD_OTHER2_MYSQL:
+		{
+			// printf("[DEBUG:][PLAYER_LOAD_OTHER2_MYSQL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [finalizacja]...");
+			if(!mysql_store_result(db_con4))
+			{
+				ErrorLog("[ERROR:] Can't store result on PLAYER_DATA_LOAD_OTHER2_MYSQL");
+				if(playerid < CUSTOM_MAX_PLAYERS)
+				{
+					SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ b³¹d przy ³adowaniu danych twojego konta. Jeœli problem bêdzie siê powtarza³ skontaktuj siê z administratorem" );
+					return 1;
+				}
+			}
+			if(mysql_num_rows(db_con4) == 0 && playerid < CUSTOM_MAX_PLAYERS)
+			{
+				format(string, sizeof(string), "[ERROR:] Player %s don't have record on PLAYER_DATA_LOAD_OTHER2_MYSQL", gPlayerData[playerid][pName]);
+				ErrorLog(string);
+
+				mysql_free_result(db_con2);
+
+				format(string, sizeof(string), "INSERT INTO `samp_users_other2` (`PlayerName`) VALUES ('%s')", gPlayerData[playerid][pName]);
+				mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+
+				format(string, sizeof(string), "SELECT * FROM `samp_users_other2` WHERE `PlayerName` = '%s' LIMIT 1", gPlayerData[playerid][pName]);
+				mysql_query(string, PLAYER_DATA_LOAD_OTHER2_MYSQL, playerid, db_con4);
+			}
+			else
+			{
+				mysql_fetch_row_format(db_result, "|", db_con4);
+
+				mysql_fetch_field_row(string, "Parts", db_con4);
+				gPlayerData[playerid][pParts] = strval(string);
+				mysql_fetch_field_row(string, "JobTimeChange", db_con4);
+				gPlayerData[playerid][pJobTimeChange] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevPis", db_con4);
+				gPlayerData[playerid][pSkillLevPis] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevSil", db_con4);
+				gPlayerData[playerid][pSkillLevSil] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevDes", db_con4);
+				gPlayerData[playerid][pSkillLevDes] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevSho", db_con4);
+				gPlayerData[playerid][pSkillLevSho] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevSha", db_con4);
+				gPlayerData[playerid][pSkillLevSha] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevSpa", db_con4);
+				gPlayerData[playerid][pSkillLevSpa] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevMic", db_con4);
+				gPlayerData[playerid][pSkillLevMic] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevMp5", db_con4);
+				gPlayerData[playerid][pSkillLevMp5] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevAk", db_con4);
+				gPlayerData[playerid][pSkillLevAk] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevM4", db_con4);
+				gPlayerData[playerid][pSkillLevM4] = strval(string);
+				mysql_fetch_field_row(string, "SkillLevSni", db_con4);
+				gPlayerData[playerid][pSkillLevSni] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsPis", db_con4);
+				gPlayerData[playerid][pSkillPointsPis] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsSil", db_con4);
+				gPlayerData[playerid][pSkillPointsSil] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsDes", db_con4);
+				gPlayerData[playerid][pSkillPointsDes] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsSho", db_con4);
+				gPlayerData[playerid][pSkillPointsSho] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsSha", db_con4);
+				gPlayerData[playerid][pSkillPointsSha] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsSpa", db_con4);
+				gPlayerData[playerid][pSkillPointsSpa] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsMic", db_con4);
+				gPlayerData[playerid][pSkillPointsMic] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsMp5", db_con4);
+				gPlayerData[playerid][pSkillPointsMp5] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsAk", db_con4);
+				gPlayerData[playerid][pSkillPointsAk] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsM4", db_con4);
+				gPlayerData[playerid][pSkillPointsM4] = strval(string);
+				mysql_fetch_field_row(string, "SkillPointsSni", db_con4);
+				gPlayerData[playerid][pSkillPointsSni] = strval(string);
+				mysql_fetch_field_row(string, "Pozwolenie", db_con4);
+				gPlayerData[playerid][pPozwolenie] = strval(string);
+				mysql_fetch_field_row(string, "Ang", db_con4);
+				gPlayerData[playerid][pAng] = strval(string);
+				mysql_fetch_field_row(string, "Wf", db_con4);
+				gPlayerData[playerid][pWf] = strval(string);
+				mysql_fetch_field_row(string, "Mat", db_con4);
+				gPlayerData[playerid][pMat] = strval(string);
+				mysql_fetch_field_row(string, "Pol", db_con4);
+				gPlayerData[playerid][pPol] = strval(string);
+				mysql_fetch_field_row(string, "His", db_con4);
+				gPlayerData[playerid][pHis] = strval(string);
+				mysql_fetch_field_row(string, "Fiz", db_con4);
+				gPlayerData[playerid][pFiz] = strval(string);
+				mysql_fetch_field_row(string, "Bio", db_con4);
+				gPlayerData[playerid][pBio] = strval(string);
+				mysql_fetch_field_row(string, "Doktor", db_con4);
+				gPlayerData[playerid][pDoktor] = strval(string);
+				mysql_fetch_field_row(string, "Magister", db_con4);
+				gPlayerData[playerid][pMagister] = strval(string);
+				mysql_fetch_field_row(string, "Inz", db_con4);
+				gPlayerData[playerid][pInz] = strval(string);
+				mysql_fetch_field_row(string, "Dowod", db_con4);
+				gPlayerData[playerid][pDowod] = strval(string);
+				mysql_fetch_field_row(string, "PktAng", db_con4);
+				gPlayerData[playerid][pPktAng] = strval(string);
+				mysql_fetch_field_row(string, "PktWf", db_con4);
+				gPlayerData[playerid][pPktWf] = strval(string);
+				mysql_fetch_field_row(string, "PktMat", db_con4);
+				gPlayerData[playerid][pPktMat] = strval(string);
+				mysql_fetch_field_row(string, "PktPol", db_con4);
+				gPlayerData[playerid][pPktPol] = strval(string);
+				mysql_fetch_field_row(string, "PktHis", db_con4);
+				gPlayerData[playerid][pPktHis] = strval(string);
+				mysql_fetch_field_row(string, "PktFiz", db_con4);
+				gPlayerData[playerid][pPktFiz] = strval(string);
+				mysql_fetch_field_row(string, "PktBio", db_con4);
+				gPlayerData[playerid][pPktBio] = strval(string);
+				mysql_fetch_field_row(string, "Duty", db_con4);
+				gPlayerData[playerid][pDuty] = strval(string);
+				mysql_fetch_field_row(string, "PartType", db_con4);
+				gPlayerData[playerid][pPartType] = strval(string);
+				mysql_fetch_field_row(string, "PartItem", db_con4);
+				gPlayerData[playerid][pPartItem] = strval(string);
+				mysql_fetch_field_row(string, "MountsLeft", db_con4);
+				gPlayerData[playerid][pMountsLeft] = strval(string);
+				mysql_fetch_field_row(string, "WFOrderedCount", db_con4);
+				gPlayerData[playerid][pWFOrderedCount] = strval(string);
+				mysql_fetch_field_row(string, "SpeedGunOn", db_con4);
+				gPlayerData[playerid][pSpeedGunOn] = strval(string);
+				mysql_fetch_field_row(string, "PWStatus", db_con4);
+				gPlayerData[playerid][pPWStatus] = strval(string);
+				mysql_fetch_field_row(string, "OOCStatus", db_con4);
+				gPlayerData[playerid][pOOCStatus] = strval(string);
+				mysql_fetch_field_row(string, "JoinInfoStatus", db_con4);
+				gPlayerData[playerid][pJoinInfoStatus] = strval(string);
+				mysql_fetch_field_row(string, "LeaveInfoStatus", db_con4);
+				gPlayerData[playerid][pLeaveInfoStatus] = strval(string);
+				mysql_fetch_field_row(string, "TipsStatus", db_con4);
+				gPlayerData[playerid][pTipsStatus] = strval(string);
+				mysql_fetch_field_row(string, "BackgroundSoundStatus", db_con4);
+				gPlayerData[playerid][pBackgroundSoundStatus] = strval(string);
+				mysql_fetch_field_row(string, "IsDeptor", db_con4);
+				gPlayerData[playerid][pIsDeptor] = strval(string);
+				mysql_fetch_field_row(string, "LastLogged", db_con4);
+				gPlayerData[playerid][pLastLogged] = strval(string);
+				mysql_fetch_field_row(string, "QuizWrongAnsweres", db_con4);
+				gPlayerVars[playerid][mQuizWrongAnsweres] = strval(string);
+				mysql_fetch_field_row(string, "CreditValue", db_con4);
+				gPlayerData[playerid][mCreditValue] = strval(string);
+				mysql_fetch_field_row(string, "CreditRepayment", db_con4);
+				gPlayerData[playerid][mCreditRepayment] = strval(string);
+				mysql_fetch_field_row(string, "CreditPayed", db_con4);
+				gPlayerData[playerid][mCreditPayed] = strval(string);
+
+				mysql_free_result(db_con4);
+
 				if(playerid < CUSTOM_MAX_PLAYERS)
 				{
 					GetPlayerIp(playerid, string, sizeof(string));
-					format(string, sizeof(string), "%s sign in with $%d in character cash and $%d in bank cash, IP is %s", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank], string);
+					format(string, sizeof(string), "%s sign in with %d$ in character cash and %d$ in bank cash, IP is %s", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank], string);
 					LogginDataLog(string);
 
+					// Is character set to delete
 					if(gPlayerData[playerid][pSetToDelete])
-					{
 						KickPlayer(playerid,"System","Konto zosta³o przeznaczone do usuniêcia i nie mo¿na siê na nie zalogowaæ");
-					}
 					
+					// Vacation status
 					if(gPlayerData[playerid][pIsOnVacation])
-					{
 						KickPlayer(playerid,"System","Konto posiada aktywny urlop - deaktywuj urlop przed zalogowaniem siê do gry");
-					}
 					
+					// Kick banned player
 					if(gPlayerData[playerid][pBanned])
-					{
 						KickPlayer(playerid,"System","Konto zbanowane");
-					}
 
+					// Kick dead player
 					if(gPlayerData[playerid][pCharacterDeath] == 1)
-					{
 						KickPlayer(playerid,"System","Postaæ martwa");
+
+					// Fill first logged player with default data
+					if( gPlayerData[playerid][pRegistered] == 0 )
+					{
+						gPlayerData[playerid][pCrashX] = gStartSpawnX;
+						gPlayerData[playerid][pCrashY] = gStartSpawnY;
+						gPlayerData[playerid][pCrashZ] = gStartSpawnZ;
+						gPlayerData[playerid][pCash] = gStartMoney;
+						gPlayerData[playerid][pBank] = gStartBank;
+						gPlayerData[playerid][pSkin] = gStartSkin;
+						gPlayerData[playerid][pRegistered] = 1;
+
+						gSavePlayerReady[playerid] = 1; // umo¿liwia zapis w wp_saveplayerdata.inc
+
+						SavePlayerData(playerid, "Skin");
+						SavePlayerData(playerid, "Registered");
+						SetPlayerCash(playerid,gPlayerData[playerid][pCash]);
+						gFirstTime[playerid] = 1;
 					}
 					
 					PosHackCheckTime[playerid] = 5;
+					TogglePlayerControllable(playerid, 0);
 					
-					ClearScreen(playerid);
+					if(!gPlayerData[playerid][pQuiz])
+					{
+						gPlayerVars[playerid][mQuizQuestionNo] = 0;
+						gPlayerVars[playerid][mQuizWrongAnsweres] = 0;
+						ShowPlayerQuiz(playerid);
+					}
+					else
+					{
+						SetPlayerSpawn(playerid);							
+						SpawnPlayer(playerid);						
+						defer UnfreezePlayer[5000](playerid);
+						Alive[playerid] = 1;
+						CheckDelay[playerid] = 2;
+						format(string, sizeof(string), "{DF013A}[WParty SERVER:]{FFFFFF} Witaj ponownie %s", gPlayerData[playerid][pOOCName]);
+						SendClientMessage( playerid, COLOR_GREEN, string);
+					}
 					
-					PreSpawn(playerid);
+					// Show gang war status
+					TextDrawShowForPlayer(playerid, GangWar[playerid]);
+					TextDrawShowForPlayer(playerid, GangWarTime[playerid]);
+
+					// Set player nick color depends on nick
+					if(IsPlayerVip(playerid))
+						SetPlayerColor(playerid, COLOR_PURPLE);
+					else
+						SetPlayerColor(playerid, COLOR_CIVILIAN);
+					
+					// Show player map icons if have map
+					if(PHaveItem(playerid, 1, 105))
+						ShowPlayerMapIcons( playerid, 0);
+
+					// Show player GPS data
+					new slot[MAX_PLAYER_ITEM_SLOT];
+					PHaveItemEx(playerid, 3, 12, slot);
+					for(new i = 0; i < MAX_PLAYER_ITEM_SLOT; i++)
+					{
+						if(slot[i] && SlotParam1(playerid, i+1))
+						{
+							ShowPlayerMapIcons(playerid, 1);
+							break;
+						}
+					}
 					
 					// Show debug data
 					// Eating
-					#if defined DEBUG2
+					#if defined DEBUG
 						EatText[playerid] = TextDrawCreate(10.0, 285.0, " ");
 						TextDrawLetterSize(EatText[playerid], 0.15, 0.9);
 						TextDrawTextSize(EatText[playerid], 190.0, 100.0);
 						TextDrawShowForPlayer(playerid, EatText[playerid]);
 					#endif
 
+					// Set player gui cash
+					SetPlayerCash(playerid,gPlayerData[playerid][pCash]);
+
+					// Set player score
+					SetPlayerScore(playerid, gPlayerData[playerid][pPlayingHours]);
+
+					// Set player weapon skills
+					SetPlayerSkillLevel(playerid, 0, gPlayerData[playerid][pSkillLevPis] * 100);
+					SetPlayerSkillLevel(playerid, 1, gPlayerData[playerid][pSkillLevSil] * 100);
+					SetPlayerSkillLevel(playerid, 2, gPlayerData[playerid][pSkillLevDes] * 100);
+					SetPlayerSkillLevel(playerid, 3, gPlayerData[playerid][pSkillLevSha] * 100);
+					SetPlayerSkillLevel(playerid, 4, gPlayerData[playerid][pSkillLevSho] * 100);
+					SetPlayerSkillLevel(playerid, 5, gPlayerData[playerid][pSkillLevSpa] * 100);
+					SetPlayerSkillLevel(playerid, 6, gPlayerData[playerid][pSkillLevMic] * 100);
+					SetPlayerSkillLevel(playerid, 7, gPlayerData[playerid][pSkillLevMp5] * 100);
+					SetPlayerSkillLevel(playerid, 8, gPlayerData[playerid][pSkillLevAk] * 100);
+					SetPlayerSkillLevel(playerid, 9, gPlayerData[playerid][pSkillLevM4] * 100);
+					SetPlayerSkillLevel(playerid, 10, gPlayerData[playerid][pSkillLevSni] * 100);
+
+					// Set PayDay Message
+					if(gPlayerData[playerid][pPayDayMessage])
+						TextDrawShowForPlayer(playerid, gPayDayText);
+					
+					// Set Hunger Bar
+					if(IsPlayerVip(playerid))
+					{
+						gPlayerData[playerid][pEnergyProgressBarID] = CreateProgressBar(535.0, 130.5, 70.0, 5.5, COLOR_YELLOW, MAX_ENERGY_VIP);
+						gPlayerData[playerid][pHungerProgressBarID] = CreateProgressBar(535.0, 141.5, 70.0, 5.5, COLOR_LIGHTRED, MAX_HUNGER_VIP);
+						gPlayerData[playerid][pThirstProgressBarID] = CreateProgressBar(535.0, 152.5, 70.0, 5.5, COLOR_LIGHTBLUE, MAX_THIRST_VIP);
+						gPlayerData[playerid][pPoisonProgressBarID] = CreateProgressBar(535.0, 163.5, 70.0, 5.5, COLOR_GREEN, MAX_POISON_VIP);
+						gPlayerData[playerid][pFatProgressBarID] = CreateProgressBar(535.0, 174.0, 70.0, 5.5, COLOR_LIGHTYELLOW2, MAX_FAT_VIP);
+						gPlayerData[playerid][pStomachProgressBarID] = CreateProgressBar(535.0, 185.0, 70.0, 5.5, COLOR_PURPLE, MAX_STOMACH_VIP);
+						gPlayerData[playerid][pVitaminsProgressBarID] = CreateProgressBar(535.0, 195.5, 70.0, 5.5, COLOR_ORANGE, MAX_VITAMINS_VIP);
+						gPlayerData[playerid][pDrunkProgressBarID] = CreateProgressBar(535.0, 206.5, 70.0, 5.5, COLOR_LIGHTORANGE, MAX_DRUNK);
+						gPlayerData[playerid][pNarcoticProgressBarID] = CreateProgressBar(535.0, 217.5, 70.0, 5.5, COLOR_WHITE, MAX_NARCOTIC);
+					}
+					else
+					{
+						gPlayerData[playerid][pEnergyProgressBarID] = CreateProgressBar(550.0, 130.5, 55.5, 5.5, COLOR_YELLOW, MAX_ENERGY);
+						gPlayerData[playerid][pHungerProgressBarID] = CreateProgressBar(550.0, 141.5, 55.5, 5.5, COLOR_LIGHTRED, MAX_HUNGER);
+						gPlayerData[playerid][pThirstProgressBarID] = CreateProgressBar(550.0, 152.5, 55.5, 5.5, COLOR_LIGHTBLUE, MAX_THIRST);
+						gPlayerData[playerid][pPoisonProgressBarID] = CreateProgressBar(550.0, 163.5, 55.5, 5.5, COLOR_GREEN, MAX_POISON);
+						gPlayerData[playerid][pFatProgressBarID] = CreateProgressBar(550.0, 174.0, 55.5, 5.5, COLOR_LIGHTYELLOW2, MAX_FAT);
+						gPlayerData[playerid][pStomachProgressBarID] = CreateProgressBar(550.0, 185.0, 55.5, 5.5, COLOR_PURPLE, MAX_STOMACH);
+						gPlayerData[playerid][pVitaminsProgressBarID] = CreateProgressBar(550.0, 195.5, 55.5, 5.5, COLOR_ORANGE, MAX_VITAMINS);
+						gPlayerData[playerid][pDrunkProgressBarID] = CreateProgressBar(550.0, 206.5, 55.5, 5.5, COLOR_LIGHTORANGE, MAX_DRUNK);
+						gPlayerData[playerid][pNarcoticProgressBarID] = CreateProgressBar(550.0, 217.5, 55.5, 5.5, COLOR_WHITE, MAX_NARCOTIC);
+					}
+					SetProgressBarValue(gPlayerData[playerid][pEnergyProgressBarID], gPlayerData[playerid][pEnergy]);
+					UpdateProgressBar(gPlayerData[playerid][pEnergyProgressBarID], playerid);
+					SetProgressBarValue(gPlayerData[playerid][pHungerProgressBarID], gPlayerData[playerid][pHunger]);
+					UpdateProgressBar(gPlayerData[playerid][pHungerProgressBarID], playerid);
+					SetProgressBarValue(gPlayerData[playerid][pThirstProgressBarID], gPlayerData[playerid][pThirst]);
+					UpdateProgressBar(gPlayerData[playerid][pThirstProgressBarID], playerid);
+					SetProgressBarValue(gPlayerData[playerid][pPoisonProgressBarID], gPlayerData[playerid][pPoison]);
+					UpdateProgressBar(gPlayerData[playerid][pPoisonProgressBarID], playerid);
+					SetProgressBarValue(gPlayerData[playerid][pFatProgressBarID], gPlayerData[playerid][pFat]);
+					UpdateProgressBar(gPlayerData[playerid][pFatProgressBarID], playerid);
+					SetProgressBarValue(gPlayerData[playerid][pStomachProgressBarID], gPlayerData[playerid][pStomach]);
+					UpdateProgressBar(gPlayerData[playerid][pStomachProgressBarID], playerid);
+					SetProgressBarValue(gPlayerData[playerid][pVitaminsProgressBarID], gPlayerData[playerid][pVitamins]);
+					UpdateProgressBar(gPlayerData[playerid][pVitaminsProgressBarID], playerid);
+					SetProgressBarValue(gPlayerData[playerid][pDrunkProgressBarID], gPlayerData[playerid][pDrunk]);
+					UpdateProgressBar(gPlayerData[playerid][pDrunkProgressBarID], playerid);
+					SetProgressBarValue(gPlayerData[playerid][pNarcoticProgressBarID], gPlayerData[playerid][pNarcotic]);
+					UpdateProgressBar(gPlayerData[playerid][pNarcoticProgressBarID], playerid);
+					
+					TextDrawHideForPlayer(playerid, gHealthTextEnergy);
+					TextDrawHideForPlayer(playerid, gHealthTextHunger);
+					TextDrawHideForPlayer(playerid, gHealthTextThirst);
+					TextDrawHideForPlayer(playerid, gHealthTextPoison);
+					TextDrawHideForPlayer(playerid, gHealthTextFat);
+					TextDrawHideForPlayer(playerid, gHealthTextStomach);
+					TextDrawHideForPlayer(playerid, gHealthTextVitamins);
+					TextDrawHideForPlayer(playerid, gHealthTextDrunk);
+					TextDrawHideForPlayer(playerid, gHealthTextNarcotics);
+					
+					if(!gPlayerData[playerid][pShowHealthBars])
+					{
+						HideProgressBarForPlayer(playerid, gPlayerData[playerid][pEnergyProgressBarID]);
+						HideProgressBarForPlayer(playerid, gPlayerData[playerid][pHungerProgressBarID]);
+						HideProgressBarForPlayer(playerid, gPlayerData[playerid][pThirstProgressBarID]);
+						HideProgressBarForPlayer(playerid, gPlayerData[playerid][pPoisonProgressBarID]);
+						HideProgressBarForPlayer(playerid, gPlayerData[playerid][pFatProgressBarID]);
+						HideProgressBarForPlayer(playerid, gPlayerData[playerid][pStomachProgressBarID]);
+						HideProgressBarForPlayer(playerid, gPlayerData[playerid][pVitaminsProgressBarID]);
+						HideProgressBarForPlayer(playerid, gPlayerData[playerid][pDrunkProgressBarID]);
+						HideProgressBarForPlayer(playerid, gPlayerData[playerid][pNarcoticProgressBarID]);
+					}
+					else
+					{
+						TextDrawShowForPlayer(playerid, gHealthTextEnergy);
+						TextDrawShowForPlayer(playerid, gHealthTextHunger);
+						TextDrawShowForPlayer(playerid, gHealthTextThirst);
+						TextDrawShowForPlayer(playerid, gHealthTextPoison);
+						TextDrawShowForPlayer(playerid, gHealthTextFat);
+						TextDrawShowForPlayer(playerid, gHealthTextStomach);
+						TextDrawShowForPlayer(playerid, gHealthTextVitamins);
+						TextDrawShowForPlayer(playerid, gHealthTextDrunk);
+						TextDrawShowForPlayer(playerid, gHealthTextNarcotics);
+					}
+					
+					// Show infos
+					// ClearScreen(playerid);
+					format(string, sizeof(string), "{DF013A}[WParty SERVER:]{FFFFFF}[ID: %d][IC: %s] %s do³¹czy³ do gry !", playerid, GetPlayerNameEx(playerid), gPlayerData[playerid][pOOCName]);
+					foreach(Player, i)
+					{
+						if(gPlayerLogged[i] && i != playerid && gPlayerData[i][pJoinInfoStatus])
+							SendClientMessage(i, 0xFFFFFFAA, string);
+					}
+
+					// Show character description
+					Attach3DTextLabelToPlayer(gPlayerData[playerid][pCharDescriptionID], playerid, 0.0, 0.0, 0.5);
+					Update3DTextLabelText(gPlayerData[playerid][pCharDescriptionID], gPlayerData[playerid][pCharDescriptionColor], gPlayerData[playerid][pCharDescription]);
+
+					// Show character name
+					Attach3DTextLabelToPlayer(gPlayerData[playerid][pCharNameID], playerid, 0.0, 0.0, 0.2);
+					format(string, sizeof(string), "%s [%d]", GetPlayerNameEx(playerid), playerid);
+					if(IsPlayerVip(playerid))
+						Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_PURPLE, string);
+					else
+						Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_WHITE, string);
+
+					// Check if player have active bandana
+					PHaveItemEx(playerid, 3, 14, slot);
+					for(new i = 0; i < MAX_PLAYER_ITEM_SLOT; i++)
+					{
+						if(slot[i] && SlotParam1(playerid, i+1))
+						{
+							format(string, sizeof(string), "Twarz za chust¹ [%d]", playerid);
+							if(IsPlayerVip(playerid))
+								Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_PURPLE, string);
+							else
+								Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_WHITE, string);
+							break;
+						}
+					}
+					// Set player dynamic weather
+					if(IsPlayerInDynamicArea(playerid, gArea_MW_SanFierro))
+						SetPlayerRealWeatherEx(playerid, gMW_sanfrancisco);
+					else if(IsPlayerInDynamicArea(playerid, gArea_MW_LasVenturas))
+						SetPlayerRealWeatherEx(playerid, gMW_lasvegas);
+					else if(IsPlayerInDynamicArea(playerid, gArea_MW_LosSantos))
+						SetPlayerRealWeatherEx(playerid, gMW_losangeles);
+					else
+						SetPlayerRealWeatherEx(playerid, gMW_warszawa);
+
+					// Set player status box
+					format(string, sizeof(string), " ");
+					TextDrawSetString(PlayerStatus[playerid], string);
+					TextDrawShowForPlayer(playerid, PlayerStatus[playerid]);
+					TextDrawShowForPlayer(playerid, gPlayerVars[playerid][mSanNewsStatus]);
+
+					// Set login status and enable save
+					gPlayerLogged[playerid] = 1;
+					gPlayerData[playerid][pLoading] = 0;
+					gSavePlayerReady[playerid] = 1;
+
+					// New version changes
+					// if(!gPlayerData[playerid][pNewVersion])
+					// {
+						// strcat(string, "Otrzymujesz t¹ wiadomoœæ poniewa¿ od Twojego ostatniego logowania na serwer zosta³a wgrana nowa wersja skryptu.\n");
+						// strcat(string, "\nZmiany w wersji - 1.15.0 - 1.15.1\n");
+						// strcat(string, "- Stawianie/edycja biznesów/domów zosta³o zablokowane dla urzêdu. (1.15.1)\n");
+						// strcat(string, "- Wezwania na policje/pogotwie wewn¹trz interiorów tworz¹ punkcie wejœcia do interioru. (1.15.1)\n");
+						// strcat(string, "- Gracz mo¿e przejrzeæ ostatnie 5 wezwañ (dot. pogotowia oraz policji) poprzez komende /wezwania. Umo¿liwia to ponowne wyœwietlenie punktu w którym znajduje siê gracz który wykona³ po³¹czenie. (1.15.1)\n");
+						// strcat(string, "- Rozwi¹zano problemy z zapisem w pomniejszych elementach gamemodu. (1.15.1)\n");
+						// strcat(string, "- Ujednolicono zapis pozycji postaci (rozwi¹zuje problem ze spawnem w interiorach). (1.15.1)\n");
+						// strcat(string, "- Wprowadzono mo¿liwoœæ posiadania wielu biznesów. (1.15.0)\n");
+						// strcat(string, "- Dodano statystyki biznesu. (1.15.0)\n");
+						// strcat(string, "- Ulepszono wynajmowanie domów. (1.15.0)\n");
+						// strcat(string, "- Dodano item umo¿liwiaj¹cy zrobienie kopii klucza. (1.15.0)\n");
+						// strcat(string, "- Wprowadzono mo¿liwoœæ zmiany zamka w domach oraz biznesach. (1.15.0)\n");
+						// strcat(string, "- Dodano puste interiory do zaaran¿owania przez gracza. (1.15.0)\n");
+						// strcat(string, "- Poprawiono problemy z BW. (1.15.0)\n");
+						// ShowPlayerDialog(playerid, DIALOG_NEW_VERSION, DIALOG_STYLE_MSGBOX, "Nowa aktualizacja !", string, "Zamknij", "");
+					// }
+					if(gPlayerData[playerid][pVipItem] > 0 && gPlayerData[playerid][pVipItem] <= 5)
+					{
+						if(gPlayerData[playerid][pVipItem] == 1)
+							format(string, sizeof(string), "Do koñca us³ugi premium VIP Item pozosta³ ju¿ tylko 1 dzieñ !");
+						else
+							format(string, sizeof(string), "Do koñca us³ugi premium VIP Item pozosta³o ju¿ tylko %d dni !", gPlayerData[playerid][pVipItem]);
+						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
+					}
+					else if(gPlayerData[playerid][pVipExpT] > 0 && gPlayerData[playerid][pVipExpT] <= 5)
+					{
+						if(gPlayerData[playerid][pVipExpT] == 1)
+							format(string, sizeof(string), "Do koñca us³ugi premium VIP pozosta³o ju¿ tylko 1 dzieñ !");
+						else
+							format(string, sizeof(string), "Do koñca us³ugi premium VIP pozosta³o ju¿ tylko %d dni !", gPlayerData[playerid][pVipExpT]);
+						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
+					}
+
+					gPlayerData[playerid][pLastLogged] = 0;
+					SavePlayerData(playerid, "LastLogged");
+
 					return 1;
 				}
 				else
 				{
-					format(string, sizeof(string), "[PAYDAY:] Player %s start in character cash: $%d, in bank cash: $%d", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank]);
+					format(string, sizeof(string), "[PAYDAY:] Player %s start in character cash: %d$, in bank cash: %d$", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank]);
 					PayDayLog(string);
-					
-					if(gPlayerData[playerid][pIsLogged])
-					{
-						format(string, sizeof(string), "[PAYDAY:] Player is already logged during payday");
-						PayDayLog(string);
-					}
-					
 					if(gPlayerData[playerid][pIsOnVacation] > 0)
 					{
 						gPlayerData[playerid][pIsOnVacation]++;
 						SavePlayerData(playerid, "IsOnVacation");
 					}
-					
-					if(gPlayerData[playerid][pSchoolCooldown] > 0)
-					{
-						gPlayerData[playerid][pSchoolCooldown] = 0;
-						SavePlayerData(playerid, "SchoolCooldown");
-					}
-					
 					if((gPlayerData[playerid][pPlayingHours] <= 50 && gPlayerData[playerid][pLastLogged] >= 10) ||
 						(gPlayerData[playerid][pPlayingHours] > 50 && gPlayerData[playerid][pLastLogged] >= 20) ||
-						//strlen(gPlayerData[playerid][pName]) <= 3 || gPlayerData[playerid][pAdmin] > 0 || gPlayerData[playerid][pSetToDelete] || gPlayerData[playerid][pIsOnVacation] > 0)
-						strlen(gPlayerData[playerid][pName]) <= 3 || gPlayerData[playerid][pAdmin] > 4 || gPlayerData[playerid][pSetToDelete] || gPlayerData[playerid][pIsOnVacation] > 0)
+						strlen(gPlayerData[playerid][pName]) <= 3 || gPlayerData[playerid][pAdmin] > 0 || gPlayerData[playerid][pSetToDelete] || gPlayerData[playerid][pIsOnVacation] > 0)
 					{
 						gPlayerData[playerid][pLastLogged]++;
 						SavePlayerData(playerid, "LastLogged");
-						
-						gPlayerData[playerid][pSchoolCooldown] = 0;
-						SavePlayerData(playerid, "SchoolCooldown");
-						
 						format(string, sizeof(string), "[PAYDAY:] Player name = %s - payday is off (not logged for %d day(s)), is administrator or is set to delete", gPlayerData[playerid][pName], gPlayerData[playerid][pLastLogged] );
 						PayDayLog(string);
 
@@ -2333,29 +1947,29 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 							strfind(gPlayerData[playerid][pName], "_", true) == -1 || strfind(gPlayerData[playerid][pName], "[", true) > 0 || strfind(gPlayerData[playerid][pName], "]", true) > 0) || gPlayerData[playerid][pSetToDelete] || gPlayerData[playerid][pIsOnVacation] > 90)
 						{
 							format(string, sizeof(string), "DELETE FROM `samp_users` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_items` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_items2` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_items3` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_jobs` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_keys` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_lic` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_notes` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_vip` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_other` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_other2` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							format(string, sizeof(string), "DELETE FROM `samp_users_fueled` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-							wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+							mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 							for(new i = 0; i < sizeof(gVehData); i++)
 							{
 								if(strcmp(gVehData[i][Owner], gPlayerData[playerid][pName], true, strlen(gPlayerData[playerid][pName])) == 0)
@@ -2369,7 +1983,7 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 							for(new i = 0; i < sizeof(Businesses); i++)
 							{
 								if(strcmp(Businesses[i][Owner], gPlayerData[playerid][pName], true, strlen(gPlayerData[playerid][pName])) == 0)
-									ResetBizData(i);
+									ResetBizData(i, 1);
 							}
 							format(string, sizeof(string), "[PAYDAY:] Player name = %s - account removed", gPlayerData[playerid][pName], gPlayerData[playerid][pLastLogged]);
 							PayDayLog(string);
@@ -2379,55 +1993,24 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 						* Select next player in DB
 						*/
 						gPayDayLoop++;
-						
+						gPayDayID++;
 						format(string, sizeof(string), "[PAYDAY:] gPayDayLoop = %d, gPayDayCount = %d", gPayDayLoop, gPayDayCount );
 						PayDayLog(string);
-						
 						if(gPayDayLoop <= gPayDayCount)
 						{
-							format(string, sizeof(string), "SELECT");
-							strcat(string, " `samp_users`.*");
-							strcat(string, ", `samp_users_items`.*");
-							strcat(string, ", `samp_users_items2`.*");
-							strcat(string, ", `samp_users_items3`.*");
-							strcat(string, ", `samp_users_jobs`.*");
-							strcat(string, ", `samp_users_lic`.*");
-							strcat(string, ", `samp_users_notes`.*");
-							strcat(string, ", `samp_users_other`.*");
-							strcat(string, ", `samp_users_other2`.*");
-							strcat(string, ", `samp_users_vip`.*");
-							strcat(string, " FROM `samp_users`");
-							strcat(string, " JOIN `samp_users_items` ON `samp_users_items`.PlayerName = `samp_users`.PlayerName");
-							strcat(string, " JOIN `samp_users_items2` ON `samp_users_items2`.PlayerName = `samp_users`.PlayerName");
-							strcat(string, " JOIN `samp_users_items3` ON `samp_users_items3`.PlayerName = `samp_users`.PlayerName");
-							strcat(string, " JOIN `samp_users_jobs` ON `samp_users_jobs`.PlayerName = `samp_users`.PlayerName");
-							strcat(string, " JOIN `samp_users_lic` ON `samp_users_lic`.PlayerName = `samp_users`.PlayerName");
-							strcat(string, " JOIN `samp_users_notes` ON `samp_users_notes`.PlayerName = `samp_users`.PlayerName");
-							strcat(string, " JOIN `samp_users_other` ON `samp_users_other`.PlayerName = `samp_users`.PlayerName");
-							strcat(string, " JOIN `samp_users_other2` ON `samp_users_other2`.PlayerName = `samp_users`.PlayerName");
-							strcat(string, " JOIN `samp_users_vip` ON `samp_users_vip`.PlayerName = `samp_users`.PlayerName");
-							format(string, sizeof(string), "%s WHERE `samp_users`.Banned = '0' LIMIT %d , 1", string, gPayDayLoop);
+							format(string, sizeof(string), "SELECT `Key`,`ID`,`PlayerName`,`Level`,`AdminLevel`,`DonateRank`,`Registered`,`Sex`,`Age`,`Experience`,`Money`,`Bank`,`Skin`,`PlayingHours`,`AllowedPayday`,`PayCheck`,`Faction`,`Rank`,`Banned`");
+							strcat( string, ",`Warnings`,`Jailed`,`JailTime`,`CrashX`,`CrashY`,`CrashZ`,`CrashInt`,`CrashW`,`Crashed`,`Wins`,`Loses`,`InvWeapon`,`InvAmmo`,`Tutorial`,`Moderator`,`WantedLvl`,`FirstCar`,`FirstReanimation`,`FirstPhone`,`FirstLeader`" );
+							strcat( string, ",`CrashAngle`,`HourAssist`,`JoinedFaction`,`HoursOnDuty`,`HoursOnDutyHelper`,`WarnCooldown`,`SpeedLimiter`,`AdminDuty`,`CharDescription`,`CharDescriptionColor`, `FirstJob`, `FirstID`, `FirstBuy`, `FirstHouse`, `FirstDescription`" );
+							strcat( string, ", `FirstAction`, `FirstBankUse`, `FirstStats`, `FirstJail`, `FirstStudy`" );
+							format( string, sizeof(string), "%s FROM `samp_users` WHERE `Banned` = '0' LIMIT %d , 1", string, gPayDayLoop);
+							mysql_query(string, PLAYER_DATA_LOAD_NAME_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
 						}
-						
 						return 1;
 					}
 
 					/*
-					* Remove from public faction if not present for 5 days
-					*/
-					if(gPlayerData[playerid][pLastLogged] >= 5 && gPlayerData[playerid][pRank] == 1 && gPlayerData[playerid][pFaction] >= 0 && gPlayerData[playerid][pFaction] < 9 && gPlayerData[playerid][pFaction] != 6 && gPlayerData[playerid][pFaction] != 7 && gPlayerData[playerid][pFaction] != 8)
-					{
-						// TODO: dopisac tutaj czyszczenie frakcje
-						gPlayerData[playerid][pFaction] = 255;
-						gPlayerData[playerid][pRank] = 9;
-						SavePlayerData(playerid, "Faction");
-						SavePlayerData(playerid, "Rank");
-					}
-					
-					/*
 					* Set bank status befor PayDay for PayDay Message
 					*/
-					
 					gPlayerData[CUSTOM_MAX_PLAYERS][pPayDayMessage] = 1;
 					gPlayerData[CUSTOM_MAX_PLAYERS][pBankOld] = gPlayerData[CUSTOM_MAX_PLAYERS][pBank];
 					gPlayerData[CUSTOM_MAX_PLAYERS][pBankIncome] = 0;
@@ -2438,46 +2021,31 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					/*
 					* Reduce drive licence days
 					*/
-					
 					new slot[MAX_PLAYER_ITEM_SLOT];
-					PHaveItemEx(playerid, 3, 6, slot);
-					
+					PHaveItemEx(playerid, 3, 4, slot);
 					for(new i = 0; i < MAX_PLAYER_ITEM_SLOT; i++)
 					{
 						if(slot[i])
 						{
 							if(SlotParam1(playerid, i+1) > 0)
-							{
 								SetPSlotParam1(playerid, i+1, SlotParam1(playerid, i+1)-1);
-							}
-							
 							if(SlotParam2(playerid, i+1) > 0)
-							{
-								SetPSlotParam2(playerid, i+1, SlotParam2(playerid, i+1)-1);
-							}
-							
+								SetPSlotParam1(playerid, i+1, SlotParam2(playerid, i+1)-1);
 							if(SlotParam3(playerid, i+1) > 0)
-							{
-								SetPSlotParam3(playerid, i+1, SlotParam3(playerid, i+1)-1);
-							}
+								SetPSlotParam1(playerid, i+1, SlotParam3(playerid, i+1)-1);
 						}
 					}
 					
 					/*
 					* Credit repayment
 					*/
-					if(gPlayerData[playerid][mCreditValue] > 0 && gPlayerData[playerid][pAdmin] != 5)
+					if(gPlayerData[playerid][mCreditValue] > 0)
 					{
-						format(string, sizeof(string), "[PAYDAY:] Player name = %s, credit repayment, Bank = $%d - $%d",
-							gPlayerData[playerid][pName], gPlayerData[playerid][pBank], gPlayerData[playerid][mCreditRepayment]);
-						PayDayLog(string);
-						
 						gPlayerData[playerid][pBank] -= gPlayerData[playerid][mCreditRepayment];
 						gPlayerData[playerid][mCreditPayed] += gPlayerData[playerid][mCreditRepayment];						
 						gPlayerData[playerid][pBankLoose] += gPlayerData[playerid][mCreditRepayment];
-						
 						DynamicFactions[FACTIONID_GOVERNMENT][fBank] += gPlayerData[playerid][mCreditRepayment];
-						
+						SaveFData(FACTIONID_GOVERNMENT, "Bank");
 						if(gPlayerData[playerid][mCreditPayed] >= gPlayerData[playerid][mCreditValue])
 						{
 							gPlayerData[playerid][mCreditRepayment] = 0;
@@ -2486,14 +2054,12 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 							SavePlayerData(playerid, "CreditRepayment");
 							SavePlayerData(playerid, "CreditValue");
 						}
-					
 						SavePlayerData(playerid, "CreditPayed");
 					}
 					
 					/*
 					* Pay for OC/AC
 					*/
-					// TODO: WA¯NE ! UWZGLÊDNIÆ WSZYSTKIE SLOTY WSZEDZIE !
 					PHaveItemEx(playerid, 3, 19, slot);
 					for(new i = 1; i <= MAX_PLAYER_ITEM_SLOT; i++)
 					{
@@ -2501,24 +2067,14 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 						{
 							if(SlotParam3(playerid, i) > 0)
 							{
-								format(string, sizeof(string), "[PAYDAY:] Player name = %s, OC pay, Bank = $%d - $%d",
-									gPlayerData[playerid][pName], gPlayerData[playerid][pBank], 4);
-								PayDayLog(string);
-								
 								gPlayerData[playerid][pBank] -= 4;
 								gPlayerData[CUSTOM_MAX_PLAYERS][pBankLoose] += 4;
-								
 								DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 4;
 							}
 							if(SlotParam4(playerid, i) > 0)
 							{
-								format(string, sizeof(string), "[PAYDAY:] Player name = %s, AC pay, Bank = $%d - $%d",
-									gPlayerData[playerid][pName], gPlayerData[playerid][pBank], 6);
-								PayDayLog(string);
-								
 								gPlayerData[playerid][pBank] -= 6;
 								gPlayerData[CUSTOM_MAX_PLAYERS][pBankLoose] += 6;
-								
 								DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 6;
 							}
 						}
@@ -2538,243 +2094,98 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 									case 1:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 1, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank1], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank1]);
-										
+											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
 										gPlayerData[playerid][pBank] += PayRank[n][Rank1];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank1];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank1];
 									}
 									case 2:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 2, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
 											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
-										
 										gPlayerData[playerid][pBank] += PayRank[n][Rank2];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank2];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank2];
 									}
 									case 3:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 3, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank3], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank3]);
-										
+											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
 										gPlayerData[playerid][pBank] += PayRank[n][Rank3];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank3];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank3];
 									}
 									case 4:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 4, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank4], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank4]);
-										
+											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
 										gPlayerData[playerid][pBank] += PayRank[n][Rank4];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank4];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank4];
 									}
 									case 5:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 5, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank5], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank5]);
-										
+											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
 										gPlayerData[playerid][pBank] += PayRank[n][Rank5];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank5];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank5];
 									}
 									case 6:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 6, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank6], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank6]);
-										
+											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
 										gPlayerData[playerid][pBank] += PayRank[n][Rank6];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank6];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank6];
 									}
 									case 7:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 7, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank7], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank7]);
-										
+											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
 										gPlayerData[playerid][pBank] += PayRank[n][Rank7];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank7];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank7];
 									}
 									case 8:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 8, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank8], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank8]);
-										
+											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
 										gPlayerData[playerid][pBank] += PayRank[n][Rank8];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank8];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank8];
 									}
 									case 9:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 9, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank9], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank9]);
-										
+											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
 										gPlayerData[playerid][pBank] += PayRank[n][Rank9];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank9];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank9];
 									}
 									case 10:
 									{
 										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 10, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank10], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank10]);
-										
+											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
 										gPlayerData[playerid][pBank] += PayRank[n][Rank10];
 										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank10];
-										
 										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank10];
 									}
 								}
-								
 								PayDayLog(string);
-								SaveFData(gPlayerData[playerid][pFaction], "Bank");
-								
+								SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 								break;
 							}
 						}
 					}
-					
-					/*
-					* Give player faction payment and other payment
-					*/
-					if(gPlayerData[CUSTOM_MAX_PLAYERS][pFaction2] != 255 && gPlayerData[playerid][pLastLogged] == 0)
-					{
-						for(new n = 0; n < sizeof(DynamicFactions); n++)
-						{
-							if(PayRank[n][FactionID] == gPlayerData[CUSTOM_MAX_PLAYERS][pFaction2])
-							{
-								switch(gPlayerData[playerid][pRank2])
-								{
-									case 1:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 1, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank1], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank1]);
-									
-										gPlayerData[playerid][pBank] += PayRank[n][Rank1];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank1];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank1];
-									}
-									case 2:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 2, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank2]);
-										
-										gPlayerData[playerid][pBank] += PayRank[n][Rank2];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank2];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank2];
-									}
-									case 3:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 3, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank3], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank3]);
-										
-										gPlayerData[playerid][pBank] += PayRank[n][Rank3];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank3];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank3];
-									}
-									case 4:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 4, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank4], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank4]);
-										
-										gPlayerData[playerid][pBank] += PayRank[n][Rank4];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank4];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank4];
-									}
-									case 5:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 5, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank5], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank5]);
-										
-										gPlayerData[playerid][pBank] += PayRank[n][Rank5];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank5];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank5];
-									}
-									case 6:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 6, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank6], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank6]);
-										
-										gPlayerData[playerid][pBank] += PayRank[n][Rank6];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank6];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank6];
-									}
-									case 7:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 7, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank7], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank7]);
-										
-										gPlayerData[playerid][pBank] += PayRank[n][Rank7];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank7];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank7];
-									}
-									case 8:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 8, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank8], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank8]);
-										
-										gPlayerData[playerid][pBank] += PayRank[n][Rank8];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank8];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank8];
-									}
-									case 9:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 9, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank9], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank9]);
-										
-										gPlayerData[playerid][pBank] += PayRank[n][Rank9];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank9];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank9];
-									}
-									case 10:
-									{
-										format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 10, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-											gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank10], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank10]);
-										
-										gPlayerData[playerid][pBank] += PayRank[n][Rank10];
-										gPlayerData[playerid][pBankIncome] += PayRank[n][Rank10];
-										
-										DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank10];
-									}
-								}
-								
-								PayDayLog(string);
-								SaveFData( gPlayerData[playerid][pFaction2], "Bank" );
-								
-								break;
-							}
-						}
-					}
-					
-					if(gPlayerData[playerid][pJob] == 0 && gPlayerData[playerid][pFaction] == 255)
+					if( gPlayerData[playerid][pJob] == 0 && gPlayerData[playerid][pFaction] == 255 )
 					{
 						format(string, sizeof(string), "[PAYDAY:] Player name = %s, Bank = %d + %d", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], Zasilek);
 						PayDayLog(string);
-						
 						gPlayerData[playerid][pBank] += Zasilek;
 						gPlayerData[playerid][pBankIncome] += Zasilek;
-						
 						DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= Zasilek;
+						SaveFData( FACTIONID_GOVERNMENT, "Bank" );
 					}
 
 					/*
@@ -2782,50 +2193,34 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					*/
 					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = Radio tax", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], DynamicTaxes[RadioTax]);
 					PayDayLog(string);
-					
 					gPlayerData[playerid][pBank] -= DynamicTaxes[RadioTax];
 					gPlayerData[playerid][pBankLoose] += DynamicTaxes[RadioTax];
-					
 					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += DynamicTaxes[RadioTax];
-					
-					if((gPlayerData[playerid][pCash] + gPlayerData[playerid][pBank]) >= DynamicTaxes[TheRich])
+					if( ( gPlayerData[playerid][pCash] + gPlayerData[playerid][pBank] ) >= DynamicTaxes[TheRich] )
 					{
-						format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = taxes (the rich)", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], floatround(DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round));
+						format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = taxes (the rich)", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], floatround( DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round));
 						PayDayLog(string);
-						
-						gPlayerData[playerid][pBank] -= floatround(DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round);
-						gPlayerData[playerid][pBankLoose] += floatround(DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round);
-						
-						DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round);
+						gPlayerData[playerid][pBank] -= floatround( DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round);
+						gPlayerData[playerid][pBankLoose] += floatround( DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round);
+						DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround( DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round);
 					}
-					
-					if(gPlayerData[playerid][pCost] > 0)
+					if( gPlayerData[playerid][pCost] > 0 )
 					{
-						format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = costs",
-							gPlayerData[playerid][pName], gPlayerData[playerid][pBank], gPlayerData[playerid][pCost]);
+						format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = costs", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], gPlayerData[playerid][pCost]);
 						PayDayLog(string);
-						
 						gPlayerData[playerid][pBank] -= gPlayerData[playerid][pCost];
 						gPlayerData[playerid][pBankLoose] += gPlayerData[playerid][pCost];						
-						
-						DynamicFactions[FACTIONID_GOVERNMENT][fBank] += gPlayerData[playerid][pCost];
-						
 						gPlayerData[playerid][pCost] = 0;
-						SavePlayerData(playerid, "Cost");
+						SavePlayerData( playerid, "Cost" );
 					}
-					
-					if(gPlayerData[playerid][pTicket] > 0)
+					if( gPlayerData[playerid][pTicket] > 0 )
 					{
-						format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = ticket",
-							gPlayerData[playerid][pName], gPlayerData[playerid][pBank], gPlayerData[playerid][pTicket]);
+						format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = ticket", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], gPlayerData[playerid][pTicket]);
 						PayDayLog(string);
-						
 						gPlayerData[playerid][pBank] -= gPlayerData[playerid][pTicket];
 						gPlayerData[playerid][pBankLoose] += gPlayerData[playerid][pTicket];
-						
 						DynamicFactions[FACTIONID_POLICE][fBank] += gPlayerData[playerid][pTicket];
-						SaveFData(FACTIONID_POLICE, "Bank");
-						
+						SaveFData( FACTIONID_POLICE, "Bank" );
 						gPlayerData[playerid][pTicket] = 0;
 						SavePlayerData( playerid, "Ticket" );
 					}
@@ -2836,23 +2231,18 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 						{
 							if(gPlayerData[playerid][pBank] < 0)
 							{
-								format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, House rent deleted, House ID: %d",
-									gPlayerData[playerid][pName], i);
-								PayDayLog(string);
-								
 								strmid(Houses[i][HRenter], "Brak", 0, MAX_PLAYER_NAME, 255);
 								SaveHouseData(i, "Renter");
+								format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, House rent deleted, House ID: %d", gPlayerData[playerid][pName], i);
+								PayDayLog(string);
 							}
 							else
 							{
-								format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = house rent, House ID: %d", 
-									gPlayerData[playerid][pName], gPlayerData[playerid][pBank], Houses[i][RentCost], i);
-								PayDayLog(string);
-								
 								gPlayerData[playerid][pBank] -= Houses[i][RentCost];
 								gPlayerData[playerid][pBankLoose] += Houses[i][RentCost];
-								
 								UpdatePlayerDataByName(Houses[i][Owner], "Bank", Houses[i][RentCost]);
+								format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = house rent, House ID: %d", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], Houses[i][RentCost], i);
+								PayDayLog(string);
 							}
 						}
 					}
@@ -2860,35 +2250,30 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					/*
 					* Is player on debt ?
 					*/
-					if(gPlayerData[playerid][pBank] < -5000)
+					if( gPlayerData[playerid][pBank] < -5000 )
 					{
 						gPlayerData[playerid][pIsDeptor] = 1;
 						SavePlayerData(playerid,"IsDeptor");
-						
 						for(new i = 0; i < sizeof(Houses); i++)
 						{
 							if( strcmp(Houses[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(Houses[i][Owner]) > 0 )
 							{
 								format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, House ID: %d, confiscated", gPlayerData[playerid][pName], i);
 								PayDayLog(string);
-								
 								Houses[i][HConfiscated] = 1;
 								SaveHouseData(i, "Confiscated");
 							}
 						}
-						
 						for(new i = 0; i < sizeof(Businesses); i++)
 						{
 							if( strcmp(Businesses[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(Businesses[i][Owner]) > 0 )
 							{
 								format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Biz ID: %d, confiscated", gPlayerData[playerid][pName], i);
 								PayDayLog(string);
-								
 								Businesses[i][BConfiscated] = 1;
 								SaveBizData(i, "Confiscated");
 							}
 						}
-						
 						for(new i = 0; i < sizeof(gVehData); i++)
 						{
 							if( strcmp(gVehData[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(gVehData[i][Owner]) > 0 )
@@ -2901,8 +2286,8 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 								SetVehicleParamsEx(i+1,enginedyn,lights,alarm,1,bonnet,boot,objective);
 
 								gVehData[i][Closed] = 1;
-								gVehData[i][VConfiscated] = 1;
 								SaveVehData(i, "Closed");
+								gVehData[i][VConfiscated] = 1;
 								SaveVehData(i, "Confiscated");
 							}
 						}
@@ -2911,7 +2296,6 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					{
 						gPlayerData[playerid][pIsDeptor] = 0;
 						SavePlayerData(playerid,"IsDeptor");
-						
 						for(new i = 0; i < sizeof(Houses); i++)
 						{
 							if( strcmp(Houses[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(Houses[i][Owner]) > 0 )
@@ -2923,7 +2307,6 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 								SaveHouseData(i, "Confiscated");
 							}
 						}
-						
 						for(new i = 0; i < sizeof(Businesses); i++)
 						{
 							if( strcmp(Businesses[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(Businesses[i][Owner]) > 0 )
@@ -2935,10 +2318,9 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 								SaveBizData(i, "Confiscated");
 							}
 						}
-						
 						for(new i = 0; i < sizeof(gVehData); i++)
 						{
-							if(strcmp(gVehData[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(gVehData[i][Owner]) > 0)
+							if( strcmp(gVehData[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(gVehData[i][Owner]) > 0 )
 							{
 								format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Veh ID: %d, deconfiscated", gPlayerData[playerid][pName], i);
 								PayDayLog(string);
@@ -2948,8 +2330,8 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 								SetVehicleParamsEx(i+1,enginedyn,lights,alarm,0,bonnet,boot,objective);
 
 								gVehData[i][Closed] = 0;
-								gVehData[i][VConfiscated] = 0;
 								SaveVehData(i, "Closed");
+								gVehData[i][VConfiscated] = 0;
 								SaveVehData(i, "Confiscated");
 							}
 						}
@@ -2958,35 +2340,26 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					/*
 					* Calculate and update player RP score
 					*/
-					gPlayerData[playerid][pScore] = (gPlayerData[playerid][pRPCount] * 2);
+					gPlayerData[playerid][pScore] = ( gPlayerData[playerid][pRPCount] * 2 ) - ( gPlayerData[playerid][pDeathCount] * 100 ) /*+ floatround( (gPlayerData[playerid][pHoursOnDuty]/5), floatround_round )*/;
 					SavePlayerData(playerid, "Score");
 
 					/*
 					* VIP reduce
 					*/
-					if(gVipReduceOn)
+					if( gVipReduceOn )
 					{
 						if(gPlayerData[playerid][pVipAFKT] > 0)
 						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, VipAFKT: %d -1", gPlayerData[playerid][pName], gPlayerData[playerid][pVipAFKT]);
-							PayDayLog(string);
-							
 							gPlayerData[playerid][pVipAFKT]--;
 							SavePlayerData(playerid, "VipAFKT");
 						}
 						if(gPlayerData[playerid][pVipExpT] > 0)
 						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, VipExpT: %d -1", gPlayerData[playerid][pName], gPlayerData[playerid][pVipExpT]);
-							PayDayLog(string);
-							
 							gPlayerData[playerid][pVipExpT]--;
 							SavePlayerData(playerid, "VipExpT");
 						}
 						if(gPlayerData[playerid][pVipItem] > 0)
 						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, VipItem: %d -1", gPlayerData[playerid][pName], gPlayerData[playerid][pVipItem]);
-							PayDayLog(string);
-								
 							gPlayerData[playerid][pVipItem]--;
 							SavePlayerData(playerid, "VipItem");
 						}
@@ -3000,9 +2373,8 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 						if(gPlayerData[playerid][pWarnCooldown] <= 0)
 						{
 							gPlayerData[playerid][pWarnings]--;
-							gPlayerData[playerid][pWarnCooldown] = WARN_COOLDOWN;
 							SavePlayerData(playerid, "Warnings");
-							SavePlayerData(playerid, "WarnCooldown");
+							gPlayerData[playerid][pWarnCooldown] = WARN_COOLDOWN;
 						}
 						else
 						{
@@ -3010,7 +2382,6 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 							SavePlayerData(playerid, "WarnCooldown");
 						}
 					}
-					
 					gPlayerData[playerid][pLastLogged]++;
 					gPlayerData[playerid][pBankNew] = gPlayerData[playerid][pBank];
 					SavePlayerData(playerid, "LastLogged");
@@ -3019,969 +2390,79 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					SavePlayerData(playerid, "BankLoose");
 					SavePlayerData(playerid, "BankNew");
 
-					format(string, sizeof(string), "[PAYDAY:] Player %s end in character cash: $%d, in bank cash: $%d", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank]);
+					// if( gPlayerData[playerid][pJobTimeChange] > 0 )
+					// {
+						// gPlayerData[playerid][pJobTimeChange]--;
+						// SavePlayerData( playerid, "JobTimeChange" );
+					// }
+
+					format(string, sizeof(string), "[PAYDAY:] Player %s end in character cash: %d$, in bank cash: %d$", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank]);
 					PayDayLog(string);
 
-					SaveFData(FACTIONID_GOVERNMENT, "Bank");
-
-					/*
-					* Select next player in DB
-					*/
-					gPayDayLoop++;
-					format(string, sizeof(string), "[PAYDAY:] gPayDayLoop = %d, gPayDayCount = %d", gPayDayLoop, gPayDayCount);
-					PayDayLog(string);
-					if(gPayDayLoop <= gPayDayCount)
-					{
-						format(string, sizeof(string), "SELECT");
-						strcat(string, " `samp_users`.*");
-						strcat(string, ", `samp_users_items`.*");
-						strcat(string, ", `samp_users_items2`.*");
-						strcat(string, ", `samp_users_items3`.*");
-						strcat(string, ", `samp_users_jobs`.*");
-						strcat(string, ", `samp_users_lic`.*");
-						strcat(string, ", `samp_users_notes`.*");
-						strcat(string, ", `samp_users_other`.*");
-						strcat(string, ", `samp_users_other2`.*");
-						strcat(string, ", `samp_users_vip`.*");
-						strcat(string, " FROM `samp_users`");
-						strcat(string, " JOIN `samp_users_items` ON `samp_users_items`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_items2` ON `samp_users_items2`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_items3` ON `samp_users_items3`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_jobs` ON `samp_users_jobs`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_lic` ON `samp_users_lic`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_notes` ON `samp_users_notes`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_other` ON `samp_users_other`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_other2` ON `samp_users_other2`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_vip` ON `samp_users_vip`.PlayerName = `samp_users`.PlayerName");
-						format(string, sizeof(string), "%s WHERE `samp_users`.Banned = '0' LIMIT %d , 1", string, gPayDayLoop);
-					}
-				}
-				
-				return 1;
-			}
-		}
-		case CHECK_ACCOUNT_STATUS_PAYDAY:
-		{
-			mysql_store_result(db_con2);
-			
-			if(mysql_num_rows(db_con2) != 0)
-			{
-				KickPlayer(playerid, "System", "Twoje konto na forum zosta³o zbanowane");
-				
-				return 1;
-			}
-			else
-			{
-				format(string, sizeof(string), "[PAYDAY:] Player %s start in character cash: $%d, in bank cash: $%d", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank]);
-				PayDayLog(string);
-				
-				if(gPlayerData[playerid][pIsLogged])
-				{
-					format(string, sizeof(string), "[PAYDAY:] Player is already logged during payday");
-					PayDayLog(string);
-				}
-				
-				if(gPlayerData[playerid][pIsOnVacation] > 0)
-				{
-					gPlayerData[playerid][pIsOnVacation]++;
-					SavePlayerData(playerid, "IsOnVacation");
-				}
-				
-				if(gPlayerData[playerid][pSchoolCooldown] > 0)
-				{
-					gPlayerData[playerid][pSchoolCooldown] = 0;
-					SavePlayerData(playerid, "SchoolCooldown");
-				}
-				
-				if((gPlayerData[playerid][pPlayingHours] <= 50 && gPlayerData[playerid][pLastLogged] >= 10) ||
-					(gPlayerData[playerid][pPlayingHours] > 50 && gPlayerData[playerid][pLastLogged] >= 20) ||
-					//strlen(gPlayerData[playerid][pName]) <= 3 || gPlayerData[playerid][pAdmin] > 0 || gPlayerData[playerid][pSetToDelete] || gPlayerData[playerid][pIsOnVacation] > 0)
-					strlen(gPlayerData[playerid][pName]) <= 3 || gPlayerData[playerid][pAdmin] > 4 || gPlayerData[playerid][pSetToDelete] || gPlayerData[playerid][pIsOnVacation] > 0)
-				{
-					gPlayerData[playerid][pLastLogged]++;
-					SavePlayerData(playerid, "LastLogged");
-					
-					gPlayerData[playerid][pSchoolCooldown] = 0;
-					SavePlayerData(playerid, "SchoolCooldown");
-					
-					format(string, sizeof(string), "[PAYDAY:] Player name = %s - payday is off (not logged for %d day(s)), is administrator or is set to delete", gPlayerData[playerid][pName], gPlayerData[playerid][pLastLogged] );
-					PayDayLog(string);
-
-					/*
-					* Remove unproper/unused account
-					*/
-					if(!gPlayerData[playerid][pBanned] && !gPlayerData[playerid][pAdmin] && !IsPlayerVip(playerid) && (gPlayerData[playerid][pLastLogged] >= 60 || strlen(gPlayerData[playerid][pName]) <= 3 || 
-						strfind(gPlayerData[playerid][pName], "_", true) == -1 || strfind(gPlayerData[playerid][pName], "[", true) > 0 || strfind(gPlayerData[playerid][pName], "]", true) > 0) || gPlayerData[playerid][pSetToDelete] || gPlayerData[playerid][pIsOnVacation] > 90)
-					{
-						format(string, sizeof(string), "DELETE FROM `samp_users` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_items` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_items2` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_items3` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_jobs` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_keys` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_lic` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_notes` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_vip` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_other` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_other2` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						format(string, sizeof(string), "DELETE FROM `samp_users_fueled` WHERE `PlayerName` = '%s' ", gPlayerData[playerid][pName]);
-						wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-						for(new i = 0; i < sizeof(gVehData); i++)
-						{
-							if(strcmp(gVehData[i][Owner], gPlayerData[playerid][pName], true, strlen(gPlayerData[playerid][pName])) == 0)
-								defer ResetVehicleData(i+1, 1);
-						}
-						for(new i = 0; i < sizeof(Houses); i++)
-						{
-							if(strcmp(Houses[i][Owner], gPlayerData[playerid][pName], true, strlen(gPlayerData[playerid][pName])) == 0)
-								ResetHouseData(i, 1);
-						}
-						for(new i = 0; i < sizeof(Businesses); i++)
-						{
-							if(strcmp(Businesses[i][Owner], gPlayerData[playerid][pName], true, strlen(gPlayerData[playerid][pName])) == 0)
-								ResetBizData(i);
-						}
-						format(string, sizeof(string), "[PAYDAY:] Player name = %s - account removed", gPlayerData[playerid][pName], gPlayerData[playerid][pLastLogged]);
-						PayDayLog(string);
-					}
+					SaveFData( FACTIONID_GOVERNMENT, "Bank" );
 
 					/*
 					* Select next player in DB
 					*/
 					gPayDayLoop++;
-					
+					gPayDayID++;
 					format(string, sizeof(string), "[PAYDAY:] gPayDayLoop = %d, gPayDayCount = %d", gPayDayLoop, gPayDayCount );
 					PayDayLog(string);
-					
-					if(gPayDayLoop <= gPayDayCount)
+					if( gPayDayLoop <= gPayDayCount )
 					{
-						format(string, sizeof(string), "SELECT");
-						strcat(string, " `samp_users`.*");
-						strcat(string, ", `samp_users_items`.*");
-						strcat(string, ", `samp_users_items2`.*");
-						strcat(string, ", `samp_users_items3`.*");
-						strcat(string, ", `samp_users_jobs`.*");
-						strcat(string, ", `samp_users_lic`.*");
-						strcat(string, ", `samp_users_notes`.*");
-						strcat(string, ", `samp_users_other`.*");
-						strcat(string, ", `samp_users_other2`.*");
-						strcat(string, ", `samp_users_vip`.*");
-						strcat(string, " FROM `samp_users`");
-						strcat(string, " JOIN `samp_users_items` ON `samp_users_items`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_items2` ON `samp_users_items2`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_items3` ON `samp_users_items3`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_jobs` ON `samp_users_jobs`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_lic` ON `samp_users_lic`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_notes` ON `samp_users_notes`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_other` ON `samp_users_other`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_other2` ON `samp_users_other2`.PlayerName = `samp_users`.PlayerName");
-						strcat(string, " JOIN `samp_users_vip` ON `samp_users_vip`.PlayerName = `samp_users`.PlayerName");
-						format(string, sizeof(string), "%s WHERE `samp_users`.Banned = '0' LIMIT %d , 1", string, gPayDayLoop);
-					}
-					
-					return 1;
-				}
-
-				/*
-				* Remove from public faction if not present for 5 days
-				*/
-				if(gPlayerData[playerid][pLastLogged] >= 5 && gPlayerData[playerid][pRank] == 1 && gPlayerData[playerid][pFaction] >= 0 && gPlayerData[playerid][pFaction] < 9 && gPlayerData[playerid][pFaction] != 6 && gPlayerData[playerid][pFaction] != 7 && gPlayerData[playerid][pFaction] != 8)
-				{
-					// TODO: dopisac tutaj czyszczenie frakcje
-					gPlayerData[playerid][pFaction] = 255;
-					gPlayerData[playerid][pRank] = 9;
-					SavePlayerData(playerid, "Faction");
-					SavePlayerData(playerid, "Rank");
-				}
-				
-				/*
-				* Set bank status befor PayDay for PayDay Message
-				*/
-				
-				gPlayerData[CUSTOM_MAX_PLAYERS][pPayDayMessage] = 1;
-				gPlayerData[CUSTOM_MAX_PLAYERS][pBankOld] = gPlayerData[CUSTOM_MAX_PLAYERS][pBank];
-				gPlayerData[CUSTOM_MAX_PLAYERS][pBankIncome] = 0;
-				gPlayerData[CUSTOM_MAX_PLAYERS][pBankLoose] = 0;
-				SavePlayerData(playerid, "PayDayMessage");
-				SavePlayerData(playerid, "BankOld");
-
-				/*
-				* Reduce drive licence days
-				*/
-				
-				new slot[MAX_PLAYER_ITEM_SLOT];
-				PHaveItemEx(playerid, 3, 6, slot);
-				
-				for(new i = 0; i < MAX_PLAYER_ITEM_SLOT; i++)
-				{
-					if(slot[i])
-					{
-						if(SlotParam1(playerid, i+1) > 0)
-						{
-							SetPSlotParam1(playerid, i+1, SlotParam1(playerid, i+1)-1);
-						}
-						
-						if(SlotParam2(playerid, i+1) > 0)
-						{
-							SetPSlotParam2(playerid, i+1, SlotParam2(playerid, i+1)-1);
-						}
-						
-						if(SlotParam3(playerid, i+1) > 0)
-						{
-							SetPSlotParam3(playerid, i+1, SlotParam3(playerid, i+1)-1);
-						}
-					}
-				}
-				
-				/*
-				* Credit repayment
-				*/
-				if(gPlayerData[playerid][mCreditValue] > 0 && gPlayerData[playerid][pAdmin] != 5)
-				{
-					format(string, sizeof(string), "[PAYDAY:] Player name = %s, credit repayment, Bank = $%d - $%d",
-						gPlayerData[playerid][pName], gPlayerData[playerid][pBank], gPlayerData[playerid][mCreditRepayment]);
-					PayDayLog(string);
-					
-					gPlayerData[playerid][pBank] -= gPlayerData[playerid][mCreditRepayment];
-					gPlayerData[playerid][mCreditPayed] += gPlayerData[playerid][mCreditRepayment];						
-					gPlayerData[playerid][pBankLoose] += gPlayerData[playerid][mCreditRepayment];
-					
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += gPlayerData[playerid][mCreditRepayment];
-					
-					if(gPlayerData[playerid][mCreditPayed] >= gPlayerData[playerid][mCreditValue])
-					{
-						gPlayerData[playerid][mCreditRepayment] = 0;
-						gPlayerData[playerid][mCreditPayed] = 0;
-						gPlayerData[playerid][mCreditValue] = 0;
-						SavePlayerData(playerid, "CreditRepayment");
-						SavePlayerData(playerid, "CreditValue");
-					}
-				
-					SavePlayerData(playerid, "CreditPayed");
-				}
-				
-				/*
-				* Pay for OC/AC
-				*/
-				// TODO: WA¯NE ! UWZGLÊDNIÆ WSZYSTKIE SLOTY WSZEDZIE !
-				PHaveItemEx(playerid, 3, 19, slot);
-				for(new i = 1; i <= MAX_PLAYER_ITEM_SLOT; i++)
-				{
-					if(slot[i-1])
-					{
-						if(SlotParam3(playerid, i) > 0)
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, OC pay, Bank = $%d - $%d",
-								gPlayerData[playerid][pName], gPlayerData[playerid][pBank], 4);
-							PayDayLog(string);
-							
-							gPlayerData[playerid][pBank] -= 4;
-							gPlayerData[CUSTOM_MAX_PLAYERS][pBankLoose] += 4;
-							
-							DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 4;
-						}
-						if(SlotParam4(playerid, i) > 0)
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, AC pay, Bank = $%d - $%d",
-								gPlayerData[playerid][pName], gPlayerData[playerid][pBank], 6);
-							PayDayLog(string);
-							
-							gPlayerData[playerid][pBank] -= 6;
-							gPlayerData[CUSTOM_MAX_PLAYERS][pBankLoose] += 6;
-							
-							DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 6;
-						}
-					}
-				}							
-				
-				/*
-				* Give player faction payment and other payment
-				*/
-				if(gPlayerData[CUSTOM_MAX_PLAYERS][pFaction] != 255 && gPlayerData[playerid][pLastLogged] == 0)
-				{
-					for(new n = 0; n < sizeof(DynamicFactions); n++)
-					{
-						if(PayRank[n][FactionID] == gPlayerData[CUSTOM_MAX_PLAYERS][pFaction])
-						{
-							switch( gPlayerData[playerid][pRank] )
-							{
-								case 1:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 1, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank1], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank1]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank1];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank1];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank1];
-								}
-								case 2:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 2, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank2]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank2];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank2];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank2];
-								}
-								case 3:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 3, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank3], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank3]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank3];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank3];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank3];
-								}
-								case 4:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 4, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank4], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank4]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank4];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank4];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank4];
-								}
-								case 5:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 5, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank5], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank5]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank5];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank5];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank5];
-								}
-								case 6:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 6, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank6], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank6]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank6];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank6];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank6];
-								}
-								case 7:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 7, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank7], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank7]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank7];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank7];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank7];
-								}
-								case 8:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 8, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank8], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank8]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank8];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank8];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank8];
-								}
-								case 9:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 9, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank9], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank9]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank9];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank9];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank9];
-								}
-								case 10:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 10, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank10], gPlayerData[playerid][pFaction], DynamicFactions[gPlayerData[playerid][pFaction]][fBank], PayRank[n][Rank10]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank10];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank10];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank10];
-								}
-							}
-							
-							PayDayLog(string);
-							SaveFData(gPlayerData[playerid][pFaction], "Bank");
-							
-							break;
-						}
-					}
-				}
-				
-				/*
-				* Give player faction payment and other payment
-				*/
-				if(gPlayerData[CUSTOM_MAX_PLAYERS][pFaction2] != 255 && gPlayerData[playerid][pLastLogged] == 0)
-				{
-					for(new n = 0; n < sizeof(DynamicFactions); n++)
-					{
-						if(PayRank[n][FactionID] == gPlayerData[CUSTOM_MAX_PLAYERS][pFaction2])
-						{
-							switch(gPlayerData[playerid][pRank2])
-							{
-								case 1:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 1, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank1], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank1]);
-								
-									gPlayerData[playerid][pBank] += PayRank[n][Rank1];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank1];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank1];
-								}
-								case 2:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 2, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank2], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank2]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank2];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank2];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank2];
-								}
-								case 3:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 3, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank3], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank3]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank3];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank3];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank3];
-								}
-								case 4:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 4, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank4], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank4]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank4];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank4];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank4];
-								}
-								case 5:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 5, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank5], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank5]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank5];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank5];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank5];
-								}
-								case 6:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 6, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank6], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank6]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank6];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank6];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank6];
-								}
-								case 7:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 7, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank7], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank7]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank7];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank7];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank7];
-								}
-								case 8:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 8, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank8], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank8]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank8];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank8];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank8];
-								}
-								case 9:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 9, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank9], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank9]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank9];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank9];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank9];
-								}
-								case 10:
-								{
-									format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 10, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-										gPlayerData[playerid][pName], gPlayerData[playerid][pBank], PayRank[n][Rank10], gPlayerData[playerid][pFaction2], DynamicFactions[gPlayerData[playerid][pFaction2]][fBank], PayRank[n][Rank10]);
-									
-									gPlayerData[playerid][pBank] += PayRank[n][Rank10];
-									gPlayerData[playerid][pBankIncome] += PayRank[n][Rank10];
-									
-									DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank10];
-								}
-							}
-							
-							PayDayLog(string);
-							SaveFData( gPlayerData[playerid][pFaction2], "Bank" );
-							
-							break;
-						}
-					}
-				}
-				
-				if(gPlayerData[playerid][pJob] == 0 && gPlayerData[playerid][pFaction] == 255)
-				{
-					format(string, sizeof(string), "[PAYDAY:] Player name = %s, Bank = %d + %d", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], Zasilek);
-					PayDayLog(string);
-					
-					gPlayerData[playerid][pBank] += Zasilek;
-					gPlayerData[playerid][pBankIncome] += Zasilek;
-					
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= Zasilek;
-				}
-
-				/*
-				* Pay taxes, costs, tickets, etc.
-				*/
-				format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = Radio tax", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], DynamicTaxes[RadioTax]);
-				PayDayLog(string);
-				
-				gPlayerData[playerid][pBank] -= DynamicTaxes[RadioTax];
-				gPlayerData[playerid][pBankLoose] += DynamicTaxes[RadioTax];
-				
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += DynamicTaxes[RadioTax];
-				
-				if((gPlayerData[playerid][pCash] + gPlayerData[playerid][pBank]) >= DynamicTaxes[TheRich])
-				{
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = taxes (the rich)", gPlayerData[playerid][pName], gPlayerData[playerid][pBank], floatround(DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round));
-					PayDayLog(string);
-					
-					gPlayerData[playerid][pBank] -= floatround(DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round);
-					gPlayerData[playerid][pBankLoose] += floatround(DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round);
-					
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(DynamicTaxes[RichTax] * (gPlayerData[playerid][pBank]+gPlayerData[playerid][pCash]), floatround_round);
-				}
-				
-				if(gPlayerData[playerid][pCost] > 0)
-				{
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = costs",
-						gPlayerData[playerid][pName], gPlayerData[playerid][pBank], gPlayerData[playerid][pCost]);
-					PayDayLog(string);
-					
-					gPlayerData[playerid][pBank] -= gPlayerData[playerid][pCost];
-					gPlayerData[playerid][pBankLoose] += gPlayerData[playerid][pCost];						
-					
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += gPlayerData[playerid][pCost];
-					
-					gPlayerData[playerid][pCost] = 0;
-					SavePlayerData(playerid, "Cost");
-				}
-				
-				if(gPlayerData[playerid][pTicket] > 0)
-				{
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = ticket",
-						gPlayerData[playerid][pName], gPlayerData[playerid][pBank], gPlayerData[playerid][pTicket]);
-					PayDayLog(string);
-					
-					gPlayerData[playerid][pBank] -= gPlayerData[playerid][pTicket];
-					gPlayerData[playerid][pBankLoose] += gPlayerData[playerid][pTicket];
-					
-					DynamicFactions[FACTIONID_POLICE][fBank] += gPlayerData[playerid][pTicket];
-					SaveFData(FACTIONID_POLICE, "Bank");
-					
-					gPlayerData[playerid][pTicket] = 0;
-					SavePlayerData( playerid, "Ticket" );
-				}
-				
-				for(new i = 0; i < sizeof(Houses); i++)
-				{
-					if(strcmp(gPlayerData[playerid][pName], Houses[i][HRenter], false) == 0 && strlen(Houses[i][HRenter]) > 0)
-					{
-						if(gPlayerData[playerid][pBank] < 0)
-						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, House rent deleted, House ID: %d",
-								gPlayerData[playerid][pName], i);
-							PayDayLog(string);
-							
-							strmid(Houses[i][HRenter], "Brak", 0, MAX_PLAYER_NAME, 255);
-							SaveHouseData(i, "Renter");
-						}
-						else
-						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = house rent, House ID: %d", 
-								gPlayerData[playerid][pName], gPlayerData[playerid][pBank], Houses[i][RentCost], i);
-							PayDayLog(string);
-							
-							gPlayerData[playerid][pBank] -= Houses[i][RentCost];
-							gPlayerData[playerid][pBankLoose] += Houses[i][RentCost];
-							
-							UpdatePlayerDataByName(Houses[i][Owner], "Bank", Houses[i][RentCost]);
-						}
-					}
-				}
-
-				/*
-				* Is player on debt ?
-				*/
-				if(gPlayerData[playerid][pBank] < -5000)
-				{
-					gPlayerData[playerid][pIsDeptor] = 1;
-					SavePlayerData(playerid,"IsDeptor");
-					
-					for(new i = 0; i < sizeof(Houses); i++)
-					{
-						if( strcmp(Houses[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(Houses[i][Owner]) > 0 )
-						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, House ID: %d, confiscated", gPlayerData[playerid][pName], i);
-							PayDayLog(string);
-							
-							Houses[i][HConfiscated] = 1;
-							SaveHouseData(i, "Confiscated");
-						}
-					}
-					
-					for(new i = 0; i < sizeof(Businesses); i++)
-					{
-						if( strcmp(Businesses[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(Businesses[i][Owner]) > 0 )
-						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Biz ID: %d, confiscated", gPlayerData[playerid][pName], i);
-							PayDayLog(string);
-							
-							Businesses[i][BConfiscated] = 1;
-							SaveBizData(i, "Confiscated");
-						}
-					}
-					
-					for(new i = 0; i < sizeof(gVehData); i++)
-					{
-						if( strcmp(gVehData[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(gVehData[i][Owner]) > 0 )
-						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Veh ID: %d, confiscated", gPlayerData[playerid][pName], i);
-							PayDayLog(string);
-
-							new enginedyn,lights,alarm,doors,bonnet,boot,objective;
-							GetVehicleParamsEx(i+1,enginedyn,lights,alarm,doors,bonnet,boot,objective);
-							SetVehicleParamsEx(i+1,enginedyn,lights,alarm,1,bonnet,boot,objective);
-
-							gVehData[i][Closed] = 1;
-							gVehData[i][VConfiscated] = 1;
-							SaveVehData(i, "Closed");
-							SaveVehData(i, "Confiscated");
-						}
-					}
-				}
-				else if( gPlayerData[playerid][pIsDeptor] && gPlayerData[playerid][pBank] >= -5000 )
-				{
-					gPlayerData[playerid][pIsDeptor] = 0;
-					SavePlayerData(playerid,"IsDeptor");
-					
-					for(new i = 0; i < sizeof(Houses); i++)
-					{
-						if( strcmp(Houses[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(Houses[i][Owner]) > 0 )
-						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, House ID: %d, deconfiscated", gPlayerData[playerid][pName], i);
-							PayDayLog(string);
-
-							Houses[i][HConfiscated] = 0;
-							SaveHouseData(i, "Confiscated");
-						}
-					}
-					
-					for(new i = 0; i < sizeof(Businesses); i++)
-					{
-						if( strcmp(Businesses[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(Businesses[i][Owner]) > 0 )
-						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Biz ID: %d, deconfiscated", gPlayerData[playerid][pName], i);
-							PayDayLog(string);
-
-							Businesses[i][BConfiscated] = 0;
-							SaveBizData(i, "Confiscated");
-						}
-					}
-					
-					for(new i = 0; i < sizeof(gVehData); i++)
-					{
-						if(strcmp(gVehData[i][Owner], gPlayerData[playerid][pName], true) == 0 && strlen(gVehData[i][Owner]) > 0)
-						{
-							format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Veh ID: %d, deconfiscated", gPlayerData[playerid][pName], i);
-							PayDayLog(string);
-
-							new enginedyn,lights,alarm,doors,bonnet,boot,objective;
-							GetVehicleParamsEx(i+1,enginedyn,lights,alarm,doors,bonnet,boot,objective);
-							SetVehicleParamsEx(i+1,enginedyn,lights,alarm,0,bonnet,boot,objective);
-
-							gVehData[i][Closed] = 0;
-							gVehData[i][VConfiscated] = 0;
-							SaveVehData(i, "Closed");
-							SaveVehData(i, "Confiscated");
-						}
-					}
-				}
-
-				/*
-				* Calculate and update player RP score
-				*/
-				gPlayerData[playerid][pScore] = (gPlayerData[playerid][pRPCount] * 2);
-				SavePlayerData(playerid, "Score");
-
-				/*
-				* VIP reduce
-				*/
-				if(gVipReduceOn)
-				{
-					if(gPlayerData[playerid][pVipAFKT] > 0)
-					{
-						format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, VipAFKT: %d -1", gPlayerData[playerid][pName], gPlayerData[playerid][pVipAFKT]);
-						PayDayLog(string);
-						
-						gPlayerData[playerid][pVipAFKT]--;
-						SavePlayerData(playerid, "VipAFKT");
-					}
-					if(gPlayerData[playerid][pVipExpT] > 0)
-					{
-						format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, VipExpT: %d -1", gPlayerData[playerid][pName], gPlayerData[playerid][pVipExpT]);
-						PayDayLog(string);
-						
-						gPlayerData[playerid][pVipExpT]--;
-						SavePlayerData(playerid, "VipExpT");
-					}
-					if(gPlayerData[playerid][pVipItem] > 0)
-					{
-						format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, VipItem: %d -1", gPlayerData[playerid][pName], gPlayerData[playerid][pVipItem]);
-						PayDayLog(string);
-							
-						gPlayerData[playerid][pVipItem]--;
-						SavePlayerData(playerid, "VipItem");
-					}
-				}
-
-				/*
-				* Other stuff
-				*/
-				if(gPlayerData[playerid][pWarnings] > 0)
-				{
-					if(gPlayerData[playerid][pWarnCooldown] <= 0)
-					{
-						gPlayerData[playerid][pWarnings]--;
-						gPlayerData[playerid][pWarnCooldown] = WARN_COOLDOWN;
-						SavePlayerData(playerid, "Warnings");
-						SavePlayerData(playerid, "WarnCooldown");
-					}
-					else
-					{
-						gPlayerData[playerid][pWarnCooldown]--;
-						SavePlayerData(playerid, "WarnCooldown");
-					}
-				}
-				
-				gPlayerData[playerid][pLastLogged]++;
-				gPlayerData[playerid][pBankNew] = gPlayerData[playerid][pBank];
-				SavePlayerData(playerid, "LastLogged");
-				SavePlayerData(playerid, "Bank");
-				SavePlayerData(playerid, "BankIncome");
-				SavePlayerData(playerid, "BankLoose");
-				SavePlayerData(playerid, "BankNew");
-
-				format(string, sizeof(string), "[PAYDAY:] Player %s end in character cash: $%d, in bank cash: $%d", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank]);
-				PayDayLog(string);
-
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-
-				/*
-				* Select next player in DB
-				*/
-				gPayDayLoop++;
-				format(string, sizeof(string), "[PAYDAY:] gPayDayLoop = %d, gPayDayCount = %d", gPayDayLoop, gPayDayCount);
-				PayDayLog(string);
-				if(gPayDayLoop <= gPayDayCount)
-				{
-					format(string, sizeof(string), "SELECT");
-					strcat(string, " `samp_users`.*");
-					strcat(string, ", `samp_users_items`.*");
-					strcat(string, ", `samp_users_items2`.*");
-					strcat(string, ", `samp_users_items3`.*");
-					strcat(string, ", `samp_users_jobs`.*");
-					strcat(string, ", `samp_users_lic`.*");
-					strcat(string, ", `samp_users_notes`.*");
-					strcat(string, ", `samp_users_other`.*");
-					strcat(string, ", `samp_users_other2`.*");
-					strcat(string, ", `samp_users_vip`.*");
-					strcat(string, " FROM `samp_users`");
-					strcat(string, " JOIN `samp_users_items` ON `samp_users_items`.PlayerName = `samp_users`.PlayerName");
-					strcat(string, " JOIN `samp_users_items2` ON `samp_users_items2`.PlayerName = `samp_users`.PlayerName");
-					strcat(string, " JOIN `samp_users_items3` ON `samp_users_items3`.PlayerName = `samp_users`.PlayerName");
-					strcat(string, " JOIN `samp_users_jobs` ON `samp_users_jobs`.PlayerName = `samp_users`.PlayerName");
-					strcat(string, " JOIN `samp_users_lic` ON `samp_users_lic`.PlayerName = `samp_users`.PlayerName");
-					strcat(string, " JOIN `samp_users_notes` ON `samp_users_notes`.PlayerName = `samp_users`.PlayerName");
-					strcat(string, " JOIN `samp_users_other` ON `samp_users_other`.PlayerName = `samp_users`.PlayerName");
-					strcat(string, " JOIN `samp_users_other2` ON `samp_users_other2`.PlayerName = `samp_users`.PlayerName");
-					strcat(string, " JOIN `samp_users_vip` ON `samp_users_vip`.PlayerName = `samp_users`.PlayerName");
-					format(string, sizeof(string), "%s WHERE `samp_users`.Banned = '0' LIMIT %d , 1", string, gPayDayLoop);
-				}
-				
-				return 1;
-			}
-		}
-		case DEL_FROM_FORUM_FACTION:
-		{
-			mysql_store_result(db_con2);
-			mysql_retrieve_row(db_con2);
-			mysql_fetch_field_row(string, "additionalgroups", db_con2);
-			
-			new stringNumber[4];
-			
-			switch(FactionRequest[playerid])
-			{
-				case 0:
-				{
-					format(stringNumber, sizeof(stringNumber), "9");
-				}
-				case 9:
-				{
-					format(stringNumber, sizeof(stringNumber), "15");
-				}
-			}
-			
-			new index = strfind(string, stringNumber, true);			
-			new numberSize = strlen(stringNumber);
-			
-			if(index != -1)
-			{
-				// liczba nie jest na pocz¹tku
-				if(index > 0)
-				{
-					strdel(string, index-1, index+numberSize);
-				}
-				else
-				{
-					strdel(string, 0, index+numberSize);
-				}
-				format(string, sizeof(string), "UPDATE `mybb_users` SET `additionalgroups` = '%s' WHERE `uid` = '%d'", string, gPlayerData[playerid][pAccountOwnerID]);
-				wp_mysql_query(string, SAVE, playerid, db_con3);
-			}
-			FactionRequest[playerid] = 255;
-		}
-		case SET_FORUM_FACTION:
-		{
-			// [NOTE:] Nie uwzglêdniono liczb 3 i wiêcej cyfrowych w wyszukiwaniu grupy !
-			mysql_store_result(db_con2);
-			mysql_retrieve_row(db_con2);
-			mysql_fetch_field_row(string, "additionalgroups", db_con2);
-			
-			new stringNumber[4];
-			
-			switch(FactionRequest[playerid])
-			{
-				case 0:
-				{
-					format(stringNumber, sizeof(stringNumber), "9");
-				}
-			}
-			
-			new index = strfind(string, stringNumber, true);			
-			new numberSize = strlen(stringNumber);
-			
-			// liczby nie ma w stringu
-			if(index == -1)
-			{
-				notSearchedNumber:
-				// string jest pusty
-				if(strlen(string) == 0)
-				{
-					format(string, sizeof(string), "UPDATE `mybb_users` SET `additionalgroups` = '%s' WHERE `uid` = '%d'", stringNumber, gPlayerData[playerid][pAccountOwnerID]);
-					wp_mysql_query(string, SAVE, playerid, db_con3);
-				}
-				// string nie jest pusty
-				else
-				{
-					format(string, sizeof(string), "UPDATE `mybb_users` SET `additionalgroups` = '%s,%s' WHERE `uid` = '%d'", string, stringNumber, gPlayerData[playerid][pAccountOwnerID]);
-					wp_mysql_query(string, SAVE, playerid, db_con3);
-				}
-			}
-			// liczba jest w stringu
-			else
-			{
-				// liczba nie jest na pocz¹tku
-				if(index > 0)
-				{
-					new isLast = false;
-					if(index+numberSize == strlen(string))
-					{
-						isLast = true;
-					}
-					if(string[index-1] == ',')
-					{
-						if(!isLast && string[index+numberSize] == ',')
-						{
-							// liczba jest ju¿ wpisana
-							return 1;
-						}
-						else
-						{
-							goto notSearchedNumber;
-						}
+						format(string, sizeof(string), "SELECT `Key`,`ID`,`PlayerName`,`Level`,`AdminLevel`,`DonateRank`,`Registered`,`Sex`,`Age`,`Experience`,`Money`,`Bank`,`Skin`,`PlayingHours`,`AllowedPayday`,`PayCheck`,`Faction`,`Rank`,`Banned`");
+						strcat( string, ",`Warnings`,`Jailed`,`JailTime`,`CrashX`,`CrashY`,`CrashZ`,`CrashInt`,`CrashW`,`Crashed`,`Wins`,`Loses`,`InvWeapon`,`InvAmmo`,`Tutorial`,`Moderator`,`WantedLvl`,`FirstCar`,`FirstReanimation`,`FirstPhone`,`FirstLeader`" );
+						strcat( string, ",`CrashAngle`,`HourAssist`,`JoinedFaction`,`HoursOnDuty`,`HoursOnDutyHelper`,`WarnCooldown`,`SpeedLimiter`,`AdminDuty`,`CharDescription`,`CharDescriptionColor`, `FirstJob`, `FirstID`, `FirstBuy`, `FirstHouse`, `FirstDescription`" );
+						strcat( string, ", `FirstAction`, `FirstBankUse`, `FirstStats`, `FirstJail`, `FirstStudy`" );
+						format( string, sizeof(string), "%s FROM `samp_users` WHERE `Banned` = '0' LIMIT %d , 1", string, gPayDayLoop);
+						mysql_query(string, PLAYER_DATA_LOAD_NAME_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
 					}
 				}
 			}
-			FactionRequest[playerid] = 255;
 		}
 		case LOAD_RAFINERY:
 		{
-			mysql_store_result(db_con2);
-			mysql_retrieve_row(db_con2);
-			
-			mysql_fetch_field_row(string, "ResourcePetrol", db_con2);
-			gRafinery[RafResourcePetrol] = strval(string);
-			mysql_fetch_field_row(string, "PetrolLtrCost", db_con2);
-			gRafinery[RafPetrolLtrCost] = strval(string);
-			mysql_fetch_field_row(string, "EmployerReward", db_con2);
-			gRafinery[RafRefuelReward] = strval(string);
-			mysql_fetch_field_row(string, "MaxResources", db_con2);
-			gRafinery[RafMaxResources] = strval(string);
-			mysql_fetch_field_row(string, "ResourceOil", db_con2);
-			gRafinery[RafResourceOil] = strval(string);
-			mysql_fetch_field_row(string, "ResourceGas", db_con2);
-			gRafinery[RafResourceGas] = strval(string);
-			mysql_fetch_field_row(string, "ResourceFly", db_con2);
-			gRafinery[RafResourceFly] = strval(string);
-			mysql_fetch_field_row(string, "OilLtrCost", db_con2);
-			gRafinery[RafOilLtrCost] = strval(string);
-			mysql_fetch_field_row(string, "GasLtrCost", db_con2);
-			gRafinery[RafGasLtrCost] = strval(string);
-			mysql_fetch_field_row(string, "FlyLtrCost", db_con2);
-			gRafinery[RafFlyLtrCost] = strval(string);
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_RAFINERY");
+				GameModeExit();
+				return 1;
+			}
+			mysql_fetch_row_format(db_result, "|", db_con2);
+
+			split2(db_result, arrCoords, '|');
+			mysql_free_result(db_con2);
+			gRafinery[RafResourcePetrol] = strval(arrCoords[1]);
+			gRafinery[RafPetrolLtrCost] = strval(arrCoords[2]);
+			gRafinery[RafRefuelReward] = strval(arrCoords[3]);
+			gRafinery[RafMaxResources] = strval(arrCoords[4]);
+			gRafinery[RafResourceOil] = strval(arrCoords[5]);
+			gRafinery[RafResourceGas] = strval(arrCoords[6]);
+			gRafinery[RafOilLtrCost] = strval(arrCoords[7]);
+			gRafinery[RafGasLtrCost] = strval(arrCoords[8]);
 
 			#if defined DEBUG
 				print("[INFO:] Rafinery loaded [MySQL]");
 			#endif
+
+
 		}
 		case LOAD_WFACTORYLEGAL:
 		{
-			mysql_store_result(db_con2);
-			mysql_retrieve_row(db_con2);
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_WFACTORYLEGAL");
+				GameModeExit();
+				return 1;
+			}
+			mysql_fetch_row_format(db_result, "|", db_con2);
+			split2(db_result, arrCoords, '|');
 
 			//WFactoryLegalInfo[WFactoryID] = strval(arrCoords[0]); // narazie nie potrzebne
 
 			mysql_fetch_field_row(string, "WFactoryBuildingID", db_con2);
 			WFactoryLegal[WFactoryBuildingID] = strval(string);
+
 			mysql_fetch_field_row(string, "WFactoryReward", db_con2);
 			WFactoryLegal[WFactoryReward] = strval(string);
 			mysql_fetch_field_row(string, "WFactoryCPPartTakeWV", db_con2);
@@ -4255,7 +2736,7 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 			mysql_fetch_field_row(string, "WFactorySniperPart", db_con2);
 			WFactoryLegalHeavy[WFactorySniperPart] = strval(string);
 
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 
 			WFactoryLegal[WFactoryCPDocsID] = CreateDynamicCP( WFactoryLegal[WFactoryCPDocsX], WFactoryLegal[WFactoryCPDocsY], WFactoryLegal[WFactoryCPDocsZ], 1.0, -1, -1, -1, 5.0 );
 			WFactoryLegal[WFactoryCPDocsID2] = CreateDynamicCP(211.24,-64.05,1.57, 1.0, -1, -1, -1, 5.0 );
@@ -4285,74 +2766,52 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 		}
 		case LOAD_GAS_STATIONS:
 		{
-			mysql_store_result(db_con2);
-			
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_GAS_STATIONS");
+				GameModeExit();
+				return 1;
+			}
 			new i = 0;
 
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "BusinessID", db_con2);
-				GasStations[i][BusinessID] = strval(string);
-				mysql_fetch_field_row(string, "PetrolResourceValue", db_con2);
-				GasStations[i][PetrolResourceValue] = floatstr(string);
-				mysql_fetch_field_row(string, "OilResourceValue", db_con2);
-				GasStations[i][OilResourceValue] = floatstr(string);
-				mysql_fetch_field_row(string, "GasResourceValue", db_con2);
-				GasStations[i][GasResourceValue] = floatstr(string);
-				mysql_fetch_field_row(string, "MaxPetrolResourceValue", db_con2);
-				GasStations[i][MaxPetrolResourceValue] = floatstr(string);
-				mysql_fetch_field_row(string, "MaxOilResourceValue", db_con2);
-				GasStations[i][MaxOilResourceValue] = floatstr(string);
-				mysql_fetch_field_row(string, "MaxGasResourceValue", db_con2);
-				GasStations[i][MaxGasResourceValue] = floatstr(string);
-				mysql_fetch_field_row(string, "RefuelPetrolResources", db_con2);
-				GasStations[i][RefuelPetrolResources] = strval(string);
-				mysql_fetch_field_row(string, "RefuelOilResources", db_con2);
-				GasStations[i][RefuelOilResources] = strval(string);
-				mysql_fetch_field_row(string, "RefuelGasResources", db_con2);
-				GasStations[i][RefuelGasResources] = strval(string);
-				mysql_fetch_field_row(string, "PetrolPrice", db_con2);
-				GasStations[i][PetrolPrice] = strval(string);
-				mysql_fetch_field_row(string, "OilPrice", db_con2);
-				GasStations[i][OilPrice] = strval(string);
-				mysql_fetch_field_row(string, "GasPrice", db_con2);
-				GasStations[i][GasPrice] = strval(string);
-				mysql_fetch_field_row(string, "posX", db_con2);
-				GasStations[i][GSposX] = floatstr(string);
-				mysql_fetch_field_row(string, "posY", db_con2);
-				GasStations[i][GSposY] = floatstr(string);
-				mysql_fetch_field_row(string, "posZ", db_con2);
-				GasStations[i][GSposZ] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextX", db_con2);
-				GasStations[i][Pos3dTextX] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextY", db_con2);
-				GasStations[i][Pos3dTextY] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextZ", db_con2);
-				GasStations[i][Pos3dTextZ] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextX2", db_con2);
-				GasStations[i][Pos3dTextX2] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextY2", db_con2);
-				GasStations[i][Pos3dTextY2] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextZ2", db_con2);
-				GasStations[i][Pos3dTextZ2] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextX3", db_con2);
-				GasStations[i][Pos3dTextX3] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextY3", db_con2);
-				GasStations[i][Pos3dTextY3] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextZ3", db_con2);
-				GasStations[i][Pos3dTextZ3] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextX4", db_con2);
-				GasStations[i][Pos3dTextX4] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextY4", db_con2);
-				GasStations[i][Pos3dTextY4] = floatstr(string);
-				mysql_fetch_field_row(string, "Pos3dTextZ4", db_con2);
-				GasStations[i][Pos3dTextZ4] = floatstr(string);
+				split2(db_result, arrCoords, '|');
 
-				format(string, sizeof(string), "Benzyna: $%d", GasStations[i][PetrolPrice]);
+				GasStations[i][BusinessID] = strval(arrCoords[1]);
+				GasStations[i][PetrolResourceValue] = floatstr(arrCoords[2]);
+				GasStations[i][OilResourceValue] = floatstr(arrCoords[3]);
+				GasStations[i][GasResourceValue] = floatstr(arrCoords[4]);
+				GasStations[i][MaxPetrolResourceValue] = floatstr(arrCoords[5]);
+				GasStations[i][MaxOilResourceValue] = floatstr(arrCoords[6]);
+				GasStations[i][MaxGasResourceValue] = floatstr(arrCoords[7]);
+				GasStations[i][RefuelPetrolResources] = strval(arrCoords[8]);
+				GasStations[i][RefuelOilResources] = strval(arrCoords[9]);
+				GasStations[i][RefuelGasResources] = strval(arrCoords[10]);
+				GasStations[i][PetrolPrice] = strval(arrCoords[11]);
+				GasStations[i][OilPrice] = strval(arrCoords[12]);
+				GasStations[i][GasPrice] = strval(arrCoords[13]);
+				GasStations[i][GSposX] = floatstr(arrCoords[14]);
+				GasStations[i][GSposY] = floatstr(arrCoords[15]);
+				GasStations[i][GSposZ] = floatstr(arrCoords[16]);
+				GasStations[i][Pos3dTextX] = floatstr(arrCoords[17]);
+				GasStations[i][Pos3dTextY] = floatstr(arrCoords[18]);
+				GasStations[i][Pos3dTextZ] = floatstr(arrCoords[19]);
+				GasStations[i][Pos3dTextX2] = floatstr(arrCoords[20]);
+				GasStations[i][Pos3dTextY2] = floatstr(arrCoords[21]);
+				GasStations[i][Pos3dTextZ2] = floatstr(arrCoords[22]);
+				GasStations[i][Pos3dTextX3] = floatstr(arrCoords[23]);
+				GasStations[i][Pos3dTextY3] = floatstr(arrCoords[24]);
+				GasStations[i][Pos3dTextZ3] = floatstr(arrCoords[25]);
+				GasStations[i][Pos3dTextX4] = floatstr(arrCoords[26]);
+				GasStations[i][Pos3dTextY4] = floatstr(arrCoords[27]);
+				GasStations[i][Pos3dTextZ4] = floatstr(arrCoords[28]);
+
+				format(string, sizeof(string), "Benzyna: %d$", GasStations[i][PetrolPrice]);
 				GasStations[i][GS3dTextLabel] = CreateDynamic3DTextLabel(string, COLOR_GREEN, GasStations[i][Pos3dTextX], GasStations[i][Pos3dTextY], GasStations[i][Pos3dTextZ], 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID);
-				format(string, sizeof(string), "Diesel: $%d", GasStations[i][OilPrice]);
+				format(string, sizeof(string), "Diesel: %d$", GasStations[i][OilPrice]);
 				GasStations[i][GS3dTextLabel2] = CreateDynamic3DTextLabel(string, COLOR_GREEN, GasStations[i][Pos3dTextX2], GasStations[i][Pos3dTextY2], GasStations[i][Pos3dTextZ2], 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID);
-				format(string, sizeof(string), "Gaz: $%d", GasStations[i][GasPrice]);
+				format(string, sizeof(string), "Gaz: %d$", GasStations[i][GasPrice]);
 				GasStations[i][GS3dTextLabel3] = CreateDynamic3DTextLabel(string, COLOR_GREEN, GasStations[i][Pos3dTextX3], GasStations[i][Pos3dTextY3], GasStations[i][Pos3dTextZ3], 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID);
 				format(string, sizeof(string), "Nr stacji: %d", i+1);
 				GasStations[i][GS3dTextLabel4] = CreateDynamic3DTextLabel(string, COLOR_GREEN, GasStations[i][Pos3dTextX4], GasStations[i][Pos3dTextY4], GasStations[i][Pos3dTextZ4], 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID);
@@ -4364,340 +2823,289 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 			#if defined DEBUG
 				print("[INFO:] Gas stations data loaded [MySQL]");
 			#endif
+
+			mysql_free_result(db_con2);
 		}
 		case COUNT_PAYDAY:
 		{
-			mysql_store_result(db_con2);
-			
-			mysql_fetch_field_row(string, "founder_count", db_con2);
-			gPayDayCount = strval(string);
+			if(mysql_store_result(db_con2) != 0)
+			{
+				format(string, sizeof(string), "MYSQL STORE RESULT failed in COUNT_PAYDAY");
+				ErrorLog(string);
+			}
+			if(!mysql_fetch_field_row(fieldCount, "founder_count", db_con2))
+			{
+				format(string, sizeof(string), "MYSQL FETCH FIELD failed in COUNT_PAYDAY");
+				ErrorLog(string);
+			}
 
 			gPayDayLoop = 0;
+			gPayDayID = 0;
+			gPayDayCount = mysql_fetch_int(db_con2);
+			
+			mysql_free_result(db_con2);
 			
 			format(string, sizeof(string), "[PAYDAY:] PayDayCount = %d", gPayDayCount);
 			PayDayLog(string);
 			PayDayLog("[PAYDAY:] Loading first player from DB");
-			
-			format(string, sizeof(string), "SELECT");
-			strcat(string, " `samp_users`.*");
-			strcat(string, ", `samp_users_items`.*");
-			strcat(string, ", `samp_users_items2`.*");
-			strcat(string, ", `samp_users_items3`.*");
-			strcat(string, ", `samp_users_jobs`.*");
-			strcat(string, ", `samp_users_lic`.*");
-			strcat(string, ", `samp_users_notes`.*");
-			strcat(string, ", `samp_users_other`.*");
-			strcat(string, ", `samp_users_other2`.*");
-			strcat(string, ", `samp_users_vip`.*");
-			strcat(string, " FROM `samp_users`");
-			strcat(string, " JOIN `samp_users_items` ON `samp_users_items`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_items2` ON `samp_users_items2`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_items3` ON `samp_users_items3`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_jobs` ON `samp_users_jobs`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_lic` ON `samp_users_lic`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_notes` ON `samp_users_notes`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_other` ON `samp_users_other`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_other2` ON `samp_users_other2`.PlayerName = `samp_users`.PlayerName");
-			strcat(string, " JOIN `samp_users_vip` ON `samp_users_vip`.PlayerName = `samp_users`.PlayerName");
-			format(string, sizeof(string), "%s WHERE `samp_users`.Banned = '0' ORDER BY `samp_users`.`ID` LIMIT %d , 1", string, gPayDayLoop);
-			
-			wp_mysql_query(string, PLAYER_DATA_LOAD_ALL_PAYDAY, CUSTOM_MAX_PLAYERS, db_con4);
+
+			format(string, sizeof(string), "SELECT `Key`,`ID`,`PlayerName`,`Level`,`AdminLevel`,`DonateRank`,`Registered`,`Sex`,`Age`,`Experience`,`Money`,`Bank`,`Skin`,`PlayingHours`,`AllowedPayday`,`PayCheck`,`Faction`,`Rank`,`Banned`");
+			strcat( string, ",`Warnings`,`Jailed`,`JailTime`,`CrashX`,`CrashY`,`CrashZ`,`CrashInt`,`CrashW`,`Crashed`,`Wins`,`Loses`,`InvWeapon`,`InvAmmo`,`Tutorial`,`Moderator`,`WantedLvl`,`FirstCar`,`FirstReanimation`,`FirstPhone`,`FirstLeader`" );
+			strcat( string, ",`CrashAngle`,`HourAssist`,`JoinedFaction`,`HoursOnDuty`,`HoursOnDutyHelper`,`WarnCooldown`,`SpeedLimiter`,`AdminDuty`,`CharDescription`,`CharDescriptionColor`, `FirstJob`, `FirstID`, `FirstBuy`, `FirstHouse`, `FirstDescription`" );
+			strcat( string, ", `FirstAction`, `FirstBankUse`, `FirstStats`, `FirstJail`, `FirstStudy`" );
+			format( string, sizeof(string), "%s FROM `samp_users` WHERE `Banned` = '0' LIMIT %d , 1", string, gPayDayLoop);
+			mysql_query(string, PLAYER_DATA_LOAD_NAME_MYSQL, CUSTOM_MAX_PLAYERS, db_con4);
 		}
 		case UPDATE_DATA:
 		{
+			if(!mysql_store_result(db_con3))
+			{
+				ErrorLog("[ERROR:] Can't store result on UPDATE");
+				return 1;
+			}
 			mysql_fetch_field_row(string, "Bank", db_con3);
 			gPlayerData[CUSTOM_MAX_PLAYERS][pBank] = strval(string);
-			
-			mysql_fetch_field_row(string, "PlayerName", db_con3);
-			
-			format(gPlayerData[CUSTOM_MAX_PLAYERS][pName], MAX_PLAYER_NAME, string);
-			
+			mysql_fetch_field_row(gPlayerData[CUSTOM_MAX_PLAYERS][pName], "PlayerName", db_con3);
+			mysql_free_result(db_con3);
+			// printf("[DEBUG:] case UPDATE, debug bank value to add: %d", spareid);
 			format(string, sizeof(string), "UPDATE `samp_users` SET `Bank` = '%d' WHERE `PlayerName` = '%s'", gPlayerData[CUSTOM_MAX_PLAYERS][pBank]+extraid, gPlayerData[CUSTOM_MAX_PLAYERS][pName]);
-			wp_mysql_query(string, SAVE, playerid, db_con3);
+			mysql_query(string, SAVE, playerid, db_con3);
 			return 1;
 		}
 		case SAVE:
 		{
-			// wp_mysql_free_result(db_con2);
+			// mysql_free_result(db_con2);
 		}
 		case SAVE2:
 		{
-			// wp_mysql_free_result(db_con3);
+			// mysql_free_result(db_con3);
 		}
 		case SAVE3:
 		{
-			// wp_mysql_free_result(db_con4);
+			// mysql_free_result(db_con4);
 		}
 		case LOAD_FACTIONS_PAYRANK:
 		{
-			mysql_store_result(db_con2);
-			
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_FACTIONS_PAYRANK");
+				GameModeExit();
+				return 1;
+			}
 			new i = 0;
 
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "FactionID", db_con3);
-				PayRank[i][FactionID] = strval(string);
-				mysql_fetch_field_row(string, "Rank1", db_con3);
-				PayRank[i][Rank1] = strval(string);
-				mysql_fetch_field_row(string, "Rank2", db_con3);
-				PayRank[i][Rank2] = strval(string);
-				mysql_fetch_field_row(string, "Rank3", db_con3);
-				PayRank[i][Rank3] = strval(string);
-				mysql_fetch_field_row(string, "Rank4", db_con3);
-				PayRank[i][Rank4] = strval(string);
-				mysql_fetch_field_row(string, "Rank5", db_con3);
-				PayRank[i][Rank5] = strval(string);
-				mysql_fetch_field_row(string, "Rank6", db_con3);
-				PayRank[i][Rank6] = strval(string);
-				mysql_fetch_field_row(string, "Rank7", db_con3);
-				PayRank[i][Rank7] = strval(string);
-				mysql_fetch_field_row(string, "Rank8", db_con3);
-				PayRank[i][Rank8] = strval(string);
-				mysql_fetch_field_row(string, "Rank9", db_con3);
-				PayRank[i][Rank9] = strval(string);
-				mysql_fetch_field_row(string, "Rank10", db_con3);
-				PayRank[i][Rank10] = strval(string);
+				split2(db_result, arrCoords, '|');
+
+				PayRank[i][FactionID] = strval(arrCoords[1]);
+				PayRank[i][Rank1] = strval(arrCoords[2]);
+				PayRank[i][Rank2] = strval(arrCoords[3]);
+				PayRank[i][Rank3] = strval(arrCoords[4]);
+				PayRank[i][Rank4] = strval(arrCoords[5]);
+				PayRank[i][Rank5] = strval(arrCoords[6]);
+				PayRank[i][Rank6] = strval(arrCoords[7]);
+				PayRank[i][Rank7] = strval(arrCoords[8]);
+				PayRank[i][Rank8] = strval(arrCoords[9]);
+				PayRank[i][Rank9] = strval(arrCoords[10]);
+				PayRank[i][Rank10] = strval(arrCoords[11]);
 				i++;
 			}
 			#if defined DEBUG
 				print("[INFO:] Factions payments loaded [MySQL]");
 			#endif
+
+			mysql_free_result(db_con2);
 		}
 		case LOAD_DYNAMIC_FACTIONS_WEAPONS2:
 		{
-			mysql_store_result(db_con2);
-		
-			new fid;
-
-			while(mysql_retrieve_row(db_con2))
+			if(mysql_store_result(db_con2))
 			{
-				mysql_fetch_field_row(string, "FactionID", db_con2);
-				fid = strval(string);				
-				mysql_fetch_field_row(string, "Ammo1Rank1", db_con2);
-				DynamicFactions[fid][fAmmo1Rank1] = strval(string);
-				mysql_fetch_field_row(string, "Ammo1Rank2", db_con2);
-				DynamicFactions[fid][fAmmo1Rank2] = strval(string);
-				mysql_fetch_field_row(string, "Ammo1Rank3", db_con2);
-				DynamicFactions[fid][fAmmo1Rank3] = strval(string);
-				mysql_fetch_field_row(string, "Ammo1Rank4", db_con2);
-				DynamicFactions[fid][fAmmo1Rank4] = strval(string);
-				mysql_fetch_field_row(string, "Ammo1Rank5", db_con2);
-				DynamicFactions[fid][fAmmo1Rank5] = strval(string);
-				mysql_fetch_field_row(string, "Ammo1Rank6", db_con2);
-				DynamicFactions[fid][fAmmo1Rank6] = strval(string);
-				mysql_fetch_field_row(string, "Ammo1Rank7", db_con2);
-				DynamicFactions[fid][fAmmo1Rank7] = strval(string);
-				mysql_fetch_field_row(string, "Ammo1Rank8", db_con2);
-				DynamicFactions[fid][fAmmo1Rank8] = strval(string);
-				mysql_fetch_field_row(string, "Ammo1Rank9", db_con2);
-				DynamicFactions[fid][fAmmo1Rank9] = strval(string);
-				mysql_fetch_field_row(string, "Ammo1Rank10", db_con2);
-				DynamicFactions[fid][fAmmo1Rank10] = strval(string);
-				
-				mysql_fetch_field_row(string, "Ammo2Rank1", db_con2);
-				DynamicFactions[fid][fAmmo2Rank1] = strval(string);
-				mysql_fetch_field_row(string, "Ammo2Rank2", db_con2);
-				DynamicFactions[fid][fAmmo2Rank2] = strval(string);
-				mysql_fetch_field_row(string, "Ammo2Rank3", db_con2);
-				DynamicFactions[fid][fAmmo2Rank3] = strval(string);
-				mysql_fetch_field_row(string, "Ammo2Rank4", db_con2);
-				DynamicFactions[fid][fAmmo2Rank4] = strval(string);
-				mysql_fetch_field_row(string, "Ammo2Rank5", db_con2);
-				DynamicFactions[fid][fAmmo2Rank5] = strval(string);
-				mysql_fetch_field_row(string, "Ammo2Rank6", db_con2);
-				DynamicFactions[fid][fAmmo2Rank6] = strval(string);
-				mysql_fetch_field_row(string, "Ammo2Rank7", db_con2);
-				DynamicFactions[fid][fAmmo2Rank7] = strval(string);
-				mysql_fetch_field_row(string, "Ammo2Rank8", db_con2);
-				DynamicFactions[fid][fAmmo2Rank8] = strval(string);
-				mysql_fetch_field_row(string, "Ammo2Rank9", db_con2);
-				DynamicFactions[fid][fAmmo2Rank9] = strval(string);
-				mysql_fetch_field_row(string, "Ammo2Rank10", db_con2);
-				DynamicFactions[fid][fAmmo2Rank10] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank1", db_con2);
-				DynamicFactions[fid][fAmmo3Rank1] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank2", db_con2);
-				DynamicFactions[fid][fAmmo3Rank2] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank3", db_con2);
-				DynamicFactions[fid][fAmmo3Rank3] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank4", db_con2);
-				DynamicFactions[fid][fAmmo3Rank4] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank5", db_con2);
-				DynamicFactions[fid][fAmmo3Rank5] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank6", db_con2);
-				DynamicFactions[fid][fAmmo3Rank6] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank7", db_con2);
-				DynamicFactions[fid][fAmmo3Rank7] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank8", db_con2);
-				DynamicFactions[fid][fAmmo3Rank8] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank9", db_con2);
-				DynamicFactions[fid][fAmmo3Rank9] = strval(string);
-				mysql_fetch_field_row(string, "Ammo3Rank10", db_con2);
-				DynamicFactions[fid][fAmmo3Rank10] = strval(string);
+				new fid;
+
+				while(mysql_fetch_row_format(db_result, "|", db_con2))
+				{
+					split2(db_result, arrCoords, '|');
+
+					fid = strval(arrCoords[30]);
+
+					DynamicFactions[fid][fAmmo1Rank1] = strval(arrCoords[0]);
+					DynamicFactions[fid][fAmmo1Rank2] = strval(arrCoords[1]);
+					DynamicFactions[fid][fAmmo1Rank3] = strval(arrCoords[2]);
+					DynamicFactions[fid][fAmmo1Rank4] = strval(arrCoords[3]);
+					DynamicFactions[fid][fAmmo1Rank5] = strval(arrCoords[4]);
+					DynamicFactions[fid][fAmmo1Rank6] = strval(arrCoords[5]);
+					DynamicFactions[fid][fAmmo1Rank7] = strval(arrCoords[6]);
+					DynamicFactions[fid][fAmmo1Rank8] = strval(arrCoords[7]);
+					DynamicFactions[fid][fAmmo1Rank9] = strval(arrCoords[8]);
+					DynamicFactions[fid][fAmmo1Rank10] = strval(arrCoords[9]);
+					DynamicFactions[fid][fAmmo2Rank1] = strval(arrCoords[10]);
+					DynamicFactions[fid][fAmmo2Rank2] = strval(arrCoords[11]);
+					DynamicFactions[fid][fAmmo2Rank3] = strval(arrCoords[12]);
+					DynamicFactions[fid][fAmmo2Rank4] = strval(arrCoords[13]);
+					DynamicFactions[fid][fAmmo2Rank5] = strval(arrCoords[14]);
+					DynamicFactions[fid][fAmmo2Rank6] = strval(arrCoords[15]);
+					DynamicFactions[fid][fAmmo2Rank7] = strval(arrCoords[16]);
+					DynamicFactions[fid][fAmmo2Rank8] = strval(arrCoords[17]);
+					DynamicFactions[fid][fAmmo2Rank9] = strval(arrCoords[18]);
+					DynamicFactions[fid][fAmmo2Rank10] = strval(arrCoords[19]);
+					DynamicFactions[fid][fAmmo3Rank1] = strval(arrCoords[20]);
+					DynamicFactions[fid][fAmmo3Rank2] = strval(arrCoords[21]);
+					DynamicFactions[fid][fAmmo3Rank3] = strval(arrCoords[22]);
+					DynamicFactions[fid][fAmmo3Rank4] = strval(arrCoords[23]);
+					DynamicFactions[fid][fAmmo3Rank5] = strval(arrCoords[24]);
+					DynamicFactions[fid][fAmmo3Rank6] = strval(arrCoords[25]);
+					DynamicFactions[fid][fAmmo3Rank7] = strval(arrCoords[26]);
+					DynamicFactions[fid][fAmmo3Rank8] = strval(arrCoords[27]);
+					DynamicFactions[fid][fAmmo3Rank9] = strval(arrCoords[28]);
+					DynamicFactions[fid][fAmmo3Rank10] = strval(arrCoords[29]);
+				}
+				#if defined DEBUG
+					print("[INFO:] Faction weapons data part 2/2 loaded [MySQL]");
+				#endif
 			}
-			#if defined DEBUG
-				print("[INFO:] Faction weapons data part 2/2 loaded [MySQL]");
-			#endif
+			else
+			{
+				print("[INFO:] Wystapil blad przy pobieraniu danych broni frakcji 2");
+				GameModeExit();
+			}
+			mysql_free_result(db_con2);
+
+
 		}
 		case LOAD_DYNAMIC_FACTIONS_WEAPONS:
 		{
-			new fid;
-
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			if(mysql_store_result(db_con2))
 			{
-				mysql_fetch_field_row(string, "FactionID", db_con2);
-				fid = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank1", db_con2);
-				DynamicFactions[fid][fGun1Rank1] = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank2", db_con2);
-				DynamicFactions[fid][fGun1Rank2] = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank3", db_con2);
-				DynamicFactions[fid][fGun1Rank3] = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank4", db_con2);
-				DynamicFactions[fid][fGun1Rank4] = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank5", db_con2);
-				DynamicFactions[fid][fGun1Rank5] = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank6", db_con2);
-				DynamicFactions[fid][fGun1Rank6] = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank7", db_con2);
-				DynamicFactions[fid][fGun1Rank7] = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank8", db_con2);
-				DynamicFactions[fid][fGun1Rank8] = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank9", db_con2);
-				DynamicFactions[fid][fGun1Rank9] = strval(string);
-				mysql_fetch_field_row(string, "Gun1Rank10", db_con2);
-				DynamicFactions[fid][fGun1Rank10] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank1", db_con2);
-				DynamicFactions[fid][fGun2Rank1] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank2", db_con2);
-				DynamicFactions[fid][fGun2Rank2] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank3", db_con2);
-				DynamicFactions[fid][fGun2Rank3] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank4", db_con2);
-				DynamicFactions[fid][fGun2Rank4] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank5", db_con2);
-				DynamicFactions[fid][fGun2Rank5] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank6", db_con2);
-				DynamicFactions[fid][fGun2Rank6] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank7", db_con2);
-				DynamicFactions[fid][fGun2Rank7] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank8", db_con2);
-				DynamicFactions[fid][fGun2Rank8] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank9", db_con2);
-				DynamicFactions[fid][fGun2Rank9] = strval(string);
-				mysql_fetch_field_row(string, "Gun2Rank10", db_con2);
-				DynamicFactions[fid][fGun2Rank10] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank1", db_con2);
-				DynamicFactions[fid][fGun3Rank1] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank2", db_con2);
-				DynamicFactions[fid][fGun3Rank2] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank3", db_con2);
-				DynamicFactions[fid][fGun3Rank3] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank4", db_con2);
-				DynamicFactions[fid][fGun3Rank4] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank5", db_con2);
-				DynamicFactions[fid][fGun3Rank5] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank6", db_con2);
-				DynamicFactions[fid][fGun3Rank6] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank7", db_con2);
-				DynamicFactions[fid][fGun3Rank7] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank8", db_con2);
-				DynamicFactions[fid][fGun3Rank8] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank9", db_con2);
-				DynamicFactions[fid][fGun3Rank9] = strval(string);
-				mysql_fetch_field_row(string, "Gun3Rank10", db_con2);
-				DynamicFactions[fid][fGun3Rank10] = strval(string);
+				new fid;
+
+				while(mysql_fetch_row_format(db_result, "|", db_con2))
+				{
+					split2(db_result, arrCoords, '|');
+
+					fid = strval(arrCoords[30]);
+
+					DynamicFactions[fid][fGun1Rank1] = strval(arrCoords[0]);
+					DynamicFactions[fid][fGun1Rank2] = strval(arrCoords[1]);
+					DynamicFactions[fid][fGun1Rank3] = strval(arrCoords[2]);
+					DynamicFactions[fid][fGun1Rank4] = strval(arrCoords[3]);
+					DynamicFactions[fid][fGun1Rank5] = strval(arrCoords[4]);
+					DynamicFactions[fid][fGun1Rank6] = strval(arrCoords[5]);
+					DynamicFactions[fid][fGun1Rank7] = strval(arrCoords[6]);
+					DynamicFactions[fid][fGun1Rank8] = strval(arrCoords[7]);
+					DynamicFactions[fid][fGun1Rank9] = strval(arrCoords[8]);
+					DynamicFactions[fid][fGun1Rank10] = strval(arrCoords[9]);
+					DynamicFactions[fid][fGun2Rank1] = strval(arrCoords[10]);
+					DynamicFactions[fid][fGun2Rank2] = strval(arrCoords[11]);
+					DynamicFactions[fid][fGun2Rank3] = strval(arrCoords[12]);
+					DynamicFactions[fid][fGun2Rank4] = strval(arrCoords[13]);
+					DynamicFactions[fid][fGun2Rank5] = strval(arrCoords[14]);
+					DynamicFactions[fid][fGun2Rank6] = strval(arrCoords[15]);
+					DynamicFactions[fid][fGun2Rank7] = strval(arrCoords[16]);
+					DynamicFactions[fid][fGun2Rank8] = strval(arrCoords[17]);
+					DynamicFactions[fid][fGun2Rank9] = strval(arrCoords[18]);
+					DynamicFactions[fid][fGun2Rank10] = strval(arrCoords[19]);
+					DynamicFactions[fid][fGun3Rank1] = strval(arrCoords[20]);
+					DynamicFactions[fid][fGun3Rank2] = strval(arrCoords[21]);
+					DynamicFactions[fid][fGun3Rank3] = strval(arrCoords[22]);
+					DynamicFactions[fid][fGun3Rank4] = strval(arrCoords[23]);
+					DynamicFactions[fid][fGun3Rank5] = strval(arrCoords[24]);
+					DynamicFactions[fid][fGun3Rank6] = strval(arrCoords[25]);
+					DynamicFactions[fid][fGun3Rank7] = strval(arrCoords[26]);
+					DynamicFactions[fid][fGun3Rank8] = strval(arrCoords[27]);
+					DynamicFactions[fid][fGun3Rank9] = strval(arrCoords[28]);
+					DynamicFactions[fid][fGun3Rank10] = strval(arrCoords[29]);
+				}
+				#if defined DEBUG
+					print("[INFO:] Faction weapons data part 1/2 loaded [MySQL]");
+				#endif
 			}
-			#if defined DEBUG
-				print("[INFO:] Faction weapons data part 1/2 loaded [MySQL]");
-			#endif
+			else
+			{
+				print("[INFO:] Wystapil problem przy pobieraniu danych broni frakcji 1");
+				GameModeExit();
+			}
+			mysql_free_result(db_con2);
 		}
 		case RELOAD_DYNAMIC_FACTIONS:
 		{
-			mysql_store_result(db_con2);
-		
-			new i = 0;
-
-			while(mysql_retrieve_row(db_con2))
+			if(mysql_store_result(db_con2))
 			{
-				mysql_fetch_field_row(string, "Name", db_con2);
-				format(DynamicFactions[i][Name], 50, string);
-				mysql_fetch_field_row(string, "Rank1", db_con2);
-				format(DynamicFactions[i][fRank1], 35, string);
-				mysql_fetch_field_row(string, "Rank2", db_con2);
-				format(DynamicFactions[i][fRank2], 35, string);
-				mysql_fetch_field_row(string, "Rank3", db_con2);
-				format(DynamicFactions[i][fRank3], 35, string);
-				mysql_fetch_field_row(string, "Rank4", db_con2);
-				format(DynamicFactions[i][fRank4], 35, string);
-				mysql_fetch_field_row(string, "Rank5", db_con2);
-				format(DynamicFactions[i][fRank5], 35, string);
-				mysql_fetch_field_row(string, "Rank6", db_con2);
-				format(DynamicFactions[i][fRank6], 35, string);
-				mysql_fetch_field_row(string, "Rank7", db_con2);
-				format(DynamicFactions[i][fRank7], 35, string);
-				mysql_fetch_field_row(string, "Rank8", db_con2);
-				format(DynamicFactions[i][fRank8], 35, string);
-				mysql_fetch_field_row(string, "Rank9", db_con2);
-				format(DynamicFactions[i][fRank9], 35, string);
-				mysql_fetch_field_row(string, "Rank10", db_con2);
-				format(DynamicFactions[i][fRank10], 35, string);
-				mysql_fetch_field_row(string, "Skin1", db_con2);
-				DynamicFactions[i][fSkin1] = strval(string);
-				mysql_fetch_field_row(string, "Skin2", db_con2);
-				DynamicFactions[i][fSkin2] = strval(string);
-				mysql_fetch_field_row(string, "Skin3", db_con2);
-				DynamicFactions[i][fSkin3] = strval(string);
-				mysql_fetch_field_row(string, "Skin4", db_con2);
-				DynamicFactions[i][fSkin4] = strval(string);
-				mysql_fetch_field_row(string, "Skin5", db_con2);
-				DynamicFactions[i][fSkin5] = strval(string);
-				mysql_fetch_field_row(string, "Skin6", db_con2);
-				DynamicFactions[i][fSkin6] = strval(string);
-				mysql_fetch_field_row(string, "Skin7", db_con2);
-				DynamicFactions[i][fSkin7] = strval(string);
-				mysql_fetch_field_row(string, "Skin8", db_con2);
-				DynamicFactions[i][fSkin8] = strval(string);
-				mysql_fetch_field_row(string, "Skin9", db_con2);
-				DynamicFactions[i][fSkin9] = strval(string);
-				mysql_fetch_field_row(string, "Skin10", db_con2);
-				DynamicFactions[i][fSkin10] = strval(string);
-				mysql_fetch_field_row(string, "JoinRank", db_con2);
-				DynamicFactions[i][fJoinRank] = strval(string);
-				mysql_fetch_field_row(string, "UseSkins", db_con2);
-				DynamicFactions[i][fUseSkins] = strval(string);
-				mysql_fetch_field_row(string, "RankAmount", db_con2);
-				DynamicFactions[i][fRankAmount] = strval(string);
+				new i;
+				i = 0;
 
-				i++;
+				while(mysql_fetch_row_format(db_result, "|", db_con2))
+				{
+					mysql_fetch_field_row(DynamicFactions[i][Name], "Name", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank1], "Rank1", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank2], "Rank2", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank3], "Rank3", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank4], "Rank4", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank5], "Rank5", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank6], "Rank6", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank7], "Rank7", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank8], "Rank8", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank9], "Rank9", db_con2);
+					mysql_fetch_field_row(DynamicFactions[i][fRank10], "Rank10", db_con2);
+					mysql_fetch_field_row(string, "Skin1", db_con2);
+					DynamicFactions[i][fSkin1] = strval(string);
+					mysql_fetch_field_row(string, "Skin2", db_con2);
+					DynamicFactions[i][fSkin2] = strval(string);
+					mysql_fetch_field_row(string, "Skin3", db_con2);
+					DynamicFactions[i][fSkin3] = strval(string);
+					mysql_fetch_field_row(string, "Skin4", db_con2);
+					DynamicFactions[i][fSkin4] = strval(string);
+					mysql_fetch_field_row(string, "Skin5", db_con2);
+					DynamicFactions[i][fSkin5] = strval(string);
+					mysql_fetch_field_row(string, "Skin6", db_con2);
+					DynamicFactions[i][fSkin6] = strval(string);
+					mysql_fetch_field_row(string, "Skin7", db_con2);
+					DynamicFactions[i][fSkin7] = strval(string);
+					mysql_fetch_field_row(string, "Skin8", db_con2);
+					DynamicFactions[i][fSkin8] = strval(string);
+					mysql_fetch_field_row(string, "Skin9", db_con2);
+					DynamicFactions[i][fSkin9] = strval(string);
+					mysql_fetch_field_row(string, "Skin10", db_con2);
+					DynamicFactions[i][fSkin10] = strval(string);
+					mysql_fetch_field_row(string, "JoinRank", db_con2);
+					DynamicFactions[i][fJoinRank] = strval(string);
+					mysql_fetch_field_row(string, "UseSkins", db_con2);
+					DynamicFactions[i][fUseSkins] = strval(string);
+					mysql_fetch_field_row(string, "RankAmount", db_con2);
+					DynamicFactions[i][fRankAmount] = strval(string);
+
+					i++;
+				}
+				#if defined DEBUG
+					print("[INFO:] Faction data reloaded [MySQL]");
+				#endif
 			}
-			#if defined DEBUG
-				print("[INFO:] Faction data reloaded [MySQL]");
-			#endif
+			else
+			{
+				print("[INFO:] Wystapil problem przy przeladowywaniu danych frakcji");
+			}
+			mysql_free_result(db_con2);
 		}
 		case LOAD_DYNAMIC_FACTIONS:
 		{
 			#if defined DEBUG
 				print("[INFO:] Factions loading started...");
 			#endif
-			
-			mysql_store_result(db_con2);
-			
+			if(!mysql_store_result(db_con2))
+			{
+				print("[INFO:] Wystapil problem przy pobieraniu danych frakcji");
+				GameModeExit();
+				return 1;
+			}
 			if(mysql_num_rows(db_con2) == 0)
 			{
 				print("[INFO:] Brak wpisów we frakcjach !");
 			}
-			
 			new i, Float:px, Float:py, Float:pz;
 			i = 0;
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "Name", db_con2);
-				format(DynamicFactions[i][Name], 50, string);
+				mysql_fetch_field_row(DynamicFactions[i][Name], "Name", db_con2);
 				mysql_fetch_field_row(string, "IsEnabled", db_con2);
 				DynamicFactions[i][IsEnabled] = strval(string);
 				mysql_fetch_field_row(string, "X", db_con2);
@@ -4706,28 +3114,22 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				DynamicFactions[i][m_fY] = floatstr(string);
 				mysql_fetch_field_row(string, "Z", db_con2);
 				DynamicFactions[i][m_fZ] = floatstr(string);
+				mysql_fetch_field_row(string, "Materials", db_con2);
+				DynamicFactions[i][fMaterials] = strval(string);
+				mysql_fetch_field_row(string, "Drugs", db_con2);
+				DynamicFactions[i][fDrugs] = strval(string);
 				mysql_fetch_field_row(string, "Bank", db_con2);
 				DynamicFactions[i][fBank] = strval(string);
-				mysql_fetch_field_row(string, "Rank1", db_con2);
-				format(DynamicFactions[i][fRank1], 35, string);
-				mysql_fetch_field_row(string, "Rank2", db_con2);
-				format(DynamicFactions[i][fRank2], 35, string);
-				mysql_fetch_field_row(string, "Rank3", db_con2);
-				format(DynamicFactions[i][fRank3], 35, string);
-				mysql_fetch_field_row(string, "Rank4", db_con2);
-				format(DynamicFactions[i][fRank4], 35, string);
-				mysql_fetch_field_row(string, "Rank5", db_con2);
-				format(DynamicFactions[i][fRank5], 35, string);
-				mysql_fetch_field_row(string, "Rank6", db_con2);
-				format(DynamicFactions[i][fRank6], 35, string);
-				mysql_fetch_field_row(string, "Rank7", db_con2);
-				format(DynamicFactions[i][fRank7], 35, string);
-				mysql_fetch_field_row(string, "Rank8", db_con2);
-				format(DynamicFactions[i][fRank8], 35, string);
-				mysql_fetch_field_row(string, "Rank9", db_con2);
-				format(DynamicFactions[i][fRank9], 35, string);
-				mysql_fetch_field_row(string, "Rank10", db_con2);
-				format(DynamicFactions[i][fRank10], 35, string);
+				mysql_fetch_field_row(DynamicFactions[i][fRank1], "Rank1", db_con2);
+				mysql_fetch_field_row(DynamicFactions[i][fRank2], "Rank2", db_con2);
+				mysql_fetch_field_row(DynamicFactions[i][fRank3], "Rank3", db_con2);
+				mysql_fetch_field_row(DynamicFactions[i][fRank4], "Rank4", db_con2);
+				mysql_fetch_field_row(DynamicFactions[i][fRank5], "Rank5", db_con2);
+				mysql_fetch_field_row(DynamicFactions[i][fRank6], "Rank6", db_con2);
+				mysql_fetch_field_row(DynamicFactions[i][fRank7], "Rank7", db_con2);
+				mysql_fetch_field_row(DynamicFactions[i][fRank8], "Rank8", db_con2);
+				mysql_fetch_field_row(DynamicFactions[i][fRank9], "Rank9", db_con2);
+				mysql_fetch_field_row(DynamicFactions[i][fRank10], "Rank10", db_con2);
 				mysql_fetch_field_row(string, "Skin1", db_con2);
 				DynamicFactions[i][fSkin1] = strval(string);
 				mysql_fetch_field_row(string, "Skin2", db_con2);
@@ -4902,8 +3304,7 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				DynamicFactions[i][fType] = strval(string);
 				mysql_fetch_field_row(string, "RankAmount", db_con2);
 				DynamicFactions[i][fRankAmount] = strval(string);
-				mysql_fetch_field_row(string, "Color", db_con2);
-				format(DynamicFactions[i][fColor], 128, string);
+				mysql_fetch_field_row(DynamicFactions[i][fColor], "Color", db_con2);
 				mysql_fetch_field_row(string, "MaxCars", db_con2);
 				DynamicFactions[i][fMaxCars] = strval(string);
 				mysql_fetch_field_row(string, "CarsCount", db_con2);
@@ -5212,7 +3613,6 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					DynamicFactions[i][WFactoryCPAmmoPartSetup1ID] = CreateDynamicCP( px+WFCP[2][0], py+WFCP[2][1], pz+WFCP[2][2], 2.0, 0, 0, -1, 5.0 ); // Make weapon subparts
 					DynamicFactions[i][WFactoryCPAmmoPartSetup2ID] = CreateDynamicCP( px+WFCP[4][0], py+WFCP[4][1], pz+WFCP[4][2], 2.0, 0, 0, -1, 5.0 ); // Make weapon subparts
 					DynamicFactions[i][WFactoryCPPartTakeID] = CreateDynamicCP( px+WFCP[3][0], py+WFCP[3][1], pz+WFCP[3][2], 2.0, 0, 0, -1, 5.0 ); // Take/buy ammo/weapon (sub) parts
-					DynamicFactions[i][WFactoryCPSafeID] = CreateDynamicCP( px+WFCP[5][0], py+WFCP[5][1], pz+WFCP[5][2], 2.0, 0, 0, -1, 5.0 ); // Safe
 				}
 				// printf("fCP ID: %d, X %f, Y %f, Z %f", DynamicFactions[i][fCP],DynamicFactions[i][fXDuty],DynamicFactions[i][fYDuty],DynamicFactions[i][fZDuty]);
 				// printf("[FRAKCJE DYNAMICZNE:] Nazwa frakcji: %s, Typ: %d, ID: %d",DynamicFactions[i][Name],DynamicFactions[i][fType],i);
@@ -5222,213 +3622,161 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 			#if defined DEBUG
 				print("[INFO:] Factions loaded [MySQL]");
 			#endif
+			mysql_free_result(db_con2);
 		}
 		case LOAD_CARS_CPARTS:
 		{
-			mysql_store_result(db_con2);
-			
-			new i = 0;
-			
-			while(mysql_retrieve_row(db_con2))
+			if( !mysql_store_result(db_con2) )
 			{
-				mysql_fetch_field_row(string, "ID", db_con2);
-				if(i+1 == strval(string))
+				ErrorLog("[ERROR:] Can't store result on LOAD_CARS_CPARTS");
+				GameModeExit();
+				return 1;
+			}
+			new i = 0;
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				split2(db_result, arrCoords, '|');
+				if(i+1 == strval(arrCoords[0]))
 				{
-					mysql_fetch_field_row(string, "CustomObj1Model", db_con2);
-					gVehData[i][CustomObj1Model] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj1On", db_con2);
-					gVehData[i][CustomObj1On] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj1X", db_con2);
-					gVehData[i][CustomObj1][0] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj1Y", db_con2);
-					gVehData[i][CustomObj1][1] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj1Z", db_con2);
-					gVehData[i][CustomObj1][2] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj1Xr", db_con2);
-					gVehData[i][CustomObj1][3] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj1Yr", db_con2);
-					gVehData[i][CustomObj1][4] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj1Zr", db_con2);
-					gVehData[i][CustomObj1][5] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj2Model", db_con2);
-					gVehData[i][CustomObj2Model] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj2On", db_con2);
-					gVehData[i][CustomObj2On] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj2X", db_con2);
-					gVehData[i][CustomObj2][0] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj2Y", db_con2);
-					gVehData[i][CustomObj2][1] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj2Z", db_con2);
-					gVehData[i][CustomObj2][2] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj2Xr", db_con2);
-					gVehData[i][CustomObj2][3] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj2Yr", db_con2);
-					gVehData[i][CustomObj2][4] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj2Zr", db_con2);
-					gVehData[i][CustomObj2][5] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj3Model", db_con2);
-					gVehData[i][CustomObj3Model] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj3On", db_con2);
-					gVehData[i][CustomObj3On] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj3X", db_con2);
-					gVehData[i][CustomObj3][0] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj3Y", db_con2);
-					gVehData[i][CustomObj3][1] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj3Z", db_con2);
-					gVehData[i][CustomObj3][2] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj3Xr", db_con2);
-					gVehData[i][CustomObj3][3] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj3Yr", db_con2);
-					gVehData[i][CustomObj3][4] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj3Zr", db_con2);
-					gVehData[i][CustomObj3][5] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj4Model", db_con2);
-					gVehData[i][CustomObj4Model] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj4On", db_con2);
-					gVehData[i][CustomObj4On] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj4X", db_con2);
-					gVehData[i][CustomObj4][0] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj4Y", db_con2);
-					gVehData[i][CustomObj4][1] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj4Z", db_con2);
-					gVehData[i][CustomObj4][2] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj4Xr", db_con2);
-					gVehData[i][CustomObj4][3] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj4Yr", db_con2);
-					gVehData[i][CustomObj4][4] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj4Zr", db_con2);
-					gVehData[i][CustomObj4][5] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj5Model", db_con2);
-					gVehData[i][CustomObj5Model] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj5On", db_con2);
-					gVehData[i][CustomObj5On] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj5X", db_con2);
-					gVehData[i][CustomObj5][0] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj5Y", db_con2);
-					gVehData[i][CustomObj5][1] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj5Z", db_con2);
-					gVehData[i][CustomObj5][2] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj5Xr", db_con2);
-					gVehData[i][CustomObj5][3] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj5Yr", db_con2);
-					gVehData[i][CustomObj5][4] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj5Zr", db_con2);
-					gVehData[i][CustomObj5][5] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj6Model", db_con2);
-					gVehData[i][CustomObj6Model] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj6On", db_con2);
-					gVehData[i][CustomObj6On] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj6X", db_con2);
-					gVehData[i][CustomObj6][0] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj6Y", db_con2);
-					gVehData[i][CustomObj6][1] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj6Z", db_con2);
-					gVehData[i][CustomObj6][2] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj6Xr", db_con2);
-					gVehData[i][CustomObj6][3] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj6Yr", db_con2);
-					gVehData[i][CustomObj6][4] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj6Zr", db_con2);
-					gVehData[i][CustomObj6][5] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj7Model", db_con2);
-					gVehData[i][CustomObj7Model] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj7On", db_con2);
-					gVehData[i][CustomObj7On] = strval(string);
-					mysql_fetch_field_row(string, "CustomObj7X", db_con2);
-					gVehData[i][CustomObj7][0] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj7Y", db_con2);
-					gVehData[i][CustomObj7][1] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj7Z", db_con2);
-					gVehData[i][CustomObj7][2] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj7Xr", db_con2);
-					gVehData[i][CustomObj7][3] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj7Yr", db_con2);
-					gVehData[i][CustomObj7][4] = floatstr(string);
-					mysql_fetch_field_row(string, "CustomObj7Zr", db_con2);
-					gVehData[i][CustomObj7][5] = floatstr(string);
+					gVehData[i][CustomObj1Model] = strval(arrCoords[1]);
+					gVehData[i][CustomObj1On] = strval(arrCoords[2]);
+					gVehData[i][CustomObj1][0] = floatstr(arrCoords[3]);
+					gVehData[i][CustomObj1][1] = floatstr(arrCoords[4]);
+					gVehData[i][CustomObj1][2] = floatstr(arrCoords[5]);
+					gVehData[i][CustomObj1][3] = floatstr(arrCoords[6]);
+					gVehData[i][CustomObj1][4] = floatstr(arrCoords[7]);
+					gVehData[i][CustomObj1][5] = floatstr(arrCoords[8]);
+					gVehData[i][CustomObj2Model] = strval(arrCoords[9]);
+					gVehData[i][CustomObj2On] = strval(arrCoords[10]);
+					gVehData[i][CustomObj2][0] = floatstr(arrCoords[11]);
+					gVehData[i][CustomObj2][1] = floatstr(arrCoords[12]);
+					gVehData[i][CustomObj2][2] = floatstr(arrCoords[13]);
+					gVehData[i][CustomObj2][3] = floatstr(arrCoords[14]);
+					gVehData[i][CustomObj2][4] = floatstr(arrCoords[15]);
+					gVehData[i][CustomObj2][5] = floatstr(arrCoords[16]);
+					gVehData[i][CustomObj3Model] = strval(arrCoords[17]);
+					gVehData[i][CustomObj3On] = strval(arrCoords[18]);
+					gVehData[i][CustomObj3][0] = floatstr(arrCoords[19]);
+					gVehData[i][CustomObj3][1] = floatstr(arrCoords[20]);
+					gVehData[i][CustomObj3][2] = floatstr(arrCoords[21]);
+					gVehData[i][CustomObj3][3] = floatstr(arrCoords[22]);
+					gVehData[i][CustomObj3][4] = floatstr(arrCoords[23]);
+					gVehData[i][CustomObj3][5] = floatstr(arrCoords[24]);
+					gVehData[i][CustomObj4Model] = strval(arrCoords[25]);
+					gVehData[i][CustomObj4On] = strval(arrCoords[26]);
+					gVehData[i][CustomObj4][0] = floatstr(arrCoords[27]);
+					gVehData[i][CustomObj4][1] = floatstr(arrCoords[28]);
+					gVehData[i][CustomObj4][2] = floatstr(arrCoords[29]);
+					gVehData[i][CustomObj4][3] = floatstr(arrCoords[30]);
+					gVehData[i][CustomObj4][4] = floatstr(arrCoords[31]);
+					gVehData[i][CustomObj4][5] = floatstr(arrCoords[32]);
+					gVehData[i][CustomObj5Model] = strval(arrCoords[33]);
+					gVehData[i][CustomObj5On] = strval(arrCoords[34]);
+					gVehData[i][CustomObj5][0] = floatstr(arrCoords[35]);
+					gVehData[i][CustomObj5][1] = floatstr(arrCoords[36]);
+					gVehData[i][CustomObj5][2] = floatstr(arrCoords[37]);
+					gVehData[i][CustomObj5][3] = floatstr(arrCoords[38]);
+					gVehData[i][CustomObj5][4] = floatstr(arrCoords[39]);
+					gVehData[i][CustomObj5][5] = floatstr(arrCoords[40]);
+					gVehData[i][CustomObj6Model] = strval(arrCoords[41]);
+					gVehData[i][CustomObj6On] = strval(arrCoords[42]);
+					gVehData[i][CustomObj6][0] = floatstr(arrCoords[43]);
+					gVehData[i][CustomObj6][1] = floatstr(arrCoords[44]);
+					gVehData[i][CustomObj6][2] = floatstr(arrCoords[45]);
+					gVehData[i][CustomObj6][3] = floatstr(arrCoords[46]);
+					gVehData[i][CustomObj6][4] = floatstr(arrCoords[47]);
+					gVehData[i][CustomObj6][5] = floatstr(arrCoords[48]);
+					gVehData[i][CustomObj7Model] = strval(arrCoords[49]);
+					gVehData[i][CustomObj7On] = strval(arrCoords[50]);
+					gVehData[i][CustomObj7][0] = floatstr(arrCoords[51]);
+					gVehData[i][CustomObj7][1] = floatstr(arrCoords[52]);
+					gVehData[i][CustomObj7][2] = floatstr(arrCoords[53]);
+					gVehData[i][CustomObj7][3] = floatstr(arrCoords[54]);
+					gVehData[i][CustomObj7][4] = floatstr(arrCoords[55]);
+					gVehData[i][CustomObj7][5] = floatstr(arrCoords[56]);
 
 					if( gVehData[i][CustomObj1Model] != 0 && gVehData[i][CustomObj1On] == 1 )
 					{
 						gVehData[i][CustomObj1ID] = CreateDynamicObject(
-							gVehData[i][CustomObj1Model],
-							0.0,
-							0.0,
-							-1000.0,
-							0.0,
-							0.0,
-							0.0);
+																					gVehData[i][CustomObj1Model],
+																					0.0,
+																					0.0,
+																					-1000.0,
+																					0.0,
+																					0.0,
+																					0.0);
 						AttachDynamicObjectToVehicle(gVehData[i][CustomObj1ID], i+1, gVehData[i][CustomObj1][0], gVehData[i][CustomObj1][1], gVehData[i][CustomObj1][2], gVehData[i][CustomObj1][3], gVehData[i][CustomObj1][4], gVehData[i][CustomObj1][5]);
 					}
 					if( gVehData[i][CustomObj2Model] != 0  && gVehData[i][CustomObj2On] == 1 )
 					{
 						gVehData[i][CustomObj2ID] = CreateDynamicObject(
-							gVehData[i][CustomObj2Model],
-							0.0,
-							0.0,
-							-1000.0,
-							0.0,
-							0.0,
-							0.0);
+																					gVehData[i][CustomObj2Model],
+																					0.0,
+																					0.0,
+																					-1000.0,
+																					0.0,
+																					0.0,
+																					0.0);
 						AttachDynamicObjectToVehicle(gVehData[i][CustomObj2ID], i+1, gVehData[i][CustomObj2][0], gVehData[i][CustomObj2][1], gVehData[i][CustomObj2][2], gVehData[i][CustomObj2][3], gVehData[i][CustomObj2][4], gVehData[i][CustomObj2][5]);
 					}
 					if( gVehData[i][CustomObj3Model] != 0 && gVehData[i][CustomObj3On] == 1  )
 					{
 						gVehData[i][CustomObj3ID] = CreateDynamicObject(
-							gVehData[i][CustomObj3Model],
-							0.0,
-							0.0,
-							-1000.0,
-							0.0,
-							0.0,
-							0.0);
+																					gVehData[i][CustomObj3Model],
+																					0.0,
+																					0.0,
+																					-1000.0,
+																					0.0,
+																					0.0,
+																					0.0);
 						AttachDynamicObjectToVehicle(gVehData[i][CustomObj3ID], i+1, gVehData[i][CustomObj3][0], gVehData[i][CustomObj3][1], gVehData[i][CustomObj3][2], gVehData[i][CustomObj3][3], gVehData[i][CustomObj3][4], gVehData[i][CustomObj3][5]);
 					}
 					if( gVehData[i][CustomObj4Model] != 0 && gVehData[i][CustomObj4On] == 1  )
 					{
 						gVehData[i][CustomObj4ID] = CreateDynamicObject(
-							gVehData[i][CustomObj4Model],
-							0.0,
-							0.0,
-							-1000.0,
-							0.0,
-							0.0,
-							0.0);
+																					gVehData[i][CustomObj4Model],
+																					0.0,
+																					0.0,
+																					-1000.0,
+																					0.0,
+																					0.0,
+																					0.0);
 						AttachDynamicObjectToVehicle(gVehData[i][CustomObj4ID], i+1, gVehData[i][CustomObj4][0], gVehData[i][CustomObj4][1], gVehData[i][CustomObj4][2], gVehData[i][CustomObj4][3], gVehData[i][CustomObj4][4], gVehData[i][CustomObj4][5]);
 					}
 					if( gVehData[i][CustomObj5Model] != 0 && gVehData[i][CustomObj5On] == 1  )
 					{
 						gVehData[i][CustomObj5ID] = CreateDynamicObject(
-							gVehData[i][CustomObj5Model],
-							0.0,
-							0.0,
-							-1000.0,
-							0.0,
-							0.0,
-							0.0);
+																					gVehData[i][CustomObj5Model],
+																					0.0,
+																					0.0,
+																					-1000.0,
+																					0.0,
+																					0.0,
+																					0.0);
 						AttachDynamicObjectToVehicle(gVehData[i][CustomObj5ID], i+1, gVehData[i][CustomObj5][0], gVehData[i][CustomObj5][1], gVehData[i][CustomObj5][2], gVehData[i][CustomObj5][3], gVehData[i][CustomObj5][4], gVehData[i][CustomObj5][5]);
 					}
 					if( gVehData[i][CustomObj6Model] != 0 && gVehData[i][CustomObj6On] == 1  )
 					{
 						gVehData[i][CustomObj6ID] = CreateDynamicObject(
-							gVehData[i][CustomObj6Model],
-							0.0,
-							0.0,
-							-1000.0,
-							0.0,
-							0.0,
-							0.0);
+																					gVehData[i][CustomObj6Model],
+																					0.0,
+																					0.0,
+																					-1000.0,
+																					0.0,
+																					0.0,
+																					0.0);
 						AttachDynamicObjectToVehicle(gVehData[i][CustomObj6ID], i+1, gVehData[i][CustomObj6][0], gVehData[i][CustomObj6][1], gVehData[i][CustomObj6][2], gVehData[i][CustomObj6][3], gVehData[i][CustomObj6][4], gVehData[i][CustomObj6][5]);
 					}
 					if( gVehData[i][CustomObj7Model] != 0 && gVehData[i][CustomObj7On] == 1  )
 					{
 						gVehData[i][CustomObj7ID] = CreateDynamicObject(
-							gVehData[i][CustomObj7Model],
-							0.0,
-							0.0,
-							-1000.0,
-							0.0,
-							0.0,
-							0.0);
+																					gVehData[i][CustomObj7Model],
+																					0.0,
+																					0.0,
+																					-1000.0,
+																					0.0,
+																					0.0,
+																					0.0);
 						AttachDynamicObjectToVehicle(gVehData[i][CustomObj7ID], i+1, gVehData[i][CustomObj7][0], gVehData[i][CustomObj7][1], gVehData[i][CustomObj7][2], gVehData[i][CustomObj7][3], gVehData[i][CustomObj7][4], gVehData[i][CustomObj7][5]);
 					}
 					i++;
@@ -5437,14 +3785,21 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 			#if defined DEBUG
 				print("[INFO:] Vehicle custom objects loaded [MySQL]");
 			#endif
+
+			mysql_free_result(db_con2);
 		}
 		case LOAD_CARS_CUSTOMIZE:
 		{
-			mysql_store_result(db_con2);
+			if(!mysql_store_result(db_con2))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_CARS_CUSTOMIZE");
+				GameModeExit();
+				return 1;
+			}
 
 			new i = 0;
 
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
 				mysql_fetch_field_row(string, "Spoiler", db_con2);
 				gVehData[i][mVehSpoiler] = strval(string);
@@ -5475,65 +3830,28 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				mysql_fetch_field_row(string, "VentRight", db_con2);
 				gVehData[i][mVehVentRight] = strval(string);
 
-				/*AddVehicleComponent(i+1, gVehData[i][mVehSpoiler]);
-				AddVehicleComponent(i+1, gVehData[i][mVehHood]);
-				AddVehicleComponent(i+1, gVehData[i][mVehRoof]);
-				AddVehicleComponent(i+1, gVehData[i][mVehSideskirt]);
-				AddVehicleComponent(i+1, gVehData[i][mVehLamps]);
-				AddVehicleComponent(i+1, gVehData[i][mVehNitro]);
-				AddVehicleComponent(i+1, gVehData[i][mVehExhaust]);
-				AddVehicleComponent(i+1, gVehData[i][mVehWheels]);
-				AddVehicleComponent(i+1, gVehData[i][mVehStereo]);
-				AddVehicleComponent(i+1, gVehData[i][mVehHydraulics]);
-				AddVehicleComponent(i+1, gVehData[i][mVehFrontBumper]);
-				AddVehicleComponent(i+1, gVehData[i][mVehRearBumper]);
-				AddVehicleComponent(i+1, gVehData[i][mVehVentLeft]);
-				AddVehicleComponent(i+1, gVehData[i][mVehVentRight]);*/
-				if(gVehData[i][mVehModel] != 594)
-				{
-					if(gVehData[i][mVehSpoiler] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehSpoiler]);
-					if(gVehData[i][mVehHood] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehHood]);
-					if(gVehData[i][mVehRoof] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehRoof]);
-					if(gVehData[i][mVehSideskirt] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehSideskirt]);
-					if(gVehData[i][mVehLamps] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehLamps]);
-					if(gVehData[i][mVehNitro] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehNitro]);
-					if(gVehData[i][mVehExhaust] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehExhaust]);
-					if(gVehData[i][mVehWheels] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehWheels]);
-					if(gVehData[i][mVehStereo] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehStereo]);
-					if(gVehData[i][mVehHydraulics] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehHydraulics]);
-					if(gVehData[i][mVehFrontBumper] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehFrontBumper]);
-					if(gVehData[i][mVehRearBumper] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehRearBumper]);
-					if(gVehData[i][mVehVentLeft] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehVentLeft]);
-					if(gVehData[i][mVehVentRight] != 0)
-						AddVehicleComponent(i+1, gVehData[i][mVehVentRight]);
-				}			
+				SetVehicleToRespawnEx(i+1);
 
 				i++;
 			}
 			#if defined DEBUG
 				print("[INFO:] Dynamic vehicles customize loaded [MySQL]");
 			#endif
+
+			mysql_free_result(db_con2);
 		}
 		case LOAD_GANG_ZONES:
 		{
-			mysql_store_result(db_con2);
+			if(!mysql_store_result(db_con2))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_GANG_ZONES");
+				GameModeExit();
+				return 1;
+			}
 			
 			new i = 0;
 			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
 				mysql_fetch_field_row(string, "PosMinX", db_con2);
 				DynamicZones[i][mPosMinX] = floatstr(string);
@@ -5570,21 +3888,24 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				print("[INFO:] Dynamic vehicles loaded [MySQL]");
 			#endif
 
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 		case LOAD_DYNAMIC_CARS:
 		{
+			if(!mysql_store_result(db_con2))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_DYNAMIC_CARS");
+				GameModeExit();
+				return 1;
+			}
 
 			new i, id, lightsd;
 			i = 0;
 
 			new enginedyn,lights,alarm,doors,bonnet,boot,objective;
 
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "ID", db_con2);
 				mysql_fetch_field_row(string, "VehModel", db_con2);
 				gVehData[i][mVehModel] = strval(string);
 				mysql_fetch_field_row(string, "VehX", db_con2);
@@ -5606,8 +3927,6 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				gVehData[i][mVehColor1] = strval(string);
 				mysql_fetch_field_row(string, "VehColor2", db_con2);
 				gVehData[i][mVehColor2] = strval(string);
-				mysql_fetch_field_row(string, "VehPaintJob", db_con2);
-				gVehData[i][mVehPaintJob] = strval(string);
 				mysql_fetch_field_row(string, "VehFaction", db_con2);
 				gVehData[i][mVehFaction] = strval(string);
 				mysql_fetch_field_row(string, "VehVinNo", db_con2);
@@ -5616,16 +3935,9 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				gVehData[i][mVehType] = strval(string);
 				mysql_fetch_field_row(string, "VehOwned", db_con2);
 				gVehData[i][mVehOwned] = strval(string);
-				mysql_fetch_field_row(string, "Owner", db_con2);
-				format(gVehData[i][Owner], MAX_PLAYER_NAME, string);
+				mysql_fetch_field_row(gVehData[i][Owner], "Owner", db_con2);
 				mysql_fetch_field_row(string, "Price", db_con2);
 				gVehData[i][Price] = strval(string);
-				mysql_fetch_field_row(string, "Renter", db_con2);
-				format(gVehData[i][mRenter], MAX_PLAYER_NAME, string);
-				mysql_fetch_field_row(string, "RentPrice", db_con2);
-				gVehData[i][mRentPrice] = strval(string);
-				mysql_fetch_field_row(string, "RentPenalty", db_con2);
-				gVehData[i][mRentPenalty] = strval(string);
 				mysql_fetch_field_row(string, "Closed", db_con2);
 				gVehData[i][Closed] = strval(string);
 				mysql_fetch_field_row(string, "CarResetT", db_con2);
@@ -5888,36 +4200,21 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				gVehData[i][VItem14param4] = strval(string);
 				mysql_fetch_field_row(string, "Item15param4", db_con2);
 				gVehData[i][VItem15param4] = strval(string);
-				mysql_fetch_field_row(string, "Item1param5", db_con2);
-				format(gVehData[i][VItem1param5], 64, string);
-				mysql_fetch_field_row(string, "Item2param5", db_con2);
-				format(gVehData[i][VItem2param5], 64, string);
-				mysql_fetch_field_row(string, "Item3param5", db_con2);
-				format(gVehData[i][VItem3param5], 64, string);
-				mysql_fetch_field_row(string, "Item4param5", db_con2);
-				format(gVehData[i][VItem4param5], 64, string);
-				mysql_fetch_field_row(string, "Item5param5", db_con2);
-				format(gVehData[i][VItem5param5], 64, string);
-				mysql_fetch_field_row(string, "Item6param5", db_con2);
-				format(gVehData[i][VItem6param5], 64, string);
-				mysql_fetch_field_row(string, "Item7param5", db_con2);
-				format(gVehData[i][VItem7param5], 64, string);
-				mysql_fetch_field_row(string, "Item8param5", db_con2);
-				format(gVehData[i][VItem8param5], 64, string);
-				mysql_fetch_field_row(string, "Item9param5", db_con2);
-				format(gVehData[i][VItem9param5], 64, string);
-				mysql_fetch_field_row(string, "Item10param5", db_con2);
-				format(gVehData[i][VItem10param5], 64, string);
-				mysql_fetch_field_row(string, "Item11param5", db_con2);
-				format(gVehData[i][VItem11param5], 64, string);
-				mysql_fetch_field_row(string, "Item12param5", db_con2);
-				format(gVehData[i][VItem12param5], 64, string);
-				mysql_fetch_field_row(string, "Item13param5", db_con2);
-				format(gVehData[i][VItem13param5], 64, string);
-				mysql_fetch_field_row(string, "Item14param5", db_con2);
-				format(gVehData[i][VItem14param5], 64, string);
-				mysql_fetch_field_row(string, "Item15param5", db_con2);
-				format(gVehData[i][VItem15param5], 64, string);
+				mysql_fetch_field_row(gVehData[i][VItem1param5], "Item1param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem2param5], "Item2param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem3param5], "Item3param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem4param5], "Item4param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem5param5], "Item5param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem6param5], "Item6param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem7param5], "Item7param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem8param5], "Item8param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem9param5], "Item9param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem10param5], "Item10param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem11param5], "Item11param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem12param5], "Item12param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem13param5], "Item13param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem14param5], "Item14param5", db_con2);
+				mysql_fetch_field_row(gVehData[i][VItem15param5], "Item15param5", db_con2);
 				mysql_fetch_field_row(string, "Item1param6", db_con2);
 				gVehData[i][VItem1param6] = strval(string);
 				mysql_fetch_field_row(string, "Item2param6", db_con2);
@@ -5976,21 +4273,13 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				DismountSirenFromVehicle(i);
 				
 				if(gVehData[i][CarSerial] < 10 && gVehData[i][CarSerial] > 0)
-				{
 					format(string, sizeof(string), "SA-000%d", gVehData[i][CarSerial]);
-				}
 				if(gVehData[i][CarSerial] > 10 && gVehData[i][CarSerial] < 100)
-				{
 					format(string, sizeof(string), "SA-00%d", gVehData[i][CarSerial]);
-				}
 				if(gVehData[i][CarSerial] > 100 && gVehData[i][CarSerial] < 1000)
-				{
 					format(string, sizeof(string), "SA-0%d", gVehData[i][CarSerial]);
-				}
 				if(gVehData[i][CarSerial] > 1000)
-				{
 					format(string, sizeof(string), "SA-%d", gVehData[i][CarSerial]);
-				}
 
 				if(gVehData[i][mVehModel] == 431)
 				{
@@ -6004,6 +4293,7 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					if(IsAMotorBike(id) && gVehData[i][mVehModel] != 522 && gVehData[i][mVehModel] != 471 && gVehData[i][mVehModel] != 468)
 					{
 						SetVehicleNumberPlate(id, string);
+						// veh3dserial[i] = CreateDynamic3DTextLabel(string, COLOR_WHITE, 0.0, -1.0, 0.3, 20.0, INVALID_PLAYER_ID, id, 0);
 					}
 					else if(gVehData[i][mVehModel] == 522 || gVehData[i][mVehModel] == 471 || gVehData[i][mVehModel] == 468)
 					{
@@ -6024,45 +4314,30 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					if(IsABoat(id) == 0 && IsABike(id) == 0 && IsAPlane(id) == 0 && IsAHelicopter(id) == 0 && IsAMotorBike(id) == 0)
 					{
 						SetVehicleNumberPlate(id, string);
+						// veh3dserial[i] = CreateDynamic3DTextLabel(string, COLOR_WHITE, 0.0, -2.5, -0.5, 20.0, INVALID_PLAYER_ID, id, 0);
 					}
 				}
-				
-				RefreshVehicleDescription(id);
-				
-				if(gVehData[i][mVehPaintJob])
-				{
-					ChangeVehiclePaintjob(id, gVehData[i][mVehPaintJob]);
-				}
-				
+
+				if(gVehData[i][ReadyToSell] == 1)
+					gVehData[i][Veh3DSell] = CreateDynamic3DTextLabel("Sprzedam !", COLOR_LIGHTBLUE, 0.0, 0.0, 0.6, 5.0, INVALID_PLAYER_ID, id, 1);
 				if(gVehData[i][mVehFaction] != 255)
 				{
-					if(DynamicFactions[gVehData[i][mVehFaction]][fType] == 6)
+					if(DynamicFactions[ gVehData[i][mVehFaction] ][fType] == 6)
 					{
 						gVehData[i][Veh3DTaxiNfo] = CreateDynamic3DTextLabel("TAXI", COLOR_YELLOW, 0.0, 0.0, 1.0, 20.0, INVALID_PLAYER_ID, id, 1);
 						if( DynamicFactions[ gVehData[i][mVehFaction] ][fTaxiEnterCost] > 0 )
-							format( string, sizeof(string), "cena za KM: $%d + $%d", DynamicFactions[ gVehData[i][mVehFaction] ][fTaxiKMCost], DynamicFactions[ gVehData[i][mVehFaction] ][fTaxiEnterCost] );
+							format( string, sizeof(string), "cena za KM: %d$ + %d$", DynamicFactions[ gVehData[i][mVehFaction] ][fTaxiKMCost], DynamicFactions[ gVehData[i][mVehFaction] ][fTaxiEnterCost] );
 						else
-							format( string, sizeof(string), "cena za KM: $%d", DynamicFactions[ gVehData[i][mVehFaction] ][fTaxiKMCost] );
+							format( string, sizeof(string), "cena za KM: %d$", DynamicFactions[ gVehData[i][mVehFaction] ][fTaxiKMCost] );
 						gVehData[i][Veh3DTaxiNfo2] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, 0.0, 0.0, 0.8, 20.0, INVALID_PLAYER_ID, id, 1);
 					}
 				}
-				
-				// Predefiniowane opisy autobusów dla botów
-				if(i+1 == 1999)
-				{
-					UpdateDynamic3DTextLabelText(BusRoute[i], COLOR_LIGHTYELLOW, gBusTrackDesc[0]);
-				}
-				else if(i+1 == 1998)
-				{
-					UpdateDynamic3DTextLabelText(BusRoute[i], COLOR_LIGHTYELLOW, "| MG->BB->DM->MG");
-				}
-				
 				i++;
 				// }
 				// else
 				// {
 					// format(string, sizeof(string), "INSERT INTO `samp_vehicles` (`ID`) VALUES ('%d')", i+1);
-					// wp_mysql_query(string);
+					// mysql_query(string);
 
 					// gVehData[i][mVehModel] = 594;
 					// gVehData[i][mVehX] = 0.0;
@@ -6102,17 +4377,21 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 			#if defined DEBUG
 				print("[INFO:] Dynamic vehicles loaded [MySQL]");
 			#endif
+
+			mysql_free_result(db_con2);
 		}
 		case LOAD_ITEM_FACTORIES:
 		{
-			new i = 0;
-			
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			if(!mysql_store_result(db_con2))
 			{
-				mysql_fetch_field_row(string, "name", db_con2);
-				format(gItemFactories[i][fName], 128, string);
+				ErrorLog("[ERROR:] Can't store result on LOAD_ITEM_FACTORIES");
+				GameModeExit();
+				return 1;
+			}
+			new i = 0;
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				mysql_fetch_field_row(gItemFactories[i][fName], "name", db_con2);
 				mysql_fetch_field_row(string, "posX", db_con2);
 				gItemFactories[i][fPosX] = floatstr(string);
 				mysql_fetch_field_row(string, "posY", db_con2);
@@ -6244,7 +4523,7 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 
 				i++;
 			}
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 			#if defined DEBUG
 				print("[INFO:] Loaded item factories [MySQL]");
 			#endif
@@ -6252,47 +4531,30 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 		}
 		case LOAD_CUSTOM_OBJECTS:
 		{
+			if(!mysql_store_result(db_con2))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_CUSTOM_OBJECTS");
+				GameModeExit();
+				return 1;
+			}
+
 			new i = 0;
 
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "ID", db_con2);
-				i = strval(string)-1;
-				mysql_fetch_field_row(string, "cstSlotUsed", db_con2);
-				if(strval(string))
+				split2(db_result, arrCoords, '|');
+				i = strval(arrCoords[0])-1;
+				if(strval(arrCoords[1]))
 					gCustomObj[i][cstSlotUsed] = true;
 				else
 					gCustomObj[i][cstSlotUsed] = false;
-				mysql_fetch_field_row(string, "cstObjModel", db_con2);
-				gCustomObj[i][cstObjModel] = strval(string);
-				mysql_fetch_field_row(string, "cstObjVW", db_con2);
-				gCustomObj[i][cstObjVW] = strval(string);
-				mysql_fetch_field_row(string, "cstObjInt", db_con2);
-				gCustomObj[i][cstObjInt] = strval(string);		
-				mysql_fetch_field_row(string, "cstObjOwner", db_con2);		
-				format(gCustomObj[i][cstObjOwner], MAX_PLAYER_NAME, "%s", string);
-				
-				new Float:x, Float:y, Float:z, Float:xr, Float:yr, Float:zr;
-				mysql_fetch_field_row(string, "cstObjX", db_con2);
-				x = floatstr(string);
-				mysql_fetch_field_row(string, "cstObjY", db_con2);
-				y = floatstr(string);
-				mysql_fetch_field_row(string, "cstObjZ", db_con2);
-				z = floatstr(string);
-				mysql_fetch_field_row(string, "cstObjRX", db_con2);
-				xr = floatstr(string);
-				mysql_fetch_field_row(string, "cstObjRY", db_con2);
-				yr = floatstr(string);
-				mysql_fetch_field_row(string, "cstObjRZ", db_con2);
-				zr = floatstr(string);
-				
+				gCustomObj[i][cstObjModel] = strval(arrCoords[2]);
+				gCustomObj[i][cstObjVW] = strval(arrCoords[3]);
+				gCustomObj[i][cstObjInt] = strval(arrCoords[4]);
+				format(gCustomObj[i][cstObjOwner], MAX_PLAYER_NAME, "%s", arrCoords[5]);
 				if(gCustomObj[i][cstSlotUsed] && gCustomObj[i][cstObjModel] != 0)
 				{
-					
-					gCustomObj[i][cstObjID] = CreateDynamicObject(gCustomObj[i][cstObjModel], x, y, z, xr, yr, zr, gCustomObj[i][cstObjVW], gCustomObj[i][cstObjInt], -1, 600.0);
-					SetDynamicObjectRot(gCustomObj[i][cstObjID], xr, yr, zr);
+					gCustomObj[i][cstObjID] = CreateDynamicObject(gCustomObj[i][cstObjModel], floatstr(arrCoords[6]), floatstr(arrCoords[7]), floatstr(arrCoords[8]), floatstr(arrCoords[9]), floatstr(arrCoords[10]), floatstr(arrCoords[11]), gCustomObj[i][cstObjVW], gCustomObj[i][cstObjInt], -1, 400.0);
 					// foreach(Player, j)
 					// {
 						// gCustomObjTextID1[j][i] = CreateDynamic3DTextLabel(" ", COLOR_LIGHTBLUE, floatstr(arrCoords[6]), floatstr(arrCoords[7]), floatstr(arrCoords[8])    , 100.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, gCustomObj[i][cstObjVW], -1, j, 100.0 );
@@ -6306,20 +4568,26 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					// gCustomObj[i][cstText3dID4] = CreateDynamic3DTextLabel(" ", COLOR_LIGHTBLUE, floatstr(arrCoords[6]), floatstr(arrCoords[7]), floatstr(arrCoords[8])+0.2, 100.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, gCustomObj[i][cstObjVW], -1, -1, 100.0 );
 				}
 			}
+			mysql_free_result(db_con2);
 			#if defined DEBUG
 				print("[INFO:] Custom objects loaded [MySQL]");
 			#endif
 		}
 		case LOAD_HOUSES_DATA:
-		{			
-			new i = 0;
-
-			mysql_store_result(db_con2);
+		{
+			if(!mysql_store_result(db_con2))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_HOUSES_DATA");
+				GameModeExit();
+				return 1;
+			}
 			
-			while(mysql_retrieve_row(db_con2))
+			new i;
+			i = 0;
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{				
-				mysql_fetch_field_row(string, "Description", db_con2);
-				format(HousesData[i][mDescription], 64, "%s", string);
+				mysql_fetch_field_row(HousesData[i][mDescription], "Description", db_con2);
 				mysql_fetch_field_row(string, "Size", db_con2);
 				HousesData[i][mSize] = strval(string);
 				mysql_fetch_field_row(string, "ExitX", db_con2);
@@ -6338,193 +4606,142 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 			#if defined DEBUG
 				print("[INFO:] Houses data reloaded [MySQL]");
 			#endif
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 		case LOAD_HOUSES_ITEMS:
 		{
-			new i = 0;
-			
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			if( !mysql_store_result(db_con2) )
 			{
-				mysql_fetch_field_row(string, "HItem1", db_con2);
-				Houses[i][HItem1] = strval(string);
-				mysql_fetch_field_row(string, "HItem2", db_con2);
-				Houses[i][HItem2] = strval(string);
-				mysql_fetch_field_row(string, "HItem3", db_con2);
-				Houses[i][HItem3] = strval(string);
-				mysql_fetch_field_row(string, "HItem4", db_con2);
-				Houses[i][HItem4] = strval(string);
-				mysql_fetch_field_row(string, "HItem5", db_con2);
-				Houses[i][HItem5] = strval(string);
-				mysql_fetch_field_row(string, "HItem1type", db_con2);
-				Houses[i][HItem1type] = strval(string);
-				mysql_fetch_field_row(string, "HItem2type", db_con2);
-				Houses[i][HItem2type] = strval(string);
-				mysql_fetch_field_row(string, "HItem3type", db_con2);
-				Houses[i][HItem3type] = strval(string);
-				mysql_fetch_field_row(string, "HItem4type", db_con2);
-				Houses[i][HItem4type] = strval(string);
-				mysql_fetch_field_row(string, "HItem5type", db_con2);
-				Houses[i][HItem5type] = strval(string);
-				mysql_fetch_field_row(string, "HItem1param", db_con2);
-				Houses[i][HItem1param] = strval(string);
-				mysql_fetch_field_row(string, "HItem2param", db_con2);
-				Houses[i][HItem2param] = strval(string);
-				mysql_fetch_field_row(string, "HItem3param", db_con2);
-				Houses[i][HItem3param] = strval(string);
-				mysql_fetch_field_row(string, "HItem4param", db_con2);
-				Houses[i][HItem4param] = strval(string);
-				mysql_fetch_field_row(string, "HItem5param", db_con2);
-				Houses[i][HItem5param] = strval(string);
-				mysql_fetch_field_row(string, "HItem1param2", db_con2);
-				Houses[i][HItem1param2] = strval(string);
-				mysql_fetch_field_row(string, "HItem2param2", db_con2);
-				Houses[i][HItem2param2] = strval(string);
-				mysql_fetch_field_row(string, "HItem3param2", db_con2);
-				Houses[i][HItem3param2] = strval(string);
-				mysql_fetch_field_row(string, "HItem4param2", db_con2);
-				Houses[i][HItem4param2] = strval(string);
-				mysql_fetch_field_row(string, "HItem5param2", db_con2);
-				Houses[i][HItem5param2] = strval(string);
-				mysql_fetch_field_row(string, "HItem1param3", db_con2);
-				Houses[i][HItem1param3] = strval(string);
-				mysql_fetch_field_row(string, "HItem2param3", db_con2);
-				Houses[i][HItem2param3] = strval(string);
-				mysql_fetch_field_row(string, "HItem3param3", db_con2);
-				Houses[i][HItem3param3] = strval(string);
-				mysql_fetch_field_row(string, "HItem4param3", db_con2);
-				Houses[i][HItem4param3] = strval(string);
-				mysql_fetch_field_row(string, "HItem5param3", db_con2);
-				Houses[i][HItem5param3] = strval(string);
-				mysql_fetch_field_row(string, "HItem1param4", db_con2);
-				Houses[i][HItem1param4] = strval(string);
-				mysql_fetch_field_row(string, "HItem2param4", db_con2);
-				Houses[i][HItem2param4] = strval(string);
-				mysql_fetch_field_row(string, "HItem3param4", db_con2);
-				Houses[i][HItem3param4] = strval(string);
-				mysql_fetch_field_row(string, "HItem4param4", db_con2);
-				Houses[i][HItem4param4] = strval(string);
-				mysql_fetch_field_row(string, "HItem5param4", db_con2);
-				Houses[i][HItem5param4] = strval(string);
-				mysql_fetch_field_row(string, "HItem1param5", db_con2);
-				format(Houses[i][HItem1param5], 64, string);
-				mysql_fetch_field_row(string, "HItem2param5", db_con2);
-				format(Houses[i][HItem2param5], 64, string);
-				mysql_fetch_field_row(string, "HItem3param5", db_con2);
-				format(Houses[i][HItem3param5], 64, string);
-				mysql_fetch_field_row(string, "HItem4param5", db_con2);
-				format(Houses[i][HItem4param5], 64, string);
-				mysql_fetch_field_row(string, "HItem5param5", db_con2);
-				format(Houses[i][HItem5param5], 64, string);
-				mysql_fetch_field_row(string, "HItem1param6", db_con2);
-				Houses[i][HItem1param6] = strval(string);
-				mysql_fetch_field_row(string, "HItem2param6", db_con2);
-				Houses[i][HItem2param6] = strval(string);
-				mysql_fetch_field_row(string, "HItem3param6", db_con2);
-				Houses[i][HItem3param6] = strval(string);
-				mysql_fetch_field_row(string, "HItem4param6", db_con2);
-				Houses[i][HItem4param6] = strval(string);
-				mysql_fetch_field_row(string, "HItem5param6", db_con2);
-				Houses[i][HItem5param6] = strval(string);
+				ErrorLog("[ERROR:] Can't store result on LOAD_HOUSES_ITEMS");
+				GameModeExit();
+				return 1;
+			}
+
+			new i;
+			i = 0;
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				split2(db_result, arrCoords, '|');
+
+				Houses[i][HItem1] = strval(arrCoords[1]);
+				Houses[i][HItem2] = strval(arrCoords[2]);
+				Houses[i][HItem3] = strval(arrCoords[3]);
+				Houses[i][HItem4] = strval(arrCoords[4]);
+				Houses[i][HItem5] = strval(arrCoords[5]);
+				Houses[i][HItem1type] = strval(arrCoords[6]);
+				Houses[i][HItem2type] = strval(arrCoords[7]);
+				Houses[i][HItem3type] = strval(arrCoords[8]);
+				Houses[i][HItem4type] = strval(arrCoords[9]);
+				Houses[i][HItem5type] = strval(arrCoords[10]);
+				Houses[i][HItem1param] = strval(arrCoords[11]);
+				Houses[i][HItem2param] = strval(arrCoords[12]);
+				Houses[i][HItem3param] = strval(arrCoords[13]);
+				Houses[i][HItem4param] = strval(arrCoords[14]);
+				Houses[i][HItem5param] = strval(arrCoords[15]);
+				Houses[i][HItem1param2] = strval(arrCoords[16]);
+				Houses[i][HItem2param2] = strval(arrCoords[17]);
+				Houses[i][HItem3param2] = strval(arrCoords[18]);
+				Houses[i][HItem4param2] = strval(arrCoords[19]);
+				Houses[i][HItem5param2] = strval(arrCoords[20]);
+				Houses[i][HItem1param3] = strval(arrCoords[21]);
+				Houses[i][HItem2param3] = strval(arrCoords[22]);
+				Houses[i][HItem3param3] = strval(arrCoords[23]);
+				Houses[i][HItem4param3] = strval(arrCoords[24]);
+				Houses[i][HItem5param3] = strval(arrCoords[25]);
+				Houses[i][HItem1param4] = strval(arrCoords[26]);
+				Houses[i][HItem2param4] = strval(arrCoords[27]);
+				Houses[i][HItem3param4] = strval(arrCoords[28]);
+				Houses[i][HItem4param4] = strval(arrCoords[29]);
+				Houses[i][HItem5param4] = strval(arrCoords[30]);
+				strdel(Houses[i][HItem1param5], 0, 64);
+				strins(Houses[i][HItem1param5], arrCoords[31], 0, 64);
+				strdel(Houses[i][HItem2param5], 0, 64);
+				strins(Houses[i][HItem2param5], arrCoords[32], 0, 64);
+				strdel(Houses[i][HItem3param5], 0, 64);
+				strins(Houses[i][HItem3param5], arrCoords[33], 0, 64);
+				strdel(Houses[i][HItem4param5], 0, 64);
+				strins(Houses[i][HItem4param5], arrCoords[34], 0, 64);
+				strdel(Houses[i][HItem5param5], 0, 64);
+				strins(Houses[i][HItem5param5], arrCoords[35], 0, 64);
+				Houses[i][HItem1param6] = strval(arrCoords[36]);
+				Houses[i][HItem2param6] = strval(arrCoords[37]);
+				Houses[i][HItem3param6] = strval(arrCoords[38]);
+				Houses[i][HItem4param6] = strval(arrCoords[39]);
+				Houses[i][HItem5param6] = strval(arrCoords[40]);
 				i++;
 			}
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 			#if defined DEBUG
 				print("[INFO:] Houses items loaded [MySQL]");
 			#endif
 		}
 		case LOAD_BUILDINGS:
 		{
-			new i = 0;
-			
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			if( !mysql_store_result(db_con2) )
 			{
-				mysql_fetch_field_row(string, "BuildingName", db_con2);
-				format(Building[i][BuildingName], 128, string);
-				mysql_fetch_field_row(string, "FactionOwnerId", db_con2);
-				Building[i][FactionOwnerId] = strval(string);
-				mysql_fetch_field_row(string, "Cash", db_con2);
-				Building[i][Cash] = strval(string);
-				mysql_fetch_field_row(string, "StreetNo", db_con2);
-				Building[i][StreetNo] = strval(string);
-				mysql_fetch_field_row(string, "Price", db_con2);
-				Building[i][Price] = strval(string);
-				mysql_fetch_field_row(string, "ForSale", db_con2);
-				Building[i][ForSale] = strval(string);
-				mysql_fetch_field_row(string, "EnterX", db_con2);
-				Building[i][EnterX] = floatstr(string);
-				mysql_fetch_field_row(string, "EnterY", db_con2);
-				Building[i][EnterY] = floatstr(string);
-				mysql_fetch_field_row(string, "EnterZ", db_con2);
-				Building[i][EnterZ] = floatstr(string);
-				mysql_fetch_field_row(string, "EntranceFee", db_con2);
-				Building[i][EntranceFee] = strval(string);
-				mysql_fetch_field_row(string, "EnterWorld", db_con2);
-				Building[i][EnterWorld] = strval(string);
-				mysql_fetch_field_row(string, "EnterInterior", db_con2);
-				Building[i][EnterInterior] = strval(string);
-				mysql_fetch_field_row(string, "EnterAngle", db_con2);
-				Building[i][EnterAngle] = floatstr(string);
-				mysql_fetch_field_row(string, "ExitX", db_con2);
-				Building[i][ExitX] = floatstr(string);
-				mysql_fetch_field_row(string, "ExitY", db_con2);
-				Building[i][ExitY] = floatstr(string);
-				mysql_fetch_field_row(string, "ExitZ", db_con2);
-				Building[i][ExitZ] = floatstr(string);
-				mysql_fetch_field_row(string, "ExitInterior", db_con2);
-				Building[i][ExitInterior] = strval(string);
-				mysql_fetch_field_row(string, "ExitAngle", db_con2);
-				Building[i][ExitAngle] = floatstr(string);
-				mysql_fetch_field_row(string, "Locked", db_con2);
-				Building[i][Locked] = strval(string);
-				mysql_fetch_field_row(string, "Opened", db_con2);
-				Building[i][Opened] = strval(string);
-				mysql_fetch_field_row(string, "Closed", db_con2);
-				Building[i][Closed] = strval(string);
-				mysql_fetch_field_row(string, "ObjectID", db_con2);
-				Building[i][ObjectID] = strval(string);
-				mysql_fetch_field_row(string, "BuildingType", db_con2);
-				Building[i][BuildingType] = strval(string);
-				mysql_fetch_field_row(string, "ShowIcon", db_con2);
-				Building[i][ShowIcon] = strval(string);
-				mysql_fetch_field_row(string, "IconType", db_con2);
-				Building[i][IconType] = strval(string);
-				mysql_fetch_field_row(string, "BuildingPlaced", db_con2);
-				Building[i][mBuildingPlaced] = strval(string);
-				
-				RefreshBuildingDescription(i);				
-				
-				//format(string, sizeof(string), "ID: %d<br />Description: %s", i, Building[i][BuildingName]);
-				//addDmapIcon(Building[i][EnterX], Building[i][EnterY], 32, "Building", string);
-				
+				ErrorLog("[ERROR:] Can't store result on LOAD_BUILDINGS");
+				GameModeExit();
+				return 1;
+			}
+
+			new i = 0;
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				split2(db_result, arrCoords, '|');
+
+				strmid(Building[i][BuildingName], arrCoords[1], 0, strlen(arrCoords[1]), 255);
+				Building[i][EnterX] = floatstr(arrCoords[2]);
+				Building[i][EnterY] = floatstr(arrCoords[3]);
+				Building[i][EnterZ] = floatstr(arrCoords[4]);
+				Building[i][EntranceFee] = strval(arrCoords[5]);
+				Building[i][EnterWorld] = strval(arrCoords[6]);
+				Building[i][EnterInterior] = strval(arrCoords[7]);
+				Building[i][EnterAngle] = floatstr(arrCoords[8]);
+				Building[i][ExitX] = floatstr(arrCoords[9]);
+				Building[i][ExitY] = floatstr(arrCoords[10]);
+				Building[i][ExitZ] = floatstr(arrCoords[11]);
+				Building[i][ExitInterior] = strval(arrCoords[12]);
+				Building[i][ExitAngle] = floatstr(arrCoords[13]);
+				Building[i][Locked] = strval(arrCoords[14]);
+				Building[i][Opened] = strval(arrCoords[15]);
+				Building[i][Closed] = strval(arrCoords[16]);
+				Building[i][ObjectID] = strval(arrCoords[17]);
+				Building[i][BuildingType] = strval(arrCoords[18]);
+				Building[i][ShowIcon] = strval(arrCoords[19]);
+				Building[i][IconType] = strval(arrCoords[20]);
+
+				if( Building[i][EnterX] != 0.0 || Building[i][EnterY] != 0.0 )
+					Building[i][PickupID] = CreateDynamicPickup(1239, 1, Building[i][EnterX], Building[i][EnterY], Building[i][EnterZ]);
+
 				i++;
 			}
+			mysql_free_result(db_con2);
 			#if defined DEBUG
 				print("[INFO:] Buildings loaded [MySQL]");
 			#endif
 		}
 		case LOAD_HOUSES:
 		{
-			new i = 0;
-
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			if( !mysql_store_result(db_con2) )
 			{
-				mysql_fetch_field_row(string, "Description", db_con2);
-				format(Houses[i][Description], 128, string);
-				mysql_fetch_field_row(string, "Owner", db_con2);
-				format(Houses[i][Owner], MAX_PLAYER_NAME, string);
+				ErrorLog("[ERROR:] Can't store result on LOAD_HOUSES");
+				GameModeExit();
+				return 1;
+			}
+
+			new i;
+			new houselocation[MAX_ZONE_NAME];
+			i = 0;
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				mysql_fetch_field_row(Houses[i][Description], "Description", db_con2);
+				mysql_fetch_field_row(Houses[i][Owner], "Owner", db_con2);
 				mysql_fetch_field_row(string, "UID", db_con2);
 				Houses[i][HUID] = strval(string);
-				mysql_fetch_field_row(string, "StreetNo", db_con2);
-				Houses[i][StreetNo] = strval(string);
-				mysql_fetch_field_row(string, "Renter", db_con2);
-				format(Houses[i][HRenter], MAX_PLAYER_NAME, string);
+				mysql_fetch_field_row(Houses[i][HRenter], "Renter", db_con2);
 				mysql_fetch_field_row(string, "EnterX", db_con2);
 				Houses[i][EnterX] = floatstr(string);
 				mysql_fetch_field_row(string, "EnterY", db_con2);
@@ -6587,38 +4804,87 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				Houses[i][HInterior] = strval(string);
 				mysql_fetch_field_row(string, "Alarm", db_con2);
 				Houses[i][HAlarm] = strval(string);
+				mysql_fetch_field_row(string, "Robbed", db_con2);
+				Houses[i][HRobbed] = strval(string);
 
 				if( Houses[i][HRadio1Bought] )
 					Houses[i][HRadio1Obj] = CreateDynamicObject(O_RADIO_T_1, Houses[i][HRadio1X], Houses[i][HRadio1Y], Houses[i][HRadio1Z]-1.0, 0, 0, Houses[i][HRadio1Angle], i, Houses[i][ExitInterior]);
-				
-				RefreshHouseDescription(i);
-				
-				//format(string, sizeof(string), "ID: %d<br />Owner: %s<br />Description: %s", i, Houses[i][Owner], Houses[i][Description]);
-				//addDmapIcon(Houses[i][EnterX], Houses[i][EnterY], 31, "House", string);
-				
+				if(Houses[i][Owned] == 0)
+				{
+					if( Houses[i][EnterX] != 0.0 || Houses[i][EnterY] != 0.0 )
+						Houses[i][PickupID] = CreateDynamicPickup(1273, 1, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]);
+
+					GetCoords2DZone(Houses[i][EnterX],Houses[i][EnterY], houselocation, MAX_ZONE_NAME);
+
+					format(string, sizeof(string), "Ten dom jest na sprzedaz!");
+					Houses3DTextLabelA[i] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Adres: %d %s",i,houselocation);
+					Houses3DTextLabelB[i] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Opis: %s, Cena: %d$",Houses[i][Description],Houses[i][HousePrice]);
+					Houses3DTextLabelC[i] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				}
+				else if(Houses[i][Owned] == 1)
+				{
+					if( Houses[i][EnterX] != 0.0 || Houses[i][EnterY] != 0.0 )
+						Houses[i][PickupID] = CreateDynamicPickup(1239, 1, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]);
+
+					if(Houses[i][Rentable] == 1)
+					{
+						GetCoords2DZone(Houses[i][EnterX],Houses[i][EnterY], houselocation, MAX_ZONE_NAME);
+
+						format(string, sizeof(string), "Adres: %d %s",i,houselocation);
+						Houses3DTextLabelA[i] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+						// format(string, sizeof(string), "Wlasciciel: %s",Houses[i][Owner]);
+						format(string, sizeof(string), " ",Houses[i][Owner]);
+						Houses3DTextLabelB[i] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+						format(string, sizeof(string), "Opis: %s Czynsz: %d$ (/wynajmijdom)",Houses[i][Description],Houses[i][RentCost]);
+						Houses3DTextLabelC[i] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+					}
+					else
+					{
+						GetCoords2DZone(Houses[i][EnterX],Houses[i][EnterY], houselocation, MAX_ZONE_NAME);
+
+						format(string, sizeof(string), "Adres: %d %s",i,houselocation);
+						Houses3DTextLabelA[i] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+						// format(string, sizeof(string), "Wlasciciel: %s",Houses[i][Owner]);
+						format(string, sizeof(string), " ",Houses[i][Owner]);
+						Houses3DTextLabelB[i] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+						format(string, sizeof(string), "Opis: %s",Houses[i][Description]);
+						Houses3DTextLabelC[i] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+					}
+				}
 				i++;
 			}
-			
+			mysql_free_result(db_con2);
 			#if defined DEBUG
 				print("[INFO:] Houses loaded [MySQL]");
 			#endif
 		}
 		case LOAD_BUSINESSES:
 		{
-			new i = 0;
-
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			if( !mysql_store_result(db_con2) )
 			{
-				mysql_fetch_field_row(string, "BusinessName", db_con2);
-				format(Businesses[i][BusinessName], 128, string);
-				mysql_fetch_field_row(string, "Owner", db_con2);
-				format(Businesses[i][Owner], MAX_PLAYER_NAME, string);
+				ErrorLog("[ERROR:] Can't store result on LOAD_BUSINESSES");
+				GameModeExit();
+				return 1;
+			}
+
+			new i;
+			i = 0;
+			new businesstype[64];
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				mysql_fetch_field_row(Businesses[i][BusinessName], "BusinessName", db_con2);
+				mysql_fetch_field_row(Businesses[i][Owner], "Owner", db_con2);
 				mysql_fetch_field_row(string, "Faction", db_con2);
 				Businesses[i][mFaction] = strval(string);
-				mysql_fetch_field_row(string, "StreetNo", db_con2);
-				Businesses[i][StreetNo] = strval(string);
 				mysql_fetch_field_row(string, "FactionTimeLeft", db_con2);
 				Businesses[i][mFactionTimeLeft] = strval(string);
 				mysql_fetch_field_row(string, "UID", db_con2);
@@ -6874,289 +5140,324 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				mysql_fetch_field_row(string, "Product30Price", db_con2);
 				Businesses[i][Product30Price] = strval(string);
 
-				
 				if(Businesses[i][BRadio1Bought])
 					Businesses[i][BRadio1Obj] = CreateDynamicObject(O_RADIO_T_1, Businesses[i][BRadio1X], Businesses[i][BRadio1Y], Businesses[i][BRadio1Z]-1.0, 0, 0, Businesses[i][BRadio1Angle], i, Businesses[i][ExitInterior]);
+				if(Businesses[i][BizType] != 0)
+				{
+					if(Businesses[i][BizType] == 1) { businesstype = "Restauracja"; }
+					else if(Businesses[i][BizType] == 2) { businesstype = "Siec komorkowa"; }
+					else if(Businesses[i][BizType] == 3) { businesstype = "Sklep 24/7"; }
+					else if(Businesses[i][BizType] == 4) { businesstype = "Sklep z bronia"; }
+					else if(Businesses[i][BizType] == 5) { businesstype = "Studio reklamowe"; }
+					else if(Businesses[i][BizType] == 6) { businesstype = "Sklep z ubraniami"; }
+					else if(Businesses[i][BizType] == 7) { businesstype = "Bar/Club"; }
+					else if(Businesses[i][BizType] == 8) { businesstype = "Studio nagraniowe"; }
+					else if(Businesses[i][BizType] == 9) { businesstype = "Studio"; }
+					else if(Businesses[i][BizType] == 10) { businesstype = "Salon samochodowy"; }
+					else if(Businesses[i][BizType] == 11) { businesstype = "Stacja paliw"; }
+				}
+				else { businesstype = "Nie ustawione"; }
 
 				RefreshBizDescription(i);
 				
-				//format(string, sizeof(string), "ID: %d<br />Owner: %s<br />Name: %s", i, Businesses[i][Owner], Businesses[i][BusinessName]);
-				//addDmapIcon(Businesses[i][EnterX], Businesses[i][EnterY], 32, Businesses[i][BusinessName], string);
-				
 				i++;
 			}
+			mysql_free_result(db_con2);
 			#if defined DEBUG
 				print("[INFO:] Businesses loaded [MySQL]");
 			#endif
 		}
 		case LOAD_BUS_TRACKS:
 		{
-			new i = 0;
-			
-			mysql_store_result(db_con2);
-
-			while(mysql_retrieve_row(db_con2))
+			if( !mysql_store_result(db_con2) )
 			{
-				mysql_fetch_field_row(string, "Enabled", db_con2);
-				gBusTrackEnabled[i] = strval(string);
-				mysql_fetch_field_row(string, "StartArea", db_con2);
-				gBusTrackStartArea[i] = strval(string);
-				mysql_fetch_field_row(string, "Description", db_con2);
-				format(gBusTrackDesc[i], 64, "%d | %s", i, string);
-				mysql_fetch_field_row(string, "Cost", db_con2);
-				gBusTrackTicketCost[i] = strval(string);
+				ErrorLog("[ERROR:] Can't store result on LOAD_BUS_TRACKS");
+				GameModeExit();
+				return 1;
+			}
+
+			new i;
+			i = 0;
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				split2(db_result, arrCoords, '|');
+
+				gBusTrackEnabled[i] = strval(arrCoords[1]);
+				gBusTrackStartArea[i] = strval(arrCoords[2]);
+
 				i++;
 			}
 			#if defined DEBUG
 				printf("[INFO:] Bus tracks data part 1/2 loaded [MySQL]");
 			#endif
+			mysql_free_result(db_con2);
 		}
 		case LOAD_BUS_TRACKS_DATA:
 		{
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_BUS_TRACKS_DATA");
+				GameModeExit();
+				return 1;
+			}
+
 			new trkid, cpid;
 
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
-			{				
-				mysql_fetch_field_row(string, "TrackID", db_con2);
-				trkid = strval(string);
-				mysql_fetch_field_row(string, "CPID", db_con2);
-				cpid = strval(string);
-				mysql_fetch_field_row(string, "CPX", db_con2);
-				gBusTrackCpX[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPY", db_con2);
-				gBusTrackCpY[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPZ", db_con2);
-				gBusTrackCpZ[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPReward", db_con2);
-				gBusTrackCpReward[trkid][cpid] = strval(string);
-				mysql_fetch_field_row(string, "CPType", db_con2);
-				gBusTrackCpType[trkid][cpid] = strval(string);
-				mysql_fetch_field_row(string, "CPTime", db_con2);
-				gBusTrackCpTime[trkid][cpid] = strval(string);
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				split2(db_result, arrCoords, '|');
+
+				trkid = strval(arrCoords[1]);
+				cpid = strval(arrCoords[2]);
+				gBusTrackCpX[trkid][cpid] = floatstr(arrCoords[3]);
+				gBusTrackCpY[trkid][cpid] = floatstr(arrCoords[4]);
+				gBusTrackCpZ[trkid][cpid] = floatstr(arrCoords[5]);
+				gBusTrackCpReward[trkid][cpid] = strval(arrCoords[6]);
+				gBusTrackCpType[trkid][cpid] = strval(arrCoords[7]);
+				gBusTrackCpTime[trkid][cpid] = strval(arrCoords[8]);
 			}
 			#if defined DEBUG
 				printf("[INFO:] Bus tracks data part 2/2 loaded [MySQL]");
 			#endif
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 		case LOAD_TRASH_TRACKS:
 		{
-			new i = 0;
-			
-			mysql_store_result(db_con2);
-
-			while(mysql_retrieve_row(db_con2))
+			if( !mysql_store_result(db_con2) )
 			{
-				mysql_fetch_field_row(string, "Enabled", db_con2);
-				gTrashTrackEnabled[i] = strval(string);
-				mysql_fetch_field_row(string, "StartArea", db_con2);
-				gTrashTrackStartArea[i] = strval(string);
+				ErrorLog("[ERROR:] Can't store result on LOAD_TRASH_TRACKS");
+				GameModeExit();
+				return 1;
+			}
+
+			new i;
+			i = 0;
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				split2(db_result, arrCoords, '|');
+
+				gTrashTrackEnabled[i] = strval(arrCoords[1]);
+				gTrashTrackStartArea[i] = strval(arrCoords[2]);
 
 				i++;
 			}
 			#if defined DEBUG
 				printf("[INFO:] Trash tracks data part 1/2 loaded [MySQL]");
 			#endif
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 		case LOAD_TRASH_TRACKS_DATA:
 		{
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_TRASH_TRACKS_DATA");
+				GameModeExit();
+				return 1;
+			}
+
 			new trkid, cpid;
 
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "TrackID", db_con2);
-				trkid = strval(string);
-				mysql_fetch_field_row(string, "CPID", db_con2);
-				cpid = strval(string);
-				mysql_fetch_field_row(string, "CPX", db_con2);
-				gTrashTrackCpX[trkid][cpid] = strval(string);
-				mysql_fetch_field_row(string, "CPY", db_con2);
-				gTrashTrackCpY[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPZ", db_con2);
-				gTrashTrackCpZ[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPReward", db_con2);
-				gTrashTrackCpReward[trkid][cpid] = strval(string);
-				mysql_fetch_field_row(string, "CPType", db_con2);
-				gTrashTrackCpType[trkid][cpid] = strval(string);
-				mysql_fetch_field_row(string, "CPTime", db_con2);
-				gTrashTrackCpTime[trkid][cpid] = strval(string);
+				split2(db_result, arrCoords, '|');
+
+				trkid = strval(arrCoords[1]);
+				cpid = strval(arrCoords[2]);
+				gTrashTrackCpX[trkid][cpid] = floatstr(arrCoords[3]);
+				gTrashTrackCpY[trkid][cpid] = floatstr(arrCoords[4]);
+				gTrashTrackCpZ[trkid][cpid] = floatstr(arrCoords[5]);
+				gTrashTrackCpReward[trkid][cpid] = strval(arrCoords[6]);
+				gTrashTrackCpType[trkid][cpid] = strval(arrCoords[7]);
+				gTrashTrackCpTime[trkid][cpid] = strval(arrCoords[8]);
 			}
 			#if defined DEBUG
 				printf("[INFO:] Trash tracks data part 2/2 loaded [MySQL]");
 			#endif
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 		case LOAD_SWEEPER_TRACKS:
 		{
-			new i = 0;
-
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			if( !mysql_store_result(db_con2) )
 			{
-				mysql_fetch_field_row(string, "Enabled", db_con2);
-				gSweeperTrackEnabled[i] = strval(string);
-				mysql_fetch_field_row(string, "StartArea", db_con2);
-				gSweeperTrackStartArea[i] = strval(string);
+				ErrorLog("[ERROR:] Can't store result on LOAD_SWEEPER_TRACKS");
+				GameModeExit();
+				return 1;
+			}
+
+			new i;
+			i = 0;
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				split2(db_result, arrCoords, '|');
+
+				gSweeperTrackEnabled[i] = strval(arrCoords[1]);
+				gSweeperTrackStartArea[i] = strval(arrCoords[2]);
 
 				i++;
 			}
 			#if defined DEBUG
 				printf("[INFO:] Sweeper tracks data part 1/2 loaded [MySQL]");
 			#endif
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 		case LOAD_FARMER_TRACKS:
 		{
-			new i = 0;
-
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			if( !mysql_store_result(db_con2) )
 			{
-				mysql_fetch_field_row(string, "Enabled", db_con2);
-				gFarmerTrackEnabled[i] = strval(string);
-				mysql_fetch_field_row(string, "StartArea", db_con2);
-				gFarmerTrackStartArea[i] = strval(string);
+				ErrorLog("[ERROR:] Can't store result on LOAD_FARMER_TRACKS");
+				GameModeExit();
+				return 1;
+			}
+
+			new i;
+			i = 0;
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				split2(db_result, arrCoords, '|');
+
+				gFarmerTrackEnabled[i] = strval(arrCoords[1]);
+				gFarmerTrackStartArea[i] = strval(arrCoords[2]);
 
 				i++;
 			}
 			#if defined DEBUG
 				printf("[INFO:] Farmer tracks data part 1/2 loaded [MySQL]");
 			#endif
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 		case LOAD_SWEEPER_TRACKS_DATA:
 		{
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_SWEEPER_TRACKS_DATA");
+				GameModeExit();
+				return 1;
+			}
+
 			new trkid, cpid;
 
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "TrackID", db_con2);
-				trkid = strval(string);
-				mysql_fetch_field_row(string, "CPID", db_con2);
-				cpid = strval(string);
-				mysql_fetch_field_row(string, "CPX", db_con2);
-				gSweeperTrackCpX[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPY", db_con2);
-				gSweeperTrackCpY[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPZ", db_con2);
-				gSweeperTrackCpZ[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPReward", db_con2);
-				gSweeperTrackCpReward[trkid][cpid] = strval(string);
-				mysql_fetch_field_row(string, "CPType", db_con2);
-				gSweeperTrackCpType[trkid][cpid] = strval(string);
-				mysql_fetch_field_row(string, "CPTime", db_con2);
-				gSweeperTrackCpTime[trkid][cpid] = strval(string);
+				split2(db_result, arrCoords, '|');
+
+				trkid = strval(arrCoords[1]);
+				cpid = strval(arrCoords[2]);
+				gSweeperTrackCpX[trkid][cpid] = floatstr(arrCoords[3]);
+				gSweeperTrackCpY[trkid][cpid] = floatstr(arrCoords[4]);
+				gSweeperTrackCpZ[trkid][cpid] = floatstr(arrCoords[5]);
+				gSweeperTrackCpReward[trkid][cpid] = strval(arrCoords[6]);
+				gSweeperTrackCpType[trkid][cpid] = strval(arrCoords[7]);
+				gSweeperTrackCpTime[trkid][cpid] = strval(arrCoords[8]);
 			}
 			#if defined DEBUG
 				printf("[INFO:] Sweeper tracks data part 2/2 loaded [MySQL]");
 			#endif
+			mysql_free_result(db_con2);
 		}
 		case LOAD_FARMER_TRACKS_DATA:
 		{
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_FARMER_TRACKS_DATA");
+				GameModeExit();
+				return 1;
+			}
+
 			new trkid, cpid;
 
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "TrackID", db_con2);
-				trkid = strval(string);
-				mysql_fetch_field_row(string, "CPID", db_con2);
-				cpid = strval(string);
-				mysql_fetch_field_row(string, "CPX", db_con2);
-				gFarmerTrackCpX[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPY", db_con2);
-				gFarmerTrackCpY[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPZ", db_con2);
-				gFarmerTrackCpZ[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CPReward", db_con2);
-				gFarmerTrackCpReward[trkid][cpid] = strval(string);
-				mysql_fetch_field_row(string, "CPType", db_con2);
-				gFarmerTrackCpType[trkid][cpid] = strval(string);
-				mysql_fetch_field_row(string, "CPTime", db_con2);
-				gFarmerTrackCpTime[trkid][cpid] = strval(string);
+				split2(db_result, arrCoords, '|');
+
+				trkid = strval(arrCoords[1]);
+				cpid = strval(arrCoords[2]);
+				gFarmerTrackCpX[trkid][cpid] = floatstr(arrCoords[3]);
+				gFarmerTrackCpY[trkid][cpid] = floatstr(arrCoords[4]);
+				gFarmerTrackCpZ[trkid][cpid] = floatstr(arrCoords[5]);
+				gFarmerTrackCpReward[trkid][cpid] = strval(arrCoords[6]);
+				gFarmerTrackCpType[trkid][cpid] = strval(arrCoords[7]);
+				gFarmerTrackCpTime[trkid][cpid] = strval(arrCoords[8]);
 			}
 			#if defined DEBUG
 				printf("[INFO:] Farmer tracks data part 2/2 loaded [MySQL]");
 			#endif
+			mysql_free_result(db_con2);
 		}
 		case LOAD_VARIABLES:
 		{
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_VARIABLES");
+				return 1;
+			}
 			new i = 0;
 
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "varName", db_con2);
-				strins(DBVariables[i][varName], string, 0, 128);
-				mysql_fetch_field_row(string, "varType", db_con2);
-				strins(DBVariables[i][varType], string, 0, 1);
-				mysql_fetch_field_row(string, "varDValue", db_con2);
-				DBVariables[i][varDValue] = strval(string);
-				mysql_fetch_field_row(string, "varFValue", db_con2);
-				DBVariables[i][varFValue] = floatstr(string);
-				mysql_fetch_field_row(string, "varSValue", db_con2);
-				strins(DBVariables[i][varSValue], string, 0, 128);
+				split2(db_result, arrCoords, '|');
+
+				strins(DBVariables[i][varName], arrCoords[1], 0, 128);
+				strins(DBVariables[i][varType], arrCoords[2], 0, 1);
+				DBVariables[i][varDValue] = strval(arrCoords[3]);
+				DBVariables[i][varFValue] = floatstr(arrCoords[4]);
+				strins(DBVariables[i][varSValue], arrCoords[5], 0, 128);
 
 				i++;
 			}
 			#if defined DEBUG
 				print("[INFO:] Loaded misc data [MySQL]");
 			#endif
+			mysql_free_result(db_con2);
 		}
 		case SEND_SMS_TO_ALL:
 		{
-			mysql_store_result(db_con4);
-		
+			if(!mysql_store_result(db_con4))
+				return 1;
 			if(!mysql_num_rows(db_con4))
 			{
+				mysql_free_result(db_con4);
 				return 1;
 			}
-			
-			while(mysql_retrieve_row(db_con4))
+			while(mysql_fetch_row_format(db_result, "|", db_con4))
 			{
 				mysql_fetch_field_row(string, "Nr", db_con4);
 				format(string, sizeof(string), "INSERT INTO `samp_sms` (`Sender` , `Receiver` , `SenderNumber` , `ReceiverNumber` , `Content`) VALUES ('%s' , '%s' , '%d' , '%d' , '%s')",
 					" ", " ", gPlayerVars[playerid][mGlobalSmsSenderNumber], strval(string), gPlayerVars[playerid][mGlobalSms]);
-				wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con4);
+				mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con4);
 			}
+			mysql_free_result(db_con1);
 		}
 		case SEND_SMS:
 		{
-			if(gPlayerVars[playerid][mPhoneDataReceived])
+			if(!mysql_store_result(db_con1))
 			{
+				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Sieæ jest przeci¹¿ona, spróbuj ponownie za chwile", "Ok", "");
 				return 1;
 			}
-			
+			if(gPlayerVars[playerid][mPhoneDataReceived])
+			{
+				mysql_free_result(db_con1);
+				return 1;
+			}
 			gPlayerVars[playerid][mPhoneDataReceived] = 1;
 			gPlayerVars[playerid][mPhoneDataTimeout] = -1;
-			
-			mysql_store_result(db_con1);
-			
 			if(!mysql_num_rows(db_con1))
 			{
 				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Twoja karta SIM zosta³a zablokowana", "Ok", "");
+				mysql_free_result(db_con1);
 				return 1;
 			}
-			
-			mysql_retrieve_row(db_con1);
+			mysql_fetch_row_format(db_result, "|", db_con1);
 			
 			new freeSms, faction;
 			mysql_fetch_field_row(string, "Type", db_con1);
 			gPlayerVars[playerid][mPhoneType] = strval(string);
 			mysql_fetch_field_row(string, "Faction", db_con1);
 			faction = strval(string);
-			
 			if(gPlayerVars[playerid][mPhoneType] == PHONET_FEE)
 			{
 				mysql_fetch_field_row(string, "FreeSms", db_con1);
@@ -7179,57 +5480,58 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				gPlayerVars[playerid][mPhoneCash] = strval(string);
 				mysql_fetch_field_row(string, "RenewalTime", db_con1);
 				gPlayerVars[playerid][mPhoneRenewalTime] = strval(string);
-				
 				if(!gPlayerVars[playerid][mPhoneRenewalTime])
 				{
 					ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Twoje konto wygas³o", "Wróæ", "");
 					return 1;
 				}
-				
 				if(gPlayerVars[playerid][mPhoneCash] <= 0)
 				{
 					ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz œrodków na koncie", "Wróc", "");
 					return 1;
 				}
-				
 				gPlayerVars[playerid][mPhoneCash] -= DynamicFactions[faction][mSmsCostCard];
 				format(string, sizeof(string), "UPDATE `samp_phones` SET `Cash` = '%d' WHERE `Nr` = '%d' AND `SimID` = ' %d'",
 					gPlayerVars[playerid][mPhoneCash], gSmsList[0][mSmsSenderNumber], gSmsList[0][mSmsSenderSimId]);
-				wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con1);				
+				mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con1);				
 			}
 			format(string, sizeof(string), "INSERT INTO `samp_sms` (`Sender` , `Receiver` , `SenderNumber` , `ReceiverNumber` , `Content`) VALUES ('%s' , '%s' , '%d' , '%d', '%s')",
 				gPlayerData[playerid][pName], " ", gSmsList[0][mSmsSenderNumber], gSmsList[0][mSmsReceiverNumber], gSmsList[0][mSmsContent]);
-			wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+			mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 			
 			SMSLog(gSmsList[0][mSmsContent]);
 			
 			ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Wiadomoœæ zosta³a wys³ana", "Wróæ", "");
+			mysql_free_result(db_con1);
 		}
 		case CHECK_PHONE_STATUS:
 		{
-			if(gPlayerVars[playerid][mPhoneDataReceived])
+			if(!mysql_store_result(db_con2))
 			{
+				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Sieæ jest przeci¹¿ona, spróbuj ponownie za chwile", "Ok", "");
 				return 1;
 			}
-			
+			if(gPlayerVars[playerid][mPhoneDataReceived])
+			{
+				mysql_free_result(db_con2);
+				return 1;
+			}
 			gPlayerVars[playerid][mPhoneDataReceived] = 1;
 			gPlayerVars[playerid][mPhoneDataTimeout] = -1;
-			
-			mysql_store_result(db_con2);
-			
 			if(!mysql_num_rows(db_con2))
 			{
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Twoja karta SIM zosta³a zablokowana", "Ok", "");
+				mysql_free_result(db_con2);
 				return 1;
 			}
+			mysql_fetch_row_format(db_result, "|", db_con2);
 			
-			mysql_retrieve_row(db_con2);			
 			mysql_fetch_field_row(string, "Faction", db_con2);
 			gPlayerVars[playerid][mPhoneFaction] = strval(string);
-			
 			if(DynamicFactions[gPlayerVars[playerid][mPhoneFaction]][fType] != FACTIONT_COMPANY_PHONE)
 			{
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Brak sieci...", "Ok", "");
+				mysql_free_result(db_con2);
 				return 1;
 			}
 			
@@ -7243,7 +5545,7 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				mysql_fetch_field_row(string, "FreeSms", db_con2);
 				freeSms = strval(string);
 			
-				format(string, sizeof(string), "Sieæ: %s\nCena za min. po³¹czenia: $%d\nCena za sms: $%d\nDarmowe minuty: %d\nDarmowe SMSy: %d",
+				format(string, sizeof(string), "Sieæ: %s\nCena za min. po³¹czenia: %d$\nCena za sms: %d$\nDarmowe minuty: %d\nDarmowe SMSy: %d",
 					DynamicFactions[Businesses[SlotParam3(playerid, gSelectedSlot[playerid])][mFaction]][mCompanyName],
 					DynamicFactions[Businesses[SlotParam3(playerid, gSelectedSlot[playerid])][mFaction]][mCallCostFee],
 					DynamicFactions[Businesses[SlotParam3(playerid, gSelectedSlot[playerid])][mFaction]][mSmsCostFee],
@@ -7256,16 +5558,22 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				mysql_fetch_field_row(string, "RenewalTime", db_con2);
 				gPlayerVars[playerid][mPhoneRenewalTime] = strval(string);
 				
-				format(string, sizeof(string), "Sieæ: %s\nCena za min. po³¹czenia: $%d\nCena za sms: $%d\nPieni¹dze na koncie: $%d\nWa¿noœæ: %d dni",
+				format(string, sizeof(string), "Sieæ: %s\nCena za min. po³¹czenia: %d$\nCena za sms: %d$\nPieni¹dze na koncie: %d$\nWa¿noœæ: %d dni",
 					DynamicFactions[Businesses[SlotParam3(playerid, gSelectedSlot[playerid])][mFaction]][mCompanyName],
 					DynamicFactions[Businesses[SlotParam3(playerid, gSelectedSlot[playerid])][mFaction]][mCallCostCard],
 					DynamicFactions[Businesses[SlotParam3(playerid, gSelectedSlot[playerid])][mFaction]][mSmsCostCard],
 					gPlayerVars[playerid][mPhoneCash], gPlayerVars[playerid][mPhoneRenewalTime]);
 			}
 			ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", string, "Wróæ", "");
+			mysql_free_result(db_con2);
 		}			
 		case CHECK_PHONE_FEE:
 		{
+			if(!mysql_store_result(db_con3))
+			{
+				ErrorLog("[ERROR:] Can't store result on CHECK_PHONE_FEE");
+				return 1;
+			}
 			if(mysql_num_rows(db_con3) == 0)
 			{
 				if(InsertPlayerItemEx(playerid, 3, 16, gRandNumber[playerid], gPhoneC[playerid], gRandSimNumber[playerid], 0, "Puste") == 0)
@@ -7273,7 +5581,6 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz miejsca na karte SIM");
 					return 1;
 				}
-				
 				if(gPlayerData[playerid][pFirstPhone] == 0)
 				{
 					SendClientMessage(playerid,COLOR_GREEN,"[INFO:] Kupi³eœ swoj¹ pierwsz¹ karte SIM !");
@@ -7286,24 +5593,29 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					SendClientMessage(playerid,COLOR_WHITE,"[INFO:] Kupi³eœ karte SIM");
 					SendClientMessage(playerid,COLOR_WHITE,"[INFO:] Aby z niej skorzystaæ przejdŸ do /mi , wybierz karte a nastêpnie zamontuj j¹ w swoim telefonie");
 				}
-				
 				GivePlayerCash(playerid, -DynamicFactions[Businesses[gPhoneC[playerid]][mFaction]][mSimActivationCost]);
 				Businesses[gPhoneC[playerid]][Till] += DynamicFactions[Businesses[gPhoneC[playerid]][mFaction]][mSimActivationCost];
 				SaveBizData(gPhoneC[playerid], "Till");
 				format(string, sizeof(string), "INSERT INTO `samp_phones` (`PlayerName` , `Nr` , `Faction` , `FreeMins` , `FreeSms` , `RenewalTime` , `Cash` , `SimID` , `Type`) VALUES ('%s' , '%d' , '%d' , '%d' , '%d', '%d', '%d', '%d', '%d')",
 					gPlayerData[playerid][pName], gRandNumber[playerid], Businesses[gBuyBusinessID[playerid]][mFaction], DynamicFactions[Businesses[gPhoneC[playerid]][mFaction]][mSimFreeMins], 
 					DynamicFactions[Businesses[gPhoneC[playerid]][mFaction]][mSimFreeSms], 0, 0, gRandSimNumber[playerid], PHONET_FEE);
-				wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con3);
+				mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con3);
 			}
 			else
 			{
 				gRandNumber[playerid] = 600000000 + random(999999);
 				format(string, sizeof(string), "SELECT `Nr` FROM `samp_phones` WHERE `Nr` = '%d'",gRandNumber[playerid]);
-				wp_mysql_query(string, CHECK_PHONE_FEE, playerid, db_con3);
+				mysql_query(string, CHECK_PHONE_FEE, playerid, db_con3);
 			}
+			mysql_free_result(db_con3);
 		}
 		case CHECK_PHONE_CARD:
 		{
+			if(!mysql_store_result(db_con3))
+			{
+				ErrorLog("[ERROR:] Can't store result on CHECK_PHONE_CARD");
+				return 1;
+			}
 			if(mysql_num_rows(db_con3) == 0)
 			{
 				if(InsertPlayerItemEx(playerid, 3, 16, gRandNumber[playerid], gPhoneC[playerid], gRandSimNumber[playerid], 0, "Puste") == 0)
@@ -7311,64 +5623,65 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz miejsca na karte SIM");
 					return 1;
 				}
-				
 				if(gPlayerData[playerid][pFirstPhone] == 0)
 				{
 					SendClientMessage(playerid,COLOR_GREEN,"[INFO:] Kupi³eœ swoj¹ pierwsz¹ karte SIM !");
 					gPlayerData[playerid][pFirstPhone] = 1;
+
 					SavePlayerData(playerid, "FirstPhone");
 				}
 				else
 				{
 					SendClientMessage(playerid,COLOR_WHITE,"[INFO:] Kupi³eœ karte SIM");
 					SendClientMessage(playerid,COLOR_WHITE,"[INFO:] Aby z niej skorzystaæ przejdŸ do /mi , wybierz karte a nastêpnie zamontuj j¹ w swoim telefonie");
-				}	
-				
+				}				
 				format(string, sizeof(string), "INSERT INTO `samp_phones` (`PlayerName` , `Nr` , `Faction` , `FreeMins` , `FreeSms` , `RenewalTime` , `Cash` , `SimID` , `Type`) VALUES ('%s' , '%d' , '%d' , '%d' , '%d', '%d', '%d', '%d', '%d')",
 					gPlayerData[playerid][pName], gRandNumber[playerid], Businesses[gBuyBusinessID[playerid]][mFaction], 0, 0, DynamicFactions[Businesses[gPhoneC[playerid]][mFaction]][mCardRenewTime1],
 					DynamicFactions[Businesses[gPhoneC[playerid]][mFaction]][mCardRenewCost1], gRandSimNumber[playerid], PHONET_CARD);
-				wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con3);
+				mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con3);
 			}
 			else
 			{
 				gRandNumber[playerid] = 600000000 + random(999999);
 				format(string, sizeof(string), "SELECT `Nr` FROM `samp_phones` WHERE `Nr` = '%d'",gRandNumber[playerid]);
-				wp_mysql_query(string, CHECK_PHONE_FEE, playerid, db_con3);
+				mysql_query(string, CHECK_PHONE_FEE, playerid, db_con3);
 			}
+			mysql_free_result(db_con3);
 		}
 		case CHECK_PHONE_TYPE_CALL:
 		{
 			if(Mobile[playerid] == 255)
 			{
 				gCallDataReceived[playerid] = 1;
+				mysql_free_result(db_con3);
 			}
-			
-			if(gCallDataReceived[playerid])
+			if(!mysql_store_result(db_con3))
 			{
+				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Sieæ jest przeci¹¿ona, spróbuj ponownie za chwile", "Ok", "");
 				return 1;
 			}
-			
-			gCallDataReceived[playerid] = 1;			
-			mysql_store_result(db_con3);
-			
+			if(gCallDataReceived[playerid])
+			{
+				mysql_free_result(db_con3);
+				return 1;
+			}
+			gCallDataReceived[playerid] = 1;
 			if(!mysql_num_rows(db_con3))
 			{
+				mysql_free_result(db_con3);
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Twoja karta SIM zosta³a zablokowana", "Ok", "");
 				return 1;
 			}
-			
-			mysql_retrieve_row(db_con3);
+			mysql_fetch_row_format(db_result, "|", db_con3);
 			
 			mysql_fetch_field_row(string, "SimID", db_con3);
 			gPlayerVars[playerid][mPhoneSimID] = strval(string);
 			mysql_fetch_field_row(string, "Type", db_con3);
 			gPlayerVars[playerid][mPhoneType] = strval(string);
-			
 			if(gPlayerVars[playerid][mPhoneType] == PHONET_FEE)
 			{
 				mysql_fetch_field_row(string, "FreeMins", db_con3);
 				gCallFreeMins[playerid] = strval(string);
-				
 				if(gCallFreeMins[playerid] <= 0)
 					gCallCost[playerid] = DynamicFactions[Businesses[gCalledCompany[playerid]][mFaction]][mCallCostFee];
 				else
@@ -7383,6 +5696,7 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				gPlayerVars[playerid][mPhoneCash] = strval(string);
 				if(gPlayerVars[playerid][mPhoneCash] <= DynamicFactions[Businesses[gCalledCompany[playerid]][mFaction]][mCallCostCard])
 				{
+					mysql_free_result(db_con3);
 					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie masz wystarczaj¹cej iloœci œrodków na koncie aby wykonaæ po³¹czenie", "Zamknij", "");
 					return 1;
 				}
@@ -7396,58 +5710,63 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				SetPlayerSpecialAction(playerid,SPECIAL_ACTION_USECELLPHONE);
 				SetPlayerAttachedObject(playerid, 1, 330, 6);
 			}
+			mysql_free_result(db_con3);
 		}
 		case CHECK_PHONE_TYPE_EXTENSION:
 		{
-			mysql_store_result(db_con1);
-			
+			if(!mysql_store_result(db_con1))
+			{
+				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Sieæ jest przeci¹¿ona, spróbuj ponownie za chwile", "Ok", "");
+				return 1;
+			}
 			if(!mysql_num_rows(db_con1))
 			{
+				mysql_free_result(db_con1);
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Twoja karta SIM zosta³a zablokowana", "Ok", "");
 				return 1;
 			}
-			
-			mysql_retrieve_row(db_con1);			
-			mysql_fetch_field_row(string, "Type", db_con1);			
+			// mysql_fetch_row_format(db_result, "|", db_con3);
+			mysql_fetch_field_row(string, "Type", db_con1);
 			gPlayerVars[playerid][mPhoneType] = strval(string);
-			
 			if(gPlayerVars[playerid][mPhoneType] == PHONET_FEE)
 			{
+				mysql_free_result(db_con1);
 				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie mo¿esz do³adowaæ karty w abonamencie", "Wróæ", "");
 				return 1;
 			}
 			else if(gPlayerVars[playerid][mPhoneType] == PHONET_CARD)
 			{
-				mysql_fetch_field_row(string, "Cash", db_con1);
+				mysql_fetch_row_format(db_result, "|", db_con2);
+				
+				mysql_fetch_field_row(string, "Cash", db_con2);
 				gPlayerVars[playerid][mPhoneCash] = strval(string);
-				mysql_fetch_field_row(string, "RenewalTime", db_con1);
+				mysql_fetch_field_row(string, "RenewalTime", db_con2);
 				gPlayerVars[playerid][mPhoneRenewalTime] = strval(string);
-				mysql_fetch_field_row(string, "SimID", db_con1);
+				mysql_fetch_field_row(string, "SimID", db_con2);
 				gPlayerVars[playerid][mPhoneSimID] = strval(string);
-				mysql_fetch_field_row(string, "Nr", db_con1);
+				mysql_fetch_field_row(string, "Nr", db_con2);
 				gPlayerVars[playerid][mPhoneNr] = strval(string);
 				format(string, sizeof(string), "UPDATE `samp_phones` SET `RenewalTime` = '%d' , `Cash` = '%d' WHERE `SimID` = '%d' AND `Nr` = '%d'",
 					gPlayerVars[playerid][mPhoneRenewalTime]+SlotParam2(playerid, gSelectedSlot[playerid]),
 					gPlayerVars[playerid][mPhoneCash]+SlotParam1(playerid, gSelectedSlot[playerid]),
 					gPlayerVars[playerid][mPhoneSimID], gPlayerVars[playerid][mPhoneNr]);
-				wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con1);
+				mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Kod z karty zosta³ u¿yty", "Wróc", "");
 				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
 				InsertPlayerItemEx(playerid, 1, 144, 0, 0, 0, 0, "Puste", 1);
 			}
+			mysql_free_result(db_con1);
 		} 
 		case CHECK_PHONE_NEW_SMS:
 		{
-			new slot[MAX_PLAYER_ITEM_SLOT];
-			
-			mysql_store_result(db_con4);
-			
-			new smsId;
-			while(mysql_retrieve_row(db_con4))
+			if(!mysql_store_result(db_con4))
 			{
-				mysql_fetch_field_row(string, "ID", db_con4);
-				smsId = strval(string);				
-				
+				return 1;
+			}
+			new slot[MAX_PLAYER_ITEM_SLOT];
+			while(mysql_fetch_row_format(db_result, "|", db_con4))
+			{
+				split2(db_result, arrCoords, '|');
 				foreach(Player, i)
 				{
 					if(!gPlayerLogged[i] || gPhoneTextBlinking[i])
@@ -7455,9 +5774,9 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					PHaveItemEx(i, 3, 3, slot);
 					for(new j = 0; j < MAX_PLAYER_ITEM_SLOT; j++)
 					{
-						if(slot[j] && SlotParam2(i, j+1) == smsId)
+						if(slot[j] && SlotParam2(i, j+1) == strval(arrCoords[0]))
 						{
-							gPhoneTextReceived[i] = smsId;
+							gPhoneTextReceived[i] = strval(arrCoords[0]);
 							defer BlinkPhoneText(i);
 							gPhoneTextBlinking[i] = 1;
 							break;
@@ -7466,9 +5785,9 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					PHaveItemEx(i, 3, 4, slot);
 					for(new j = 0; j < MAX_PLAYER_ITEM_SLOT; j++)
 					{
-						if(slot[j] && SlotParam2(i, j+1) == smsId)
+						if(slot[j] && SlotParam2(i, j+1) == strval(arrCoords[0]))
 						{
-							gPhoneTextReceived[i] = smsId;
+							gPhoneTextReceived[i] = strval(arrCoords[0]);
 							defer BlinkPhoneText(i);
 							gPhoneTextBlinking[i] = 1;
 							break;
@@ -7476,28 +5795,31 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					}
 				}				
 			}
+			mysql_free_result(db_con4);
 		}
 		case PHONE_LIST_SIM_REPLACE:
 		{
-			
-			mysql_store_result(db_con1);
-			
+			if(!mysql_store_result(db_con1))
+			{
+				ErrorLog("[ERROR:] Can't store result on PHONE_LIST_SIM_REPLACE");
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Sieæ jest przeci¹¿ona, spróbuj ponownie za chwile");
+				return 1;
+			}
 			new i = 0;
 			new k = mysql_num_rows(db_con1);
 			if(k == 0)
 			{
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz w tej sieci ¿adnej aktywnej karty", "Wróæ", "");
+				mysql_free_result(db_con1);
 				return 1;
 			}
-			
-			while(mysql_retrieve_row(db_con1))
+			while(mysql_fetch_row_format(db_result, "|", db_con1))
 			{
-				mysql_fetch_field_row(string, "ID", db_con1);
-				gPhoneList[i][mPhoneID] = strval(string);
-				mysql_fetch_field_row(string, "Nr", db_con1);
-				gPhoneList[i][mPhoneNr] = strval(string);
-				mysql_fetch_field_row(string, "SimID", db_con1);
-				gPhoneList[i][mPhoneSimID] = strval(string);
+				split2(db_result, arrCoords, '|');
+				
+				gPhoneList[i][mPhoneID] = strval(arrCoords[0]);
+				gPhoneList[i][mPhoneNr] = strval(arrCoords[1]);
+				gPhoneList[i][mPhoneSimID] = strval(arrCoords[2]);
 				
 				i++;
 			}
@@ -7507,28 +5829,32 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				format(string, sizeof(string), "%s%d. Nr telefonu: %d, ID karty: %d\n", string, i+1, gPhoneList[i][mPhoneNr], gPhoneList[i][mPhoneSimID]);
 				i++;
 			}
+			mysql_free_result(db_con1);
 			ShowPlayerDialog(playerid, DIALOG_BUY_SIM_2_RENEW, DIALOG_STYLE_LIST, "Wybierz karte któr¹ chcesz wyrobiæ", string, "Wybierz", "Wróc");
 		}
 		case PHONE_LIST_FEE_RESIGN:
-		{			
-			mysql_store_result(db_con1);
-			
+		{
+			if(!mysql_store_result(db_con1))
+			{
+				ErrorLog("[ERROR:] Can't store result on PHONE_LIST_FEE_RESIGN");
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Sieæ jest przeci¹¿ona, spróbuj ponownie za chwile");
+				return 1;
+			}
 			new i = 0;
 			new k = mysql_num_rows(db_con1);
 			if(k == 0)
 			{
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz w tej sieci ¿adnej aktywnej karty", "Wróæ", "");
+				mysql_free_result(db_con1);
 				return 1;
 			}
-
-			while(mysql_retrieve_row(db_con1))
+			while(mysql_fetch_row_format(db_result, "|", db_con1))
 			{
-				mysql_fetch_field_row(string, "ID", db_con1);
-				gPhoneList[i][mPhoneID] = strval(string);
-				mysql_fetch_field_row(string, "Nr", db_con1);
-				gPhoneList[i][mPhoneNr] = strval(string);
-				mysql_fetch_field_row(string, "SimID", db_con1);
-				gPhoneList[i][mPhoneSimID] = strval(string);
+				split2(db_result, arrCoords, '|');
+				
+				gPhoneList[i][mPhoneID] = strval(arrCoords[0]);
+				gPhoneList[i][mPhoneNr] = strval(arrCoords[1]);
+				gPhoneList[i][mPhoneSimID] = strval(arrCoords[2]);
 				
 				i++;
 			}
@@ -7538,38 +5864,37 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				format(string, sizeof(string), "%s%d. Nr telefonu: %d, ID karty: %d\n", string, i+1, gPhoneList[i][mPhoneNr], gPhoneList[i][mPhoneSimID]);
 				i++;
 			}
+			mysql_free_result(db_con1);
 			ShowPlayerDialog(playerid, DIALOG_BUY_SIM_2_RESIGN, DIALOG_STYLE_LIST, "Wybierz umowe, któr¹ chcesz rozwi¹zaæ", string, "Wybierz", "Wróc");
 		}
 		case PHONE_SMS_LIST:
 		{
-			mysql_store_result(db_con1);
-			
+			if(!mysql_store_result(db_con1))
+			{
+				ErrorLog("[ERROR:] Can't store result on PHONE_SMS_LIST");
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Wyst¹pi³ problem z za³adowaniem zawartoœci skrzynki");
+				return 1;
+			}
 			new i = 0;
 			new k = mysql_num_rows(db_con1);
 			if(k == 0)
 			{
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Lista wiadomoœci jest pusta", "Wróæ", "");
+				mysql_free_result(db_con1);
 				return 1;
 			}
-			
-			while(mysql_retrieve_row(db_con1))
+			while(mysql_fetch_row_format(db_result, "|", db_con1))
 			{
-				mysql_fetch_field_row(string, "ID", db_con1);
-				gSmsList[i][mSmsId] = strval(string);
-				mysql_fetch_field_row(string, "Sender", db_con1);
-				gSmsList[i][mSmsSenderName] = strval(string);
-				mysql_fetch_field_row(string, "Receiver", db_con1);
-				gSmsList[i][mSmsReceiverName] = strval(string);
-				mysql_fetch_field_row(string, "SenderSimId", db_con1);
-				gSmsList[i][mSmsSenderSimId] = strval(string);
-				mysql_fetch_field_row(string, "ReceiverSimId", db_con1);
-				gSmsList[i][mSmsReceiverSimId] = strval(string);
-				mysql_fetch_field_row(string, "SenderNumber", db_con1);
-				gSmsList[i][mSmsSenderNumber] = strval(string);
-				mysql_fetch_field_row(string, "ReceiverNumber", db_con1);
-				gSmsList[i][mSmsReceiverNumber] = strval(string);
-				mysql_fetch_field_row(string, "Content", db_con1);
-				format(gSmsList[i][mSmsContent], 256, "%s", string);
+				split2(db_result, arrCoords, '|');
+				
+				gSmsList[i][mSmsId] = strval(arrCoords[0]);
+				gSmsList[i][mSmsSenderName] = strval(arrCoords[1]);
+				gSmsList[i][mSmsReceiverName] = strval(arrCoords[2]);
+				gSmsList[i][mSmsSenderSimId] = strval(arrCoords[3]);
+				gSmsList[i][mSmsReceiverSimId] = strval(arrCoords[4]);
+				gSmsList[i][mSmsSenderNumber] = strval(arrCoords[5]);
+				gSmsList[i][mSmsReceiverNumber] = strval(arrCoords[6]);
+				format(gSmsList[i][mSmsContent], 256, "%s", arrCoords[7]);
 				
 				i++;
 			}
@@ -7582,97 +5907,72 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 					format(string, sizeof(string), "%s%d. Wys³ana do %d\n", string, i+1, gSmsList[i][mSmsReceiverNumber]);
 				i++;
 			}
+			mysql_free_result(db_con1);
 			format(string2, sizeof(string2), "SMSy %d/50", k);
 			ShowPlayerDialog(playerid, DIALOG_SMS_2_VIEW, DIALOG_STYLE_LIST, string2, string, "Wybierz", "Wróc");
 		}
 		case LOAD_CARSDATA:
 		{
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_CARSDATA");
+				GameModeExit();
+				return 1;
+			}
 			new i = 0;
 
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
-				mysql_fetch_field_row(string, "Model", db_con1);
-				CarsData[i][Model] = strval(string);
-				mysql_fetch_field_row(string, "Bak", db_con1);
-				CarsData[i][Bak] = strval(string);
-				mysql_fetch_field_row(string, "Paliwo", db_con1);
-				CarsData[i][Paliwo] = strval(string);
-				mysql_fetch_field_row(string, "Spalanie", db_con1);
-				CarsData[i][Spalanie] = strval(string);
-				mysql_fetch_field_row(string, "ToGas", db_con1);
-				CarsData[i][ToGas] = strval(string);
-				mysql_fetch_field_row(string, "MaxHealth", db_con1);
-				CarsData[i][MaxHealth] = strval(string);
+				split2(db_result, arrCoords, '|');
+
+				CarsData[i][Model] = strval(arrCoords[1]);
+				CarsData[i][Bak] = strval(arrCoords[2]);
+				CarsData[i][Paliwo] = strval(arrCoords[3]);
+				CarsData[i][Spalanie] = strval(arrCoords[4]);
+				CarsData[i][ToGas] = strval(arrCoords[5]);
+				CarsData[i][MaxHealth] = strval(arrCoords[6]);
 
 				switch( CarsData[i][Paliwo] )
 				{
 					case 0:
 					{
 						CarsData[i][Co2Emmision] = 2.3*(float(CarsData[i][Spalanie])/100.0);
-						#if defined DEBUG
-							printf("[DEBUG:] Co2Emmision, model: %d, fuel type: %d, combustion: %d, emmision: %f", CarsData[i][Model], CarsData[i][Paliwo], CarsData[i][Spalanie], CarsData[i][Co2Emmision]);
-						#endif
+						// printf("[DEBUG:] Co2Emmision, model: %d, fuel type: %d, combustion: %d, emmision: %f", CarsData[i][Model], CarsData[i][Paliwo], CarsData[i][Spalanie], CarsData[i][Co2Emmision]);
 					}
 					case 1:
 					{
 						CarsData[i][Co2Emmision] = 2.6*(float(CarsData[i][Spalanie])/100.0);
-						#if defined DEBUG
-							printf("[DEBUG:] Co2Emmision, model: %d, fuel type: %d, combustion: %d, emmision: %f", CarsData[i][Model], CarsData[i][Paliwo], CarsData[i][Spalanie], CarsData[i][Co2Emmision]);
-						#endif
+						// printf("[DEBUG:] Co2Emmision, model: %d, fuel type: %d, combustion: %d, emmision: %f", CarsData[i][Model], CarsData[i][Paliwo], CarsData[i][Spalanie], CarsData[i][Co2Emmision]);
 					}
 					case 2:
 					{
 						CarsData[i][Co2Emmision] = 1.4*(float(CarsData[i][Spalanie])/100.0);
-						#if defined DEBUG
-							printf("[DEBUG:] Co2Emmision, model: %d, fuel type: %d, combustion: %d, emmision: %f", CarsData[i][Model], CarsData[i][Paliwo], CarsData[i][Spalanie], CarsData[i][Co2Emmision]);
-						#endif
+						// printf("[DEBUG:] Co2Emmision, model: %d, fuel type: %d, combustion: %d, emmision: %f", CarsData[i][Model], CarsData[i][Paliwo], CarsData[i][Spalanie], CarsData[i][Co2Emmision]);
 					}
 					case 3:
 					{
 						CarsData[i][Co2Emmision] = 4.0*(float(CarsData[i][Spalanie])/100.0);
-						#if defined DEBUG
-							printf("[DEBUG:] Co2Emmision, model: %d, fuel type: %d, combustion: %d, emmision: %f", CarsData[i][Model], CarsData[i][Paliwo], CarsData[i][Spalanie], CarsData[i][Co2Emmision]);
-						#endif
+						// printf("[DEBUG:] Co2Emmision, model: %d, fuel type: %d, combustion: %d, emmision: %f", CarsData[i][Model], CarsData[i][Paliwo], CarsData[i][Spalanie], CarsData[i][Co2Emmision]);
 					}
 				}
 
 				i++;
 			}
+			mysql_free_result(db_con2);
 			#if defined DEBUG
 				printf("[INFO:] Vehicles additional data loaded [MySQL]");
 			#endif
 		}
-		case LOAD_NEWS:
+		case LOAD_WANTED_LIST:
 		{
-			new i = 0;
-			
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			// printf("[DEBUG:][LOAD_WANTED_LIST]");
+			if( !mysql_store_result(db_con1) )
 			{
-				mysql_fetch_field_row(string, "TimeLeft", db_con2);
-				gSanNewsMsgs[i][mTimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "Content", db_con2);
-				format(gSanNewsMsgs[i][mContent], 255, string);
-				mysql_fetch_field_row(string, "Used", db_con2);
-				gSanNewsMsgs[i][mUsed] = strval(string);
-				
-				i++;
+				ErrorLog("[ERROR:] Can't store result on LOAD_WANTED_LIST");
+				return 1;
 			}
-			
-			#if defined DEBUG
-				printf("[INFO:] News loaded [MySQL]");
-			#endif
-		}
-		case LOAD_WANTED_LIST: // TODO: FIX THIS LATER (not used for now)
-		{
 			new i = 0;
-			
-			mysql_store_result(db_con1);
-			
-			while(mysql_retrieve_row(db_con1))
+			while(mysql_fetch_row_format(db_result, "|", db_con1))
 			{
 				split2(db_result, arrCoords, '|');
 
@@ -7686,35 +5986,37 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 
 				i++;
 			}
+			mysql_free_result(db_con1);
 		}
 		case SHOW_SWANTED_LIST:
 		{
-			mysql_store_result(db_con1);
-			
+			if(!mysql_store_result(db_con1))
+			{
+				ErrorLog("[ERROR:] Can't store result on SHOW_SWANTED_LIST");
+				return 1;
+			}
 			new i = 0;
 			new k = mysql_num_rows(db_con1);
 			if(k == 0)
 			{
 				ShowPlayerDialog(playerid, DIALOG_POLICE_COMPUTER_4D, DIALOG_STYLE_MSGBOX, "Komputer policyjny", "Brak wpisów do kartoteki na wybrane nazwisko", "Wróæ", "");
+				mysql_free_result(db_con1);
 				return 1;
 			}
-
-			while(mysql_retrieve_row(db_con1))
+			while(mysql_fetch_row_format(db_result, "|", db_con1))
 			{
-				mysql_fetch_field_row(string, "PlayerName", db_con1);
+				split2(db_result, arrCoords, '|');
+
 				strdel(WantedList[i][WantedName], 0, strlen(WantedList[i][WantedName]));
-				strmid(WantedList[i][WantedName], string, 0, strlen(string), 64);
-				mysql_fetch_field_row(string, "Description", db_con1);
+				strmid(WantedList[i][WantedName], arrCoords[1], 0, strlen(arrCoords[1]), 64);
+
 				strdel(WantedList[i][WantedDescription], 0, strlen(WantedList[i][WantedDescription]));
-				strmid(WantedList[i][WantedDescription], string, 0, strlen(string), 64);
-				mysql_fetch_field_row(string, "CommitedDay", db_con1);
-				WantedList[i][WantedCommitedDay] = strval(string);
-				mysql_fetch_field_row(string, "CommitedMonth", db_con1);
-				WantedList[i][WantedCommitedMonth] = strval(string);
-				mysql_fetch_field_row(string, "CommitedYear", db_con1);
-				WantedList[i][WantedCommitedYear] = strval(string);
-				mysql_fetch_field_row(string, "Punished", db_con1);
-				WantedList[i][WantedPunished] = strval(string);
+				strmid(WantedList[i][WantedDescription], arrCoords[2], 0, strlen(arrCoords[2]), 64);
+
+				WantedList[i][WantedCommitedDay] = strval(arrCoords[3]);
+				WantedList[i][WantedCommitedMonth] = strval(arrCoords[4]);
+				WantedList[i][WantedCommitedYear] = strval(arrCoords[5]);
+				WantedList[i][WantedPunished] = strval(arrCoords[6]);
 
 				i++;
 			}
@@ -7727,81 +6029,83 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 			{
 				format(string, sizeof(string), "Wpis z dnia %d/%d/%d\nUkarany: nie\nTreœæ:\n\n%s", WantedList[gPlayerVars[playerid][lPoliceComputerPID]][WantedCommitedDay], WantedList[gPlayerVars[playerid][lPoliceComputerPID]][WantedCommitedMonth],WantedList[gPlayerVars[playerid][lPoliceComputerPID]][WantedCommitedYear], WantedList[gPlayerVars[playerid][lPoliceComputerPID]][WantedDescription]);
 			}
-			//wp_mysql_free_result(db_con1);
+			mysql_free_result(db_con1);
 			ShowPlayerDialog(playerid, DIALOG_POLICE_COMPUTER_3D, DIALOG_STYLE_MSGBOX, "Komputer policyjny", string, "Wróæ", "WyjdŸ");
 		}
 		case SHOW_DWANTED_LIST:
 		{
-			mysql_store_result(db_con1);
-		
+			if(!mysql_store_result(db_con1))
+			{
+				ErrorLog("[ERROR:] Can't store result on SHOW_DWANTED_LIST");
+				return 1;
+			}
 			new i = 0;
 			new k = mysql_num_rows(db_con1);
 			if(k == 0)
 			{
 				ShowPlayerDialog(playerid, DIALOG_POLICE_COMPUTER_4D, DIALOG_STYLE_MSGBOX, "Komputer policyjny", "Brak wpisów do kartoteki na wybrane nazwisko", "Wróæ", "");
+				mysql_free_result(db_con1);
 				return 1;
 			}
-
-			while(mysql_retrieve_row(db_con1))
+			while(mysql_fetch_row_format(db_result, "|", db_con1))
 			{
-				mysql_fetch_field_row(string, "ID", db_con2);
-				WantedList[i][WantedID] = strval(string);
-				mysql_fetch_field_row(string, "PlayerName", db_con1);
+				split2(db_result, arrCoords, '|');
+
+				WantedList[i][WantedID] = strval(arrCoords[0]);
+
 				strdel(WantedList[i][WantedName], 0, strlen(WantedList[i][WantedName]));
-				strmid(WantedList[i][WantedName], string, 0, strlen(string), 64);
-				mysql_fetch_field_row(string, "Description", db_con1);
+				strmid(WantedList[i][WantedName], arrCoords[1], 0, strlen(arrCoords[1]), 64);
+
 				strdel(WantedList[i][WantedDescription], 0, strlen(WantedList[i][WantedDescription]));
-				strmid(WantedList[i][WantedDescription], string, 0, strlen(string), 64);
-				mysql_fetch_field_row(string, "CommitedDay", db_con1);
-				WantedList[i][WantedCommitedDay] = strval(string);
-				mysql_fetch_field_row(string, "CommitedMonth", db_con1);
-				WantedList[i][WantedCommitedMonth] = strval(string);
-				mysql_fetch_field_row(string, "CommitedYear", db_con1);
-				WantedList[i][WantedCommitedYear] = strval(string);
-				mysql_fetch_field_row(string, "Punished", db_con1);
-				WantedList[i][WantedPunished] = strval(string);
+				strmid(WantedList[i][WantedDescription], arrCoords[2], 0, strlen(arrCoords[2]), 64);
+
+				WantedList[i][WantedCommitedDay] = strval(arrCoords[3]);
+				WantedList[i][WantedCommitedMonth] = strval(arrCoords[4]);
+				WantedList[i][WantedCommitedYear] = strval(arrCoords[5]);
+				WantedList[i][WantedPunished] = strval(arrCoords[6]);
 
 				i++;
 			}
+			mysql_free_result(db_con1);
 			format(string, sizeof(string), "DELETE FROM `samp_wanted` WHERE `ID` = '%d' ", WantedList[gPlayerVars[playerid][lPoliceComputerPID]][WantedID]);
-			wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+			mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 
-			ShowPlayerDialog(playerid, DIALOG_POLICE_COMPUTER_3D, DIALOG_STYLE_MSGBOX, "Komputer policyjny", "Wpis zosta³ usuniêty", "Wróæ", "Zamknij");
+			ShowPlayerDialog(playerid, DIALOG_POLICE_COMPUTER_3D, DIALOG_STYLE_MSGBOX, "Komputer policyjny", "Wpis zost¹³ usuniêty", "Wróæ", "Zamknij");
 			return 1;
 		}
 		case SHOW_WANTED_LIST:
 		{
-			mysql_store_result(db_con1);
-			
+			if(!mysql_store_result(db_con1))
+			{
+				ErrorLog("[ERROR:] Can't store result on SHOW_WANTED_LIST");
+				return 1;
+			}
 			new i = 0;
 			new k = mysql_num_rows(db_con1);
 			if(k == 0)
 			{
 				ShowPlayerDialog(playerid, DIALOG_POLICE_COMPUTER_4D, DIALOG_STYLE_MSGBOX, "Komputer policyjny", "Brak wpisów do kartoteki na wybrane nazwisko", "Wróæ", "");
+				mysql_free_result(db_con1);
 				return 1;
 			}
-			
-			while(mysql_retrieve_row(db_con1))
+			while(mysql_fetch_row_format(db_result, "|", db_con1))
 			{
-				mysql_fetch_field_row(string, "PlayerName", db_con1);
+				split2(db_result, arrCoords, '|');
+
 				strdel(WantedList[i][WantedName], 0, strlen(WantedList[i][WantedName]));
-				strmid(WantedList[i][WantedName], string, 0, strlen(string), 64);
-				mysql_fetch_field_row(string, "Description", db_con1);
+				strmid(WantedList[i][WantedName], arrCoords[1], 0, strlen(arrCoords[1]), 64);
+
 				strdel(WantedList[i][WantedDescription], 0, strlen(WantedList[i][WantedDescription]));
-				strmid(WantedList[i][WantedDescription], string, 0, strlen(string), 64);
-				mysql_fetch_field_row(string, "CommitedDay", db_con1);
-				WantedList[i][WantedCommitedDay] = strval(string);
-				mysql_fetch_field_row(string, "CommitedMonth", db_con1);
-				WantedList[i][WantedCommitedMonth] = strval(string);
-				mysql_fetch_field_row(string, "CommitedYear", db_con1);
-				WantedList[i][WantedCommitedYear] = strval(string);
-				mysql_fetch_field_row(string, "Punished", db_con1);
-				WantedList[i][WantedPunished] = strval(string);
+				strmid(WantedList[i][WantedDescription], arrCoords[2], 0, strlen(arrCoords[2]), 64);
+
+				WantedList[i][WantedCommitedDay] = strval(arrCoords[3]);
+				WantedList[i][WantedCommitedMonth] = strval(arrCoords[4]);
+				WantedList[i][WantedCommitedYear] = strval(arrCoords[5]);
+				WantedList[i][WantedPunished] = strval(arrCoords[6]);
 
 				i++;
 			}
 			i = 0;
-			string = "";
 			while(i < k)
 			{
 				if(WantedList[i][WantedPunished])
@@ -7815,20 +6119,23 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 
 				i++;
 			}
+			mysql_free_result(db_con1);
 			ShowPlayerDialog(playerid, DIALOG_POLICE_COMPUTER_3B, DIALOG_STYLE_LIST, "Komputer policyjny", string, "Wybierz", "Wróæ");
 		}
 		case LOAD_LUCKY_LOTTERY:
 		{
+			if( !mysql_store_result(db_con2) )
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_LUCKY_LOTTERY");
+				GameModeExit();
+				return 1;
+			}
 			new i = 0;
-			
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
 				mysql_fetch_field_row(string, "LotteryID", db_con2);
 				gLuckyLottery[i][LuckyID] = strval(string);
-				mysql_fetch_field_row(string, "PlayerName", db_con2);
-				format(gLuckyLottery[i][LuckyPlayerName], MAX_PLAYER_NAME, string);
+				mysql_fetch_field_row(gLuckyLottery[i][LuckyPlayerName], "PlayerName", db_con2);
 				mysql_fetch_field_row(string, "RewardTaken", db_con2);
 				gLuckyLottery[i][LuckyRewardTaken] = strval(string);
 				mysql_fetch_field_row(string, "number1", db_con2);
@@ -7853,28 +6160,32 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				
 				i++;
 			}
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 			#if defined DEBUG
 				printf("[INFO:] Loaded Lucky Lottery Data [MySQL]");
 			#endif
 		}
 		case LOAD_RANDOM_PICKUP_EVENT_1:
 		{
-			/*if(!mysql_store_result(db_con4))
+			if(!mysql_store_result(db_con4))
 			{
 				ErrorLog("[ERROR:] Can't store result on LOAD_RANDOM_PICKUP_EVENT_1");
 				return 1;
-			}*/
+			}
 			new randomID = random(mysql_num_rows(db_con4))+1;
 			gPickupEventID = randomID;
-			format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_pickup_events` WHERE `ID` = '%d'", randomID);
-			wp_mysql_query(string, LOAD_RANDOM_PICKUP_EVENT_2, db_con4);
-			//wp_mysql_free_result(db_con4);
+			format(string, sizeof(string), "SELECT * FROM `samp_pickup_events` WHERE `ID` = '%d'", randomID);
+			mysql_query(string, LOAD_RANDOM_PICKUP_EVENT_2, db_con4);
+			mysql_free_result(db_con4);
 		}
 		case LOAD_RANDOM_PICKUP_EVENT_2:
 		{
-			mysql_store_result(db_con4);
-			mysql_retrieve_row(db_con4);
+			if(!mysql_store_result(db_con4))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_RANDOM_PICKUP_EVENT_2");
+				return 1;
+			}
+			mysql_fetch_row_format(db_result, "|", db_con4);
 			
 			mysql_fetch_field_row(string, "Count", db_con4);
 			gPickupEventCount = strval(string);
@@ -7890,8 +6201,7 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 			gPickupEventItem = strval(string);
 			mysql_fetch_field_row(string, "ItemCount", db_con4);
 			gPickupEventItemCount = strval(string);
-			mysql_fetch_field_row(string, "Message", db_con4);
-			format(gPickupEventMessage, 256, string);
+			mysql_fetch_field_row(gPickupEventMessage, "Message", db_con4);
 			mysql_fetch_field_row(string, "Number", db_con4);
 			gPickupEventNumber = strval(string);
 			mysql_fetch_field_row(string, "CenterPosX", db_con4);
@@ -7903,18 +6213,20 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 			mysql_fetch_field_row(string, "MapIcon", db_con4);
 			gPickupEventMapIcon = strval(string);
 			
-			format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_pickup_events_locations` WHERE `EventID` = '%d'", gPickupEventID);
-			wp_mysql_query(string, LOAD_RANDOM_PICKUP_EVENT_3, db_con4);
+			format(string, sizeof(string), "SELECT * FROM `samp_pickup_events_locations` WHERE `EventID` = '%d'", gPickupEventID);
+			mysql_query(string, LOAD_RANDOM_PICKUP_EVENT_3, db_con4);
 			
-			//wp_mysql_free_result(db_con4);
+			mysql_free_result(db_con4);
 		}
 		case LOAD_RANDOM_PICKUP_EVENT_3:
 		{
+			if(!mysql_store_result(db_con4))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_RANDOM_PICKUP_EVENT_3");
+				return 1;
+			}
 			new i = 0;
-
-			mysql_store_result(db_con4);
-			
-			while(mysql_retrieve_row(db_con4))
+			while(mysql_fetch_row_format(db_result, "|", db_con4))
 			{
 				mysql_fetch_field_row(string, "ID", db_con4);
 				gPickupEventData[i][mPickupID] = strval(string);
@@ -7934,19 +6246,21 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				SendSmsToAll(CUSTOM_MAX_PLAYERS, gPickupEventNumber, gPickupEventMessage);
 				CreatePickupEventPickups();
 			}
-			//wp_mysql_free_result(db_con4);
+			mysql_free_result(db_con4);
 		}
 		case CHECK_VEHICLE_AVAILABLE:
 		{
 			new modelID;
-			
-			mysql_store_result(db_con4);			
-			mysql_retrieve_row(db_con4);
-			
+			if(!mysql_store_result(db_con4))
+			{
+				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Chwilowo nie ma mo¿liwoœci z³o¿enia zamówienia na ten pojazd", "Zamknij", "");
+				ErrorLog("[ERROR:] Can't store result on CHECK_VEHICLE_AVAILABLE");
+				return 1;
+			}
+			mysql_fetch_row_format(db_result, "|", db_con4);
 			mysql_fetch_field_row(string, "modelID", db_con4);
 			modelID = strval(string);
 			mysql_fetch_field_row(string, "Available", db_con4);
-			
 			if(strval(string) == 0)
 			{
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "W tej chwili nie ma dostêpnego tego modelu", "Zamknij", "");
@@ -7957,11 +6271,11 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				if(strval(string) > 0)
 				{
 					format(string, sizeof(string), "UPDATE `samp_vehicles_limits` SET `Available` = '%d' WHERE `modelID` = '%d'", strval(string)-1, modelID);
-					wp_mysql_query(string, SAVE, playerid, db_con2);
+					mysql_query(string, SAVE, playerid, db_con2);
 				}				
 				ImportVeh(gBuyBusinessID[playerid], modelID, gPlayerData[playerid][pName], gPlayerVars[playerid][mFuelType], gPlayerVars[playerid][mVehMaxHealth]);
 
-				format(string, sizeof(string), "Twój pojazd jest gotowy do odebrania. Koszt: $%d\nPamiêtaj ¿e kwota pieniêdzy wyznaczona za pojazd pobierana jest dopiero w momencie sprowadzenia pojazdu !", cenyPojazdow[modelID-400]);
+				format(string, sizeof(string), "Twój pojazd jest gotowy do odebrania. Koszt: %d$\nPamiêtaj ¿e kwota pieniêdzy wyznaczona za pojazd pobierana jest dopiero w momencie sprowadzenia pojazdu !", cenyPojazdow[modelID-400]);
 				format(string, sizeof(string), "%s\nJeœli w kasie biznesu nie bêdzie wystarczaj¹cej iloœci pieniêdzy samochód zostanie odes³any !", string);
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
 				
@@ -7971,38 +6285,46 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 		}
 		case LOAD_RACES_TRACKS_DATA:
 		{
-			new trkid, cpid;
-			
-			mysql_store_result(db_con2);
-
-			while(mysql_retrieve_row(db_con2))
+			if(!mysql_store_result(db_con2))
 			{
-				mysql_fetch_field_row(string, "RaceId", db_con2);
-				trkid = strval(string);
-				mysql_fetch_field_row(string, "CpId", db_con2);
-				cpid = strval(string);
-				mysql_fetch_field_row(string, "CpX", db_con2);
-				gRaceTrackCpX[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CpY", db_con2);
-				gRaceTrackCpY[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CpZ", db_con2);
-				gRaceTrackCpZ[trkid][cpid] = floatstr(string);
-				mysql_fetch_field_row(string, "CpType", db_con2);
-				gRaceTrackCpType[trkid][cpid] = strval(string);
+				ErrorLog("[ERROR:] Can't store result on LOAD_RACES_TRACKS_DATA");
+				GameModeExit();
+				return 1;
+			}
+
+			new trkid, cpid;
+
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
+			{
+				split2(db_result, arrCoords, '|');
+
+				trkid = strval(arrCoords[1]);
+				cpid = strval(arrCoords[2]);
+				gRaceTrackCpX[trkid][cpid] = floatstr(arrCoords[3]);
+				gRaceTrackCpY[trkid][cpid] = floatstr(arrCoords[4]);
+				gRaceTrackCpZ[trkid][cpid] = floatstr(arrCoords[5]);
+				gRaceTrackCpType[trkid][cpid] = strval(arrCoords[6]);
 			}
 			#if defined DEBUG
 				printf("[INFO:] Race tracks data part 2/2 loaded [MySQL]");
 			#endif
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 		case LOAD_RACES_TRACKS:
 		{
+			if(!mysql_store_result(db_con2))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_RACES_TRACKS_DATA");
+				GameModeExit();
+				return 1;
+			}
+
 			new trkid;
 
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
+				split2(db_result, arrCoords, '|');
+
 				mysql_fetch_field_row(string, "ID", db_con2);
 				trkid = strval(string)-1;
 				mysql_fetch_field_row(string, "Enabled", db_con2);
@@ -8021,128 +6343,73 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				gRaceTrackStart1CpY[trkid] = strval(string);
 				mysql_fetch_field_row(string, "Start1CpZ", db_con2);
 				gRaceTrackStart1CpZ[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start2CpX", db_con2);
-				gRaceTrackStart2CpX[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start2CpY", db_con2);
-				gRaceTrackStart2CpY[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start2CpZ", db_con2);
-				gRaceTrackStart2CpZ[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start3CpX", db_con2);
-				gRaceTrackStart3CpX[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start3CpY", db_con2);
-				gRaceTrackStart3CpY[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start3CpZ", db_con2);
-				gRaceTrackStart3CpZ[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start4CpX", db_con2);
-				gRaceTrackStart4CpX[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start4CpY", db_con2);
-				gRaceTrackStart4CpY[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start4CpZ", db_con2);
-				gRaceTrackStart4CpZ[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start5CpX", db_con2);
-				gRaceTrackStart5CpX[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start5CpY", db_con2);
-				gRaceTrackStart5CpY[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start5CpZ", db_con2);
-				gRaceTrackStart5CpZ[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start6CpX", db_con2);
-				gRaceTrackStart6CpX[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start6CpY", db_con2);
-				gRaceTrackStart6CpY[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start6CpZ", db_con2);
-				gRaceTrackStart6CpZ[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start7CpX", db_con2);
-				gRaceTrackStart7CpX[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start7CpY", db_con2);
-				gRaceTrackStart7CpY[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start7CpZ", db_con2);
-				gRaceTrackStart7CpZ[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start8CpX", db_con2);
-				gRaceTrackStart8CpX[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start8CpY", db_con2);
-				gRaceTrackStart8CpY[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start8CpZ", db_con2);
-				gRaceTrackStart8CpZ[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start9CpX", db_con2);
-				gRaceTrackStart9CpX[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start9CpY", db_con2);
-				gRaceTrackStart9CpY[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start9CpZ", db_con2);
-				gRaceTrackStart9CpZ[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start10CpX", db_con2);
-				gRaceTrackStart10CpX[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start10CpY", db_con2);
-				gRaceTrackStart10CpY[trkid] = strval(string);
-				mysql_fetch_field_row(string, "Start10CpZ", db_con2);
-				gRaceTrackStart10CpZ[trkid] = strval(string);
+				gRaceTrackStart2CpX[trkid] = strval(arrCoords[9]);
+				gRaceTrackStart2CpY[trkid] = strval(arrCoords[10]);
+				gRaceTrackStart2CpZ[trkid] = strval(arrCoords[11]);
+				gRaceTrackStart3CpX[trkid] = strval(arrCoords[12]);
+				gRaceTrackStart3CpY[trkid] = strval(arrCoords[13]);
+				gRaceTrackStart3CpZ[trkid] = strval(arrCoords[14]);
+				gRaceTrackStart4CpX[trkid] = strval(arrCoords[15]);
+				gRaceTrackStart4CpY[trkid] = strval(arrCoords[16]);
+				gRaceTrackStart4CpZ[trkid] = strval(arrCoords[17]);
+				gRaceTrackStart5CpX[trkid] = strval(arrCoords[18]);
+				gRaceTrackStart5CpY[trkid] = strval(arrCoords[19]);
+				gRaceTrackStart5CpZ[trkid] = strval(arrCoords[20]);
+				gRaceTrackStart6CpX[trkid] = strval(arrCoords[21]);
+				gRaceTrackStart6CpY[trkid] = strval(arrCoords[22]);
+				gRaceTrackStart6CpZ[trkid] = strval(arrCoords[23]);
+				gRaceTrackStart7CpX[trkid] = strval(arrCoords[24]);
+				gRaceTrackStart7CpY[trkid] = strval(arrCoords[25]);
+				gRaceTrackStart7CpZ[trkid] = strval(arrCoords[26]);
+				gRaceTrackStart8CpX[trkid] = strval(arrCoords[27]);
+				gRaceTrackStart8CpY[trkid] = strval(arrCoords[28]);
+				gRaceTrackStart8CpZ[trkid] = strval(arrCoords[29]);
+				gRaceTrackStart9CpX[trkid] = strval(arrCoords[30]);
+				gRaceTrackStart9CpY[trkid] = strval(arrCoords[31]);
+				gRaceTrackStart9CpZ[trkid] = strval(arrCoords[32]);
+				gRaceTrackStart10CpX[trkid] = strval(arrCoords[33]);
+				gRaceTrackStart10CpY[trkid] = strval(arrCoords[34]);
+				gRaceTrackStart10CpZ[trkid] = strval(arrCoords[35]);
 				
 				if(gRaceTrackInfoCpX[trkid] != 0.0 && gRaceTrackInfoCpY[trkid] != 0.0)
 					gRaceTrackInfoPickupId[trkid] = CreateDynamicPickup(1008, 23, gRaceTrackInfoCpX[trkid], gRaceTrackInfoCpY[trkid], gRaceTrackInfoCpZ[trkid]);
 			}
 			#if defined DEBUG
-				printf("[INFO:] Race tracks data part 1/2 loaded [MySQL]");
+				printf("[INFO:] Race tracks data part 2/2 loaded [MySQL]");
 			#endif
-			//wp_mysql_free_result(db_con2);
+			mysql_free_result(db_con2);
 		}
 		case LOAD_RACER_STATS:
 		{
-			mysql_store_result(db_con2);
-			
-			if(!mysql_num_rows(db_con2))
+			if(!mysql_store_result(db_con2))
 			{
-				ShowPlayerDialog(playerid, DIALOG_RACE_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz jeszcze statystyk na tej trasie.", "Wróæ", "");
+				ErrorLog("[ERROR:] Can't store result on LOAD_RACER_STATS");
 				return 1;
 			}
-			
-			mysql_retrieve_row(db_con2);
-			new bestTime[128], winCount, looseCount;
-			mysql_fetch_field_row(string, "Time", db_con2);
-			format(bestTime, sizeof(bestTime), "%s", string);
-			mysql_fetch_field_row(string, "Wins", db_con2);
-			winCount = strval(string);
-			mysql_fetch_field_row(string, "Looses", db_con2);
-			looseCount = strval(string);
-			format(string, sizeof(string), "Twój nalepszy czas: %s\nIloœæ wygranych: %d\nIloœæ przegranych: %d", bestTime, winCount, looseCount);
+			if(!mysql_num_rows(db_con2))
+			{
+				ShowPlayerDialog(playerid, DIALOG_RACE_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz jeszcze statystyk na tej trasie", "Wróæ", "");
+				return 1;
+			}
+			mysql_fetch_row_format(db_result, "|", db_con2);
+			format(string, sizeof(string), "Twój nalepszy czas: %s\nIloœæ wygranych: %d\nIloœæ przegranych: %d", arrCoords[2], strval(arrCoords[4]), strval(arrCoords[5]));
 			ShowPlayerDialog(playerid, DIALOG_RACE_INFO, DIALOG_STYLE_MSGBOX, "Twoje statystyki wyœcigu", string, "Wróæ", "");
-			return 1;
-		}
-		case LOAD_RACER_STATS_BEST:
-		{
-			mysql_store_result(db_con2);
-			
-			if(!mysql_num_rows(db_con2))
-			{
-				ShowPlayerDialog(playerid, DIALOG_RACE_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Brak najlepszego czasu na tej trasie.", "Wróæ", "");
-				return 1;
-			}
-			
-			mysql_retrieve_row(db_con2);
-			
-			new bestTime[128], setBy[MAX_PLAYER_NAME];
-			
-			mysql_fetch_field_row(string, "Time", db_con2);
-			format(bestTime, sizeof(bestTime), "%s", string);
-			mysql_fetch_field_row(string, "Name", db_con2);
-			format(setBy, MAX_PLAYER_NAME, string);
-			
-			format(string, sizeof(string), "Nalepszy czas: %s\nPrzez: %s", bestTime, setBy);
-			ShowPlayerDialog(playerid, DIALOG_RACE_INFO, DIALOG_STYLE_MSGBOX, "Statystyki", string, "Wróæ", "");
-			
 			return 1;
 		}
 		case LOAD_WEED:
 		{
-			mysql_store_result(db_con2);
-			
+			if(!mysql_store_result(db_con2))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_WEED");
+				return 1;
+			}
 			if(!mysql_num_rows(db_con2))
 			{
 				ErrorLog("[ERROR:] There is no rows on LOAD_WEED");
 				return 1;
 			}
-			
 			new i = 0;
-			
-			while(mysql_retrieve_row(db_con2))
+			while(mysql_fetch_row_format(db_result, "|", db_con2))
 			{
 				mysql_fetch_field_row(string, "PosX", db_con2);
 				gWeed[i][mPosX] = floatstr(string);
@@ -8166,88 +6433,30 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 				
 				// No need to implement each phase separatly. When weed growth function saves new Z position of the plant.
 				if(gWeed[i][mPhase] != 0)
-					gWeed[i][mObjId] = CreateDynamicObject(19473, gWeed[i][mPosX], gWeed[i][mPosY], gWeed[i][mPosZ], 0.0, 0.0, 0.0);
+					gWeed[i][mObjId] = CreateDynamicObject(19473, gWeed[i][mPosX], gWeed[i][mPosY], gWeed[i][mPosZ], 0.0, 0.0, 0.0); 
+				
 				i++;
 			}
-			//wp_mysql_free_result(db_con2);
-			
+			mysql_free_result(db_con2);
 		}
-		case DEF_FAC_LEADERS:
-		{
-			mysql_store_result(db_con1);
-			
-			if(!mysql_num_rows(db_con1))
-			{
-				// [NOTE:] Every faction leader is free
-			}
-			
-			new factionHaveLeader[7];
-			
-			while(mysql_retrieve_row(db_con1))
-			{
-				mysql_fetch_field_row(string, "Faction", db_con1);
-				switch(strval(string))
-				{
-					case 0: factionHaveLeader[0] = 1;
-					case 1: factionHaveLeader[1] = 1;
-					case 3: factionHaveLeader[2] = 1;
-					case 4: factionHaveLeader[3] = 1;
-					case 9: factionHaveLeader[4] = 1;
-					case 11: factionHaveLeader[5] = 1;					
-					case 2: factionHaveLeader[6] = 1;					
-				}
-			}
-			format(string, sizeof(string), "");
-			if(!factionHaveLeader[0])
-			{
-				format(string, sizeof(string), ""#COLOR_BEGIN2"%s\n\n", DynamicFactions[0][Name]);
-			}
-			if(!factionHaveLeader[1])
-			{
-				format(string, sizeof(string), "%s%s\n\n", string, DynamicFactions[2][Name]);
-			}
-			if(!factionHaveLeader[2])
-			{
-				format(string, sizeof(string), "%s%s\n\n", string, DynamicFactions[3][Name]);
-			}
-			if(!factionHaveLeader[3])
-			{
-				format(string, sizeof(string), "%s%s\n\n", string, DynamicFactions[4][Name]);
-			}
-			if(!factionHaveLeader[4])
-			{
-				format(string, sizeof(string), "%s%s\n\n", string, DynamicFactions[9][Name]);
-			}
-			if(!factionHaveLeader[5])
-			{
-				format(string, sizeof(string), "%s%s\n\n", string, DynamicFactions[11][Name]);
-			}
-			if(!factionHaveLeader[6])
-			{
-				format(string, sizeof(string), "%s%s\n\n", string, DynamicFactions[2][Name]);
-			}
-			if(strlen(string) == 0)
-			{
-				format(string, sizeof(string), "Wszystkie frakcje publiczne maj¹ obecnie swojego lidera");
-			}
-			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Frakcje nieposiadaj¹ce lidera", string, "Zamknij", "");
-			return 1;
-		}			
 		case LOAD_DRIVER_BOOK_QUESTION:
-		{			
-			mysql_store_result(db_con2);
-			
+		{
+			if(!mysql_store_result(db_con2))
+			{
+				ErrorLog("[ERROR:] Can't store result on LOAD_DRIVER_BOOK_QUESTION");
+				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Wyst¹pi³ b³¹d. Spróbuj jeszcze raz.", "Wróæ", "");
+				return 1;
+			}
 			if(!mysql_num_rows(db_con2))
 			{
 				ErrorLog("[ERROR:] There is no rows on LOAD_DRIVER_BOOK_QUESTION");
 				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Wyst¹pi³ b³¹d. Spróbuj jeszcze raz.", "Wróæ", "");
 				return 1;
 			}
-			
-			mysql_retrieve_row(db_con2);
+			mysql_fetch_row_format(db_result, "|", db_con2);
 			
 			new questionary[512];
-			mysql_fetch_field_row(string, "ID", db_con2);
+			mysql_fetch_field_row(string, "id", db_con2);
 			format(questionary, sizeof(questionary), "Pytanie nr %d:\n", strval(string));
 			mysql_fetch_field_row(string, "Question", db_con2);
 			format(questionary, sizeof(questionary), "%s%s", questionary, string);
@@ -8256,948 +6465,7 @@ public OnQueryFinish(resultid, extraid, connectionHandle)
 
 			ShowPlayerDialog(playerid, DIALOG_DRIVER_BOOK_2, DIALOG_STYLE_MSGBOX, "Pytanie", questionary, "Wróæ", "Zamknij");
 			
-			//wp_mysql_free_result(db_con2);
-			return 1;
-		}
-		case LOAD_MAP_ICONS:
-		{
-			new i = 0;
-			
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
-			{
-				mysql_fetch_field_row(string, "PosX", db_con2);
-				gMapIcon[i][mPosX] = floatstr(string);
-				mysql_fetch_field_row(string, "PosY", db_con2);
-				gMapIcon[i][mPosY] = floatstr(string);
-				mysql_fetch_field_row(string, "PosZ", db_con2);
-				gMapIcon[i][mPosZ] = floatstr(string);
-				mysql_fetch_field_row(string, "Type", db_con2);
-				gMapIcon[i][mType] = strval(string);
-				mysql_fetch_field_row(string, "Color", db_con2);
-				gMapIcon[i][mColor] = strval(string);
-				mysql_fetch_field_row(string, "World", db_con2);
-				gMapIcon[i][mWorld] = strval(string);
-				mysql_fetch_field_row(string, "Interior", db_con2);
-				gMapIcon[i][mInterior] = strval(string);
-				mysql_fetch_field_row(string, "StreamDistance", db_con2);
-				gMapIcon[i][mStreamDistance] = strval(string);
-				
-				if(gMapIcon[i][mPosX] != 0.0 || gMapIcon[i][mPosY] != 0.0)
-				{
-					gMapIcon[i][mIconId] = CreateDynamicMapIcon(gMapIcon[i][mPosX], gMapIcon[i][mPosY], gMapIcon[i][mPosZ], gMapIcon[i][mType], gMapIcon[i][mColor], gMapIcon[i][mWorld], gMapIcon[i][mInterior], -1, gMapIcon[i][mStreamDistance]);
-				}
-				
-				i++;
-			}
-			
-			#if defined DEBUG
-				printf("[DEBUG:] LoadMapIcons finished");
-			#endif
-		}
-		case COMPANY_MEMBERS_DISMISS:
-		{
-			mysql_store_result(db_con1);			
-			
-			gCompanyMembersCount[playerid] = 0;
-			
-			while(mysql_retrieve_row(db_con1))
-			{			
-				mysql_fetch_field_row(string2, "PlayerName", db_con1);
-				format(gCompanyMembersToFire[playerid][gCompanyMembersCount[playerid]], MAX_PLAYER_NAME, string2);
-				format(string, sizeof(string), "%s\n%s", string, string2);
-				
-				gCompanyMembersCount[playerid]++;
-			}
-			
-			ShowPlayerDialog(playerid, DIALOG_COMPANY_DISMISS, DIALOG_STYLE_LIST, "Panel firmy - zwolnij", string, "Dalej", "Wróæ");
-		}
-		case FACTION_MEMBERS_DISMISS:
-		{
-			mysql_store_result(db_con1);			
-			
-			gFactionMembersCount[playerid] = 0;
-			
-			while(mysql_retrieve_row(db_con1))
-			{			
-				mysql_fetch_field_row(string2, "PlayerName", db_con1);
-				format(gFactionMembersToFire[playerid][gFactionMembersCount[playerid]], MAX_PLAYER_NAME, string2);
-				format(string, sizeof(string), "%s\n%s", string, string2);
-				
-				gFactionMembersCount[playerid]++;
-			}
-			
-			ShowPlayerDialog(playerid, DIALOG_FACTION_DISMISS, DIALOG_STYLE_LIST, "Panel frakcji - wyproœ", string, "Dalej", "Wróæ");
-		}
-		case FACTION_MEMBERS_RANK:
-		{
-			mysql_store_result(db_con1);			
-			
-			gFactionMembersCount[playerid] = 0;
-			new rank[32];
-			
-			while(mysql_retrieve_row(db_con1))
-			{	
-				mysql_fetch_field_row(string2, "Rank", db_con1);
-				format(rank, sizeof(rank), string2);
-				mysql_fetch_field_row(string2, "PlayerName", db_con1);
-				format(gFactionMembersToFire[playerid][gFactionMembersCount[playerid]], MAX_PLAYER_NAME, string2);
-				format(string, sizeof(string), "%s\n%s - %s", string, string2, rank);
-				
-				gFactionMembersCount[playerid]++;
-			}
-			
-			ShowPlayerDialog(playerid, DIALOG_FACTION_RANK, DIALOG_STYLE_LIST, "Panel frakcji - rangi", string, "Dalej", "Wróæ");
-		}
-		case LOAD_PICKUP_INFOS:
-		{
-			mysql_store_result(db_con2);
-			
-			new i = 0;
-			
-			while(mysql_retrieve_row(db_con2))
-			{
-				mysql_fetch_field_row(string, "PosX", db_con2);
-				gPickupInfos[i][mPosX] = floatstr(string);
-				mysql_fetch_field_row(string, "PosY", db_con2);
-				gPickupInfos[i][mPosY] = floatstr(string);
-				mysql_fetch_field_row(string, "PosZ", db_con2);
-				gPickupInfos[i][mPosZ] = floatstr(string);
-				mysql_fetch_field_row(string, "World", db_con2);
-				gPickupInfos[i][mWorld] = strval(string);
-				mysql_fetch_field_row(string, "Interior", db_con2);
-				gPickupInfos[i][mInterior] = strval(string);
-				mysql_fetch_field_row(string, "PickupModel", db_con2);
-				gPickupInfos[i][mPickupModel] = strval(string);
-				mysql_fetch_field_row(string, "PickupType", db_con2);
-				gPickupInfos[i][mPickupType] = strval(string);
-				mysql_fetch_field_row(string, "InfoTextLine1", db_con2);
-				format(gPickupInfos[i][mInfoTextLine1], 128, string);
-				mysql_fetch_field_row(string, "InfoTextLine2", db_con2);
-				format(gPickupInfos[i][mInfoTextLine2], 128, string);
-				mysql_fetch_field_row(string, "InfoTextLine3", db_con2);
-				format(gPickupInfos[i][mInfoTextLine3], 128, string);
-				mysql_fetch_field_row(string, "InfoTextType", db_con2);
-				gPickupInfos[i][mInfoTextType] = strval(string);
-				
-				if(gPickupInfos[i][mPosX] != 0.0 && gPickupInfos[i][mPosY] != 0.0)
-				{
-					gPickupInfos[i][mPickupId] = CreateDynamicPickup(gPickupInfos[i][mPickupModel], gPickupInfos[i][mPickupType], gPickupInfos[i][mPosX], gPickupInfos[i][mPosY], gPickupInfos[i][mPosZ], gPickupInfos[i][mWorld], gPickupInfos[i][mInterior]); 
-					
-					if(gPickupInfos[i][mInfoTextType] == 0)
-					{
-						gPickupInfos[i][m3dText1Id] = CreateDynamic3DTextLabel(gPickupInfos[i][mInfoTextLine1], COLOR_YELLOW, gPickupInfos[i][mPosX], gPickupInfos[i][mPosY], gPickupInfos[i][mPosZ]+0.9,  10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, gPickupInfos[i][mWorld], gPickupInfos[i][mInterior]);
-						gPickupInfos[i][m3dText2Id] = CreateDynamic3DTextLabel(gPickupInfos[i][mInfoTextLine2], COLOR_YELLOW, gPickupInfos[i][mPosX], gPickupInfos[i][mPosY], gPickupInfos[i][mPosZ]+0.6,  10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, gPickupInfos[i][mWorld], gPickupInfos[i][mInterior]);
-						gPickupInfos[i][m3dText3Id] = CreateDynamic3DTextLabel(gPickupInfos[i][mInfoTextLine3], COLOR_YELLOW, gPickupInfos[i][mPosX], gPickupInfos[i][mPosY], gPickupInfos[i][mPosZ]+0.3,  10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, gPickupInfos[i][mWorld], gPickupInfos[i][mInterior]);
-					}
-				}
-				
-				i++;
-			}
-			
-			#if defined DEBUG
-				printf("[DEBUG:] LoadPickupInfos finished");
-			#endif
-		}
-		case LOAD_PUBLIC_ADS:
-		{
-			mysql_store_result(db_con2);
-		
-			new i = 0;
-		
-			while(mysql_retrieve_row(db_con2))
-			{
-				mysql_fetch_field_row(string, "Owner", db_con2);
-				format(gPublicAds[i][mOwner], MAX_PLAYER_NAME, string);
-				mysql_fetch_field_row(string, "ObjPosX", db_con2);
-				gPublicAds[i][mObjPosX] = floatstr(string);
-				mysql_fetch_field_row(string, "ObjPosY", db_con2);
-				gPublicAds[i][mObjPosY] = floatstr(string);
-				mysql_fetch_field_row(string, "ObjPosZ", db_con2);
-				gPublicAds[i][mObjPosZ] = floatstr(string);
-				mysql_fetch_field_row(string, "ObjRotX", db_con2);
-				gPublicAds[i][mObjRotX] = floatstr(string);
-				mysql_fetch_field_row(string, "ObjRotY", db_con2);
-				gPublicAds[i][mObjRotY] = floatstr(string);
-				mysql_fetch_field_row(string, "ObjRotZ", db_con2);
-				gPublicAds[i][mObjRotZ] = floatstr(string);
-				
-				mysql_fetch_field_row(string, "ObjWorld", db_con2);
-				gPublicAds[i][mObjWorld] = strval(string);
-				
-				mysql_fetch_field_row(string, "CpPosX", db_con2);
-				gPublicAds[i][mCpPosX] = floatstr(string);
-				mysql_fetch_field_row(string, "CpPosY", db_con2);
-				gPublicAds[i][mCpPosY] = floatstr(string);
-				mysql_fetch_field_row(string, "CpPosZ", db_con2);
-				gPublicAds[i][mCpPosZ] = floatstr(string);
-				
-				mysql_fetch_field_row(string, "CpWorld", db_con2);
-				gPublicAds[i][mCpWorld] = strval(string);				
-				
-				mysql_fetch_field_row(string, "AdLine1Content", db_con2);
-				format(gPublicAds[i][mAdLine1Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine1TimeLeft", db_con2);
-				gPublicAds[i][mAdLine1TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine1Owner", db_con2);
-				format(gPublicAds[i][mAdLine1Owner], MAX_PLAYER_NAME, string);
-				
-				mysql_fetch_field_row(string, "AdLine2Content", db_con2);
-				format(gPublicAds[i][mAdLine2Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine2TimeLeft", db_con2);
-				gPublicAds[i][mAdLine2TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine2Owner", db_con2);
-				format(gPublicAds[i][mAdLine2Owner], MAX_PLAYER_NAME, string);
-				
-				mysql_fetch_field_row(string, "AdLine3Content", db_con2);
-				format(gPublicAds[i][mAdLine3Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine3TimeLeft", db_con2);
-				gPublicAds[i][mAdLine3TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine3Owner", db_con2);
-				format(gPublicAds[i][mAdLine3Owner], MAX_PLAYER_NAME, string);
-				
-				mysql_fetch_field_row(string, "AdLine4Content", db_con2);
-				format(gPublicAds[i][mAdLine4Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine4TimeLeft", db_con2);
-				gPublicAds[i][mAdLine4TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine4Owner", db_con2);
-				format(gPublicAds[i][mAdLine4Owner], MAX_PLAYER_NAME, string);
-				
-				mysql_fetch_field_row(string, "AdLine5Content", db_con2);
-				format(gPublicAds[i][mAdLine5Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine5TimeLeft", db_con2);
-				gPublicAds[i][mAdLine5TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine5Owner", db_con2);
-				format(gPublicAds[i][mAdLine5Owner], MAX_PLAYER_NAME, string);
-				
-				mysql_fetch_field_row(string, "AdLine6Content", db_con2);
-				format(gPublicAds[i][mAdLine6Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine6TimeLeft", db_con2);
-				gPublicAds[i][mAdLine6TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine6Owner", db_con2);
-				format(gPublicAds[i][mAdLine6Owner], MAX_PLAYER_NAME, string);
-				
-				mysql_fetch_field_row(string, "AdLine7Content", db_con2);
-				format(gPublicAds[i][mAdLine7Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine7TimeLeft", db_con2);
-				gPublicAds[i][mAdLine7TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine7Owner", db_con2);
-				format(gPublicAds[i][mAdLine7Owner], MAX_PLAYER_NAME, string);
-				
-				mysql_fetch_field_row(string, "AdLine8Content", db_con2);
-				format(gPublicAds[i][mAdLine8Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine8TimeLeft", db_con2);
-				gPublicAds[i][mAdLine8TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine8Owner", db_con2);
-				format(gPublicAds[i][mAdLine8Owner], MAX_PLAYER_NAME, string);
-				
-				mysql_fetch_field_row(string, "AdLine9Content", db_con2);
-				format(gPublicAds[i][mAdLine9Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine9TimeLeft", db_con2);
-				gPublicAds[i][mAdLine9TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine9Owner", db_con2);
-				format(gPublicAds[i][mAdLine9Owner], MAX_PLAYER_NAME, string);
-				
-				mysql_fetch_field_row(string, "AdLine10Content", db_con2);
-				format(gPublicAds[i][mAdLine10Content], 65, string);
-				mysql_fetch_field_row(string, "AdLine10TimeLeft", db_con2);
-				gPublicAds[i][mAdLine10TimeLeft] = strval(string);
-				mysql_fetch_field_row(string, "AdLine10Owner", db_con2);
-				format(gPublicAds[i][mAdLine10Owner], MAX_PLAYER_NAME, string);
-				
-				if(gPublicAds[i][mObjPosX] != 0.0 || gPublicAds[i][mObjPosY] != 0.0)
-				{				
-					gPublicAds[i][mObjId] = CreateDynamicObject(3335, gPublicAds[i][mObjPosX], gPublicAds[i][mObjPosY], gPublicAds[i][mObjPosZ], gPublicAds[i][mObjRotX], gPublicAds[i][mObjRotY], gPublicAds[i][mObjRotZ], gPublicAds[i][mObjWorld]);
-					SetDynamicObjectRot(gPublicAds[i][mObjId], gPublicAds[i][mObjRotX], gPublicAds[i][mObjRotY], gPublicAds[i][mObjRotZ]);
-					defer RefreshPublicAd(i);
-				}
-				
-				if(gPublicAds[i][mCpPosX] != 0.0 || gPublicAds[i][mCpPosX] != 0.0)
-				{
-					//gPublicAds[i][mCpId] = CreateDynamicCP(gPublicAds[i][mCpPosX], gPublicAds[i][mCpPosY], gPublicAds[i][mCpPosZ], 0.5, gPublicAds[i][mCpWorld]);
-				}
-				
-				i++;
-			}
-			
-			#if defined DEBUG
-				printf("[DEBUG:] LoadPublicAds finished");
-			#endif
-		}
-		case PLAYER_LOAD_FUEL:
-		{
-			#if defined DEBUG
-				printf("[DEBUG:][PLAYER_LOAD_FUEL] pid = %d, pname = %s", playerid, gPlayerData[playerid][pName]);
-			#endif
-			
-			if(playerid != CUSTOM_MAX_PLAYERS)
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czekaj, trwa ³adowanie danych [dane tankowañ]...");
-			
-			mysql_store_result(db_con2);
-			
-			if(mysql_num_rows(db_con2) == 0 && playerid < CUSTOM_MAX_PLAYERS)
-			{
-				for(new i = 0; i <= BIZ_CPN_ID; i++)
-				{
-					format(string, sizeof(string), "INSERT INTO `samp_users_fueled` (`PlayerName`, `BizID`) VALUES ('%s', '%d')", gPlayerData[playerid][pName], i);
-					wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
-				}
-			}
-			else
-			{
-				new bizId;
-				
-				while(mysql_retrieve_row(db_con2))
-				{
-					mysql_fetch_field_row(string, "BizID", db_con2);
-					bizId = strval(string);
-					
-					mysql_fetch_field_row(string, "BizPetrol", db_con2);
-					gPlayerData[playerid][pGasStationRefPetrol][bizId] = floatstr(string);
-					mysql_fetch_field_row(string, "BizOil", db_con2);
-					gPlayerData[playerid][pGasStationRefOil][bizId] = floatstr(string);
-					mysql_fetch_field_row(string, "BizGas", db_con2);
-					gPlayerData[playerid][pGasStationRefGas][bizId] = floatstr(string);
-				}
-			}
-		}
-		case PLAYER_VEHICLE_CASH:
-		{
-			mysql_store_result(db_con2);
-			
-			if(mysql_num_rows(db_con2))
-			{
-				mysql_retrieve_row(db_con2);
-				
-				mysql_fetch_field_row(string, "PlayerName", db_con2);
-				
-				UpdatePlayerDataByName(string, "Bank", gVehData[playerid][Price]);
-			}
-		}
-		case LOAD_ITEMS_FOR_DELETE:
-		{
-			new slot, slotId;
-			
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
-			{
-				mysql_fetch_field_row(string, "PlayerName", db_con2);
-				format(gPlayerData[playerid][pName], MAX_PLAYER_NAME, string);
-				mysql_fetch_field_row(string, "Item1", db_con2);
-				gPlayerData[playerid][pItem1] = strval(string);
-				mysql_fetch_field_row(string, "Item2", db_con2);
-				gPlayerData[playerid][pItem2] = strval(string);
-				mysql_fetch_field_row(string, "Item3", db_con2);
-				gPlayerData[playerid][pItem3] = strval(string);
-				mysql_fetch_field_row(string, "Item4", db_con2);
-				gPlayerData[playerid][pItem4] = strval(string);
-				mysql_fetch_field_row(string, "Item5", db_con2);
-				gPlayerData[playerid][pItem5] = strval(string);
-				mysql_fetch_field_row(string, "Item1type", db_con2);
-				gPlayerData[playerid][pItem1type] = strval(string);
-				mysql_fetch_field_row(string, "Item2type", db_con2);
-				gPlayerData[playerid][pItem2type] = strval(string);
-				mysql_fetch_field_row(string, "Item3type", db_con2);
-				gPlayerData[playerid][pItem3type] = strval(string);
-				mysql_fetch_field_row(string, "Item4type", db_con2);
-				gPlayerData[playerid][pItem4type] = strval(string);
-				mysql_fetch_field_row(string, "Item5type", db_con2);
-				gPlayerData[playerid][pItem5type] = strval(string);
-				mysql_fetch_field_row(string, "Item1param", db_con2);
-				gPlayerData[playerid][pItem1param] = strval(string);
-				mysql_fetch_field_row(string, "Item2param", db_con2);
-				gPlayerData[playerid][pItem2param] = strval(string);
-				mysql_fetch_field_row(string, "Item3param", db_con2);
-				gPlayerData[playerid][pItem3param] = strval(string);
-				mysql_fetch_field_row(string, "Item4param", db_con2);
-				gPlayerData[playerid][pItem4param] = strval(string);
-				mysql_fetch_field_row(string, "Item5param", db_con2);
-				gPlayerData[playerid][pItem5param] = strval(string);
-				mysql_fetch_field_row(string, "Item1param2", db_con2);
-				gPlayerData[playerid][pItem1param2] = strval(string);
-				mysql_fetch_field_row(string, "Item2param2", db_con2);
-				gPlayerData[playerid][pItem2param2] = strval(string);
-				mysql_fetch_field_row(string, "Item3param2", db_con2);
-				gPlayerData[playerid][pItem3param2] = strval(string);
-				mysql_fetch_field_row(string, "Item4param2", db_con2);
-				gPlayerData[playerid][pItem4param2] = strval(string);
-				mysql_fetch_field_row(string, "Item5param2", db_con2);
-				gPlayerData[playerid][pItem5param2] = strval(string);
-				mysql_fetch_field_row(string, "Item1param3", db_con2);
-				gPlayerData[playerid][pItem1param3] = strval(string);
-				mysql_fetch_field_row(string, "Item2param3", db_con2);
-				gPlayerData[playerid][pItem2param3] = strval(string);
-				mysql_fetch_field_row(string, "Item3param3", db_con2);
-				gPlayerData[playerid][pItem3param3] = strval(string);
-				mysql_fetch_field_row(string, "Item4param3", db_con2);
-				gPlayerData[playerid][pItem4param3] = strval(string);
-				mysql_fetch_field_row(string, "Item5param3", db_con2);
-				gPlayerData[playerid][pItem5param3] = strval(string);
-				mysql_fetch_field_row(string, "Item1param4", db_con2);
-				gPlayerData[playerid][pItem1param4] = strval(string);
-				mysql_fetch_field_row(string, "Item2param4", db_con2);
-				gPlayerData[playerid][pItem2param4] = strval(string);
-				mysql_fetch_field_row(string, "Item3param4", db_con2);
-				gPlayerData[playerid][pItem3param4] = strval(string);
-				mysql_fetch_field_row(string, "Item4param4", db_con2);
-				gPlayerData[playerid][pItem4param4] = strval(string);
-				mysql_fetch_field_row(string, "Item5param4", db_con2);
-				gPlayerData[playerid][pItem5param4] = strval(string);
-				mysql_fetch_field_row(string, "Item1param5", db_con2);
-				format(gPlayerData[playerid][pItem1param5], 64, string);
-				mysql_fetch_field_row(string, "Item2param5", db_con2);
-				format(gPlayerData[playerid][pItem2param5], 64, string);
-				mysql_fetch_field_row(string, "Item3param5", db_con2);
-				format(gPlayerData[playerid][pItem3param5], 64, string);
-				mysql_fetch_field_row(string, "Item4param5", db_con2);
-				format(gPlayerData[playerid][pItem4param5], 64, string);
-				mysql_fetch_field_row(string, "Item5param5", db_con2);
-				format(gPlayerData[playerid][pItem5param5], 64, string);
-				mysql_fetch_field_row(string, "Item1param6", db_con2);
-				gPlayerData[playerid][pItem1param6] = strval(string);
-				mysql_fetch_field_row(string, "Item2param6", db_con2);
-				gPlayerData[playerid][pItem2param6] = strval(string);
-				mysql_fetch_field_row(string, "Item3param6", db_con2);
-				gPlayerData[playerid][pItem3param6] = strval(string);
-				mysql_fetch_field_row(string, "Item4param6", db_con2);
-				gPlayerData[playerid][pItem4param6] = strval(string);
-				mysql_fetch_field_row(string, "Item5param6", db_con2);
-				gPlayerData[playerid][pItem5param6] = strval(string);
-				
-				for(new pSlotId = 0; pSlotId < MAX_PLAYER_ITEM_SLOT; pSlotId++)
-				{
-					slot = PHaveItem(playerid, gSearchItemType, gSearchItemId, pSlotId);
-					
-					if(slot == 0)
-					{
-						continue;
-					}
-					
-					if(gSearchItemParam1 != -999)
-					{
-						if(SlotParam1(playerid, slotId) != gSearchItemParam1)
-						{
-							continue;
-						}
-					}
-						
-					if(gSearchItemParam2 != -999)
-					{
-						if(SlotParam2(playerid, slotId) != gSearchItemParam2)
-						{
-							continue;
-						}
-					}
-					
-					if(gSearchItemParam3 != -999)
-					{
-						if(SlotParam3(playerid, slotId) != gSearchItemParam3)
-						{
-							continue;
-						}
-					}
-					
-					if(gSearchItemParam4 != -999)
-					{	
-						if(SlotParam4(playerid, slotId) != gSearchItemParam4)
-						{
-							continue;
-						}
-					}
-					
-					if(strlen(gSearchItemParam5) != 0)
-					{
-						SlotParam5(playerid, slotId);
-						
-						if(strcmp(gDSelectedItemP5[playerid], gSearchItemParam5, false) != 0)
-						{
-							continue;
-						}
-					}
-					
-					RemovePlayerItemUsed(playerid, slotId);
-				}
-			}
-			
-			format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_users_items2`");
-			wp_mysql_query(string, LOAD_ITEMS2_FOR_DELETE, CUSTOM_MAX_PLAYERS, db_con2);
-		}
-		case LOAD_ITEMS2_FOR_DELETE:
-		{
-			new slot, slotId;
-		
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
-			{
-				mysql_fetch_field_row(string, "PlayerName", db_con2);
-				format(gPlayerData[playerid][pName], MAX_PLAYER_NAME, string);
-				mysql_fetch_field_row(string, "Item6", db_con2);
-				gPlayerData[playerid][pItem6] = strval(string);
-				mysql_fetch_field_row(string, "Item7", db_con2);
-				gPlayerData[playerid][pItem7] = strval(string);
-				mysql_fetch_field_row(string, "Item8", db_con2);
-				gPlayerData[playerid][pItem8] = strval(string);
-				mysql_fetch_field_row(string, "Item9", db_con2);
-				gPlayerData[playerid][pItem9] = strval(string);
-				mysql_fetch_field_row(string, "Item10", db_con2);
-				gPlayerData[playerid][pItem10] = strval(string);
-				mysql_fetch_field_row(string, "Item6type", db_con2);
-				gPlayerData[playerid][pItem6type] = strval(string);
-				mysql_fetch_field_row(string, "Item7type", db_con2);
-				gPlayerData[playerid][pItem7type] = strval(string);
-				mysql_fetch_field_row(string, "Item8type", db_con2);
-				gPlayerData[playerid][pItem8type] = strval(string);
-				mysql_fetch_field_row(string, "Item9type", db_con2);
-				gPlayerData[playerid][pItem9type] = strval(string);
-				mysql_fetch_field_row(string, "Item10type", db_con2);
-				gPlayerData[playerid][pItem10type] = strval(string);
-				mysql_fetch_field_row(string, "Item6param", db_con2);
-				gPlayerData[playerid][pItem6param] = strval(string);
-				mysql_fetch_field_row(string, "Item7param", db_con2);
-				gPlayerData[playerid][pItem7param] = strval(string);
-				mysql_fetch_field_row(string, "Item8param", db_con2);
-				gPlayerData[playerid][pItem8param] = strval(string);
-				mysql_fetch_field_row(string, "Item9param", db_con2);
-				gPlayerData[playerid][pItem9param] = strval(string);
-				mysql_fetch_field_row(string, "Item10param", db_con2);
-				gPlayerData[playerid][pItem10param] = strval(string);
-				mysql_fetch_field_row(string, "Item6param2", db_con2);
-				gPlayerData[playerid][pItem6param2] = strval(string);
-				mysql_fetch_field_row(string, "Item7param2", db_con2);
-				gPlayerData[playerid][pItem7param2] = strval(string);
-				mysql_fetch_field_row(string, "Item8param2", db_con2);
-				gPlayerData[playerid][pItem8param2] = strval(string);
-				mysql_fetch_field_row(string, "Item9param2", db_con2);
-				gPlayerData[playerid][pItem9param2] = strval(string);
-				mysql_fetch_field_row(string, "Item10param2", db_con2);
-				gPlayerData[playerid][pItem10param2] = strval(string);
-				mysql_fetch_field_row(string, "Item6param3", db_con2);
-				gPlayerData[playerid][pItem6param3] = strval(string);
-				mysql_fetch_field_row(string, "Item7param3", db_con2);
-				gPlayerData[playerid][pItem7param3] = strval(string);
-				mysql_fetch_field_row(string, "Item8param3", db_con2);
-				gPlayerData[playerid][pItem8param3] = strval(string);
-				mysql_fetch_field_row(string, "Item9param3", db_con2);
-				gPlayerData[playerid][pItem9param3] = strval(string);
-				mysql_fetch_field_row(string, "Item10param3", db_con2);
-				gPlayerData[playerid][pItem10param3] = strval(string);
-				mysql_fetch_field_row(string, "Item6param4", db_con2);
-				gPlayerData[playerid][pItem6param4] = strval(string);
-				mysql_fetch_field_row(string, "Item7param4", db_con2);
-				gPlayerData[playerid][pItem7param4] = strval(string);
-				mysql_fetch_field_row(string, "Item8param4", db_con2);
-				gPlayerData[playerid][pItem8param4] = strval(string);
-				mysql_fetch_field_row(string, "Item9param4", db_con2);
-				gPlayerData[playerid][pItem9param4] = strval(string);
-				mysql_fetch_field_row(string, "Item10param4", db_con2);
-				gPlayerData[playerid][pItem10param4] = strval(string);
-				mysql_fetch_field_row(string, "Item6param5", db_con2);
-				format(gPlayerData[playerid][pItem6param5], 64, string);
-				mysql_fetch_field_row(string, "Item7param5", db_con2);
-				format(gPlayerData[playerid][pItem7param5], 64, string);
-				mysql_fetch_field_row(string, "Item8param5", db_con2);
-				format(gPlayerData[playerid][pItem8param5], 64, string);
-				mysql_fetch_field_row(string, "Item9param5", db_con2);
-				format(gPlayerData[playerid][pItem9param5], 64, string);
-				mysql_fetch_field_row(string, "Item10param5", db_con2);
-				format(gPlayerData[playerid][pItem10param5], 64, string);
-				mysql_fetch_field_row(string, "Item6param6", db_con2);
-				gPlayerData[playerid][pItem6param6] = strval(string);
-				mysql_fetch_field_row(string, "Item7param6", db_con2);
-				gPlayerData[playerid][pItem7param6] = strval(string);
-				mysql_fetch_field_row(string, "Item8param6", db_con2);
-				gPlayerData[playerid][pItem8param6] = strval(string);
-				mysql_fetch_field_row(string, "Item9param6", db_con2);
-				gPlayerData[playerid][pItem9param6] = strval(string);
-				mysql_fetch_field_row(string, "Item10param6", db_con2);
-				gPlayerData[playerid][pItem10param6] = strval(string);
-				
-				for(new pSlotId = 0; pSlotId < MAX_PLAYER_ITEM_SLOT; pSlotId++)
-				{
-					slot = PHaveItem(playerid, gSearchItemType, gSearchItemId, pSlotId);
-					
-					if(slot == 0)
-					{
-						continue;
-					}
-					
-					if(gSearchItemParam1 != -999)
-					{
-						if(SlotParam1(playerid, slotId) != gSearchItemParam1)
-						{
-							continue;
-						}
-					}
-						
-					if(gSearchItemParam2 != -999)
-					{
-						if(SlotParam2(playerid, slotId) != gSearchItemParam2)
-						{
-							continue;
-						}
-					}
-					
-					if(gSearchItemParam3 != -999)
-					{
-						if(SlotParam3(playerid, slotId) != gSearchItemParam3)
-						{
-							continue;
-						}
-					}
-					
-					if(gSearchItemParam4 != -999)
-					{	
-						if(SlotParam4(playerid, slotId) != gSearchItemParam4)
-						{
-							continue;
-						}
-					}
-					
-					if(strlen(gSearchItemParam5) != 0)
-					{
-						SlotParam5(playerid, slotId);
-						
-						if(strcmp(gDSelectedItemP5[playerid], gSearchItemParam5, false) != 0)
-						{
-							continue;
-						}
-					}
-					
-					RemovePlayerItemUsed(playerid, slotId);
-				}
-			}
-			
-			format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_users_items3`");
-			wp_mysql_query(string, LOAD_ITEMS3_FOR_DELETE, CUSTOM_MAX_PLAYERS, db_con2);
-		}
-		case LOAD_ITEMS3_FOR_DELETE:
-		{
-			new slot, slotId;
-		
-			mysql_store_result(db_con2);
-			
-			while(mysql_retrieve_row(db_con2))
-			{
-				mysql_fetch_field_row(string, "PlayerName", db_con2);
-				format(gPlayerData[playerid][pName], MAX_PLAYER_NAME, string);
-				mysql_fetch_field_row(string, "Item11", db_con2);
-				gPlayerData[playerid][pItem11] = strval(string);
-				mysql_fetch_field_row(string, "Item12", db_con2);
-				gPlayerData[playerid][pItem12] = strval(string);
-				mysql_fetch_field_row(string, "Item13", db_con2);
-				gPlayerData[playerid][pItem13] = strval(string);
-				mysql_fetch_field_row(string, "Item14", db_con2);
-				gPlayerData[playerid][pItem14] = strval(string);
-				mysql_fetch_field_row(string, "Item15", db_con2);
-				gPlayerData[playerid][pItem15] = strval(string);
-				mysql_fetch_field_row(string, "Item16", db_con2);
-				gPlayerData[playerid][pItem16] = strval(string);
-				mysql_fetch_field_row(string, "Item17", db_con2);
-				gPlayerData[playerid][pItem17] = strval(string);
-				mysql_fetch_field_row(string, "Item18", db_con2);
-				gPlayerData[playerid][pItem18] = strval(string);
-				mysql_fetch_field_row(string, "Item19", db_con2);
-				gPlayerData[playerid][pItem19] = strval(string);
-				mysql_fetch_field_row(string, "Item20", db_con2);
-				gPlayerData[playerid][pItem20] = strval(string);
-				mysql_fetch_field_row(string, "Item21", db_con2);
-				gPlayerData[playerid][pItem21] = strval(string);
-				mysql_fetch_field_row(string, "Item22", db_con2);
-				gPlayerData[playerid][pItem22] = strval(string);
-				mysql_fetch_field_row(string, "Item23", db_con2);
-				gPlayerData[playerid][pItem23] = strval(string);
-				mysql_fetch_field_row(string, "Item24", db_con2);
-				gPlayerData[playerid][pItem24] = strval(string);
-				mysql_fetch_field_row(string, "Item25", db_con2);
-				gPlayerData[playerid][pItem25] = strval(string);
-				mysql_fetch_field_row(string, "Item11type", db_con2);
-				gPlayerData[playerid][pItem11type] = strval(string);
-				mysql_fetch_field_row(string, "Item12type", db_con2);
-				gPlayerData[playerid][pItem12type] = strval(string);
-				mysql_fetch_field_row(string, "Item13type", db_con2);
-				gPlayerData[playerid][pItem13type] = strval(string);
-				mysql_fetch_field_row(string, "Item14type", db_con2);
-				gPlayerData[playerid][pItem14type] = strval(string);
-				mysql_fetch_field_row(string, "Item15type", db_con2);
-				gPlayerData[playerid][pItem15type] = strval(string);
-				mysql_fetch_field_row(string, "Item16type", db_con2);
-				gPlayerData[playerid][pItem16type] = strval(string);
-				mysql_fetch_field_row(string, "Item17type", db_con2);
-				gPlayerData[playerid][pItem17type] = strval(string);
-				mysql_fetch_field_row(string, "Item18type", db_con2);
-				gPlayerData[playerid][pItem18type] = strval(string);
-				mysql_fetch_field_row(string, "Item19type", db_con2);
-				gPlayerData[playerid][pItem19type] = strval(string);
-				mysql_fetch_field_row(string, "Item20type", db_con2);
-				gPlayerData[playerid][pItem20type] = strval(string);
-				mysql_fetch_field_row(string, "Item21type", db_con2);
-				gPlayerData[playerid][pItem21type] = strval(string);
-				mysql_fetch_field_row(string, "Item22type", db_con2);
-				gPlayerData[playerid][pItem22type] = strval(string);
-				mysql_fetch_field_row(string, "Item23type", db_con2);
-				gPlayerData[playerid][pItem23type] = strval(string);
-				mysql_fetch_field_row(string, "Item24type", db_con2);
-				gPlayerData[playerid][pItem24type] = strval(string);
-				mysql_fetch_field_row(string, "Item25type", db_con2);
-				gPlayerData[playerid][pItem25type] = strval(string);
-				mysql_fetch_field_row(string, "Item11param", db_con2);
-				gPlayerData[playerid][pItem11param] = strval(string);
-				mysql_fetch_field_row(string, "Item12param", db_con2);
-				gPlayerData[playerid][pItem12param] = strval(string);
-				mysql_fetch_field_row(string, "Item13param", db_con2);
-				gPlayerData[playerid][pItem13param] = strval(string);
-				mysql_fetch_field_row(string, "Item14param", db_con2);
-				gPlayerData[playerid][pItem14param] = strval(string);
-				mysql_fetch_field_row(string, "Item15param", db_con2);
-				gPlayerData[playerid][pItem15param] = strval(string);
-				mysql_fetch_field_row(string, "Item16param", db_con2);
-				gPlayerData[playerid][pItem16param] = strval(string);
-				mysql_fetch_field_row(string, "Item17param", db_con2);
-				gPlayerData[playerid][pItem17param] = strval(string);
-				mysql_fetch_field_row(string, "Item18param", db_con2);
-				gPlayerData[playerid][pItem18param] = strval(string);
-				mysql_fetch_field_row(string, "Item19param", db_con2);
-				gPlayerData[playerid][pItem19param] = strval(string);
-				mysql_fetch_field_row(string, "Item20param", db_con2);
-				gPlayerData[playerid][pItem20param] = strval(string);
-				mysql_fetch_field_row(string, "Item21param", db_con2);
-				gPlayerData[playerid][pItem21param] = strval(string);
-				mysql_fetch_field_row(string, "Item22param", db_con2);
-				gPlayerData[playerid][pItem22param] = strval(string);
-				mysql_fetch_field_row(string, "Item23param", db_con2);
-				gPlayerData[playerid][pItem23param] = strval(string);
-				mysql_fetch_field_row(string, "Item24param", db_con2);
-				gPlayerData[playerid][pItem24param] = strval(string);
-				mysql_fetch_field_row(string, "Item25param", db_con2);
-				gPlayerData[playerid][pItem25param] = strval(string);
-				mysql_fetch_field_row(string, "Item11param2", db_con2);
-				gPlayerData[playerid][pItem11param2] = strval(string);
-				mysql_fetch_field_row(string, "Item12param2", db_con2);
-				gPlayerData[playerid][pItem12param2] = strval(string);
-				mysql_fetch_field_row(string, "Item13param2", db_con2);
-				gPlayerData[playerid][pItem13param2] = strval(string);
-				mysql_fetch_field_row(string, "Item14param2", db_con2);
-				gPlayerData[playerid][pItem14param2] = strval(string);
-				mysql_fetch_field_row(string, "Item15param2", db_con2);
-				gPlayerData[playerid][pItem15param2] = strval(string);
-				mysql_fetch_field_row(string, "Item16param2", db_con2);
-				gPlayerData[playerid][pItem16param2] = strval(string);
-				mysql_fetch_field_row(string, "Item17param2", db_con2);
-				gPlayerData[playerid][pItem17param2] = strval(string);
-				mysql_fetch_field_row(string, "Item18param2", db_con2);
-				gPlayerData[playerid][pItem18param2] = strval(string);
-				mysql_fetch_field_row(string, "Item19param2", db_con2);
-				gPlayerData[playerid][pItem19param2] = strval(string);
-				mysql_fetch_field_row(string, "Item20param2", db_con2);
-				gPlayerData[playerid][pItem20param2] = strval(string);
-				mysql_fetch_field_row(string, "Item21param2", db_con2);
-				gPlayerData[playerid][pItem21param2] = strval(string);
-				mysql_fetch_field_row(string, "Item22param2", db_con2);
-				gPlayerData[playerid][pItem22param2] = strval(string);
-				mysql_fetch_field_row(string, "Item23param2", db_con2);
-				gPlayerData[playerid][pItem23param2] = strval(string);
-				mysql_fetch_field_row(string, "Item24param2", db_con2);
-				gPlayerData[playerid][pItem24param2] = strval(string);
-				mysql_fetch_field_row(string, "Item25param2", db_con2);
-				gPlayerData[playerid][pItem25param2] = strval(string);
-				mysql_fetch_field_row(string, "Item11param3", db_con2);
-				gPlayerData[playerid][pItem11param3] = strval(string);
-				mysql_fetch_field_row(string, "Item12param3", db_con2);
-				gPlayerData[playerid][pItem12param3] = strval(string);
-				mysql_fetch_field_row(string, "Item13param3", db_con2);
-				gPlayerData[playerid][pItem13param3] = strval(string);
-				mysql_fetch_field_row(string, "Item14param3", db_con2);
-				gPlayerData[playerid][pItem14param3] = strval(string);
-				mysql_fetch_field_row(string, "Item15param3", db_con2);
-				gPlayerData[playerid][pItem15param3] = strval(string);
-				mysql_fetch_field_row(string, "Item16param3", db_con2);
-				gPlayerData[playerid][pItem16param3] = strval(string);
-				mysql_fetch_field_row(string, "Item17param3", db_con2);
-				gPlayerData[playerid][pItem17param3] = strval(string);
-				mysql_fetch_field_row(string, "Item18param3", db_con2);
-				gPlayerData[playerid][pItem18param3] = strval(string);
-				mysql_fetch_field_row(string, "Item19param3", db_con2);
-				gPlayerData[playerid][pItem19param3] = strval(string);
-				mysql_fetch_field_row(string, "Item20param3", db_con2);
-				gPlayerData[playerid][pItem20param3] = strval(string);
-				mysql_fetch_field_row(string, "Item21param3", db_con2);
-				gPlayerData[playerid][pItem21param3] = strval(string);
-				mysql_fetch_field_row(string, "Item22param3", db_con2);
-				gPlayerData[playerid][pItem22param3] = strval(string);
-				mysql_fetch_field_row(string, "Item23param3", db_con2);
-				gPlayerData[playerid][pItem23param3] = strval(string);
-				mysql_fetch_field_row(string, "Item24param3", db_con2);
-				gPlayerData[playerid][pItem24param3] = strval(string);
-				mysql_fetch_field_row(string, "Item25param3", db_con2);
-				gPlayerData[playerid][pItem25param3] = strval(string);
-				mysql_fetch_field_row(string, "Item11param4", db_con2);
-				gPlayerData[playerid][pItem11param4] = strval(string);
-				mysql_fetch_field_row(string, "Item12param4", db_con2);
-				gPlayerData[playerid][pItem12param4] = strval(string);
-				mysql_fetch_field_row(string, "Item13param4", db_con2);
-				gPlayerData[playerid][pItem13param4] = strval(string);
-				mysql_fetch_field_row(string, "Item14param4", db_con2);
-				gPlayerData[playerid][pItem14param4] = strval(string);
-				mysql_fetch_field_row(string, "Item15param4", db_con2);
-				gPlayerData[playerid][pItem15param4] = strval(string);
-				mysql_fetch_field_row(string, "Item16param4", db_con2);
-				gPlayerData[playerid][pItem16param4] = strval(string);
-				mysql_fetch_field_row(string, "Item17param4", db_con2);
-				gPlayerData[playerid][pItem17param4] = strval(string);
-				mysql_fetch_field_row(string, "Item18param4", db_con2);
-				gPlayerData[playerid][pItem18param4] = strval(string);
-				mysql_fetch_field_row(string, "Item19param4", db_con2);
-				gPlayerData[playerid][pItem19param4] = strval(string);
-				mysql_fetch_field_row(string, "Item20param4", db_con2);
-				gPlayerData[playerid][pItem20param4] = strval(string);
-				mysql_fetch_field_row(string, "Item21param4", db_con2);
-				gPlayerData[playerid][pItem21param4] = strval(string);
-				mysql_fetch_field_row(string, "Item22param4", db_con2);
-				gPlayerData[playerid][pItem22param4] = strval(string);
-				mysql_fetch_field_row(string, "Item23param4", db_con2);
-				gPlayerData[playerid][pItem23param4] = strval(string);
-				mysql_fetch_field_row(string, "Item24param4", db_con2);
-				gPlayerData[playerid][pItem24param4] = strval(string);
-				mysql_fetch_field_row(string, "Item25param4", db_con2);
-				gPlayerData[playerid][pItem25param4] = strval(string);
-				mysql_fetch_field_row(string, "Item11param5", db_con2);
-				format(gPlayerData[playerid][pItem11param5], 64, string);
-				mysql_fetch_field_row(string, "Item12param5", db_con2);
-				format(gPlayerData[playerid][pItem12param5], 64, string);
-				mysql_fetch_field_row(string, "Item13param5", db_con2);
-				format(gPlayerData[playerid][pItem13param5], 64, string);
-				mysql_fetch_field_row(string, "Item14param5", db_con2);
-				format(gPlayerData[playerid][pItem14param5], 64, string);
-				mysql_fetch_field_row(string, "Item15param5", db_con2);
-				format(gPlayerData[playerid][pItem15param5], 64, string);
-				mysql_fetch_field_row(string, "Item16param5", db_con2);
-				format(gPlayerData[playerid][pItem16param5], 64, string);
-				mysql_fetch_field_row(string, "Item17param5", db_con2);
-				format(gPlayerData[playerid][pItem17param5], 64, string);
-				mysql_fetch_field_row(string, "Item18param5", db_con2);
-				format(gPlayerData[playerid][pItem18param5], 64, string);
-				mysql_fetch_field_row(string, "Item19param5", db_con2);
-				format(gPlayerData[playerid][pItem19param5], 64, string);
-				mysql_fetch_field_row(string, "Item20param5", db_con2);
-				format(gPlayerData[playerid][pItem20param5], 64, string);
-				mysql_fetch_field_row(string, "Item21param5", db_con2);
-				format(gPlayerData[playerid][pItem21param5], 64, string);
-				mysql_fetch_field_row(string, "Item22param5", db_con2);
-				format(gPlayerData[playerid][pItem22param5], 64, string);
-				mysql_fetch_field_row(string, "Item23param5", db_con2);
-				format(gPlayerData[playerid][pItem23param5], 64, string);
-				mysql_fetch_field_row(string, "Item24param5", db_con2);
-				format(gPlayerData[playerid][pItem24param5], 64, string);
-				mysql_fetch_field_row(string, "Item25param5", db_con2);
-				format(gPlayerData[playerid][pItem25param5], 64, string);
-				mysql_fetch_field_row(string, "Item11param6", db_con2);
-				gPlayerData[playerid][pItem11param6] = strval(string);
-				mysql_fetch_field_row(string, "Item12param6", db_con2);
-				gPlayerData[playerid][pItem12param6] = strval(string);
-				mysql_fetch_field_row(string, "Item13param6", db_con2);
-				gPlayerData[playerid][pItem13param6] = strval(string);
-				mysql_fetch_field_row(string, "Item14param6", db_con2);
-				gPlayerData[playerid][pItem14param6] = strval(string);
-				mysql_fetch_field_row(string, "Item15param6", db_con2);
-				gPlayerData[playerid][pItem15param6] = strval(string);
-				mysql_fetch_field_row(string, "Item16param6", db_con2);
-				gPlayerData[playerid][pItem16param6] = strval(string);
-				mysql_fetch_field_row(string, "Item17param6", db_con2);
-				gPlayerData[playerid][pItem17param6] = strval(string);
-				mysql_fetch_field_row(string, "Item18param6", db_con2);
-				gPlayerData[playerid][pItem18param6] = strval(string);
-				mysql_fetch_field_row(string, "Item19param6", db_con2);
-				gPlayerData[playerid][pItem19param6] = strval(string);
-				mysql_fetch_field_row(string, "Item20param6", db_con2);
-				gPlayerData[playerid][pItem20param6] = strval(string);
-				mysql_fetch_field_row(string, "Item21param6", db_con2);
-				gPlayerData[playerid][pItem21param6] = strval(string);
-				mysql_fetch_field_row(string, "Item22param6", db_con2);
-				gPlayerData[playerid][pItem22param6] = strval(string);
-				mysql_fetch_field_row(string, "Item23param6", db_con2);
-				gPlayerData[playerid][pItem23param6] = strval(string);
-				mysql_fetch_field_row(string, "Item24param6", db_con2);
-				gPlayerData[playerid][pItem24param6] = strval(string);
-				mysql_fetch_field_row(string, "Item25param6", db_con2);
-				gPlayerData[playerid][pItem25param6] = strval(string);
-				
-				for(new pSlotId = 0; pSlotId < MAX_PLAYER_ITEM_SLOT; pSlotId++)
-				{
-					slot = PHaveItem(playerid, gSearchItemType, gSearchItemId, pSlotId);
-					
-					if(slot == 0)
-					{
-						continue;
-					}
-					
-					if(gSearchItemParam1 != -999)
-					{
-						if(SlotParam1(playerid, slotId) != gSearchItemParam1)
-						{
-							continue;
-						}
-					}
-						
-					if(gSearchItemParam2 != -999)
-					{
-						if(SlotParam2(playerid, slotId) != gSearchItemParam2)
-						{
-							continue;
-						}
-					}
-					
-					if(gSearchItemParam3 != -999)
-					{
-						if(SlotParam3(playerid, slotId) != gSearchItemParam3)
-						{
-							continue;
-						}
-					}
-					
-					if(gSearchItemParam4 != -999)
-					{	
-						if(SlotParam4(playerid, slotId) != gSearchItemParam4)
-						{
-							continue;
-						}
-					}
-					
-					if(strlen(gSearchItemParam5) != 0)
-					{
-						SlotParam5(playerid, slotId);
-						
-						if(strcmp(gDSelectedItemP5[playerid], gSearchItemParam5, false) != 0)
-						{
-							continue;
-						}
-					}
-					
-					RemovePlayerItemUsed(playerid, slotId);
-				}
-			}
-		}
-		case CASH_FOR_EXPORT_VEH:
-		{
-			mysql_store_result(db_con2);
-			
-			if(mysql_num_rows(db_con2))
-			{
-				mysql_retrieve_row(db_con2);
-				
-				mysql_fetch_field_row(string, "PlayerName", db_con2);
-				
-				UpdatePlayerDataByName(string, "Bank", floatround(cenyPojazdow[gVehData[extraid-1][mVehModel]-400]*0.1));
-			}
-		}
-		default:
-		{
-			//wp_mysql_free_result(db_con1);
-			//wp_mysql_free_result(db_con2);
-			//wp_mysql_free_result(db_con3);
-			//wp_mysql_free_result(db_con4);
+			mysql_free_result(db_con2);
 		}
 	}
 		

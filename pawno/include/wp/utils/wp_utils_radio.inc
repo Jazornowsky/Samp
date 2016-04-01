@@ -10,52 +10,51 @@
 stock PlayCarRadioStation(playerid, stationid, vehicleid)
 {
 	new adres[256];	
-
+	// if(CarRadioID[playerid] != 255)
+	// {
+		// Audio_Stop(playerid, CarRadioID[playerid]);
 	StopAudioStreamForPlayer(playerid);
+	// }
 
 	switch(stationid)
 	{
-		case 1: adres = "http://radioparty.pl/play/glowny_96.m3u";
-		case 2: adres = "http://radioparty.pl/play/djmixes_96.m3u";
-		case 3: adres = "http://radioparty.pl/play/house_96.m3u";
-		case 4: adres = "http://radioparty.pl/play/trance_96.m3u";
-		case 5: adres = "http://radioparty.pl/play/vtrance_96.m3u";
-		case 6: adres = "http://radioparty.pl/play/energy2000_96.m3u";
-		case 7: adres = "http://radioparty.pl/play/ambeat_96.m3u";
-		case 8: adres = "http://www.radiohoryzont.pl/listen.m3u";
-		case 9: adres = "http://radiozetmp3-07.eurozet.pl:8400/listen.pls";
-		case 10: adres = "http://www.miastomuzyki.pl/n/rmfclassic.pls";
-		case 11: adres = "http://www.miastomuzyki.pl/n/rmffm.pls";
-		case 12: adres = "http://lodz.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
-		case 13: adres = "http://poznan5-2.radio.pionier.net.pl:8000/eska-warszawa.mp3.m3u";
-		case 14: adres = "http://www.polskastacja.pl/play/discopolohq.pls";
-		case 15: adres = "http://listen.technobase.fm/dsl.pls";
-		case 16: adres = "http://listen.slotex.pl/7810.pls";
-		case 17: adres = "http://www.tuba.fm/stream.pls?radio=7&mp3=1";
-		case 18: adres = "http://94.23.89.48:7300/listen.pls";
+		case 1: adres = "http://radioparty.pl/play/glowny_48.m3u";
+		case 2: adres = "http://radioparty.pl/play/djmixes_64aac.m3u";
+		case 3: adres = "http://radioparty.pl/play/house_64aac.m3u";
+		case 4: adres = "http://radioparty.pl/play/trance_64aac.m3u";
+		case 5: adres = "http://radioparty.pl/play/vtrance_64aac.m3u";
+		case 6: adres = "http://radioparty.pl/play/dnb_64aac.m3u";
+		case 7: adres = "http://radioparty.pl/play/hard_64aac.m3u";
+		case 8: adres = "http://radioparty.pl/play/chillout_64aac.m3u";
+		case 9: adres = "http://www.radiozet.pl/externals/radiozet-streams/radiozet_stream.pls";
+		case 10: adres = "http://www.miastomuzyki.pl/odbior/rmfcl_aacp.pls";
+		case 11: adres = "http://www.miastomuzyki.pl/odbior/rmf_aacp.pls";
+		case 12: adres = "http://wroclaw.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
+		case 13: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1277114";
+		case 14: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1270718";
+		case 15: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1377200";
+		case 16: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=695657";
+		case 17: adres = "http://87.98.222.178/HIPHOP?.wma";
+		case 18: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=228792";
 		default: return 0;
 	}
-	
+	// CarRadioID[playerid] = Audio_PlayStreamed(playerid, adres, false, true, false);
 	PlayAudioStreamForPlayer(playerid, adres);
-	
+	// Audio_SetVolume(playerid, CarRadioID[playerid], gVehData[vehicleid-1][RadioVol] );
 	gVehData[vehicleid-1][RadioOn] = stationid;
 	SaveVehData(vehicleid-1, "RadioOn");
-	
 	foreach(Player, i )
 	{
 		if(i == playerid)
-		{
 			continue;
-		}
 
 		if(IsPlayerInVehicle(i, vehicleid))
 		{
 			StopAudioStreamForPlayer(i);
-			
+			// CarRadioID[i] = Audio_PlayStreamed(i, adres, false, true, false);
 			PlayAudioStreamForPlayer(i, adres);
 		}
 	}
-	
 	return 1;
 }
 
@@ -70,24 +69,24 @@ stock ResumeCarRadioStation(playerid, stationid)
 
 	switch(stationid)
 	{
-		case 1: adres = "http://radioparty.pl/play/glowny_96.m3u";
-		case 2: adres = "http://radioparty.pl/play/djmixes_96.m3u";
-		case 3: adres = "http://radioparty.pl/play/house_96.m3u";
-		case 4: adres = "http://radioparty.pl/play/trance_96.m3u";
-		case 5: adres = "http://radioparty.pl/play/vtrance_96.m3u";
-		case 6: adres = "http://radioparty.pl/play/energy2000_96.m3u";
-		case 7: adres = "http://radioparty.pl/play/ambeat_96.m3u";
-		case 8: adres = "http://www.radiohoryzont.pl/listen.m3u";
-		case 9: adres = "http://radiozetmp3-07.eurozet.pl:8400/listen.pls";
-		case 10: adres = "http://www.miastomuzyki.pl/n/rmfclassic.pls";
-		case 11: adres = "http://www.miastomuzyki.pl/n/rmffm.pls";
-		case 12: adres = "http://lodz.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
-		case 13: adres = "http://poznan5-2.radio.pionier.net.pl:8000/eska-warszawa.mp3.m3u";
-		case 14: adres = "http://www.polskastacja.pl/play/discopolohq.pls";
-		case 15: adres = "http://listen.technobase.fm/dsl.pls";
-		case 16: adres = "http://listen.slotex.pl/7810.pls";
-		case 17: adres = "http://www.tuba.fm/stream.pls?radio=7&mp3=1";
-		case 18: adres = "http://94.23.89.48:7300/listen.pls";
+		case 1: adres = "http://radioparty.pl/play/glowny_48.m3u";
+		case 2: adres = "http://radioparty.pl/play/djmixes_64aac.m3u";
+		case 3: adres = "http://radioparty.pl/play/house_64aac.m3u";
+		case 4: adres = "http://radioparty.pl/play/trance_64aac.m3u";
+		case 5: adres = "http://radioparty.pl/play/vtrance_64aac.m3u";
+		case 6: adres = "http://radioparty.pl/play/dnb_64aac.m3u";
+		case 7: adres = "http://radioparty.pl/play/hard_64aac.m3u";
+		case 8: adres = "http://radioparty.pl/play/chillout_64aac.m3u";
+		case 9: adres = "http://www.radiozet.pl/externals/radiozet-streams/radiozet_stream.pls";
+		case 10: adres = "http://www.miastomuzyki.pl/odbior/rmfcl_aacp.pls";
+		case 11: adres = "http://www.miastomuzyki.pl/odbior/rmf_aacp.pls";
+		case 12: adres = "http://wroclaw.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
+		case 13: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1277114";
+		case 14: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1270718";
+		case 15: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1377200";
+		case 16: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=695657";
+		case 17: adres = "http://87.98.222.178/HIPHOP?.wma";
+		case 18: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=228792";
 		default: return 0;
 	}
 	// CarRadioID[playerid] = Audio_PlayStreamed(playerid, adres, false, true, false);
@@ -131,24 +130,24 @@ stock PlayBizRadio( hid, stationid, vw )
 	new adres[256];
 	switch(stationid)
 	{
-		case 1: adres = "http://radioparty.pl/play/glowny_96.m3u";
-		case 2: adres = "http://radioparty.pl/play/djmixes_96.m3u";
-		case 3: adres = "http://radioparty.pl/play/house_96.m3u";
-		case 4: adres = "http://radioparty.pl/play/trance_96.m3u";
-		case 5: adres = "http://radioparty.pl/play/vtrance_96.m3u";
-		case 6: adres = "http://radioparty.pl/play/energy2000_96.m3u";
-		case 7: adres = "http://radioparty.pl/play/ambeat_96.m3u";
-		case 8: adres = "http://www.radiohoryzont.pl/listen.m3u";
-		case 9: adres = "http://radiozetmp3-07.eurozet.pl:8400/listen.pls";
-		case 10: adres = "http://www.miastomuzyki.pl/n/rmfclassic.pls";
-		case 11: adres = "http://www.miastomuzyki.pl/n/rmffm.pls";
-		case 12: adres = "http://lodz.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
-		case 13: adres = "http://poznan5-2.radio.pionier.net.pl:8000/eska-warszawa.mp3.m3u";
-		case 14: adres = "http://www.polskastacja.pl/play/discopolohq.pls";
-		case 15: adres = "http://listen.technobase.fm/dsl.pls";
-		case 16: adres = "http://listen.slotex.pl/7810.pls";
-		case 17: adres = "http://www.tuba.fm/stream.pls?radio=7&mp3=1";
-		case 18: adres = "http://94.23.89.48:7300/listen.pls";
+		case 1: adres = "http://radioparty.pl/play/glowny_48.m3u";
+		case 2: adres = "http://radioparty.pl/play/djmixes_64aac.m3u";
+		case 3: adres = "http://radioparty.pl/play/house_64aac.m3u";
+		case 4: adres = "http://radioparty.pl/play/trance_64aac.m3u";
+		case 5: adres = "http://radioparty.pl/play/vtrance_64aac.m3u";
+		case 6: adres = "http://radioparty.pl/play/dnb_64aac.m3u";
+		case 7: adres = "http://radioparty.pl/play/hard_64aac.m3u";
+		case 8: adres = "http://radioparty.pl/play/chillout_64aac.m3u";
+		case 9: adres = "http://www.radiozet.pl/externals/radiozet-streams/radiozet_stream.pls";
+		case 10: adres = "http://www.miastomuzyki.pl/odbior/rmfcl_aacp.pls";
+		case 11: adres = "http://www.miastomuzyki.pl/odbior/rmf_aacp.pls";
+		case 12: adres = "http://wroclaw.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
+		case 13: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1277114";
+		case 14: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1270718";
+		case 15: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1377200";
+		case 16: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=695657";
+		case 17: adres = "http://87.98.222.178/HIPHOP?.wma";
+		case 18: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=228792";
 		default: return 0;
 	}
 	foreach(Player, i )
@@ -170,24 +169,24 @@ stock ResumeBizRadioStation(playerid, hid)
 	new adres[256];
 	switch( Businesses[hid][BRadio1Ch] )
 	{
-		case 1: adres = "http://radioparty.pl/play/glowny_96.m3u";
-		case 2: adres = "http://radioparty.pl/play/djmixes_96.m3u";
-		case 3: adres = "http://radioparty.pl/play/house_96.m3u";
-		case 4: adres = "http://radioparty.pl/play/trance_96.m3u";
-		case 5: adres = "http://radioparty.pl/play/vtrance_96.m3u";
-		case 6: adres = "http://radioparty.pl/play/energy2000_96.m3u";
-		case 7: adres = "http://radioparty.pl/play/ambeat_96.m3u";
-		case 8: adres = "http://www.radiohoryzont.pl/listen.m3u";
-		case 9: adres = "http://radiozetmp3-07.eurozet.pl:8400/listen.pls";
-		case 10: adres = "http://www.miastomuzyki.pl/n/rmfclassic.pls";
-		case 11: adres = "http://www.miastomuzyki.pl/n/rmffm.pls";
-		case 12: adres = "http://lodz.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
-		case 13: adres = "http://poznan5-2.radio.pionier.net.pl:8000/eska-warszawa.mp3.m3u";
-		case 14: adres = "http://www.polskastacja.pl/play/discopolohq.pls";
-		case 15: adres = "http://listen.technobase.fm/dsl.pls";
-		case 16: adres = "http://listen.slotex.pl/7810.pls";
-		case 17: adres = "http://www.tuba.fm/stream.pls?radio=7&mp3=1";
-		case 18: adres = "http://94.23.89.48:7300/listen.pls";
+		case 1: adres = "http://radioparty.pl/play/glowny_48.m3u";
+		case 2: adres = "http://radioparty.pl/play/djmixes_64aac.m3u";
+		case 3: adres = "http://radioparty.pl/play/house_64aac.m3u";
+		case 4: adres = "http://radioparty.pl/play/trance_64aac.m3u";
+		case 5: adres = "http://radioparty.pl/play/vtrance_64aac.m3u";
+		case 6: adres = "http://radioparty.pl/play/dnb_64aac.m3u";
+		case 7: adres = "http://radioparty.pl/play/hard_64aac.m3u";
+		case 8: adres = "http://radioparty.pl/play/chillout_64aac.m3u";
+		case 9: adres = "http://www.radiozet.pl/externals/radiozet-streams/radiozet_stream.pls";
+		case 10: adres = "http://www.miastomuzyki.pl/odbior/rmfcl_aacp.pls";
+		case 11: adres = "http://www.miastomuzyki.pl/odbior/rmf_aacp.pls";
+		case 12: adres = "http://wroclaw.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
+		case 13: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1277114";
+		case 14: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1270718";
+		case 15: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1377200";
+		case 16: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=695657";
+		case 17: adres = "http://87.98.222.178/HIPHOP?.wma";
+		case 18: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=228792";
 		default: return 0;
 	}
 	if( GetPlayerVirtualWorld(playerid) == hid )
@@ -230,24 +229,24 @@ stock PlayHouseRadio( hid, stationid, vw )
 	new adres[256];
 	switch(stationid)
 	{
-		case 1: adres = "http://radioparty.pl/play/glowny_96.m3u";
-		case 2: adres = "http://radioparty.pl/play/djmixes_96.m3u";
-		case 3: adres = "http://radioparty.pl/play/house_96.m3u";
-		case 4: adres = "http://radioparty.pl/play/trance_96.m3u";
-		case 5: adres = "http://radioparty.pl/play/vtrance_96.m3u";
-		case 6: adres = "http://radioparty.pl/play/energy2000_96.m3u";
-		case 7: adres = "http://radioparty.pl/play/ambeat_96.m3u";
-		case 8: adres = "http://www.radiohoryzont.pl/listen.m3u";
-		case 9: adres = "http://radiozetmp3-07.eurozet.pl:8400/listen.pls";
-		case 10: adres = "http://www.miastomuzyki.pl/n/rmfclassic.pls";
-		case 11: adres = "http://www.miastomuzyki.pl/n/rmffm.pls";
-		case 12: adres = "http://lodz.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
-		case 13: adres = "http://poznan5-2.radio.pionier.net.pl:8000/eska-warszawa.mp3.m3u";
-		case 14: adres = "http://www.polskastacja.pl/play/discopolohq.pls";
-		case 15: adres = "http://listen.technobase.fm/dsl.pls";
-		case 16: adres = "http://listen.slotex.pl/7810.pls";
-		case 17: adres = "http://www.tuba.fm/stream.pls?radio=7&mp3=1";
-		case 18: adres = "http://94.23.89.48:7300/listen.pls";
+		case 1: adres = "http://radioparty.pl/play/glowny_48.m3u";
+		case 2: adres = "http://radioparty.pl/play/djmixes_64aac.m3u";
+		case 3: adres = "http://radioparty.pl/play/house_64aac.m3u";
+		case 4: adres = "http://radioparty.pl/play/trance_64aac.m3u";
+		case 5: adres = "http://radioparty.pl/play/vtrance_64aac.m3u";
+		case 6: adres = "http://radioparty.pl/play/dnb_64aac.m3u";
+		case 7: adres = "http://radioparty.pl/play/hard_64aac.m3u";
+		case 8: adres = "http://radioparty.pl/play/chillout_64aac.m3u";
+		case 9: adres = "http://www.radiozet.pl/externals/radiozet-streams/radiozet_stream.pls";
+		case 10: adres = "http://www.miastomuzyki.pl/odbior/rmfcl_aacp.pls";
+		case 11: adres = "http://www.miastomuzyki.pl/odbior/rmf_aacp.pls";
+		case 12: adres = "http://wroclaw.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
+		case 13: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1277114";
+		case 14: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1270718";
+		case 15: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1377200";
+		case 16: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=695657";
+		case 17: adres = "http://87.98.222.178/HIPHOP?.wma";
+		case 18: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=228792";
 		default: return 0;
 	}
 	foreach(Player, i )
@@ -272,24 +271,24 @@ stock ResumeHouseRadioStation(playerid, hid, stationid)
 
 	switch(stationid)
 	{
-		case 1: adres = "http://radioparty.pl/play/glowny_96.m3u";
-		case 2: adres = "http://radioparty.pl/play/djmixes_96.m3u";
-		case 3: adres = "http://radioparty.pl/play/house_96.m3u";
-		case 4: adres = "http://radioparty.pl/play/trance_96.m3u";
-		case 5: adres = "http://radioparty.pl/play/vtrance_96.m3u";
-		case 6: adres = "http://radioparty.pl/play/energy2000_96.m3u";
-		case 7: adres = "http://radioparty.pl/play/ambeat_96.m3u";
-		case 8: adres = "http://www.radiohoryzont.pl/listen.m3u";
-		case 9: adres = "http://radiozetmp3-07.eurozet.pl:8400/listen.pls";
-		case 10: adres = "http://www.miastomuzyki.pl/n/rmfclassic.pls";
-		case 11: adres = "http://www.miastomuzyki.pl/n/rmffm.pls";
-		case 12: adres = "http://lodz.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
-		case 13: adres = "http://poznan5-2.radio.pionier.net.pl:8000/eska-warszawa.mp3.m3u";
-		case 14: adres = "http://www.polskastacja.pl/play/discopolohq.pls";
-		case 15: adres = "http://listen.technobase.fm/dsl.pls";
-		case 16: adres = "http://listen.slotex.pl/7810.pls";
-		case 17: adres = "http://www.tuba.fm/stream.pls?radio=7&mp3=1";
-		case 18: adres = "http://94.23.89.48:7300/listen.pls";
+		case 1: adres = "http://radioparty.pl/play/glowny_48.m3u";
+		case 2: adres = "http://radioparty.pl/play/djmixes_64aac.m3u";
+		case 3: adres = "http://radioparty.pl/play/house_64aac.m3u";
+		case 4: adres = "http://radioparty.pl/play/trance_64aac.m3u";
+		case 5: adres = "http://radioparty.pl/play/vtrance_64aac.m3u";
+		case 6: adres = "http://radioparty.pl/play/dnb_64aac.m3u";
+		case 7: adres = "http://radioparty.pl/play/hard_64aac.m3u";
+		case 8: adres = "http://radioparty.pl/play/chillout_64aac.m3u";
+		case 9: adres = "http://www.radiozet.pl/externals/radiozet-streams/radiozet_stream.pls";
+		case 10: adres = "http://www.miastomuzyki.pl/odbior/rmfcl_aacp.pls";
+		case 11: adres = "http://www.miastomuzyki.pl/odbior/rmf_aacp.pls";
+		case 12: adres = "http://wroclaw.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
+		case 13: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1277114";
+		case 14: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1270718";
+		case 15: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=1377200";
+		case 16: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=695657";
+		case 17: adres = "http://87.98.222.178/HIPHOP?.wma";
+		case 18: adres = "http://yp.shoutcast.com/sbin/tunein-station.pls?id=228792";
 		default: return 0;
 	}
 	Houses[hid][HRadio1ID][playerid] = Audio_PlayStreamed(playerid, adres, false, true, false);
@@ -302,24 +301,18 @@ stock PlayerPHouseRadio( playerid, hid )
 	new adres[256];
 	switch( Houses[hid][HRadio1Ch] )
 	{
-		case 1: adres = "http://radioparty.pl/play/glowny_96.m3u";
-		case 2: adres = "http://radioparty.pl/play/djmixes_96.m3u";
-		case 3: adres = "http://radioparty.pl/play/house_96.m3u";
-		case 4: adres = "http://radioparty.pl/play/trance_96.m3u";
-		case 5: adres = "http://radioparty.pl/play/vtrance_96.m3u";
-		case 6: adres = "http://radioparty.pl/play/energy2000_96.m3u";
-		case 7: adres = "http://radioparty.pl/play/ambeat_96.m3u";
-		case 8: adres = "http://www.radiohoryzont.pl/listen.m3u";
-		case 9: adres = "http://radiozetmp3-07.eurozet.pl:8400/listen.pls";
-		case 10: adres = "http://www.miastomuzyki.pl/n/rmfclassic.pls";
-		case 11: adres = "http://www.miastomuzyki.pl/n/rmffm.pls";
-		case 12: adres = "http://lodz.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
-		case 13: adres = "http://poznan5-2.radio.pionier.net.pl:8000/eska-warszawa.mp3.m3u";
-		case 14: adres = "http://www.polskastacja.pl/play/discopolohq.pls";
-		case 15: adres = "http://listen.technobase.fm/dsl.pls";
-		case 16: adres = "http://listen.slotex.pl/7810.pls";
-		case 17: adres = "http://www.tuba.fm/stream.pls?radio=7&mp3=1";
-		case 18: adres = "http://94.23.89.48:7300/listen.pls";
+		case 1: adres = "http://radioparty.pl/play/glowny_48.m3u";
+		case 2: adres = "http://radioparty.pl/play/djmixes_64aac.m3u";
+		case 3: adres = "http://radioparty.pl/play/house_64aac.m3u";
+		case 4: adres = "http://radioparty.pl/play/trance_64aac.m3u";
+		case 5: adres = "http://radioparty.pl/play/vtrance_64aac.m3u";
+		case 6: adres = "http://radioparty.pl/play/dnb_64aac.m3u";
+		case 7: adres = "http://radioparty.pl/play/hard_64aac.m3u";
+		case 8: adres = "http://radioparty.pl/play/chillout_64aac.m3u";
+		case 9: adres = "http://www.radiozet.pl/externals/radiozet-streams/radiozet_stream.pls";
+		case 10: adres = "http://www.miastomuzyki.pl/odbior/rmfcl_aacp.pls";
+		case 11: adres = "http://www.miastomuzyki.pl/odbior/rmf_aacp.pls";
+		case 12: adres = "http://wroclaw.radio.pionier.net.pl:8000/pl/eskarock.mp3.m3u";
 		default: return 0;
 	}
 	if( GetPlayerVirtualWorld(playerid) == hid )

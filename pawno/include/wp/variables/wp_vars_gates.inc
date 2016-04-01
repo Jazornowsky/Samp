@@ -31,5 +31,4 @@ new
 	gGateSfGov2a,
 	gGateSfGov3a,
 	gGateSfGov4a,
-	gGateSfGov5a,
-	gGateLsPd1;
+	gGateSfGov5a;

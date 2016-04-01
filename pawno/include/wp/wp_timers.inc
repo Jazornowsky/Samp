@@ -9,6 +9,130 @@
 
 #include <wp\timers\wp_timers_default>
 
+task halfSecTimer[500]()
+{
+	new string[256], tfueltype[32], fuel[32], engineStatus[32], batteryStatus[32];
+	new Float:hitDamage, Float:vehiclehp;
+	new vehicle, tlID, lightsprm, alarm, doorsprm, bonnet, boot, objective;
+	for(new i = 0; i < sizeof(gVehData); i++)
+	{
+		if(gVehData[i][mVehModel] == 594)
+			continue;
+		GetVehicleHealth(i+1, vehiclehp);
+		hitDamage = gVehData[i][CarHealth] - vehiclehp;
+		if((hitDamage) > 80.0 && gVehData[i][mVehType] != 0)
+		{
+			foreach(Player, j)
+			{
+				if(!IsPlayerInVehicle(j, i+1))
+					continue;
+				if(AdminDuty[j])
+					continue;
+				GetPlayerHealth(j, gPlayerData[j][pHP]);
+				if(gPlayerData[j][pSeatBelt])
+				{
+					gPlayerData[j][pHP] -= hitDamage/9;
+					SetPlayerHealth(j, gPlayerData[j][pHP]);
+				}
+				else
+				{
+					gPlayerData[j][pHP] -= hitDamage/4;
+					SetPlayerHealth(j, gPlayerData[j][pHP]);
+				}
+			}
+		}
+		if((hitDamage) > 130.0 && gVehData[i][EngineOn])
+		{
+			gVehData[i][EngineOn] = 0;
+			if(RandomChance(30))
+				gVehData[i][CarDamaged] = 1;
+			SetVehicleParamsEx(i+1, 0, lightsprm, alarm, doorsprm, bonnet, boot, objective);
+		}
+		if(floatround(vehiclehp, floatround_round) <= 200 && floatround(vehiclehp, floatround_round) >= 100)
+		{
+			if(RandomChance(60)) // 60 procent szansy
+			{
+				SetVehicleHealth(i+1, 260.0);
+				gVehData[i][EngineOn] = 0;
+				gVehData[i][CarDamaged] = 1;
+				SetVehicleParamsEx(i+1, 0, lightsprm, alarm, doorsprm, bonnet, boot, objective);
+			}
+		}
+		if(gVehData[i][CarHealth] != vehiclehp)
+			gVehData[i][CarHealth] = vehiclehp;
+	}
+	foreach(Player, i )
+	{
+		if(!gPlayerLogged[i])
+			continue;
+		if(ShowFuel[i] && (GetPlayerState(i) == PLAYER_STATE_DRIVER || (GetPlayerState(i) == PLAYER_STATE_PASSENGER && PHaveItemParam5Ex(i, 3, 18, gPlayerData[i][pName]) >= 0)))
+		{
+			gPlayerVars[i][mVehicleStatusShow] = 1;
+			RedrawSanNewsBox(i);
+			
+			vehicle = GetPlayerVehicleID(i);
+			tlID = GetVehicleTrailer(vehicle);
+			if(gVehData[vehicle-1][mVehModel] != 509
+			&& gVehData[vehicle-1][mVehModel] != 481
+			&& gVehData[vehicle-1][mVehModel] != 509
+			&& gVehData[vehicle-1][mVehModel] != 510 )
+			{
+				if(!IsABike(vehicle))
+				{
+					if( gVehData[vehicle-1][CarFuel] <= float(VehFTank(vehicle)) * 0.20 )
+						format(fuel, sizeof(fuel), "~r~! %dltr", floatround(gVehData[vehicle-1][CarFuel], floatround_round));
+					else
+						format(fuel, sizeof(fuel), "%dltr", floatround(gVehData[vehicle-1][CarFuel], floatround_round));
+					if(gVehData[vehicle-1][EngineOn] == 1)
+						format(engineStatus, sizeof(engineStatus), "uruchomiony");						
+					else
+						format(engineStatus, sizeof(engineStatus), "wylaczony");
+					if(gVehData[vehicle-1][BatteryCapacity] >= floatround( gVehData[vehicle-1][BatteryMaxCapacity]/2, floatround_round ))
+						format(batteryStatus, sizeof(batteryStatus), "~g~bardzo dobry");
+					else if( gVehData[vehicle-1][BatteryCapacity] < floatround( gVehData[vehicle-1][BatteryMaxCapacity]/2, floatround_round ) && gVehData[vehicle-1][BatteryCapacity] > floatround( gVehData[vehicle-1][BatteryMaxCapacity]/4, floatround_round ) )
+						format(batteryStatus, sizeof(batteryStatus), "~y~dobry");
+					else
+						format(batteryStatus, sizeof(batteryStatus), "~r~slaby");
+					if(!gVehData[vehicle-1][EngineOn])
+						format(string, sizeof(string), "~w~~y~Silnik: ~w~%s ~y~Paliwo:~w~ - ~y~Kilometry: ~w~%5.5d ~y~Predkosc: ~w~%d km/h ~y~Akumulator:~w~ -", engineStatus, floatround(gVehData[vehicle-1][CarCounter]/1000, floatround_round), ASpeed(vehicle));
+					else
+						format(string, sizeof(string), "~w~~y~Silnik: ~w~%s ~y~Paliwo:~w~ %s ~y~Kilometry: ~w~%5.5d ~y~Predkosc: ~w~%d km/h ~y~Akumulator: %s", engineStatus, fuel, floatround(gVehData[vehicle-1][CarCounter]/1000, floatround_round), ASpeed(vehicle), batteryStatus);
+					if(gVehData[vehicle-1][VCBRadio])
+					{
+						if(gVehData[vehicle-1][VCBRadioStatus])
+							format(string, sizeof(string), "%s ~y~CB:~w~ kanal %d", string, gVehData[vehicle-1][VCBRadioChanel]);
+						else
+							format(string, sizeof(string), "%s ~y~CB:~w~ wylaczone", string);
+					}
+					if(IsATankerTrailer(tlID))
+					{
+						switch( gVehData[tlID-1][TankerResourceType] )
+						{
+							case TANKER_TYPE_NONE: { format(tfueltype, sizeof(tfueltype), "brak" ); }
+							case TANKER_TYPE_PETROL: { format(tfueltype, sizeof(tfueltype), "benzyna" ); }
+							case TANKER_TYPE_OIL: { format(tfueltype, sizeof(tfueltype), "ropa" ); }
+							case TANKER_TYPE_GAS: { format(tfueltype, sizeof(tfueltype), "gas" ); }
+						}
+						format(string, sizeof(string), "%s ~y~Typ paliwa w cysternie: ~w~%s ~y~Ilosc paliwa: ~w~%dltr", string, tfueltype, gVehData[tlID-1][TankerResourceValue]);
+					}
+				}
+				TextDrawSetString(gPlayerVars[i][mVehicleStatus], string);
+				TextDrawShowForPlayer(i, gPlayerVars[i][mVehicleStatus]);
+			}
+		}
+		else
+		{
+			if(gPlayerVars[i][mVehicleStatusShow])
+			{
+				TextDrawHideForPlayer(i, gPlayerVars[i][mVehicleStatus]);
+				gPlayerVars[i][mVehicleStatusShow] = 0;
+				RedrawSanNewsBox(i);
+			}
+		}
+	}
+	return 1;
+}
+
 stock RafineryResourcesIncrease()
 {
 	//print("[TIMERCHECK:] RafineryResourceIncrease()");
@@ -56,9 +180,9 @@ task FuelTimer[5000]()
 			{
 				gVehData[vehicle-1][EngineOn] = 0;
 				SaveVehData(vehicle-1, "EngineOn");
-				
+				GameTextForPlayer(i,"~r~Brak paliwa!",1500,3);
 				GetVehicleParamsEx(vehicle, enginedyn, lights, alarm, doors, bonnet, boot, objective);
-				SetVehicleParamsEx(vehicle, 0, lights, alarm, doors, bonnet, boot, objective);
+				SetVehicleParamsEx(vehicle,0,lights,alarm,doors,bonnet,boot,objective);
 			}
 			else
 			{
@@ -137,9 +261,9 @@ GetXYVelocity(vehicleid, &Float:x, &Float:y, Float:speed)
 
 task CheckPointTimer[200]()
 {
-	static Float: posX , Float: posY , Float: posZ, Float: dist ;
-	static vid;
-	static Keys,ud,lr;
+	new Float: posX , Float: posY , Float: posZ, Float: dist ;
+	new vid;
+	new Keys,ud,lr;
 	foreach(Player, i )
 	{
 		if(!gPlayerLogged[i])
@@ -171,9 +295,9 @@ task CheckPointTimer[200]()
 			{
 				if(gIsInCityAreaSpeedLimit[i])
 				{
-					if(dist > 55.0)
+					if(dist > 45.0)
 					{
-						dist = 55.0;
+						dist = 45.0;
 						GetXYVelocity(vid, posX, posY, (dist/197.5));
 						SetVehicleVelocity(vid, posX, posY, posZ);
 					}
@@ -193,9 +317,9 @@ task CheckPointTimer[200]()
 			{
 				if(gIsInCityAreaSpeedLimit[i])
 				{
-					if(dist > 68.0)
+					if(dist > 60.0)
 					{
-						dist = 68.0;
+						dist = 60.0;
 						GetXYVelocity(vid, posX, posY, (dist/197.5));
 						SetVehicleVelocity(vid, posX, posY, posZ);
 					}
@@ -452,6 +576,11 @@ stock Camera1()
 		}
 	}
 	return 1;
+}
+
+timer GiveGunTimer[120000](playerid)
+{
+	gunGiven[playerid] = 0;
 }
 
 timer PaintTimer[10000](vehicleid)
@@ -809,7 +938,6 @@ timer DestroyFactory[10000]( fID, fDID )
 		DestroyDynamicCP( DynamicFactions[fID][WFactoryCPPartSetup2ID] );
 		DestroyDynamicCP( DynamicFactions[fID][WFactoryCPAmmoPartSetup1ID] );
 		DestroyDynamicCP( DynamicFactions[fID][WFactoryCPPartTakeID]  );
-		DestroyDynamicCP( DynamicFactions[fID][WFactoryCPSafeID]  );
 		DestroyDynamicCP( DynamicFactions[fID][WFactoryCPAmmoPartSetup2ID] );
 		DynamicFactions[fID][WFactoryObjects][0] = 0;
 		DynamicFactions[fID][WFactoryObjects][1] = 0;
@@ -870,28 +998,26 @@ timer RPC2[3500](playerid)
 
 timer RPC[8500](playerid)
 {
+	SetPlayerHealth( playerid, 30.0 );
 	gPlayerData[playerid][pHP] = 30.0;
-	SetPlayerHealth(playerid, gPlayerData[playerid][pHP]);	
-	
-	TogglePlayerControllable(playerid, 1);	
-	SetCameraBehindPlayer(playerid);	
-	ApplyAnimation(playerid, "PED", "getup", 4.1, 0, 0, 0, 0, 0);
-	
+	// save on exit
+	TogglePlayerControllable( playerid,1 );
+	SetCameraBehindPlayer( playerid );
+	// ApplyAnimation(playerid,"PED","SEAT_up",4.0, 0, 1, 1, 0, 0);
+	ApplyAnimation(playerid,"PED","getup",4.0,0,0,0,0,0);
+	if(PlayerCuffed[playerid])
+		TogglePlayerControllable(playerid,0);
 	SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Reanimacja powiod³a siê, stan stabilny !");
-	
 	TextDrawShowForPlayer(playerid, Status[playerid]);
-	
 	if(gPlayerData[playerid][pFirstReanimation])
-	{
 		SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Reanimacja powiod³a siê, wróci³eœ do ¿ywych !");
-	}
 	else
 	{
 		SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Bêdziesz ¿y³ ! Reanimacja powiod³a siê !");
+		// AddExpPoint(playerid);
 		gPlayerData[playerid][pFirstReanimation] = 1;
 		SavePlayerData(playerid, "FirstReanimation");
 	}
-	
 	defer RPC2(playerid);
 	return 1;
 }

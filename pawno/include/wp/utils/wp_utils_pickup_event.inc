@@ -11,7 +11,7 @@ stock LoadRandomPickupEvent()
 {
 	new string[256];
 	format(string, sizeof(string), "SELECT `ID` FROM `samp_pickup_events`");
-	wp_mysql_query(string, LOAD_RANDOM_PICKUP_EVENT_1, db_con4);
+	mysql_query(string, LOAD_RANDOM_PICKUP_EVENT_1, db_con4);
 }
 
 stock CreatePickupEventPickups(playerid = -1)

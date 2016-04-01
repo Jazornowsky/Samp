@@ -17,20 +17,13 @@ ABroadCast(color,const string[],level)
 {
 	for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
 	{
-		if(!gPlayerLogged[i])
+		if(IsPlayerConnected(i))
 		{
-			continue;
-		}
-		
-		if(!gPlayerData[i][mBroadCastMessages])
-		{
-			continue;
-		}
-		
-		if (gPlayerData[i][pAdmin] >= level)
-		{
-			SendClientMessage(i, color, string);
-			printf("%s", string);
+			if (gPlayerData[i][pAdmin] >= level)
+			{
+				SendClientMessage(i, color, string);
+				printf("%s", string);
+			}
 		}
 	}
 	return 1;
@@ -118,7 +111,7 @@ SendFactionMessage(faction, color, string[])
 	new vehicleID;
 	for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
 	{
-		if(gPlayerLogged[i])
+		if(IsPlayerConnected(i))
 		{
 			if(!BigEar[i])
 			{
@@ -129,22 +122,20 @@ SendFactionMessage(faction, color, string[])
 						vehicleID = GetPlayerVehicleID(i);
 						if(gPlayerData[i][pFaction] == faction)
 						{
-							if(gVehData[vehicleID-1][mVehFaction] == faction || PHaveItem(i, 3, 2) > 0 || PHaveItem(i, 3, 13) > 0)
+							if(gVehData[vehicleID-1][mVehFaction] == faction || PHaveItem(i, 3, 2) > 0)
 							{
 								SendClientMessage(i, color, string);
 							}
 						}
 					}
-					else if((PHaveItem(i, 3, 2) > 0 || PHaveItem(i, 3, 13) > 0) && gPlayerData[i][pFaction] == faction)
+					else if(PHaveItem(i, 3, 2) > 0 && gPlayerData[i][pFaction] == faction)
 					{
 						SendClientMessage(i, color, string);
 					}
 				}
 			}
 			else
-			{
-				SendClientMessage(i, color, string);
-			}
+				SendClientMessage(i, color, string);				
 		}
 	}
 }
@@ -154,34 +145,31 @@ SendFactionTypeMessage(factiontype, color, string[])
 	new vehicleID;
 	for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
 	{
-		if(!gPlayerLogged[i])
+		if(IsPlayerConnected(i))
 		{
-			continue;
-		}
-		if(!BigEar[i])
-		{
-			if(gPlayerData[i][pFaction] != 255)
+			if(!BigEar[i])
 			{
-				if(IsPlayerInAnyVehicle(i))
+				if(gPlayerData[i][pFaction] != 255)
 				{
-					vehicleID = GetPlayerVehicleID(i);
-					if(DynamicFactions[gPlayerData[i][pFaction]][fType] == factiontype)
+					if(IsPlayerInAnyVehicle(i))
 					{
-						if(gVehData[vehicleID-1][mVehFaction] == gPlayerData[i][pFaction] || PHaveItem(i, 3, 2) > 0 || PHaveItem(i, 3, 13) > 0)
+						vehicleID = GetPlayerVehicleID(i);
+						if(DynamicFactions[gPlayerData[i][pFaction]][fType] == factiontype)
 						{
-							SendClientMessage(i, color, string);
+							if(gVehData[vehicleID-1][mVehFaction] == gPlayerData[i][pFaction] || PHaveItem(i, 3, 2) > 0)
+							{
+								SendClientMessage(i, color, string);
+							}
 						}
 					}
-				}
-				else if((PHaveItem(i, 3, 2) > 0 || PHaveItem(i, 3, 13) > 0) && DynamicFactions[gPlayerData[i][pFaction]][fType] == factiontype)
-				{
-					SendClientMessage(i, color, string);
+					else if(PHaveItem(i, 3, 2) > 0 && DynamicFactions[gPlayerData[i][pFaction]][fType] == factiontype)
+					{
+						SendClientMessage(i, color, string);
+					}
 				}
 			}
-		}
-		else
-		{
-			SendClientMessage(i, color, string);
+			else
+				SendClientMessage(i, color, string);
 		}
 	}
 }

@@ -359,25 +359,6 @@ PayDayLog(string[])
 		ErrorLog("[ERROR:] Can't save payday.log");
 }
 
-ExportVehLog(string[])
-{
-	new Year, Month, Day;
-	getdate(Year, Month, Day);
-	new Hour, Minute, Second;
-	gettime(Hour, Minute, Second);
-	new entry[256];
-	format(entry, sizeof(entry), "[%d/%d/%d][%d:%d.%d] %s\r\n",Day,Month,Year,Hour,Minute,Second,string);
-	new File:hFile;
-	hFile = fopen("logs/export.log", io_append);
-	if(hFile)
-	{
-		fwrite(hFile, entry);
-		fclose(hFile);
-	}
-	else
-		ErrorLog("[ERROR:] Can't save export.log");
-}
-
 LogginDataLog(string[])
 {
 	new Year, Month, Day;

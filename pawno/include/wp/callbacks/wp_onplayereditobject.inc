@@ -10,27 +10,6 @@
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 	new string[256];
-	for(new i = 0; i < sizeof(gPublicAds); i++)
-	{
-		if(gPublicAds[i][mObjId] == objectid)
-		{
-			gPublicAds[i][mObjPosX] = x;
-			gPublicAds[i][mObjPosY] = y;
-			gPublicAds[i][mObjPosZ] = z;
-			gPublicAds[i][mObjRotX] = rx;
-			gPublicAds[i][mObjRotY] = ry;
-			gPublicAds[i][mObjRotZ] = rz;
-			
-			if(response == EDIT_RESPONSE_FINAL)
-			{
-				SetDynamicObjectPos(gPublicAds[i][mObjId], gPublicAds[i][mObjPosX], gPublicAds[i][mObjPosY], gPublicAds[i][mObjPosZ]);
-				SetDynamicObjectRot(gPublicAds[i][mObjId], gPublicAds[i][mObjRotX], gPublicAds[i][mObjRotY], gPublicAds[i][mObjRotZ]);
-				SavePublicAdsData(i, "ObjPos");
-			}
-			
-			return;
-		}
-	}
 	for(new i = 0; i < sizeof(gCustomObj); i++)
 	{
 		if(gCustomObj[i][cstSlotUsed] && gCustomObj[i][cstObjID] == objectid)

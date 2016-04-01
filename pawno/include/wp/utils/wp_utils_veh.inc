@@ -60,8 +60,6 @@ stock newVehSerial(tmpcar)
 	DestroyVehicle(tmpcar+1);
 	CreateVehicle(gVehData[tmpcar][mVehModel],gVehData[tmpcar][mVehX],gVehData[tmpcar][mVehY],gVehData[tmpcar][mVehZ],gVehData[tmpcar][mVehA],gVehData[tmpcar][mVehColor1],gVehData[tmpcar][mVehColor2], -1);
 	
-	SetVehicleHealth(tmpcar+1, gVehData[tmpcar][CarHealth]);
-	
 	DestroyDynamic3DTextLabel( gVehData[tmpcar][Veh3DSerial] );
 	
 	SetVehLicensePlate(tmpcar+1);
@@ -312,7 +310,7 @@ stock IsAVehCatAModel(model)
 {
 	if(model == 463 || model == 468 || model == 471 || model == 461 ||
 		model == 522 || model == 521 || model == 523 || model == 571 ||
-		model == 581)
+		model == 581 || model == 587)
 	{
 		return 1;
 	}
@@ -352,8 +350,7 @@ stock IsAVehCatBModel(model)
 		model == 583 || model == 585 || model == 587 || model == 588 ||
 		model == 589 || model == 596 || model == 597 || model == 598 ||
 		model == 599 || model == 600 || model == 601 || model == 602 ||
-		model == 603 || model == 604 || model == 605 || model == 609 || 
-		model == 408)
+		model == 603 || model == 604 || model == 605 || model == 609)
 	{
 		return 1;
 	}
@@ -369,7 +366,7 @@ stock IsAVehCatCEModel(model)
 		model == 433 || model == 443 || model == 455 || model == 456 ||
 		model == 499 || model == 508 || model == 514 || model == 515 ||
 		model == 524 || model == 544 || model == 573 || model == 578 ||
-		model == 532 || model == 431 || model == 437)
+		model == 532 || model == 408 || model == 431 || model == 437)
 	{
 		return 1;
 	}
@@ -432,37 +429,8 @@ stock GetVehicleName(vehicleid)
 	return nazwypojazdow[rmp];
 }
 
-timer SetVehicleToPosTimer[1000](vehicleid,Float:x,Float:y,Float:z)
-{
-	#if defined DEBUG
-		printf("[DEBUG:] SetVehicleToPosTimer");
-	#endif
-	SetVehiclePos(vehicleid, x, y, z);
-	VehNewPos[vehicleid-1][0] = x;
-	VehNewPos[vehicleid-1][1] = y;
-	VehNewPos[vehicleid-1][2] = z;
-	gVehData[vehicleid-1][mVehX] = x;
-	gVehData[vehicleid-1][mVehY] = y;
-	gVehData[vehicleid-1][mVehZ] = z;
-	for(new i=0;i<CUSTOM_MAX_PLAYERS;i++)
-	{
-		if(IsPlayerConnected(i) && GetPlayerVehicleID(i) == vehicleid)
-		{
-			NewPos[i][0] = x;
-			NewPos[i][1] = y;
-			NewPos[i][2] = z;
-			PosHackCheckTime[i] = 5;
-		}
-		return 1;
-	}
-	return 0;
-}
-
 stock SetVehicleToPos(vehicleid,Float:x,Float:y,Float:z)
 {
-	#if defined DEBUG
-		printf("[DEBUG:] SetVehicleToPos");
-	#endif
 	SetVehiclePos(vehicleid, x, y, z);
 	VehNewPos[vehicleid-1][0] = x;
 	VehNewPos[vehicleid-1][1] = y;
@@ -489,6 +457,7 @@ stock StartEngine(playerid, vehID = INVALID_VEHICLE_ID)
 	if(AdminDuty[playerid])
 	{
 		EngineTurningOn[playerid] = 1;
+		// PlayerActionMessage(playerid, 15.0, "uruchamia silnik");
 		SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Uruchamianie silnika...");
 		defer Engine[ENGINE_STARTUP_TIME_FAST](playerid);
 		return 1;
@@ -500,25 +469,21 @@ stock StartEngine(playerid, vehID = INVALID_VEHICLE_ID)
 		if(gVehData[vehID][EngineTemp] > 10 && vehHp < 700.0)
 		{
 			EngineTurningOn[playerid] = 1;
-			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Silnik jest przegrzany, nie mo¿esz go uruchomiæ");
+			// PlayerActionMessage(playerid, 15.0, "uruchamia silnik");
+			SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Silnik jest przegrzany, nie mo¿esz go uruchomiæ" );
 			EngineInfo(playerid);
 			return 1;
 		}
 		else if(gVehData[vehID][BatteryCapacity] < 2.0)
 		{
 			EngineTurningOn[playerid] = 1;
-			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] S³aby akumulator, nie uda³o siê uruchomiæ silnika");
-			EngineInfo(playerid);
-			return 1;
-		}
-		else if(gVehData[vehID][CarFuel] < 0.02)
-		{
-			EngineTurningOn[playerid] = 1;
-			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Brak paliwa, nie uda³o siê uruchomiæ silnika");
+			// PlayerActionMessage(playerid, 15.0, "uruchamia silnik");
+			SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] S³aby akumulator, nie uda³o siê uruchomiæ silnika !" );
 			EngineInfo(playerid);
 			return 1;
 		}
 		EngineTurningOn[playerid] = 1;
+		// PlayerActionMessage(playerid, 15.0, "uruchamia silnik");
 		SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Uruchamianie silnika...");
 		defer Engine[ENGINE_STARTUP_TIME](playerid);
 		return 1;
@@ -568,41 +533,12 @@ SetVehLicensePlate( vehID )
 
 SetVehicleToRespawnEx(vehicleid)
 {
-	SetVehicleToPos(vehicleid, gVehData[vehicleid-1][mVehX], gVehData[vehicleid-1][mVehY], gVehData[vehicleid-1][mVehZ]);
-	SetVehicleZAngle(vehicleid, gVehData[vehicleid-1][mVehA]);
-	
+	SetVehicleToRespawn(vehicleid);
 	VehJustRespawned[vehicleid-1] = 5;
 }
 
-/*stock SetPublicVehicleToRespawn(vehicleid)
-{
-	RepairVehicle(vehicleid);
-	defer SetVehicleToPosTimer[5000](vehicleid, gVehData[vehicleid-1][mVehX], gVehData[vehicleid-1][mVehY], gVehData[vehicleid-1][mVehZ]);
-	VehJustRespawned[vehicleid-1] = 5;
-}*/
-
 stock UnmodVehicle(vehicleId)
 {
-	/*RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehSpoiler]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehHood]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehRoof]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehSideskirt]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehLamps]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehNitro]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehExhaust]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehWheels]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehStereo]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehHydraulics]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehFrontBumper]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehRearBumper]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehVentLeft]);
-	RemoveVehicleComponent(vehicleId, gVehData[vehicleId-1][mVehVentRight]);*/
-	
-	for(new i = 0; i < 14; i++)
-	{
-        RemoveVehicleComponent(vehicleId, GetVehicleComponentInSlot(vehicleId, i));
-    }
-	
 	gVehData[vehicleId-1][mVehSpoiler] = 0;
 	gVehData[vehicleId-1][mVehHood] = 0;
 	gVehData[vehicleId-1][mVehRoof] = 0;
@@ -617,8 +553,11 @@ stock UnmodVehicle(vehicleId)
 	gVehData[vehicleId-1][mVehRearBumper] = 0;
 	gVehData[vehicleId-1][mVehVentLeft] = 0;
 	gVehData[vehicleId-1][mVehVentRight] = 0;
-	
 	SaveVehData(vehicleId-1, "VehSaveTune");
+	GetVehiclePos(vehicleId, gVehData[vehicleId-1][mVehX], gVehData[vehicleId-1][mVehY], gVehData[vehicleId-1][mVehZ]);
+	GetVehicleZAngle(vehicleId, gVehData[vehicleId-1][mVehA]);
+	SetVehicleToRespawnEx(vehicleId);
+	SetVehicleToPos(vehicleId, gVehData[vehicleId-1][mVehX], gVehData[vehicleId-1][mVehY], gVehData[vehicleId-1][mVehZ]);
 }
 
 stock SetVehicleOutOfTransport(vehicleid)
@@ -737,15 +676,6 @@ stock SetVehicleIntoTransport(vehicleid, transportVeh)
 	return 0;
 }
 
-stock IsSirenMountableToVehicle(vehId)
-{
-	if(gVehData[vehId][mVehModel] != 560 && gVehData[vehId][mVehModel] != 602)
-	{
-		return 0;
-	}
-	return 1;
-}
-
 stock MountSirenToVehicle(vehid)
 {
 	if(gVehData[vehid][mVehSirenState])
@@ -826,39 +756,6 @@ stock DismountSirenFromVehicle(vehid)
 			return 3;
 	}
 	return 3;
-}
-
-stock IsAnyFreeVehObjectSlot(vehid)
-{
-	if(gVehData[vehid-1][CustomObj1Model] == 0)
-	{
-		return 1;
-	}
-	else if(gVehData[vehid-1][CustomObj2Model] == 0)
-	{
-		return 1;
-	}
-	else if(gVehData[vehid-1][CustomObj3Model] == 0)
-	{
-		return 1;
-	}
-	else if(gVehData[vehid-1][CustomObj4Model] == 0)
-	{
-		return 1;
-	}
-	else if(gVehData[vehid-1][CustomObj5Model] == 0)
-	{
-		return 1;
-	}
-	else if(gVehData[vehid-1][CustomObj6Model] == 0)
-	{
-		return 1;
-	}
-	else if(gVehData[vehid-1][CustomObj7Model] == 0)
-	{
-		return 1;
-	}
-	return 0;
 }
 
 stock AttachObjectToVehicleSlot(vehid, model)
@@ -1076,114 +973,3 @@ timer SetVehicleLastPos[600](vehicleid)
 		return;
 	SetVehicleToPos(vehicleid, gVehData[vehicleid-1][mVehX], gVehData[vehicleid-1][mVehY], gVehData[vehicleid-1][mVehZ]);
 }
-
-Float:MaxVehicleHealth(vehId)
-{
-	for(new j = 0; j < sizeof(CarsData); j++)
-	{
-		if(CarsData[j][Model] == gVehData[vehId-1][mVehModel] && CarsData[j][Paliwo] == gVehData[vehId-1][Fuel])
-		{
-			return float(CarsData[j][MaxHealth]);
-		}
-	}
-	return 1000.0;
-}
-
-stock GetVehicleCombustion(vehicleid)
-{
-	for(new n = 0; n < sizeof(CarsData); n++)
-	{
-		if(gVehData[vehicleid-1][mVehModel] != CarsData[n][Model])
-		{
-			continue;
-		}
-
-		if(gVehData[vehicleid-1][Fuel] != CarsData[n][Paliwo])
-		{
-			continue;
-		}
-		
-		return CarsData[n][Spalanie];
-	}
-	
-	return 0;
-}
-
-stock GetVehicleFuelTankSize(vehicleid)
-{
-	for(new n = 0; n < sizeof(CarsData); n++)
-	{
-		if(gVehData[vehicleid-1][mVehModel] != CarsData[n][Model])
-		{
-			continue;
-		}
-
-		if(gVehData[vehicleid-1][Fuel] != CarsData[n][Paliwo])
-		{
-			continue;
-		}
-		
-		return CarsData[n][Bak];
-	}
-	
-	return 0;
-}
-
-stock RefreshVehicleDescription(vehId)
-{
-	if(gVehData[vehId-1][Veh3DSellCreated])
-	{
-		DestroyDynamic3DTextLabel(gVehData[vehId-1][Veh3DSell]);
-		gVehData[vehId-1][Veh3DSellCreated] = 0;
-	}
-
-	if((gVehData[vehId-1][ReadyToSell] == 1 || (gVehData[vehId-1][mVehOwned] == 0 && gVehData[vehId-1][mVehFaction] == 255)) && gVehData[vehId-1][mRentPrice] == 0 && gVehData[vehId-1][mVehType] == 0)
-	{
-		gVehData[vehId-1][Veh3DSell] = CreateDynamic3DTextLabel("Ten pojazd jest na sprzedaz ! /kuppojazd", COLOR_LIGHTBLUE, 0.0, 0.0, 0.6, 10.0, INVALID_PLAYER_ID, vehId, 1);
-		gVehData[vehId-1][Veh3DSellCreated] = 1;
-	}
-	else if(gVehData[vehId-1][mRentPrice] != 0 && strlen(gVehData[vehId-1][mRenter]) == 0)
-	{
-		gVehData[vehId-1][Veh3DSell] = CreateDynamic3DTextLabel("Ten pojazd jest na wynajem ! /wynajmijpojazd", COLOR_LIGHTBLUE, 0.0, 0.0, 0.6, 10.0, INVALID_PLAYER_ID, vehId, 1);
-		gVehData[vehId-1][Veh3DSellCreated] = 1;
-	}
-}
-
-stock SetVehicleIndicator(vehicleid, leftindicator=0, rightindicator=0)
-{
-	if(!leftindicator & !rightindicator) return false;
-	new Float:_vX[2], Float:_vY[2], Float:_vZ[2];
-	if(rightindicator)
-	{
-	    if(IsTrailerAttachedToVehicle(vehicleid))
-	    {
-	        new omg = GetVehicleModel(GetVehicleTrailer(vehicleid));
-            GetVehicleModelInfo(omg, VEHICLE_MODEL_INFO_SIZE, _vX[0], _vY[0], _vZ[0]);
- 			Indicators_xqz[vehicleid][4] = CreateObject(19294, 0, 0, 0,0,0,0);
-			AttachObjectToVehicle(Indicators_xqz[vehicleid][4], GetVehicleTrailer(vehicleid),  _vX[0]/2.4, -_vY[0]/3.35, -1.0 ,0,0,0);
-		}
-	    GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, _vX[0], _vY[0], _vZ[0]);
- 		Indicators_xqz[vehicleid][0] = CreateObject(19294, 0, 0, 0,0,0,0);
-		AttachObjectToVehicle(Indicators_xqz[vehicleid][0], vehicleid,  _vX[0]/2.23, _vY[0]/2.23, 0.1 ,0,0,0);
- 		Indicators_xqz[vehicleid][1] = CreateObject(19294, 0, 0, 0,0,0,0);
-		AttachObjectToVehicle(Indicators_xqz[vehicleid][1], vehicleid,  _vX[0]/2.23, -_vY[0]/2.23, 0.1 ,0,0,0);
-	}
-	if(leftindicator)
-	{
-	    if(IsTrailerAttachedToVehicle(vehicleid))
-	    {
-	    	new omg = GetVehicleModel(GetVehicleTrailer(vehicleid));
-            GetVehicleModelInfo(omg, VEHICLE_MODEL_INFO_SIZE, _vX[0], _vY[0], _vZ[0]);
- 			Indicators_xqz[vehicleid][5] = CreateObject(19294, 0, 0, 0,0,0,0);
-			AttachObjectToVehicle(Indicators_xqz[vehicleid][5], GetVehicleTrailer(vehicleid),  -_vX[0]/2.4, -_vY[0]/3.35, -1.0 ,0,0,0);
-		}
-	    GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, _vX[0], _vY[0], _vZ[0]);
- 		Indicators_xqz[vehicleid][2] = CreateObject(19294, 0, 0, 0,0,0,0);
-		AttachObjectToVehicle(Indicators_xqz[vehicleid][2], vehicleid,  -_vX[0]/2.23, _vY[0]/2.23, 0.1 ,0,0,0);
- 		Indicators_xqz[vehicleid][3] = CreateObject(19294, 0, 0, 0,0,0,0);
-		AttachObjectToVehicle(Indicators_xqz[vehicleid][3], vehicleid,  -_vX[0]/2.23, -_vY[0]/2.23, 0.1 ,0,0,0);
-	}
-	return 1;
-}
-
-// That's all

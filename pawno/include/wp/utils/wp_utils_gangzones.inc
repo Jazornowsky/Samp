@@ -49,9 +49,7 @@ VehInZoneBreakTimeLeft(vehId)
 	for(new i = 0; i < sizeof(DynamicZones); i++)
 	{
 		if(IsPointInArea(DynamicZones[i][mPosMinX], DynamicZones[i][mPosMinY], DynamicZones[i][mPosMaxX], DynamicZones[i][mPosMaxY], gVehData[vehId-1][mVehX], gVehData[vehId-1][mVehY]))
-		{
 			return DynamicZones[i][mVehBreakTimeLeft];
-		}
 	}
 	return -1;
 }
@@ -198,7 +196,7 @@ BizInZoneStealTimeLeftSave(playerid)
 {
 	for(new i = 0; i < sizeof(DynamicZones); i++)
 	{
-		if(IsPointInArea(DynamicZones[i][mPosMinX], DynamicZones[i][mPosMinY], DynamicZones[i][mPosMaxX], DynamicZones[i][mPosMaxY], Businesses[gPlayerVars[playerid][mAtBizID]][EnterX], Businesses[gPlayerVars[playerid][mAtBizID]][EnterY]))
+		if(IsPointInArea(DynamicZones[i][mPosMinX], DynamicZones[i][mPosMinY], DynamicZones[i][mPosMaxX], DynamicZones[i][mPosMaxY], Houses[gPlayerVars[playerid][mAtBizID]][EnterX], Houses[gPlayerVars[playerid][mAtBizID]][EnterY]))
 		{	
 			DynamicZones[i][mBizStealTimeLeft] = BIZ_BREAK_COOLDOWN;
 			SaveGangZone(i, "BizStealTimeLeft");
@@ -229,33 +227,3 @@ BizInZoneBreakTimeLeftSave(bizId)
 	}
 	return -1;
 }
-
-stock RefreshZoneColorAfterWar()
-{
-	foreach(Player, j)
-	{
-		if(!gPlayerLogged[j])
-		{
-			continue;
-		}
-		
-		if(gPlayerData[j][pFaction] != 255)
-		{
-			if(DynamicFactions[gPlayerData[j][pFaction]][fType] == FACTIONT_GANG)
-			{						
-				GangZoneHideForPlayer(j, gGangWar[AreaID]);
-				
-				if(gPlayerData[j][pFaction] == DynamicZones[gGangWar[AreaID]][mFaction])
-				{
-					GangZoneShowForPlayer(j, gGangWar[AreaID], COLOR_GANGZONE_ALLY);
-				}
-				else
-				{
-					GangZoneShowForPlayer(j, gGangWar[AreaID], COLOR_GANGZONE_ENEMY);
-				}
-			}
-		}
-	}
-}
-
-// That's all

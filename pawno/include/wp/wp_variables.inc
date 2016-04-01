@@ -7,36 +7,28 @@
 *
 *************************************************************************************************************/
 
-#if defined _WP_VARIABLES
-	#endinput
-#endif
-#define _WP_VARIABLES
+// #if defined _WP_VARIABLES
+    // #endinput
+// #endif
+// #define _WP_VARIABLES
 
 #define DEBUG
-#define DEBUG2
+// #define DEBUG2
 
-#define CUSTOM_MAX_PLAYERS 100						// Manualy set server slot amout for functions, variables, etc.
-
-#include <wp\variables\wp_vars_mysql>
-#include <wp\variables\wp_vars_zones>
-#include <wp\variables\wp_vars_skins>
-#include <wp\variables\wp_vars_objects>
-#include <wp\variables\wp_vars_jobs>
-#include <wp\variables\wp_vars_veh_lenghts>
-#include <wp\variables\wp_vars_gates>
-#include <wp\variables\wp_vars_weed>
-#include <wp\variables\wp_vars_event1>
-#include <wp\variables\wp_vars_veh_names>
-#include <wp\variables\wp_vars_event_pickups>
-
+#include <wp/variables/wp_vars_mysql>
+#include <wp/variables/wp_vars_zones>
+#include <wp/variables/wp_vars_skins>
+#include <wp/variables/wp_vars_objects>
+#include <wp/variables/wp_vars_jobs>
+#include <wp/variables/wp_vars_veh_lenghts>
+#include <wp/variables/wp_vars_gates>
+#include <wp/variables/wp_vars_weed>
 
 native WP_Hash(buffer[], len, const str[]);
 
 /* Declarations */
 
 forward main();
-OnQueryFinish(resultid, extraid, connectionHandle);
-wp_mysql_query(query[], resultid = -1, extraid = -1, connectionHandle = 1);
 LoadDynamicCarSpawns();
 SaveDynamicCarSpawns();
 LoadDynamicPlanesSpawns();
@@ -44,11 +36,13 @@ SaveDynamicPlanesSpawns();
 LoadDynamicBoatsSpawns();
 SaveDynamicBoatsSpawns();
 ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth);
+// KillPlayer(playerid);
 LoadDynamicTaxes();
 SaveDynamicTaxes();
 SaveTaxiJob();
 LoadTaxiJob();
 PlayMusic(playerid);
+// CreateDynamicObjects();
 busCheckpoints(i);
 playerNextLvlBusPoints(playerid);
 LoadMzgkJobCheckpointA();
@@ -90,6 +84,7 @@ SaveDynamicFactions();
 LoadCivilianSpawn();
 SaveCivilianSpawn();
 LoadBuildings();
+SaveBuildings();
 ShowStats(playerid,targetid);
 BanPlayer(playerid,bannedby[MAX_PLAYER_NAME],reason[]);
 BanPlayerAccount(playerid,bannedby[MAX_PLAYER_NAME],reason[]);
@@ -116,6 +111,7 @@ GovermentLog(string[]);
 StateChangeLog(string[]);
 PlayerActionMessage(playerid,Float:radius,message[]);
 PlayerPlayerActionMessage(playerid,targetid,Float:radius,message[]);
+//SetPlayerToFactionColor(playerid); //Setting player to faction color.
 LoadBusinesses();
 SaveBusinesses();
 LoadDrivingTestPosition();
@@ -134,6 +130,10 @@ LoadPlaneTestPosition();
 SavePlaneTestPosition();
 LoadBoatTestPosition();
 SaveBoatTestPosition();
+LoadBankPosition();
+SaveBankPosition();
+LoadBankPosition2();
+SaveBankPosition2();
 LoadPoliceComputerPassword();
 SavePoliceComputerPassword();
 LoadGunJob();
@@ -173,13 +173,10 @@ LoadRafinery();
 SaveRafinery();
 LoadWFactoryLegal();
 public RefuelingVehicle(playerid, vehicleid, Float:refillvalue, gasStationID, Float:pPosX, Float:pPosY, Float:pPosZ);
-public RefuelingVehicle(playerid, vehicleid, Float:refillvalue, gasStationID, Float:pPosX, Float:pPosY, Float:pPosZ);
 public FuelTankerPetrol(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
 public FuelTankerOil(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
 public FuelTankerGas(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
-public FuelTankerFly(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
 public DrainTankerFuel(playerid, Float:tankerX, Float:tankerY, Float:tankerZ);
-public RefuelVehicleFly(playerid, Float:refillvalue, Float:pPosX, Float:pPosY, Float:pPosZ, truckId, tlId, planeId);
 LoadGasStations();
 SaveGasStations();
 LoadPayRank();
@@ -188,8 +185,10 @@ SavePlayerData(playerid, column[], otherid = -1);
 UpdatePlayerDataByName(name[], column[], newvalue = 0);
 SaveVehData(carid, column[], otherid = -1);
 LoadVariables();
+// SaveVariables();
 VehFTank(vehID);
 ASpeed(vehicleID);
+// AddExpPoint(playerid);
 SaveBizData(bizid, column[]);
 SaveHouseData(houseid, column[]);
 SaveFData(fid, column[]);
@@ -202,6 +201,7 @@ SaveNewsBoyJob();
 SaveFuleStationData(gasid, column[]);
 public RefuelingVehicleCanister(playerid, vehicleid, Float:xpos, Float:ypos, Float:zpos);
 public RefuelingCanister(playerid, Float:refillvalue, slot, gasStationID, Float:xpos, Float:ypos, Float:zpos);
+// LoadWantedList();
 public SetRadioAudioPos(playerid, handleid);
 IsPlayerInWFCP(playerid);
 public TogglePlayerUnControllable( playerid, Float:x, Float:y, Float:z );
@@ -217,80 +217,74 @@ RemoveCustomObject( objectID );
 MoveCustomObject( objectID, Float:mx, Float:my, Float:mz );
 Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
 Float:VehBatDegradation(itemid);
-Float:MaxVehicleHealth(vehId);
 
 /* Default data */
-#define VERSION "1.32"										
+#define VERSION "1.19.18"										
+#define CUSTOM_MAX_PLAYERS 100						// Manualy set server slot amout for functions, variables, etc.
 #define MAX_ZONE_NAME 28
-#define MAX_SPAWN_ATTEMPTS 4						// This is the amount of times sometime can try to spawn before finally getting kicked.
-#define SMS_COST 15									// Price used in phone sms
-#define PHONE_COST 2								// Price used for 1 minute call
-#define PRODUCT_PRICE 10							// Price used to buy products by product seller
-#define PARTS_PRICE	500								// Price used to buy parts by mechanic
+#define MAX_SPAWN_ATTEMPTS 4							// This is the amount of times sometime can try to spawn before finally getting kicked.
+#define SMS_COST 15													// Price used in phone sms
+#define PHONE_COST 2												// Price used for 1 minute call
+#define PRODUCT_PRICE 10										// Price used to buy products by product seller
+#define PARTS_PRICE	500											// Price used to buy parts by mechanic
 #define REPAIR_TIME_MULTIPLIER 1
-#define MAX_PING	600								// Values over MAX_PING are treated as high ping and are couted in every function pass
-#define MAX_PING_HIT_LIMIT 5						// Number represents timer (function) pass befor player gets kicked out for high ping
-#define IDLE_TIME 300000							// Timer after player gets kicked out for AFK
-#define BUS_PENALTY_COST 2000						// Penalty payed by player for reckles driving bus
+#define MAX_PING	600													// Values over MAX_PING are treated as high ping and are couted in every function pass
+#define MAX_PING_HIT_LIMIT 5									// Number represents timer (function) pass befor player gets kicked out for high ping
+#define IDLE_TIME 300000											// Timer after player gets kicked out for AFK
+#define BUS_PENALTY_COST 15000						// Penalty payed by player for reckles driving bus
 #define ENGINE_STARTUP_TIME 1500					// Time after engine starts
-#define ENGINE_STARTUP_TIME_FAST 100				// Time after engine starts fast (ex. for admin)
-#define ENGINE_INFO_TIME 3000						// Time after message can be repeated
+#define ENGINE_STARTUP_TIME_FAST 100			// Time after engine starts fast (ex. for admin)
+#define ENGINE_INFO_TIME 3000							// Time after message can be repeated
 #define ENGINE_NO_KEY_TIME 5000						// Time after next engine startup can be done without key
-#define FUEL_TANKER_STEP 100						// Default time after 1ltr of fuel is fueled
-#define JOB_BUS_TXT_SHOW_TIME 1000					// How long departure message must be shown
-#define GAME_TEXT_DEFAULT_TIME 2000					// How long game text will be showed
-#define WFACTORY_DESTROY_TIME 60000					// Default time after factory gets burned out
+#define FUEL_TANKER_STEP 100							// Default time after 1ltr of fuel is fueled
+#define JOB_BUS_TXT_SHOW_TIME 1000				// How long departure message must be shown
+#define GAME_TEXT_DEFAULT_TIME 2000			// How long game text will be showed
+#define WFACTORY_DESTROY_TIME 60000			// Default time after factory gets burned out
 #define WFACTORY_COST 15000							// Default cost of factory build
-#define WFACTORY_DES_REW_OFFICER 100				// Default reward value for police officer for destroying factory
-#define WFACTORY_DES_REW_FACTION 2000				// Default reward value for police faction for destroying factory
-#define FUEL_REFUEL_STEP 2.5 						// How much fuel is refueled after 1 second
-#define FUEL_REFUEL_STEP_CNSTR 1.0					// How much fuel is refueled to canister after 1 second
-#define MAX_BUILDINGS 200							// How many buildings are setup in array
-#define MAX_MAP_ICONS 50							// How many map icons are setup in array
-#define MAX_PICKUP_INFOS 50							// How many pickups are setup in array
-#define MAX_PUBLIC_ADS 50							// How many public ads are setup in array
-#define MAX_REPAIR_POINTS 10						// How many repair points are setup in array
-#define MAX_WHEEL_POINTS 8							// How many wheel change points are setup in array
-#define MAX_BUSINESSES 1000							// How many businesses are setup in array
-#define MAX_HOUSES 1500								// How many houses are setup in array
-#define ICONS_BASIC 1								// Which icons should be showed for player
-#define ICONS_ADVANCED 2							// Which icons should be showed for player
-#define FACTORY_L_REWARD 20							// How much pay for one part/weapon/ammo
-#define WARN_COOLDOWN 7								// Payday counts before warn gone
-#define BIZ_CPN_ID 19 								// Last ID of CPN biz
+#define WFACTORY_DES_REW_OFFICER 100		// Default reward value for police officer for destroying factory
+#define WFACTORY_DES_REW_FACTION 2000		// Default reward value for police faction for destroying factory
+#define FUEL_REFUEL_STEP 0.5 							// How much fuel is refueled after 1 second
+#define FUEL_REFUEL_STEP_CNSTR 1.0				// How much fuel is refueled to canister after 1 second
+#define MAX_BUILDINGS 200										// How many buildings are setup in array
+#define MAX_REPAIR_POINTS 10								// How many repair points are setup in array
+#define MAX_WHEEL_POINTS 8								// How many wheel change points are setup in array
+#define MAX_BUSINESSES 300									// How many businesses are setup in array
+#define MAX_HOUSES 500											// How many houses are setup in array
+#define ICONS_BASIC 1												// Which icons should be showed for player
+#define ICONS_ADVANCED 2										// Which icons should be showed for player
+#define FACTORY_L_REWARD 20								// How much pay for one part/weapon/ammo
+#define WARN_COOLDOWN 7									// Payday counts before warn gone
+#define BIZ_CPN_ID 19 												// Last ID of CPN biz
 #define RESERVED_HOUSES 300							// Houses than can't be moved by government
-#define ADVERT_TIMER 60000							// Time after player can again post next advert using /ogloszenie
-#define GasMax 100									// Default value of vehicle tanker
-#define Speedgun 22 								// The ID of weapon used as speedgun
-#define DRIVING_LICENCE_COST 40 					// Cost of making driving licence in government
-#define PICKUP_LIFE_TIME 30 						// How long pickup exists ? multiple to 10 min
+#define ADVERT_TIMER 60000									// Time after player can again post next advert using /ogloszenie
+#define GasMax 100														// Default value of vehicle tanker
+#define Speedgun 22 													// The ID of weapon used as speedgun
+#define DRIVING_LICENCE_COST 40 						// Cost of making driving licence in government
+#define PICKUP_LIFE_TIME 30 									// How long pickup exists ? multiple to 10 min
 #define MAX_PLAYER_ITEM_SLOT 25						// How many item slots player could have
 #define MAX_VEHICLE_ITEM_SLOT 15					// How many item slots vehicle could have
 #define MAX_HOUSE_ITEM_SLOT 15						// How many item slots house could have
-#define MAX_PENALTY_POINTS 24						// Max player penalty points for licence
+#define MAX_PENALTY_POINTS 24							// Max player penalty points for licence
 #define PENALTY_POINTS_DECRESE 6					// How many points to reduce after test
-#define SHOP_CP_COUNT 75							// How many shops with CP
-#define SHOP_CLOTHE_CP_COUNT 64						// How many shops with CP
-#define PHONET_FEE 0								// Phone on fee
-#define PHONET_CARD 1								// Phone on prepaid
-#define DRIVING_INSTRUCTOR_REWARD 40				// how much instructor will receive for examiantion
-#define HOUSE_BREAK_COOLDOWN 72						// how much time faction must wait before next house robbery
+#define SHOP_CP_COUNT 63									// How many shops with CP
+#define PHONET_FEE 0												// Phone on fee
+#define PHONET_CARD 1											// Phone on prepaid
+#define DRIVING_INSTRUCTOR_REWARD 20		// how much instructor will receive for examiantion
+#define HOUSE_BREAK_COOLDOWN 72				// how much time faction must wait before next house robbery
 #define BIZ_BREAK_COOLDOWN 72						// how much time faction must wait before next biz robbery
-#define CHAR_STEAL_COOLDOWN 72						// how much time faction must wait before next char robbery
+#define CHAR_STEAL_COOLDOWN 72					// how much time faction must wait before next char robbery
 #define BUSINESS_TYPES "1: Restaurant - 2: Phone - 3: 24-7 - 4: Ammunation - 5: Advertising - 6: Clothes Store - 7. Bar/Club"
 #define BUSINESS_TYPES2 "8: Record Company - 9: Studio - 10: Salon"
-#define BUS_TICKET_VIP_DISCOUNT 0.20
-#define HIGH_SCHOOL_POINTS 20 						// how many points player must have to achive high school
-#define MAX_GRADE_LVL 4								// how many points player must have to achive high school
-#define SCHOOL_COST 25
-#define HIGH_SCHOOL_COST 500
-#define SCHOOL_COOLDOWN 20
-#define EVENT_COUNT 1
 
-#define MAX_RACES	50															// How many races are avaible
-#define MAX_RACES_CP	150													// How many races cp are avaible
-#define DEFAULT_TIME_BEFORE_RACE_START 600			// Time in seconds
-#define DEFAULT_TIME_BEFORE_RACE_END 60				// Time in seconds
+/* Police msg types for CB fnc */
+#define POLICE_MSGT_VEHICLE_BREAK 0
+#define POLICE_MSGT_HOUSE_BREAK 1
+#define POLICE_MSGT_BIZ_BREAK 2
+
+/* House types */
+#define HOUSET_HOUSE 0
+#define HOUSET_GARAGE 1
+#define HOUSET_GARAGE_BIG 2
 
 /* Character needs */
 #define ENERGY					0.4
@@ -299,7 +293,7 @@ Float:MaxVehicleHealth(vehId);
 #define HUNGER					1.0
 #define MAX_HUNGER			100.0
 #define MAX_HUNGER_VIP	150.0
-#define THIRST						1.7
+#define THIRST						2.0
 #define MAX_THIRST				100.0
 #define MAX_THIRST_VIP		150.0
 #define POISON					0.2
@@ -308,7 +302,7 @@ Float:MaxVehicleHealth(vehId);
 #define FAT							0.3
 #define MAX_FAT					100.0
 #define MAX_FAT_VIP			150.0
-#define STOMACH					1.5
+#define STOMACH					0.95
 #define MAX_STOMACH		100.0
 #define MAX_STOMACH_VIP	150.0
 #define VITAMINS					1.0
@@ -321,30 +315,12 @@ Float:MaxVehicleHealth(vehId);
 #define MAX_NARCOTIC		100.0
 #define MAX_NARCOTIC_VIP	150.0
 #define MAX_SUBMEALS 		30 												// How many submeals player can have before stomach probles starts
-#define MAX_SUBMEALS_HP_LOSS 20.0					// How much hp vomiting will take
+#define MAX_SUBMEALS_HP_LOSS 20.0							// How much hp vomiting will take
+#define MAX_RACES	50															// How many races are avaible
+#define MAX_RACES_CP	150													// How many races cp are avaible
+#define DEFAULT_TIME_BEFORE_RACE_START 300		// Time in seconds
+#define DEFAULT_TIME_BEFORE_RACE_END 60			// Time in seconds
 
-/* Weapons skill costs */
-#define PIS_SKILL_COST 1000
-#define SIL_SKILL_COST 1000
-#define DES_SKILL_COST 2000
-#define SHO_SKILL_COST 2000
-#define SHA_SKILL_COST 2000
-#define SPASS_SKILL_COST 3000
-#define UZI_SKILL_COST 2000
-#define MP5_SKILL_COST 4000
-#define AK_SKILL_COST 5000
-#define M4_SKILL_COST 5000
-#define SNIPER_SKILL_COST 6000
-
-/* Police msg types for CB fnc */
-#define POLICE_MSGT_VEHICLE_BREAK 0
-#define POLICE_MSGT_HOUSE_BREAK 1
-#define POLICE_MSGT_BIZ_BREAK 2
-
-/* House types */
-#define HOUSET_HOUSE 0
-#define HOUSET_GARAGE 1
-#define HOUSET_GARAGE_BIG 2
 
 /* Race states */
 #define RACE_STATE_NONE 0
@@ -397,13 +373,6 @@ Float:MaxVehicleHealth(vehId);
 #define FACTIONT_COMPANY_PHONE 9
 #define FACTIONT_COMPANY_OTHER 10
 
-/* Vehicle types */
-#define VEHICLET_TAXI_TP 999
-
-/* Building types */
-#define BUILDINGT_NORMAL 0
-#define BUILDINGT_GARAGE 1
-
 /* Faction types */
 #define F_POLICE 1
 
@@ -421,10 +390,6 @@ Float:MaxVehicleHealth(vehId);
 #define BIZT_GAS 11
 
 /* Jobs */
-#define JOB_BUSDRIVER 13
-#define JOB_TRASHDRIVER 14
-#define JOB_SWEEPER 15
-#define JOB_FARMER 18
 #define JOB_PRODUCTSELLER 5
 #define JOB_MECHANIC 17
 
@@ -533,19 +498,17 @@ Float:MaxVehicleHealth(vehId);
 #define ITEM_TYPE_10 10
 
 /* Tanker macros */
-#define MAX_TANKER_RESOURCE_VALUE 700 				// The maximum value of tanker capacity
+#define MAX_TANKER_RESOURCE_VALUE 700 	// The maximum value of tanker capacity
 #define TANKER_TYPE_NONE 0 							// Tanker hasn't been tanked yet
 #define TANKER_TYPE_PETROL 1 						// Tanker contain petrol
-#define TANKER_TYPE_OIL 2 							// Tanker contain oil
-#define TANKER_TYPE_GAS 3 							// Tanker contain gas
-#define TANKER_TYPE_FLY 4 							// Tanker contain aviation fuel
+#define TANKER_TYPE_OIL 2 								// Tanker contain oil
+#define TANKER_TYPE_GAS 3 								// Tanker contain gas
 
 /* Some special defines */
 #define ADMIN_SPEC_TYPE_NONE 0
 #define ADMIN_SPEC_TYPE_PLAYER 1
 #define ADMIN_SPEC_TYPE_VEHICLE 2
-
-#define HADM 5 										// Highest admin lvl
+#define HADM 5 // Highest admin lvl
 #define ALPHA 128
 #define SetPlayerHoldingObject(%1,%2,%3,%4,%5,%6,%7,%8,%9) SetPlayerAttachedObject(%1,MAX_PLAYER_ATTACHED_OBJECTS-1,%2,%3,%4,%5,%6,%7,%8,%9)
 #define StopPlayerHoldingObject(%1) RemovePlayerAttachedObject(%1,MAX_PLAYER_ATTACHED_OBJECTS-1)
@@ -558,59 +521,74 @@ Float:MaxVehicleHealth(vehId);
 	(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 
 /* Macros of hex colors */
-#define COLOR_URZAD 								0xFFFFFFFF
-#define COLOR_FACTIONCHAT							0x01FCFFC8
-#define COLOR_LSPD 									0x0000FFAA
-#define COLOR_NATIONALGUARD 						0x556B2FAA
-#define COLOR_CIVILIAN 								0xFFFFFFFF
-#define COLOR_ORANGE 								0xFF8000AA
-#define COLOR_ADMINCMD 								0xF97804FF
-//#define COLOR_ADMINDUTY 							0x007E96F6
-#define COLOR_ADMINDUTY 							0xB10000F6
-#define COLOR_NOTLOGGED 							0x00000000
-#define COLOR_GRAD1 								0xB4B5B7FF
-#define COLOR_GRAD2 								0xBFC0C2FF
-#define COLOR_GRAD3 								0xCBCCCEFF
-#define COLOR_GRAD4 								0xD8D8D8FF
-#define COLOR_GRAD5 								0xE3E3E3FF
-#define COLOR_GRAD6 								0xF0F0F0FF
-#define COLOR_GREY 									0xAFAFAFAA
-#define COLOR_GREEN 								0x33AA33AA
-#define COLOR_RED									0xA10000AA
-#define COLOR_BLACK 								0x000000FF
-#define COLOR_DARKRED 								0xCD000000
-#define COLOR_LIGHTRED 								0xFF6347AA
-#define COLOR_LIGHTBLUE 							0x33CCFFAA
-#define COLOR_LIGHTBLUE2 							0x0080FFAA
-#define COLOR_LIGHTGREEN 							0x9ACD32AA
-#define COLOR_LIGHTORANGE 							0xFF8000FF
-#define COLOR_DARKBROWN 							0xB36C42FF
-#define COLOR_LIGHTYELLOW 							0xE0E377AA
-#define COLOR_LIGHTYELLOW2 							0xE0EA64AA
-#define COLOR_DARKPURPLE 							0x5F56F8AA
-#define COLOR_YELLOW 								0xFFFF00AA
-#define COLOR_YELLOW2 								0xF5DEB3AA
-#define COLOR_WHITE 								0xFFFFFFAA
-#define COLOR_FADE1 								0xE6E6E6E6
-#define COLOR_FADE2 								0xC8C8C8C8
-#define COLOR_FADE3 								0xAAAAAAAA
-#define COLOR_FADE4 								0x8C8C8C8C
-#define COLOR_FADE5 								0x6E6E6E6E
-#define COLOR_PURPLE 								0xC2A2DAAA
-#define COLOR_DBLUE 								0x2641FEAA
-#define COLOR_NEWS 									0xFFA500AA
-#define COLOR_OOC 									0xE0FFFFAA
-
-#define COLOR_GANGZONE_ALLY							0x00FF0090
-#define COLOR_GANGZONE_ENEMY  						0xFF000090
-
-#define COLOR_TITLE 								"{FFF221}"
-#define COLOR_BEGIN 								"{FF0000}"
-#define COLOR_BEGIN2 								"{FFF221}"
-#define COLOR_DEFAULT 								"{EBEBEB}"
-#define COLOR_RED_T									"{A10000}"
-#define COLOR_YELLOW_T 								"{FFFF00}"
-#define COLOR_GREEN_T								"{33AA33}"
+#define ORANGE 0xF97804FF
+#define COLOR_URZAD 0xFFFFFFFF
+#define COLOR_SPEC 0xBFC0C200
+#define COLOR_ASKQ 0xFF0000FF
+#define COLOR_FACTIONCHAT 0x01FCFFC8
+#define COLOR_CORLEONE 0x212121AA
+#define COLOR_RIGHTHAND_DONS 0xA10000AA //PARAMEDICS
+#define COLOR_RIGHTHAND_DONS_INVISIBLE 0xA10000AA
+#define COLOR_BARZINI 0x00FF00AA
+#define COLOR_PATERNO 0x800080AA
+#define COLOR_TATTAGLIA 0xD3D300AA
+#define COLOR_STRACCI 0x0FD9FAAA
+#define COLOR_LSPD 0x0000FFAA
+#define COLOR_LSPD_INVISIBLE 0x0000FF00
+#define COLOR_FBI 0x191970AA
+#define COLOR_FBI_INVISIBLE 0x19197000
+#define COLOR_NATIONALGUARD 0x556B2FAA
+#define COLOR_CIVILIAN 0xFFFFFFFF
+#define COLOR_CIVILIAN_INVISIBLE 0xFFFFFF00
+#define COLOR_ORANGE 0xFF8000AA
+#define COLOR_LOCALMSG 0xEC5413AA
+#define COLOR_ADMINCMD 0xF97804FF
+#define COLOR_ADMINDUTY 0x007E96F6
+#define COLOR_NOTLOGGED 0x00000000
+#define COLOR_GRAD1 0xB4B5B7FF
+#define COLOR_GRAD2 0xBFC0C2FF
+#define COLOR_MONEYBAR 0x005800FF
+#define COLOR_GRAD3 0xCBCCCEFF
+#define COLOR_GRAD4 0xD8D8D8FF
+#define COLOR_GRAD5 0xE3E3E3FF
+#define COLOR_GRAD6 0xF0F0F0FF
+#define COLOR_GREY 0xAFAFAFAA
+#define COLOR_GREEN 0x33AA33AA
+#define COLOR_RED 0xA10000AA
+#define COLOR_BLACK 0x000000FF
+#define COLOR_DARKRED 0xCD000000
+#define COLOR_ANTICHEAT 0xAA3333AA
+#define COLOR_LIGHTRED 0xFF6347AA
+#define COLOR_LIGHTRED_INVISIBLE 0xFF634700
+#define COLOR_LIGHTBLUE 0x33CCFFAA
+#define COLOR_LIGHTGREEN 0x9ACD32AA
+#define COLOR_LIGHTBLUE2 0x0080FFAA
+#define COLOR_LIGHTGREEN 0x9ACD32AA
+#define COLOR_LIGHTORANGE 0xFF8000FF
+#define COLOR_DARKBROWN 0xB36C42FF
+#define COLOR_MEDIUMBLUE 0x1ED5C7FF
+#define COLOR_MEDIUMBLUE_INVISIBLE 0x1ED5C700
+#define COLOR_CYELLOW 0xE0E377AA
+#define COLOR_CYELLOW_INVISIBLE 0xE0E37700
+#define COLOR_LIGHTYELLOW 0xE0E377AA
+#define COLOR_LIGHTYELLOW2 0xE0EA64AA
+#define COLOR_LIGHTYELLOW3 0xFF6347AA
+#define COLOR_DARKPURPLE 0x5F56F8AA
+#define COLOR_DARKPURPLE_INVISIBLE 0x5F56F800
+#define COLOR_YELLOW 0xFFFF00AA
+#define COLOR_YELLOW2 0xF5DEB3AA
+#define COLOR_WHITE 0xFFFFFFAA
+#define COLOR_FADE1 0xE6E6E6E6
+#define COLOR_FADE2 0xC8C8C8C8
+#define COLOR_FADE3 0xAAAAAAAA
+#define COLOR_FADE4 0x8C8C8C8C
+#define COLOR_FADE5 0x6E6E6E6E
+#define COLOR_PURPLE 0xC2A2DAAA
+#define COLOR_DBLUE 0x2641FEAA
+#define COLOR_ALLDEPT 0xFF8282AA
+#define COLOR_NEWS 0xFFA500AA
+#define COLOR_OOC 0xE0FFFFAA
+#define COLOR_NEWOOC 0x0080FFAA
 
 /* Macros of bus txt */
 #define BUS_IN_ROUTE_BEFORE_A "Tras¹ pod¹¿a co najmniej 1 autobus i kieruje siê w strone tego przystanku [1]"
@@ -683,7 +661,7 @@ Float:MaxVehicleHealth(vehId);
 #define PLAYER_DATA_LOAD_FIRST_MYSQL 51
 #define PLAYER_LOAD_FUEL 52
 #define SAVE4 53
-// #define ______FREEEEEEEEE 54
+#define PLAYER_DATA_LOAD_NAME_MYSQL 54
 #define LOAD_CARS_CPARTS 55
 #define LOAD_CUSTOM_OBJECTS 56
 #define LOAD_BUS_TRACKS 57
@@ -718,25 +696,6 @@ Float:MaxVehicleHealth(vehId);
 #define LOAD_FARMER_TRACKS 86
 #define LOAD_FARMER_TRACKS_DATA 87
 #define LOAD_DRIVER_BOOK_QUESTION 88
-#define DEF_FAC_LEADERS 89
-#define CHECK_ACCOUNT_STATUS 90
-#define SET_FORUM_FACTION 91
-#define LOAD_MAP_ICONS 92
-#define COMPANY_MEMBERS_DISMISS 93
-#define LOAD_PUBLIC_ADS 94
-#define DEL_FROM_FORUM_FACTION 95
-#define PLAYER_VEHICLE_CASH 96
-#define LOAD_ITEMS_FOR_DELETE 97
-#define LOAD_ITEMS2_FOR_DELETE 98
-#define LOAD_ITEMS3_FOR_DELETE 99
-#define FACTION_MEMBERS_RANK 100
-#define LOAD_RACER_STATS_BEST 101
-#define LOAD_PICKUP_INFOS 102
-#define CASH_FOR_EXPORT_VEH 103
-#define LOAD_NEWS 104
-#define PLAYER_DATA_LOAD_ALL 105
-#define PLAYER_DATA_LOAD_ALL_PAYDAY 106
-#define CHECK_ACCOUNT_STATUS_PAYDAY 107
 
 /* Macros of dialogs */
 #define DIALOG_ITEM_1 1
@@ -760,7 +719,7 @@ Float:MaxVehicleHealth(vehId);
 #define DIALOG_HITEM_INS_3 23
 #define DIALOG_HITEM_3 24
 #define DIALOG_GOVERNMENT_1 25
-#define DIALOG_GOVERNMENT_INFO 26
+#define DIALOG_GOVERNMENT_TAX 26
 #define DIALOG_GOVERNMENT_JOBS 27
 #define DIALOG_GOVERNMENT_JOBS_2 28
 #define DIALOG_GOVERNMENT_JOBS_3 29
@@ -913,97 +872,6 @@ Float:MaxVehicleHealth(vehId);
 #define DIALOG_HELP_3 177
 #define DIALOG_ITEM_TRANSFER_COUNT 178
 #define DIALOG_LOGIN_KP 179
-#define DIALOG_GOVERNMENT_LIC 180
-#define DIALOG_GOVERNMENT2_1 181
-#define DIALOG_BUY_BUS_TICKET 182
-#define DIALOG_F_ARMENT_1 183
-#define DIALOG_F_ARMENT_2 184
-#define DIALOG_F_ARMENT_W_1 185
-#define DIALOG_F_ARMENT_W_2 186
-#define DIALOG_F_ARMENT_A_1 187
-#define DIALOG_F_ARMENT_A_1_MSG 188
-#define DIALOG_MEDIC_1 189
-#define DIALOG_HEAL_ASK_BOT 190
-#define DIALOG_BUY_5P_BAR 191
-#define DIALOG_BUY_6P_BAR 192
-#define DIALOG_F_PAYMENT_1 193
-#define DIALOG_F_PAYMENT_2 194
-#define DIALOG_F_PAYMENT_2_MSG 195
-#define DIALOG_F2_PAYMENT_1 196
-#define DIALOG_F2_PAYMENT_2 197
-#define DIALOG_F2_PAYMENT_2_MSG 198
-#define DIALOG_COMPANY 199
-#define DIALOG_COMPANY_DISMISS 200
-#define DIALOG_COMPANY_DISMISS_MSG 201
-#define DIALOG_COMPANY_HIRE 202
-#define DIALOG_COMPANY_HIRE_MSG 203
-#define DIALOG_COMPANY_PAYMENT 204
-#define DIALOG_COMPANY_PAYMENT_MSG 205
-#define DIALOG_OBJECT_TXT 206
-#define DIALOG_OBJECT_TXT_2 207
-#define DIALOG_OBJECT_TXT_3 208
-#define DIALOG_OBJECT_TXT_4 209
-#define DIALOG_OBJECT_TXT_5 210
-#define DIALOG_OBJECT_TXT_6 211
-#define DIALOG_ENGINE_REPAIR_CONFIRM 212
-#define DIALOG_SELECT_WHEEL_TO_FIX 213
-#define DIALOG_WHEEL_REPAIR_CONFIRM 214
-#define DIALOG_BULB_CHANGE_SELECT 215
-#define DIALOG_BULB_CHANGE_CONFIRM 216
-#define DIALOG_HOOK_ADD_CONFIRM 217
-#define DIALOG_SELECT_BIZ_INT 218
-#define DIALOG_LPG_ADD_CONFIRM 219
-#define DIALOG_BUY_BUILDING 220
-#define DIALOG_POLICELIGHT_ADD_CONFIRM 221
-#define DIALOG_TAXILIGHT1_ADD_CONFIRM 222
-#define DIALOG_TAXILIGHT2_ADD_CONFIRM 223
-#define DIALOG_TAXILIGHT3_ADD_CONFIRM 224
-#define DIALOG_TAXILIGHT4_ADD_CONFIRM 225
-#define DIALOG_NETWORK_COMP_MSG 226
-#define DIALOG_GOVERNMENT_VEH_REG 227
-#define DIALOG_EVENT_JOIN 228
-#define DIALOG_EVENT_SELECT 229
-#define DIALOG_EVENT_SELECT_TIME 230
-#define DIALOG_EVENT_SELECT_PRIZE 231
-#define DIALOG_EVENT_STOP 232
-#define PLAYER_PRIVATE_VEHICLE_CASH 233
-#define DIALOG_FACTION 234
-#define DIALOG_FACTION_HIRE 235
-#define FACTION_MEMBERS_DISMISS 236
-#define DIALOG_FACTION_HIRE_MSG 237
-#define DIALOG_FACTION_DISMISS_MSG 238
-#define DIALOG_FACTION_DISMISS 239
-#define DIALOG_FACTION_RANK_SELECT 240
-#define DIALOG_FACTION_RANK 241
-#define DIALOG_FACTION_RANK_MSG 242
-#define DIALOG_FACTION_PAYMENT_MSG 243
-#define DIALOG_FACTION_PAYMENT_ENTER 244
-#define DIALOG_FACTION_PAYMENT 245
-#define DIALOG_FACTION_SKIN_SELECT 246
-#define DIALOG_FACTION_SKIN_INPUT 247
-#define DIALOG_FACTION_SKIN_MSG 248
-#define DIALOG_FACTORY_BUILD 249
-#define DIALOG_REPORTS 250
-#define DIALOG_TUNING_ADD_CONFIRM 251
-#define DIALOG_STOCK_ADD_CONFIRM 252
-#define DIALOG_MAP_LOCATIONS 253
-#define DIALOG_MAP_LOCATIONS_SET 254
-#define DIALOG_RENT_VEH 255
-#define DIALOG_GPS_LOCATIONS 256
-#define DIALOG_GPS_LOCATIONS_SET 257
-#define DIALOG_TELEPORT_TAXI 258
-#define DIALOG_HELP_4 259
-#define DIALOG_NEW_NEWS 260
-#define DIALOG_NEW_NEWS2 261
-#define DIALOG_HOUSE 262
-#define DIALOG_HOUSE_MONEY 263
-#define DIALOG_HOUSE_MONEY_TAKE 264
-#define DIALOG_HOUSE_MONEY_PUT 265
-#define DIALOG_HOUSE_MONEY_MSG 266
-#define DIALOG_HOUSE_RENT 267
-#define DIALOG_HOUSE_RENT_PRICE 268
-#define DIALOG_HOUSE_RENT_MSG 269
-#define DIALOG_HOUSE_ITEMS 270
 
 /* Macros of audio */
 #define AUDIO_ITEM_PICKUP 1
@@ -1039,10 +907,6 @@ Float:MaxVehicleHealth(vehId);
 #define camera_z 9
 #define moving_speed 50
 
-/* Action ranges */
-#define AR_HOUSE_STEALING 30.0
-#define AR_BUSINESS_STEALING 30.0
-
 // /* Firework macros */
 // #define COLOR_TAN 0xBDB76BAA
 // #define RED 		0xE60000FF
@@ -1066,19 +930,18 @@ Float:MaxVehicleHealth(vehId);
 
 /* Variable with text */
 new DIALOG_ITEM_FACTORY_TITLE[150] = "Fabryka itemów - %s";
-new DIALOG_ITEM_FACTORY_ITEM_LIST[] = "1. %s [$%d][%d]\n2. %s [$%d][%d]\n3. %s [$%d][%d]\n4. %s [$%d][%d]\n5. %s [$%d][%d]\n6. %s [$%d][%d]\n7. %s [$%d][%d]\n8. %s [$%d][%d]\n9. %s [$%d][%d]\n10. %s [$%d][%d]\n";
+new DIALOG_ITEM_FACTORY_ITEM_LIST[] = "1. %s [%d$][%d]\n2. %s [%d$][%d]\n3. %s [%d$][%d]\n4. %s [%d$][%d]\n5. %s [%d$][%d]\n6. %s [%d$][%d]\n7. %s [%d$][%d]\n8. %s [%d$][%d]\n9. %s [%d$][%d]\n10. %s [%d$][%d]\n";
 new DIALOG_ITEM_FACTORY_HOW_MUCH[63 char] = !"Wpisz wartoœæ odpowiadaj¹c¹ iloœci itemów które chcesz zakupiæ";
 new DIALOG_ITEM_FACTORY_WRONG_VALUE[49 char] = !"Poda³eœ niepoprawn¹ wartoœæ, spróbuj jeszcze raz";
 new DIALOG_ITEM_FACTORY_NO_SPACE[27 char] = !"Nie masz miejsca w schowku";
 new DIALOG_ITEM_FACTORY_NO_ITEM[114 char] = !"Niestety nie ma teraz tego itemu na stanie lub jego iloœæ jest za ma³a w stosunku do minimalnego mo¿liwego zakupu";
 new DIALOG_ITEM_FACTORY_NO_CASH[21 char] = !"Masz za ma³o gotówki";
-new DIALOG_ITEM_FACTORY_B_CONFIRM[] = "Czy potwierdzasz zakup %d itemów za kwote $%d ?";
+new DIALOG_ITEM_FACTORY_B_CONFIRM[] = "Czy potwierdzasz zakup %d itemów za kwote %d$ ?";
 new DIALOG_ITEM_FACTORY_MIN_BUY[] = "Musisz kupiæ co najmniej %d tych itemów !";
 new DIALOG_ITEM_FACTORY_B_SUCCESS[15 char] = !"Kupi³eœ itemy !";
 new DIALOG_INFO_HEADER[11 char] = !"Informacja";
 new DIALOG_INFO_EXIT[] = "Zamknij";
-new DIALOG_GOVERNMENT_1_TXT[] = "ZnaleŸæ prace\nPrzejrzeæ aktualne podatki\nWyrobiæ dowód\nWyrobiæ prawo jazdy\nWyrobiæ dowód rejestracyjny pojazdu";
-new DIALOG_GOVERNMENT2_1_TXT[] = "Przejrzeæ frakcje nie posiadaj¹ce lidera";
+new DIALOG_GOVERNMENT_1_TXT[] = "1. ZnaleŸæ prace \n2. Przejrzeæ aktualne podatki";
 new DIALOG_GOV_APPLY_TXT[] = "WeŸ prace";
 new DIALOG_BUY_1_TXT[33 char] = !"Transakcja zakoñczona sukcesem !";
 new DIALOG_BUY_2_TXT[46 char] = !"Nie posiadasz wystarczaj¹cej iloœci pieniêdzy";
@@ -1088,14 +951,13 @@ new DIALOG_BUY_4_TXT[] = "Nie masz wiêcej miejsca !";
 new DIALOG_BUY_6_TXT[36 char] = !"Ten produkt nie ma ustalonej ceny !";
 new DIALOG_BUY_7_TXT[32 char] = !"Nie wybra³eœ ¿adnego produktu !";
 new DIALOG_BUY_8_TXT[15 char] = !"Brak produktu !";
-new DIALOG_BUY_9_TXT[49 char] = !"Aby kupiæ ubranie udaj siê do przymierzalni obok";
 new DIALOG_WMENU_TITLE_TXT[] = "Menu skupu broni oraz amunicji";
 new DIALOG_WMENU_NOSPAREPART_TXT[] = "Brak wymaganych czêœci !";
 new DIALOG_WMENU_NOCASH_TXT[] = "Niewystarczaj¹ca iloœc pieniêdzy w kasie frakcji !";
 new DIALOG_WMENU_GOTO1_TXT[] = "[INFO:] Udaj siê teraz do jednego ze stanowisk";
 new DIALOG_WMENU_GOTO2_TXT[] = "[INFO:] Aby rozpocz¹æ prace wpisz /skladaj";
 new DIALOG_WMENU_BOUGHT_PART_TXT[] = "Kupi³eœ czêœæ !\nJest ona teraz dostêpna w magazynie frakcji";
-new DIALOG_WMENU_BUY_CHECKOUT_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie frakcji: %d\nCena: $%d\nZasoby frakcji: $%d";
+new DIALOG_WMENU_BUY_CHECKOUT_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie frakcji: %d\nCena: %d$\nZasoby frakcji: %d$";
 new DIALOG_WMENU_BUY_CHECKOUT2_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie frakcji: %d\n";
 new DIALOG_WMENU_MAIN_TXT[] = "1. Bronie\n2. Czêœci\n3. Amunicja\n4. Zwróæ czêœci";
 new DIALOG_WMENU_SEL_TXT[] = "1. Broñ\n2. Amunicja";
@@ -1104,13 +966,13 @@ new DIALOG_WMENU_3_WEAPON_INFO_TXT[] = "Wybra³eœ ju¿ broñ lub czêœæ któr¹ chcesz
 new DIALOG_WMENU_3_NO_SPACE_TXT[] = "Jesteœ przeci¹¿ony !";
 new DIALOG_WMENU_LIM_TXT[] = "Osi¹gn¹³eœ limit zamówieñ !\nWróæ jutro.";
 new DIALOG_WMENU_B_OUT_TXT[] = "Brak broni w magazynie lub iloœæ na zamówieniu przekracza jej aktualny stan !";
-new DIALOG_WMENU_W_LIST_TXT[] = "1. Pistolet 9mm [%d]\n2. Pistolet 9mm z t³umikiem [%d]\n3. Pistolet Desert Eagle [%d]\n4. Pistolet maszynowy micro SMG [%d]\n5. Pistolet maszynowy MP5 [%d]\n6. Tec9 [%d]\n7. Shotgun [%d]\n8. Karabinek AK-47 [%d]\n9. Karabinek M4 [%d]\n10. Karabin [%d]\n11. Karabin snajperski [%d]\n12. Kastet [20$]\n13. £om [15$]\n14. Wytrych [5$]\n15. Pancerz";
+new DIALOG_WMENU_W_LIST_TXT[] = "1. Pistolet 9mm [%d]\n2. Pistolet 9mm z t³umikiem [%d]\n3. Pistolet Desert Eagle [%d]\n4. Pistolet maszynowy micro SMG [%d]\n5. Pistolet maszynowy MP5 [%d]\n6. Tec9 [%d]\n7. Shotgun [%d]\n8. Karabinek AK-47 [%d]\n9. Karabinek M4 [%d]\n10. Karabin [%d]\n11. Karabin snajperski [%d]\n12. Kastet [20$]\n13. £om [15$]\n14. Wytrych [5$]";
 new DIALOG_WMENU_PASS_WL_TXT[] = "Zakoñczo etap %d z %d";
-new DIALOG_BUYW_TXT[] = "1. Pistolet 9mm [%d][$%d]\n2. Pistolet 9mm z t³umikiem [%d][$%d]\n3. Pistolet Desert Eagle [%d][$%d]\n4. Pistolet maszynowy micro SMG [%d][$%d]\n5. Pistolet maszynowy MP5 [%d][$%d]\n6. Tec9 [%d][$%d]\n7. Shotgun [%d][$%d]\n8. Karabinek AK-47 [%d][$%d]\n9. Karabinek M4 [%d][$%d]\n10. Karabin [%d][$%d]\n11. Karabin snajperski [%d][$%d]";
-new DIALOG_BUYA_TXT[] = "1. Nabój 9mm [%d][$%d]\n2. Nabój .50 AE [%d][$%d]\n3. Œrut [%d][$%d]\n4. Nabój 7.62mm [%d][$%d]\n5. Nabój 12.7mm [%d][$%d]";
-new WFACTORY_MOUNT_P_CP[] = "Punkt montowania broni/czesci~n~/menubroni";
-new WFACTORY_MOUNT_SP_CP[] = "Punkt montowania amunicji~n~/menubroni";
-new WFACTORY_TAKE_BUY_CP[] = "Punkt poboru/kupna czesci/podczesci~n~/menubroni";
+new DIALOG_BUYW_TXT[] = "1. Pistolet 9mm [%d][%d$]\n2. Pistolet 9mm z t³umikiem [%d][%d$]\n3. Pistolet Desert Eagle [%d][%d$]\n4. Pistolet maszynowy micro SMG [%d][%d$]\n5. Pistolet maszynowy MP5 [%d][%d$]\n6. Tec9 [%d][%d$]\n7. Shotgun [%d][%d$]\n8. Karabinek AK-47 [%d][%d$]\n9. Karabinek M4 [%d][%d$]\n10. Karabin [%d][%d$]\n11. Karabin snajperski [%d][%d$]";
+new DIALOG_BUYA_TXT[] = "1. Nabój 9mm [%d][%d$]\n2. Nabój .50 AE [%d][%d$]\n3. Œrut [%d][%d$]\n4. Nabój 7.62mm [%d][%d$]\n5. Nabój 12.7mm [%d][%d$]";
+new WFACTORY_MOUNT_P_CP[] = "Punkt montowania broni/czesci";
+new WFACTORY_MOUNT_SP_CP[] = "Punkt montowania amunicji";
+new WFACTORY_TAKE_BUY_CP[] = "Punkt poboru/kupna czesci/podczesci";
 new WFACTORY_TAKE_ORD_BUY_CP[] = "Punkt zamowien oraz skupu";
 // new WFACTORY_RETURN_CP[] = "Punkt skladowania broni";
 new WF_ASSEMBLE_T_LEFT[] = "Skladanie czesci    - pozostalo %d sekund";
@@ -1121,13 +983,13 @@ new WF_ASSEMBLE_NOT_SLCTED[] = "Nie wybra³eœ elementu do montowania.\nWybierz od
 new WF_ASSEMBLE_NOT_WCP[] = "Nie jesteœ w punkcie sk³adania broni/czêœci !";
 new WF_ASSEMBLE_NOT_ACP[] = "Nie jesteœ w punkcie skladania amunicji !";
 new WF_ASSEMBLE_ALREADY[] = "Poczekaj na zakoñczenie montowania obecnej czêœci.";
-new SHOP_PRODUCT_LIST[] = "1. %s [$%d][%d]\n2. %s [$%d][%d]\n3. %s [$%d][%d]\n4. %s [$%d][%d]\n5. %s [$%d][%d]\n6. %s [$%d][%d]\n7. %s [$%d][%d]\n8. %s [$%d][%d]\n9. %s [$%d][%d]\n10. %s [$%d][%d]";
-new FOOD_PRODUCT_LIST[] = "1. %s [$%d][%d]\n2. %s [$%d][%d]\n3. %s [$%d][%d]\n4. %s [$%d][%d]\n5. %s [$%d][%d]";
-new DIALOG_HELP_MAIN_TXT[] = "Regulamin\nJak zacz¹æ\nFAQ\nLicencje\nAnimacje\nPojazdy\nPrace\nPaski zdrowia - opis\nPaski zdrowia\nCzaty\nIkony na mapie\nProblemy i bugi\nNarkotyki\nHurtownie\nWyœcigi\nWORD\nDomy\nBiznesy";
+new SHOP_PRODUCT_LIST[] = "1. %s [%d$][%d]\n2. %s [%d$][%d]\n3. %s [%d$][%d]\n4. %s [%d$][%d]\n5. %s [%d$][%d]\n6. %s [%d$][%d]\n7. %s [%d$][%d]\n8. %s [%d$][%d]\n9. %s [%d$][%d]\n10. %s [%d$][%d]";
+new FOOD_PRODUCT_LIST[] = "1. %s [%d$][%d]\n2. %s [%d$][%d]\n3. %s [%d$][%d]\n4. %s [%d$][%d]\n5. %s [%d$][%d]";
+new DIALOG_HELP_MAIN_TXT[] = "Regulamin\nLicencje\nAnimacje\nPojazdy\nPrace\nPaski zdrowia - opis\nPaski zdrowia - FAQ\nCzaty\nIkony na mapie\nProblemy i bugi\nNarkotyki\nHurtownie\nWyœcigi\nWORD\nDomy\nBiznesy";
 new RADIO_CHANNELS[] = "[1:] Radioparty.pl g³ówny [2:] DJ Mixes [3:] House [4:] Trance [5:] Vocal Trance [6:] DnB [7:] Hardstyle [8:] Chillout";
 new RADIO_CHANNELS2[] =  "[9:] Radio Zet [10:] RMF Classic [11:] RMF FM [12:] Eska rock [13:] Eska Bydgoszcz 94,4 FM [14:] RadioDiscoPoloFM";
 new RADIO_CHANNELS3[] = "[15:] Technobase.FM [16:] Roots Reggae SKY.FM [17:] RMF Hip Hop [18:] Antyradio Warszawa";
-new RADIO_CHANNELS_DIALOG[] = "1. Radioparty.pl - kana³ g³ówny\n2. Radioparty.pl - DJ Mixes\n3. Radioparty.pl - House\n4. Radioparty.pl - Trances\n5. Radioparty.pl - Vocal Trance\n6. Radioparty.pl - Energy 2000\n7. Radioparty.pl - Ambeat\n8. Radio Horyzont\n9. Radio Zet\n10. RMF Classic\n11. RMF FM\n12. Eska Rock\n13. Eska Warszawa\n14. Polska Stacja - Disco Polo\n15. Technobase.FM\n16. Rastastacja\n17. Kiss The Flow\n18. Antyradio Warszawa";
+new RADIO_CHANNELS_DIALOG[] = "1. Radioparty.pl - kana³ g³ówny\n2. Radioparty.pl - DJ Mixes\n3. Radioparty.pl - House\n4. Radioparty.pl - Trances\n5. Radioparty.pl - Vocal Trance\n6. Radioparty.pl - DnB\n7. Radioparty.pl - Hardstyle\n8. Radioparty.pl - Chillout\n9. Radio Zet\n10. RMF Classic\n11. RMF FM\n12. Eska rock\n13. \n14. RadioDiscoPoloFM\n15 Technobase.FM\n16. Roots Reggae SKY.FM\n17 RMF Hip Hop\n18 Antyradio Warszawa";
 new DIALOG_KANISTER_TXT[] = "1. Przeka¿ item\n2. Wyrzuæ item\n3. Zatankuj pojazd\n4. Zawartoœæ\n5. Zatankuj kanister";
 new DIALOG_DRIVINGTESTQ_TITLE[] = "Test teoretyczny na prawo jazdy";
 
@@ -1135,14 +997,14 @@ new DIALOG_DRIVINGTESTQ_TITLE[] = "Test teoretyczny na prawo jazdy";
 new JOB_BUS_DEP_TIME_LEFT[] = "Odjazd za: %d sek.";
 
 /* Legal factory weapon menu */
-new DIALOG_WMENU_BUY_W_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nCena za sztuke: $%d";
-new DIALOG_WMENU_ORD_W_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nAktualnie zamówionych: %d\nCena sztuke: $%d";
-new DIALOG_WMENU_BUY_A_TXT[] = "Nazwa: %s\nDostêpna iloœæw magazyne: %d\nCena za komplet: $%d";
-new DIALOG_WMENU_ORD_A_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nAktualnie zamówionych: %d\nCena za komplet: $%d";
+new DIALOG_WMENU_BUY_W_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nCena za sztuke: %d$";
+new DIALOG_WMENU_ORD_W_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nAktualnie zamówionych: %d\nCena sztuke: %d$";
+new DIALOG_WMENU_BUY_A_TXT[] = "Nazwa: %s\nDostêpna iloœæw magazyne: %d\nCena za komplet: %d$";
+new DIALOG_WMENU_ORD_A_TXT[] = "Nazwa: %s\nDostêpna iloœæ w magazynie: %d\nAktualnie zamówionych: %d\nCena za komplet: %d$";
 
 /* Rafinery const */
 new RAF_RSC_CP_MENU_HEADER[] = "Menu punktu tankowania cystern";
-new RAF_RSC_CP_MENU_OPTIONS_MAIN[] = "1. Zatankuj benzyne \n2. Zatankuj rope\n3. Nape³nij gazem\n4. Nape³nij paliwem lotniczym\n5. Opró¿nij zawartoœæ cysterny do magazynu rafinerii";
+new RAF_RSC_CP_MENU_OPTIONS_MAIN[] = "1. Zatankuj benzyne \n2. Zatankuj rope\n3. Nape³nij gazem\n4. Opró¿nij zawartoœæ cysterny do magazynu rafinerii";
 new RAF_RSC_CP_MENU_SELECT[] = "Wybierz";
 new RAF_RSC_CP_MENU_EXIT[] = "Zamknij";
 new RAF_RSC_CP_MENU_BACK[] = "Wróæ";
@@ -1209,8 +1071,6 @@ new gPapers[CUSTOM_MAX_PLAYERS]; // praca roznosiciela gazet - ilosc przenoszony
 */
 new gBusTrackEnabled[50];
 new gBusTrackStartArea[50];
-new gBusTrackDesc[50][64];
-new gBusTrackTicketCost[50];
 new Float:gBusTrackCpX[50][50];
 new Float:gBusTrackCpY[50][50];
 new Float:gBusTrackCpZ[50][50];
@@ -1450,7 +1310,6 @@ new gBusDriverPenaltyInformed[CUSTOM_MAX_PLAYERS];
 new gBusDriverCheckpointTime[CUSTOM_MAX_PLAYERS];
 new gBusDriverJustStarted[CUSTOM_MAX_PLAYERS];
 new gBusDriverOnDuty[CUSTOM_MAX_PLAYERS];
-new gBusDriverResetTime[CUSTOM_MAX_PLAYERS];
 
 new gTrashDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
 new gTrashDriverSelectedLine[CUSTOM_MAX_PLAYERS];
@@ -1460,7 +1319,6 @@ new gTrashDriverPenaltyInformed[CUSTOM_MAX_PLAYERS];
 new gTrashDriverCheckpointTime[CUSTOM_MAX_PLAYERS];
 new gTrashDriverJustStarted[CUSTOM_MAX_PLAYERS];
 new gTrashDriverOnDuty[CUSTOM_MAX_PLAYERS];
-new gTrashDriverResetTime[CUSTOM_MAX_PLAYERS];
 
 new gSweeperDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
 new gSweeperDriverSelectedLine[CUSTOM_MAX_PLAYERS];
@@ -1470,7 +1328,6 @@ new gSweeperDriverPenaltyInformed[CUSTOM_MAX_PLAYERS];
 new gSweeperDriverCheckpointTime[CUSTOM_MAX_PLAYERS];
 new gSweeperDriverJustStarted[CUSTOM_MAX_PLAYERS];
 new gSweeperDriverOnDuty[CUSTOM_MAX_PLAYERS];
-new gSweeperDriverResetTime[CUSTOM_MAX_PLAYERS];
 
 new gFarmerDriverCurrentCheckPoint[CUSTOM_MAX_PLAYERS];
 new gFarmerDriverSelectedLine[CUSTOM_MAX_PLAYERS];
@@ -1480,14 +1337,10 @@ new gFarmerDriverPenaltyInformed[CUSTOM_MAX_PLAYERS];
 new gFarmerDriverCheckpointTime[CUSTOM_MAX_PLAYERS];
 new gFarmerDriverJustStarted[CUSTOM_MAX_PLAYERS];
 new gFarmerDriverOnDuty[CUSTOM_MAX_PLAYERS];
-new gFarmerDriverResetTime[CUSTOM_MAX_PLAYERS];
 
 /* Checkpoint variables */
 new gGovCheckpoint;
-new gGovCheckpoint2;
-new gMedicCheckpoints[3];
 new gShopCP[SHOP_CP_COUNT];
-new gClotheShopCP[SHOP_CLOTHE_CP_COUNT];
 new gHorsesCp[2];
 
 /* Weather variables */
@@ -1495,7 +1348,6 @@ new gMW_warszawa, gMW_lasvegas, gMW_sanfrancisco, gMW_losangeles;
 
 /* Speed limited areas */
 new gASanFierro, gALosSantos1, gALosSantos2, gAAngelPine, gAPalominoCreek, gAMontgomery, gABountyBay, gADilimore, gAFortCarson, gABlueBerryFarm;
-new gALosSantos3, gALosSantos4, gALosSantos5, gALosSantos6, gALosSantos7, gALosSantos8;
 new gIsInCityAreaSpeedLimit[CUSTOM_MAX_PLAYERS] = 0;
 
 /* Other areas */
@@ -1544,46 +1396,96 @@ new gP_Lottery; // lottery pickup
 // new Fountain3Time[MAX_PLAYERS];
 // new DestroySprinkleID[MAX_PLAYERS];
 
-/* Company panel variables */
-new gCompanyMembersToFire[CUSTOM_MAX_PLAYERS][100][MAX_PLAYER_NAME];
-new gCompanyMembersCount[CUSTOM_MAX_PLAYERS];
+enum pickupEventDataInfo
+{
+	Float:mPosX,
+	Float:mPosY,
+	Float:mPosZ,
+	mPickupModel,
+	mPickupID
+};
+new gPickupEventData[20][pickupEventDataInfo];
+new gPickupEventCount;
+new gPickupEventTime;
+new gPickupEventCashPrize;
+new gPickupEventMessage[256];
+new gPickupEventNumber;
+new Float:gPickupEventCenterPosX;
+new Float:gPickupEventCenterPosY;
+new Float:gPickupEventCenterPosZ;
+new gPickupEventMapIcon;
+new gPickupEventMapIconID = -1;
+new gPickupEventPrizeType;
+new gPickupEventItemType;
+new gPickupEventItem;
+new gPickupEventItemCount;
+new gPickupEventPrizeReceive;
+new gPickupEventID;
 
-/* Factio panel variables */
-new gFactionMembersToFire[CUSTOM_MAX_PLAYERS][100][MAX_PLAYER_NAME];
-new gFactionMembersCount[CUSTOM_MAX_PLAYERS];
+enum playerVars
+{
+	lPoliceComputerPID,
+	lPoliceComputerPCat,
+	lPoliceComputerPName[MAX_PLAYER_NAME],
+	mHealID,
+	mExamineID,
+	mAntiCheatTimer,
+	mPlayerControllable,
+	mAtHouseID,
+	mAtBuildingID,
+	mAtBizID,
+	mAtCamperId,
+	mPhoneSimID,																// sim ID
+	mPhoneDataReceived, 												// czy uzyskano dane z bazy - ma zapobiec desynchronizacji
+	mPhoneDataTimeout, 													// czy uzyskano dane z bazy - ma zapobiec desynchronizacji
+	mPhoneType, 																	// sim type - prepaid or fee
+	mPhoneFaction,
+	mPhoneCash,																	// prepaid cash left
+	mPhoneRenewalTime,													// prepaid time left
+	mPhoneNr,
+	mGlobalSms[256],															// used to contain sms for all players
+	mGlobalSmsSenderNumber,
+	mPickupEventPickups[sizeof(gPickupEventData)],	// id of event pickups
+	mQuizQuestionNo,
+	mQuizQuestionSet,
+	mQuizWrongAnsweres,
+	mFuelType,																		// used for ImportVeh function
+	Float:mVehMaxHealth,														// used for ImportVeh function
+	Text:mVehicleStatus, 														// dolny pasek statusu pojazdu
+	mVehicleStatusShow,														// status dolnego pasku statusu pojazdu
+	Text:mSanNewsStatus,														// dolny pasek informacyjny san news
+	mSanNewsStatusShow,														// status dolneg pasku informacyjnego san news
+	mJumped,																			// how many times player jumped while walking
+	mSprinting, 																		// information for admin and cooldown
+	// Race vars
+	mSelectedRace,																// race dialog id
+	mSelectedRaceList[MAX_RACES],								// id of avaiable races
+	Text:mRacePlace1Info,
+	Text:mRacePlace2Info,
+	Text:mRacePlace3Info,
+	Text:mRacePlace4Info,
+	Text:mRacePlace5Info,
+	Text:mRacePlace6Info,
+	Text:mRacePlace7Info,
+	Text:mRacePlace8Info,
+	Text:mRacePlace9Info,
+	Text:mRacePlace10Info,
+	mIsPlayerHouseJacking,
+	mIsPlayerBizJacking,
+	mPassTries,
+	mBulletProof,
+	mBugInfoCoolDown,
+	mNewbieCoolDown
+};
+new gPlayerVars[CUSTOM_MAX_PLAYERS+1][playerVars];
 
 /* Zone creator */
 new Float:gZone1X, Float:gZone1Y, Float:gZone2X, Float:gZone2Y;
 
-/* San News Messages */
-enum gSanNewsMsgsInfo
-{
-	mId,
-	mTimeLeft,
-	mContent[255],
-	mUsed
-};
-new gSanNewsMsgs[20][gSanNewsMsgsInfo];
-new gSanNewsCurrentMsg;
-new gSanNewsTimeLeft;
-
-stock SendSanNewsMessage(message[])
-{
-	for(new i = 0; i < sizeof(gSanNewsMsgs); i++)
-	{
-		if(gSanNewsMsgs[i][mUsed])
-		{
-			continue;
-		}
-		
-		format(gSanNewsMsgs, 255, message);
-		
-		return 1;
-	}
-	return 0;
-}
-
 /* Other variables */
+new gSanNewsMsgId;
+new gSanNewsMsgCountdown;
+new gSanNewsMsg[10][255]; // content of each san news messages
 new gPoliceComputerPassword[64];
 new gBackgroundAudio1[CUSTOM_MAX_PLAYERS] = -1;
 new gBackgroundAudio2[CUSTOM_MAX_PLAYERS] = -1;
@@ -1641,8 +1543,6 @@ new gSelectedNumberID[CUSTOM_MAX_PLAYERS];
 new gSelectedNumber[CUSTOM_MAX_PLAYERS];
 new gSelectedSlot[CUSTOM_MAX_PLAYERS];
 new gPreviousDialogList[CUSTOM_MAX_PLAYERS] = { -1 };
-new gIsAntiBH = 1;
-new Text3D:playerAFK[CUSTOM_MAX_PLAYERS];
 
 /*
 * Used to switch betweene dialogs maintaning selected option and containing some data
@@ -1664,10 +1564,19 @@ new gSaveReady = 0;
 new houseSource = 1; // 0 - deprecated (file), 1 (database)
 new gPayDayLoop = 0; // actual round of payday check
 new gPayDayCount = 0; // how many player payday will pass
+new gPayDayID = 0; // how many player payday will pass
 new Text:gPayDayText = Text:INVALID_TEXT_DRAW;
 new Text:gPhoneCall = Text:INVALID_TEXT_DRAW;
 new Text:gPhoneText = Text:INVALID_TEXT_DRAW;
 new Text:gHealthTextEnergy = Text:INVALID_TEXT_DRAW;
+new Text:gHealthTextHunger = Text:INVALID_TEXT_DRAW;
+new Text:gHealthTextThirst = Text:INVALID_TEXT_DRAW;
+new Text:gHealthTextPoison = Text:INVALID_TEXT_DRAW;
+new Text:gHealthTextFat = Text:INVALID_TEXT_DRAW;
+new Text:gHealthTextStomach = Text:INVALID_TEXT_DRAW;
+new Text:gHealthTextVitamins = Text:INVALID_TEXT_DRAW;
+new Text:gHealthTextDrunk = Text:INVALID_TEXT_DRAW;
+new Text:gHealthTextNarcotics = Text:INVALID_TEXT_DRAW;
 new Text:gTextTime = Text:INVALID_TEXT_DRAW;
 // new Text:gTextDate = Text:INVALID_TEXT_DRAW;
 new gPhoneCallShowed[CUSTOM_MAX_PLAYERS] = 0;
@@ -1688,11 +1597,12 @@ new KilledWithWeapon[CUSTOM_MAX_PLAYERS];
 new IncommingCall[CUSTOM_MAX_PLAYERS];
 new ZonesCreated[CUSTOM_MAX_PLAYERS];
 new ReadyToSave = 0;
-new gDSelectedItemP5[CUSTOM_MAX_PLAYERS+1][64];
+new gDSelectedItemP5[CUSTOM_MAX_PLAYERS][64];
 new CarKey1LVL = 2;
 new AirKeyLVL = 15;
 new BoatKeyLVL = 15;
 new LastDrug[CUSTOM_MAX_PLAYERS];
+new gunGiven[CUSTOM_MAX_PLAYERS]; // /dajbron
 new DyingPlayerKillTime[CUSTOM_MAX_PLAYERS];
 new EnteredVehicleID[CUSTOM_MAX_PLAYERS];
 new IsCarJackerOpening[CUSTOM_MAX_PLAYERS];
@@ -1713,11 +1623,14 @@ new VipAFKActive[CUSTOM_MAX_PLAYERS];
 new Float:LifeDecreaserTmpHP;
 new CurrentInformationTmp;
 new CurrentInformation;
+// new Text:gTdPoison;
+// new Text:gTdLHealth;
+// new Text:gTdWomit;
 new gAHeartBeat;
 new gABreath;
 new PlayerStatusCreated[CUSTOM_MAX_PLAYERS];
 new PlayerStatusShowed[CUSTOM_MAX_PLAYERS] = 1;
-new PlayerText:PlayerStatus[CUSTOM_MAX_PLAYERS]; // dolny pasek statusu gracza
+new Text:PlayerStatus[CUSTOM_MAX_PLAYERS]; // dolny pasek statusu gracza
 new gangZoneLoaded[CUSTOM_MAX_PLAYERS];
 new AngleOn[CUSTOM_MAX_PLAYERS];
 new Camera1On[CUSTOM_MAX_PLAYERS];
@@ -1726,6 +1639,8 @@ new IsPlayerTaxiPassenger[CUSTOM_MAX_PLAYERS];
 new gTaxiPassengerDistance[CUSTOM_MAX_PLAYERS];
 new CheckDelay[CUSTOM_MAX_PLAYERS];
 new Alive[CUSTOM_MAX_PLAYERS];
+// new Text:PlayerMoney[CUSTOM_MAX_PLAYERS];
+// new Text:PlayerMoneyBox[CUSTOM_MAX_PLAYERS];
 new Text:Status[CUSTOM_MAX_PLAYERS];
 new WarTime = 0; // stan wojenny
 new WarTimeCountdown; // odliczanie do konca stanu wojennego
@@ -1733,6 +1648,7 @@ new EngineTurningOn[CUSTOM_MAX_PLAYERS];
 new noooc = 0;
 new nofooc = 0;
 new nopwooc = 0;
+// new Text:title; // napis www
 new gMainGateZomo[2];
 new gSpectateID[CUSTOM_MAX_PLAYERS] = { INVALID_PLAYER_ID, ... };
 new gSpectateType[CUSTOM_MAX_PLAYERS];
@@ -1743,7 +1659,17 @@ new ReduceTime[CUSTOM_MAX_PLAYERS];
 new GuardOffer[CUSTOM_MAX_PLAYERS];
 new GuardPrice[CUSTOM_MAX_PLAYERS];
 new Float:PlayerPos[CUSTOM_MAX_PLAYERS][6];
+// new InRing = 0;
+// new RoundStarted = 0;
+// new BoxDelay = 0;
+// new Boxer1 = 255;
+// new Boxer2 = 255;
+// new TBoxer = 255;
+// new BoxWaitTime[CUSTOM_MAX_PLAYERS];
+// new PlayerBoxing[CUSTOM_MAX_PLAYERS];
+// new BoxOffer[CUSTOM_MAX_PLAYERS];
 new JustDied[CUSTOM_MAX_PLAYERS];
+new PlayerNeedsHelp[CUSTOM_MAX_PLAYERS];
 new gOOC[CUSTOM_MAX_PLAYERS] = 1;
 new gPlayerLogged[CUSTOM_MAX_PLAYERS];
 new realchat = 1;
@@ -1755,7 +1681,6 @@ new TakingDrivingTestCE[CUSTOM_MAX_PLAYERS];
 new DrivingTestStep[CUSTOM_MAX_PLAYERS];
 new SpawnAttempts[CUSTOM_MAX_PLAYERS];
 new FactionRequest[CUSTOM_MAX_PLAYERS];//Where information will be stored regarding faction invites.
-new CompanyRequest[CUSTOM_MAX_PLAYERS];
 new ShowFuel[CUSTOM_MAX_PLAYERS];
 new Mobile[CUSTOM_MAX_PLAYERS] = {255, ...}; //Mobile Phone information will be stored here.
 new Muted[CUSTOM_MAX_PLAYERS];
@@ -1774,74 +1699,72 @@ new TrackingPlayer[CUSTOM_MAX_PLAYERS];
 new ProductsOffer[CUSTOM_MAX_PLAYERS];
 new ProductsAmount[CUSTOM_MAX_PLAYERS];
 new ProductsCost[CUSTOM_MAX_PLAYERS];
-new gActiveEventList[CUSTOM_MAX_PLAYERS][10];
-new gPaydayLaunched = 0;
 
 new cenyPojazdow[212] = {
-75000,//400 - Landstalker
-15000,//401 - Bravura
-207000,//402 - Buffalo
-105000,//403 Linerunner
-7000,//404 - Perenniel
-35000,//405 - Sentinel
-200000,//406 - Dumper
-130000,//407 - Firetruck
-430000,//408 - Trashmaster
-560000,//409 - Stretch
-12000,//410 - Manana
-320000,//411 - Infernus
-24000,//412 - Voodoo
-50005,//413 - Pony
-81500,//414 - Mule
-850001,//415 - Cheetah
-140000,//416 - Ambulance
-1200000,//417 -Leviathan
-40000,//418 - Moonbeam
-29500,//419 - Esperanto
-33000,//420 - Taxi
-33000,//421 - Washington
-39990,//422 - Bobcat
-70000,//423 - Mr Whoopee
-76000,//424 - BF Injection
-0,//425 - Hunter
-22000,//426 - Premier
-440000,//427 - Enforcer
-400000,//428 - Securicar
-790000,//429 - Banshee
-120000,//430 - Predator
-660000,//431 - Bus
-0,//432 - Rhino
-640000,//433 - Barracks
-71000,//434 - Hotknife
-50000,//435 - Article Trailer
-18000,//436 - Previon
-680000,//437 - Coach
-33000,//438 - Cabbie
-45000,//439 - Stallion
-55000,//440 - Rumpo
-0,//441 - RC Bandit
-150000,//442 - Romero
-250000,//443 - Packer
-420000,//444 - Monster
-200000,//445 - Admiral
-120000,//446 - Squallo
-0,//447 - Seasparrow
-1000,//448 - Pizzaboy
-0,//449 - Tram
-0,//450 - Article Trailer 2
-820000, //451 Turismo
-600000, //452 Speeder
-900000, //453 Reefer
-1100000, //454 Tropic
-250900, //455 tran 15 slot
-80050, //456 tran 15 slot
+85000, //400
+15000, //401
+207000, //402
+105000, //403
+11000, //404
+52000, //405
+2000000, //406
+1300000, //407
+430000, //408
+560000, //409
+12000, //410
+320000, //411
+24000, //412
+50005, //413
+65000, //414
+850001, //415
+140000, //416
+1200000, //417
+40000, //418
+32000, //419
+33000, //420
+33000, //421
+34000, //422
+70000, //423
+760000, //424
+0, //425
+22000, //426
+440000, //427
+400000, //428
+790000, //429
+120000, //430
+660000, //431
+0, //432
+640000, //433
+71000, //434
+0, //435
+18000, //436
+680000, //437
+33000, //438
+65000, //439
+55000, //440
+0, //441
+150000, //442
+250000, //443
+420000, //444
+25000, //445
+1200000, //446
+0, //447
+3000, //448
+0, //449
+0, //450
+820000, //451
+600000, //452
+900000, //453
+1100000, //454
+380000, //455
+100000, //456
 5000, //457
 28000, //458
-45000, //459 trans 13 slotow
+24000, //459
 900000, //460
-10000, //461
-1000, //462
-15000, //463
+15000, //461
+3000, //462
+20000, //463
 0, //464
 0, //465
 25000, //466
@@ -1849,20 +1772,20 @@ new cenyPojazdow[212] = {
 11000, //468
 200000, //469
 800000, //470
-12000, //471
+22000, //471
 100000, //472
 60000, //473
 21000, //474
 44000, //475
 1350000, //476
 730000, //477
-4500, //478
-20000, //479
+15000, //478
+45000, //479
 690000, //480
-250, //481
-55000, //482 tran 13 slot
+350, //481
+55000, //482
 70000, //483
-122000, //484
+1220000, //484
 10500, //485
 0, //486
 820000, //487
@@ -1871,45 +1794,45 @@ new cenyPojazdow[212] = {
 200000, //490
 21000, //491
 24000, //492
-350000, //493
-350000, //494
+1350000, //493
+900000, //494
 200000, //495
 40999, //496
 400000, //497
-41000, //498 tran 12 slot
-75000, //499 tran 15 slot
-65000, //500
+50000, //498
+60000, //499
+70000, //500
 0, //501
-350000, //502
-350000, //503
-350000, //504
-74999, //505
+1000000, //502
+1000000, //503
+900000, //504
+77999, //505
 780000, //506
 34000, //507
 200000, //508
 250, //509
-350, //510
+450, //510
 400000, //511
 300000, //512
 990000, //513
-150000, //514 tir 4 slot
-140000, //515 tir 4 slot
+280000, //514
+350000, //515
 35000, //516
 20500, //517
 19500, //518
 1800000, //519
-0, //520
-30000, //521 FCR 900
-45000, //522 NRG
-60500, //523
+8000000, //520
+80000, //521
+90999, //522
+82000, //523
 620000, //524
-101500, //525
+140000, //525
 23000, //526
 19000, //527
 600000, //528
 23200, //529
 5000, //530
-1000, //531
+30000, //531
 215001, //532
 52000, //533
 32000, //534
@@ -1920,19 +1843,19 @@ new cenyPojazdow[212] = {
 130000, //539
 19000, //540
 800000, //541
-12000, //542
-18000, //543 tran 7 slot
+33000, //542
+40000, //543
 740000, //544
 200000, //545
-14000, //546
+22200, //546
 10199, //547
 1000000, //548
-8500, //549
-22500, //550
-25000, //551
+24000, //549
+24100, //550
+27000, //551
 29000, //552
 600000, //553
-41999, //554 tran 13 slot
+78000, //554
 300000, //555
 500000, //556
 500000, //557
@@ -1957,11 +1880,11 @@ new cenyPojazdow[212] = {
 18000, //576
 0, //577
 160000, //578
-71999, //579
+89000, //579
 20000, //580
-25000, //581 BF-400
+70000, //581
 90000, //582
-5000, //583
+14000, //583
 150000, //584
 22000, //585
 45000, //586
@@ -1974,22 +1897,237 @@ new cenyPojazdow[212] = {
 890000, //593
 0, //594
 590000, //595
-90000, //596
-90000, //597
-90000, //598
-85000, //599
-16000, //600
+100000, //596
+100000, //597
+100000, //598
+150000, //599
+30000, //600
 500000, //601
 690000, //602
 710000, //603
-1000, //604
-1000, //605
+8000, //604
+8000, //605
 0, //606
 0, //607
 0, //608
-55555, //609 tran 13 slot
+66000, //609
 0, //610
 0 //611
+};
+
+new nazwypojazdow[212][32] = { 
+"Landstalker", 
+"Bravura", 
+"Buffalo", 
+"Linerunner", 
+"Pereniel", 
+"Sentinel", 
+"Dumper", 
+"Firetruck", 
+"Trashmaster", 
+"Stretch", 
+"Manana", 
+"Infernus", 
+"Voodoo", 
+"Pony", 
+"Mule", 
+"Cheetah", 
+"Ambulance", 
+"Leviathan", 
+"Moonbeam", 
+"Esperanto", 
+"Taxi", 
+"Washington", 
+"Bobcat", 
+"Mr Whoopee", 
+"BF Injection", 
+"Hunter", 
+"Premier", 
+"Enforcer", 
+"Securicar", 
+"Banshee", 
+"Predator", 
+"Bus", 
+"Rhino", 
+"Barracks", 
+"Hotknife", 
+"Trailer", 
+"Previon", 
+"Coach", 
+"Cabbie", 
+"Stallion", 
+"Rumpo", 
+"RC Bandit", 
+"Romero", 
+"Packer", 
+"Monster", 
+"Admiral", 
+"Squalo", 
+"Seasparrow", 
+"Pizzaboy", 
+"Tram", 
+"Trailer", 
+"Turismo", 
+"Speeder", 
+"Reefer", 
+"Tropic", 
+"Flatbed", 
+"Yankee", 
+"Caddy", 
+"Solair", 
+"Berkley's RC Van", 
+"Skimmer", 
+"PCJ-600", 
+"Faggio", 
+"Freeway", 
+"RC Baron", 
+"RC Raider", 
+"Glendale", 
+"Oceanic", 
+"Sanchez", 
+"Sparrow", 
+"Patriot", 
+"Quad", 
+"Coastguard", 
+"Dinghy", 
+"Hermes", 
+"Sabre", 
+"Rustler", 
+"ZR3 50", 
+"Walton", 
+"Regina", 
+"Comet", 
+"BMX", 
+"Burrito", 
+"Camper", 
+"Marquis", 
+"Baggage", 
+"Dozer", 
+"Maverick", 
+"News Chopper", 
+"Rancher", 
+"FBI Rancher", 
+"Virgo", 
+"Greenwood", 
+"Jetmax", 
+"Hotring", 
+"Sandking", 
+"Blista Compact", 
+"Policyjny Maverick", 
+"Boxville", 
+"Benson", 
+"Mesa", 
+"RC Goblin", 
+"Hotring Racer", 
+"Hotring Racer", 
+"Bloodring Banger", 
+"Rancher", 
+"Super GT", 
+"Elegant", 
+"Journey", 
+"Bike", 
+"Mountain Bike", 
+"Beagle", 
+"Cropdust", 
+"Stunt", 
+"Tanker", 
+"RoadTrain", 
+"Nebula", 
+"Majestic", 
+"Buccaneer", 
+"Shamal", 
+"Hydra", 
+"FCR-900", 
+"NRG-500", 
+"HPV1000", 
+"Cement Truck", 
+"Tow Truck", 
+"Fortune", 
+"Cadrona", 
+"Woz FBI", 
+"Willard", 
+"Forklift", 
+"Tractor", 
+"Combine", 
+"Feltzer", 
+"Remington", 
+"Slamvan", 
+"Blade", 
+"Freight", 
+"Streak", 
+"Vortex", 
+"Vincent", 
+"Bullet", 
+"Clover", 
+"Sadler", 
+"Firetruck", 
+"Hustler", 
+"Intruder", 
+"Primo", 
+"Cargobob", 
+"Tampa", 
+"Sunrise", 
+"Merit", 
+"Utility", 
+"Nevada", 
+"Yosemite", 
+"Windsor", 
+"Monster", 
+"Monster", 
+"Uranus", 
+"Jester", 
+"Sultan", 
+"Stratum", 
+"Elegy", 
+"Raindance", 
+"RC Tiger", 
+"Flash", 
+"Tahoma", 
+"Savanna", 
+"Bandito", 
+"Freight", 
+"Trailer", 
+"Kart", 
+"Mower", 
+"Duneride", 
+"Sweeper", 
+"Broadway", 
+"Tornado", 
+"AT-400", 
+"DFT-30", 
+"Huntley", 
+"Stafford", 
+"BF-400", 
+"Newsvan", 
+"Tug", 
+"Trailer", 
+"Emperor", 
+"Wayfarer", 
+"Euros", 
+"Hotdog", 
+"Club", 
+"Trailer", 
+"Trailer", 
+"Andromeda", 
+"Dodo", 
+"RC Cam", 
+"Launch", 
+"Radiowoz", 
+"Radiowoz", 
+"Radiowoz", 
+"Policyjny Ranger", 
+"Picador", 
+"S.W.A.T. Van", 
+"Alpha", 
+"Phoenix", 
+"Glendale", 
+"Sadler", 
+"Luggage Trailer", 
+"Luggage Trailer", 
+"Stair Trailer", 
+"Boxville", 
+"Farm Plow", 
+"Utility Trailer" 
 };
 
 enum pInfo
@@ -2023,6 +2161,7 @@ enum pInfo
 	pDrugsEffect,
 	pDrugsTaken,
 	pDrugsAddicted,
+	pMaterials,
 	pJob,
 	pJobTimeChange,
 	pSeatBelt,
@@ -2049,8 +2188,8 @@ enum pInfo
 	pSkillPointsM4,
 	pSkillPointsSni,
 	pPozwolenie,
-	pTech,
-	pLaw,
+	pAng,
+	pWf,
 	pMat,
 	pPol,
 	pHis,
@@ -2060,8 +2199,8 @@ enum pInfo
 	pMagister,
 	pInz,
 	pDowod,
-	pPktTech,
-	pPktLaw,
+	pPktAng,
+	pPktWf,
 	pPktMat,
 	pPktPol,
 	pPktHis,
@@ -2383,18 +2522,6 @@ enum pInfo
 	pWSlot5Ammo,
 	pWSlot6,
 	pWSlot6Ammo,
-	pWSlot7,
-	pWSlot7Ammo,
-	pWSlot8,
-	pWSlot8Ammo,
-	pWSlot9,
-	pWSlot9Ammo,
-	pWSlot10,
-	pWSlot10Ammo,
-	pWSlot11,
-	pWSlot11Ammo,
-	pWSlot12,
-	pWSlot12Ammo,
 	pJoinedFaction,
 	pHoursOnDutyHelper,
 	pHoursOnDuty,
@@ -2466,7 +2593,7 @@ enum pInfo
 	Text3D:pCharDescriptionID, // 3D Text label of player character description
 	Text3D:pCharNameID, // 3D Text label of player character name
 	pCharDescription[64], // character description displaying above character
-	pCharDescriptionColor[32],  // color of text
+	pCharDescriptionColor,  // color of text
 	pSubMealEaten, // how many snacks, candys, etc. player eated betweene main meal
 	pIsDeptor, // is player in debt ?
 	pLastLogged, // is player logged after last payday ?
@@ -2481,123 +2608,9 @@ enum pInfo
 	mPickupEventRewardReceived,
 	mCreditRepayment,
 	mCreditValue,
-	mCreditPayed,
-	robbingHouseStage,
-	pHighSchool,
-	pSchoolCooldown,
-	mBroadCastMessages,
-	pIsLogged
+	mCreditPayed
 };
 new gPlayerData[CUSTOM_MAX_PLAYERS+1][pInfo];
-
-enum playerVars
-{
-	lPoliceComputerPID,
-	lPoliceComputerPCat,
-	lPoliceComputerPName[MAX_PLAYER_NAME],
-	mHealID,
-	mExamineID,
-	mAntiCheatTimer,
-	mPlayerControllable,
-	mAtHouseID,
-	mAtBuildingId,
-	mAtBizID,
-	mAtCamperId,
-	mPhoneSimID,																// sim ID
-	mPhoneDataReceived, 												// czy uzyskano dane z bazy - ma zapobiec desynchronizacji
-	mPhoneDataTimeout, 													// czy uzyskano dane z bazy - ma zapobiec desynchronizacji
-	mPhoneType, 																	// sim type - prepaid or fee
-	mPhoneFaction,
-	mPhoneCash,																	// prepaid cash left
-	mPhoneRenewalTime,													// prepaid time left
-	mPhoneNr,
-	mGlobalSms[256],															// used to contain sms for all players
-	mGlobalSmsSenderNumber,
-	mPickupEventPickups[sizeof(gPickupEventData)],					// id of event pickups
-	mQuizQuestionNo,
-	mQuizQuestionSet,
-	mQuizWrongAnsweres,
-	mFuelType,																		// used for ImportVeh function
-	Float:mVehMaxHealth,														// used for ImportVeh function
-	Text:mVehicleStatus, 														// dolny pasek statusu pojazdu
-	mVehicleStatusShow,															// status dolnego pasku statusu pojazdu
-	mVehicleStatusShowChanged,
-	PlayerText:mSanNewsTextDrawId,														// dolny pasek informacyjny san news
-	mSanNewsTextDrawCreated,														// dolny pasek informacyjny san news
-	mSanNewsStatus,														// status dolneg pasku informacyjnego san news
-	mJumped,																			// how many times player jumped while walking
-	mSprinting,
-	mSelectedRace,																// race dialog id
-	mSelectedRaceList[MAX_RACES],								// id of avaiable races
-	Text:mRacePlace1Info,
-	Text:mRacePlace2Info,
-	Text:mRacePlace3Info,
-	Text:mRacePlace4Info,
-	Text:mRacePlace5Info,
-	Text:mRacePlace6Info,
-	Text:mRacePlace7Info,
-	Text:mRacePlace8Info,
-	Text:mRacePlace9Info,
-	Text:mRacePlace10Info,
-	mIsPlayerHouseJacking,
-	mIsPlayerBizJacking,
-	mPassTries,
-	mBulletProof,
-	mBugInfoCoolDown,
-	mNewbieCoolDown,
-	mRobbingHouseStage,
-	mRobbingBusinessStage,
-	mJustEnteredVehicle,
-	mBusTicketBuyTime,
-	mClotheShopSkinId,
-	mAtClotheStore,
-	mEditRank,							// which rank leader is edditing
-	mEditObj,
-	mMaterialId,
-	mObjText[128],
-	mRepairProgress,				// player vehicle repair progress
-	mRepairingItemId,				// default type always is one
-	mRepairingItemType,				// default type always is one
-	mBulbToChange,
-	mWheelToChange,
-	mBizIdIntEdit,
-	mBuildingBuyId,
-	mIsReanimate,
-	Float:measurePointX,
-	Float:measurePointY,
-	Float:measurePointZ,
-	Float:tempPosX,
-	Float:tempPosY,
-	Float:tempPosZ,
-	tempInterior,
-	tempWorld,
-	tempVehId,
-	tempVehSeat,
-	mIsInTaxiTeleportId,
-	PlayerText:mWardrobeExitText,
-	mTaxiTeleportTimeLeft,
-	Timer:mIdleAnimationTimer,
-	bool:mIsIdleAnimationTimerActive
-};
-new gPlayerVars[CUSTOM_MAX_PLAYERS+1][playerVars];
-
-timer ReturnPlayerFromTempPos[5000](playerid)
-{
-	gPlayerData[playerid][pCrashX] = gPlayerVars[playerid][tempPosX];
-	gPlayerData[playerid][pCrashY] = gPlayerVars[playerid][tempPosY];
-	gPlayerData[playerid][pCrashZ] = gPlayerVars[playerid][tempPosZ];
-	gPlayerData[playerid][pCrashInt] = gPlayerVars[playerid][tempInterior];
-	gPlayerData[playerid][pCrashW] = gPlayerVars[playerid][tempWorld];
-	
-	SetPlayerToPos(playerid, gPlayerData[playerid][pCrashX], gPlayerData[playerid][pCrashY], gPlayerData[playerid][pCrashZ]);
-	SetPlayerVirtualWorld(playerid, gPlayerData[playerid][pCrashW]);
-	SetPlayerInterior(playerid, gPlayerData[playerid][pCrashInt]);
-
-	if(gPlayerVars[playerid][tempVehId] != 0)
-	{
-		PutPlayerInVehicle(playerid, gPlayerVars[playerid][tempVehId], gPlayerVars[playerid][tempVehSeat]);
-	}
-}
 
 enum Cars
 {
@@ -2610,16 +2623,12 @@ enum Cars
 	mVehVW,
 	mVehColor1,
 	mVehColor2,
-	mVehPaintJob,
 	mVehFaction,
 	mVehVinNo,
 	mVehType,
 	mVehOwned,
 	Owner[128],
 	Price,
-	mRenter[MAX_PLAYER_NAME],
-	mRentPrice,
-	mRentPenalty,
 	Closed,
 	CarResetT,
 	CarDamaged,
@@ -2684,7 +2693,6 @@ enum Cars
 	Float:BatteryMaxCapacity,
 	BatteryID,									// Default 0, higher values means new mouted battery (replacement) and ItemName is used
 	Text3D:Veh3DSell,
-	Veh3DSellCreated,
 	Text3D:Veh3DSerial,
 	Text3D:Veh3DTaxiNfo,
 	Text3D:Veh3DTaxiNfo2,
@@ -2840,7 +2848,6 @@ enum Cars
 	mVehSetToTp
 };
 new gVehData[2000][Cars];
-new gVSelectedItemP5[sizeof(gVehData)];
 new Float:VehNewPos[sizeof(gVehData)][3];
 new VehJustRespawned[sizeof(gVehData)];
 new isPainting[sizeof(gVehData)];
@@ -2856,6 +2863,8 @@ enum Factions
 	Float:m_fX,
 	Float:m_fY,
 	Float:m_fZ,
+	fMaterials,
+	fDrugs,
 	fBank,
 	fRank1[35],
 	fRank2[35],
@@ -3003,7 +3012,6 @@ enum Factions
 	mBizJoinTime, // how long biz must represent company if it doesnt want to pay penalty
 	mBizPenaltyValue, // how much penalty cost
 	mPayOffGranted,
-	mMechanicJobsDone, // TODO: dodac obsluge
 	fNotification1,	
 	fNotification2,
 	fNotification3,
@@ -3081,7 +3089,6 @@ enum Factions
 	WFactoryBurning, // Is factory burning
 	WFactoryJustBought, // Factory has just been ordered by leader of faction
 	WFactoryCPPartTakeID,
-	WFactoryCPSafeID,
 	Float:WFactoryCentrePosX, // relative centre of building X
 	Float:WFactoryCentrePosY, // relative centre of building Y
 	Float:WFactoryCentrePosZ, // relative centre of building Z
@@ -3194,6 +3201,30 @@ enum CivilianSpawns
 };
 new CivilianSpawn[CivilianSpawns];
 
+enum FactionMaterials
+{
+	Float:X,
+	Float:Y,
+	Float:Z,
+	World,
+	Interior,
+	Float:Angle,
+	PickupID
+};
+new FactionMaterialsStorage[FactionMaterials];
+
+enum FactionDrugs
+{
+	Float:X,
+	Float:Y,
+	Float:Z,
+	World,
+	Interior,
+	Float:Angle,
+	PickupID
+};
+new FactionDrugsStorage[FactionDrugs];
+
 enum DrivingTestLocation
 {
 	Float:mPosXA,
@@ -3243,27 +3274,19 @@ enum BankLocation
 	World,
 	Interior,
 	Float:Angle,
-	mPickupId
+	PickupID
 };
-new BankPosition[14][BankLocation] = 
-{
-	{ 1322.546630, 120.573074, 1003.219360 },
-	{ -470.957550, -199.424087, 985.378356 },
-	{ 1442.93, -994.01, 26.82 },
-	{ 1444.84, -996.32, 26.82 },
-	{ 1448.49, -997.13, 26.82 },
-	{ 331.16, 129.57, 1007.96 },
-	{ 327.65, 130.92, 1007.96 },
-	{ 324.42, 132.02, 1007.96 },
-	{ 1318.51, 120.56, 1003.21 },
-	{ 1322.53, 120.56, 1003.21 },
-	{ 1327.04, 120.56, 1003.21 },
-	{ 304.85, 1854.31, 1613.36 },
-	{ 599.26, -1512.62, 15.42 },
-	{ 599.26, -1518.64, 15.42 }
-};
-
-
+new BankPosition[BankLocation];
+new BankPosition2[BankLocation];
+new BankPosition3[BankLocation];
+new BankPosition4[BankLocation];
+new BankPosition5[BankLocation];
+new BankPosition6[BankLocation];
+new BankPosition7[BankLocation];
+new BankPosition8[BankLocation];
+new BankPosition9[BankLocation];
+new BankPosition10[BankLocation];
+new BankPosition11[BankLocation];
 
 enum SkillPositionInfo
 {
@@ -3300,12 +3323,12 @@ enum SkillPositionInfo
 	Float:XSni,
 	Float:YSni, 
 	Float:ZSni,
-	Float:XTech,
-	Float:YTech, 
-	Float:ZTech,
-	Float:XLaw,
-	Float:YLaw, 
-	Float:ZLaw,
+	Float:XAng,
+	Float:YAng, 
+	Float:ZAng,
+	Float:XWf,
+	Float:YWf, 
+	Float:ZWf,
 	Float:XMat,
 	Float:YMat, 
 	Float:ZMat,
@@ -3321,9 +3344,6 @@ enum SkillPositionInfo
 	Float:XBio,
 	Float:YBio, 
 	Float:ZBio,
-	Float:XHighSchool,
-	Float:YHighSchool, 
-	Float:ZHighSchool,
 	PickupIDPis,
 	PickupIDSil,
 	PickupIDDes,
@@ -3335,14 +3355,13 @@ enum SkillPositionInfo
 	PickupIDAk,
 	PickupIDM4,
 	PickupIDSni,
-	PickupIDTech,
-	PickupIDLaw,
+	PickupIDAng,
+	PickupIDWf,
 	PickupIDMat,
 	PickupIDPol,
 	PickupIDHis,
 	PickupIDFiz,
-	PickupIDBio,
-	PickupIDHighSchool
+	PickupIDBio
 };
 new SkillPosition[SkillPositionInfo];
 
@@ -3373,11 +3392,6 @@ new WeaponLicensePosition[WeaponLicenseLocation];
 enum BuildingSystem
 {
 	BuildingName[128],
-	FactionOwnerId,
-	Cash,
-	Price,
-	StreetNo,
-	ForSale,
 	Float:EnterX,
 	Float:EnterY,
 	Float:EnterZ,
@@ -3391,20 +3405,15 @@ enum BuildingSystem
 	ExitInterior,
 	Float:ExitAngle,
 	Locked,
-	EnterPickupId,
-	ExitPickupId,
+	PickupID,
 	Opened,
 	Closed,
 	ObjectID,
 	BuildingType,
 	ShowIcon,
-	IconType,
-	mBuildingPlaced
+	IconType
 };
 new Building[MAX_BUILDINGS][BuildingSystem];
-new Text3D:Buildings3DTextLabelA[sizeof(Building)];
-new Text3D:Buildings3DTextLabelB[sizeof(Building)];
-new Text3D:Buildings3DTextLabelC[sizeof(Building)];
 
 enum BusinessSystem
 {
@@ -3413,7 +3422,6 @@ enum BusinessSystem
 	Owner[MAX_PLAYER_NAME],
 	mFaction,
 	mFactionTimeLeft, // how long to end of company contract
-	StreetNo,
 	Float:EnterX,
 	Float:EnterY,
 	Float:EnterZ,
@@ -3432,9 +3440,8 @@ enum BusinessSystem
 	Till,
 	Locked,
 	BizType,
-	PickupID,
-	ExitPickupId,
 	Products,
+	PickupID,
 	VehicleSpawned,
 	VehicleCount,
 	MaxVehicles,
@@ -3619,7 +3626,6 @@ enum HouseSystem
 	Description[128],
 	Owner[MAX_PLAYER_NAME],
 	HUID,
-	StreetNo,
 	HRenter[MAX_PLAYER_NAME],
 	Float:EnterX,
 	Float:EnterY,
@@ -3639,7 +3645,6 @@ enum HouseSystem
 	Money,
 	Locked,
 	PickupID,
-	ExitPickupId,
 	HItem1,
 	HItem2,
 	HItem3,
@@ -3698,13 +3703,12 @@ enum HouseSystem
 	HAlarm,
 	HRobbed
 };
-new Houses[MAX_HOUSES][HouseSystem];
-new Text3D:Houses3DTextLabelA[MAX_HOUSES];
-new Text3D:Houses3DTextLabelB[MAX_HOUSES];
-new Text3D:Houses3DTextLabelC[MAX_HOUSES];
-new gLastHVisit[CUSTOM_MAX_PLAYERS][MAX_HOUSES]; // cooldown dla pracy gazeciarza
+new Houses[500][HouseSystem];
+new Text3D:Houses3DTextLabelA[sizeof(Houses)];
+new Text3D:Houses3DTextLabelB[sizeof(Houses)];
+new Text3D:Houses3DTextLabelC[sizeof(Houses)];
+new gLastHVisit[CUSTOM_MAX_PLAYERS][sizeof(Houses)]; // cooldown dla pracy gazeciarza
 new gLastBVisit[CUSTOM_MAX_PLAYERS][sizeof(Businesses)]; // cooldown dla pracy gazeciarza
-new gHSelectedItemP5[MAX_HOUSES];
 
 enum HousesDataInfo
 {
@@ -3716,7 +3720,7 @@ enum HousesDataInfo
 	Float:mExitA,
 	mExitInt
 };
-new HousesData[105][HousesDataInfo];
+new HousesData[71][HousesDataInfo];
 
 enum Taxes
 {
@@ -3816,6 +3820,7 @@ enum CarsDataInfo {
 	MaxHealth
 };
 new CarsData[400][CarsDataInfo];
+new fieldCount[128];
 
 enum DBVariablesInfo {
 	varName[128],
@@ -3931,11 +3936,9 @@ enum RafineryNfo
 	RafResourcePetrol, // Actual resource value of PETROL
 	RafResourceOil, // Actual resource value of OIL
 	RafResourceGas, // Actual resource value of GAS
-	RafResourceFly, // Actual resource value of GAS
 	RafPetrolLtrCost, // How much costs 1 ltr of PETROL
 	RafOilLtrCost, // How much costs 1 ltr of OIL
 	RafGasLtrCost, // How much costs 1 ltr of GAS
-	RafFlyLtrCost, // How much costs 1 ltr of AVIATION FUEL
 	RafRefuelReward, // Employe reward for refuel station, TODO: need to mod to multiplier
 	RafMaxResources, // Max value of rafinery resources
 	RafResourceCP // Rafinery resource checkpoint
@@ -4231,6 +4234,43 @@ new gAreasWater[6][areasWaterInfo] =
 { 470.300, 417.18, 767.771, 595.28 },
 { -93.230, 239.70, 400.727, 540.62 }
 };
+
+enum wheelChangePosInfo
+{
+	Float:pos1X,
+	Float:pos1Y,
+	Float:pos1Z,
+	Float:pos2X,
+	Float:pos2Y,
+	Float:pos2Z,
+	Float:pos3X,
+	Float:pos3Y,
+	Float:pos3Z,
+	Float:pos4X,
+	Float:pos4Y,
+	Float:pos4Z,
+	Float:pos5X,
+	Float:pos5Y,
+	Float:pos5Z,
+	Float:pos6X,
+	Float:pos6Y,
+	Float:pos6Z,
+	Float:pos7X,
+	Float:pos7Y,
+	Float:pos7Z,
+	Float:pos8X,
+	Float:pos8Y,
+	Float:pos8Z,
+	pickup1,
+	pickup2,
+	pickup3,
+	pickup4,
+	pickup5,
+	pickup6,
+	pickup7,
+	pickup8,
+};
+new gWheelChangePos[wheelChangePosInfo];
 
 enum itemFactoryInfo
 {
@@ -4830,171 +4870,171 @@ new gTestQuestions[9][testQuestionsInfo] =
 {
 	// zestaw nr 1
 	{
-		"Za nieprzepisowe parkowanie nie mo¿na zostaæ ukaranym:", // pytanie
-        "Mandatem", // odp 1
-        "Pouczeniem", // odp 2
-        "Wiêzieniem", // odp 3
-        3, // nr prawidlowej odp od 1 do 3
-        "Pieszy wszed³ na przejœcie dla pieszych. W tej sytuacji kieruj¹cy pojazdem:", // kolejne pytanie....
-        "Mo¿e wjechaæ na przejœcie",
-        "Mo¿e siê nie zatrzymaæ",
-        "Powinien zatrzymaæ siê oraz zachowaæ czujnoœæ",
-        3,
-        "Znak poziomy: linia ci¹g³a pojedyñcza",
-        "Zezwala na wyprzedzanie pojazdu",
-        "Rozdziela pasy o tym samym kierunku",
-        "Rozdziela pasy o przeciwnym kierunku",
-        2,
-        "Sygnalizator œwietlny. Zapalone œwiat³a czerwone i ¿ó³te. Jakie nastêpne œwiat³o siê zapali ?",
-        "Czerwone",
-        "¯ó³te i zielone",
-        "Zielone",
-        3,
-        "Maksymalna prêdkoœæ pojazdu do 3.5 ton w terenie zabudowanym to:",
-        "60 km/h miêdzy 23:00-05:00",
-        "50 km/h miêdzy 23:00-05:00",
-        "Brak ograniczenia",
-        1
+		"Widz¹c znak A3 kieruj¹cy pojazdem jest ostrzegany o:", // pytanie
+		"Dwóch niebezpiecznych zakrêtach, z których pierwszy jest w prawo", // odp 1
+		"Dwóch niebezpiecznych zakrêtach, z których pierwszy jest w prawo a drugi w lewo", // odp 2
+		"Nieokreœlonej liczbie niebezpiecznych zakrêtów", // odp 3
+		1, // nr prawidlowej odp od 1 do 3
+		"Pieszy wszed³ na przejœcie dla pieszych. W tej sytuacji kieruj¹cy pojazdem:", // kolejne pytanie....
+		"Mo¿e wjechaæ na przejœcie",
+		"Mo¿e siê nie zatrzymaæ",
+		"Powinien zatrzymaæ siê oraz zachowaæ czujnoœæ",
+		3,
+		"Znak poziomy: linia ci¹g³a pojedyñcza",
+		"Zezwala na wyprzedzanie pojazdu",
+		"Rozdziela pasy o tym samym kierunku",
+		"Rozdziela pasy o przeciwnym kierunku",
+		2,
+		"Sygnalizator œwietlny. Zapalone œwiat³a czerwone i ¿ó³te. Jakie nastêpne œwiat³o siê zapali ?",
+		"Czerwone",
+		"¯ó³te i zielone",
+		"Zielone",
+		3,
+		"Maksymalna prêdkoœæ pojazdu do 3.5 ton w terenie zabudowanym to:",
+		"60 km/h miêdzy 23:00-05:00",
+		"50 km/h miêdzy 23:00-05:00",
+		"Brak ograniczenia",
+		1
 	},	
 	// zestaw nr 2
 	{
 		"Motocyklista powinien :", // pytanie
-        "Zak³adaæ kask podczas jazdy", // odp 1
-        "Zak³adaæ odpowiednie obuwie oraz odzie¿ ochronna", // odp 2
-        "Wszystkie powy¿ej ", // odp 3
-        3, // nr prawid³owej odp od 1 do 3
-        "Badania techniczne przeprowadza siê :", // kolejne pytanie....
-        "Raz do roku",
-        "Przed up³ywem terminu okreœlonego w dowodzie rejestracyjnym ",
-        "W ogóle siê nie przeprowadza",
-        2,
-        "Widzisz pojazd jad¹cy na sygnale, co robisz: ",
-        "Zatrzymujê siê na œrodku ulicy i czekam, a¿ mnie ominie",
-        "Zje¿d¿am na poboczê i czekam, a¿ przejedzie",
-        "Jadê szybciej, aby pojazd mnie nie dogoni³",
-        2,
-        "Do silnika Diesla wlejesz :",
-        "Ropê",
-        "Gaz",
-        "Olej napêdowy",
-        1,
-        "Kiedy u¿ywamy œwiate³ mijania: ",
-        "Wieczorami",
-        "Wrzez ca³y rok ",
-        "W czasie mg³y",
+		"Zak³adaæ kask podczas jazdy", // odp 1
+		"Zak³adaæ odpowiednie obuwie oraz odzie¿ ochronna", // odp 2
+		"Wszystkie powy¿ej ", // odp 3
+		3, // nr prawid³owej odp od 1 do 3
+		"Badania techniczne przeprowadza siê :", // kolejne pytanie....
+		"Raz do roku",
+		"Przed up³ywem terminu okreœlonego w dowodzie rejestracyjnym ",
+		"W ogóle siê nie przeprowadza",
+		2,
+		"Znak zakazu B20 oznacza : ",
+		"Nakaz zatrzymania siê przed skrzy¿owaniem i ust¹pienie pierwszeñstwa pieszym",
+		"Nakaz zatrzymania siê przed skrzy¿owaniem i ust¹pienie pierwszeñstwa kierunku",
+		"Pojazd mo¿e wjechaæ na skrzy¿owanie",
+		2,
+		"Do silnika Diesla wlejesz :",
+		"Ropê",
+		"Gaz",
+		"Olej napêdowy",
+		1,
+		"Znak ostrzegawczy A11 : ",
+		"Zbli¿aniu siê do kilku wzniesieñ",
+		"Poprzecznej nierównoœci jezdni ",
+		"Mo¿liwoœci wyskoczenia s³onia",
         2
 	},
 	// zestaw nr 3
 	{
-		 "Umieszczone na jezdni punktowe elementy odblaskowe barwy czerwonej wyznaczaj¹:",
-        "Praw¹ krawêdŸ jezdni",
-        "Lew¹ krawêdŸ jezdni",
-        "Pasy ruchu",
-        1, // nr prawid³owej odp od 1 do 3
-        "Dokonywanie regularnych przegl¹dów technicznych motocykla : ", // kolejne pytanie....
-        "Pozwala utrzymaæ motocykl we w³aœciwej sprawnoœci ",
-        "Nie jest koniecznie",
-        "Jest nie op³acalne ze wzglêdów pienieznych",
-        1,
-        "Stosunek uciœniêæ mostka do iloœci sztucznych oddechów u poszkodowanych wynosi:",
-        "30:2 ",
-        "2:30",
-        "1:5",
-        1,
-        "W jaki sposób zabezpieczysz miejsce wypadku samochodowego?:",
-        "wy³¹czê stacyjkê samochodu, który mia³ wypadek.",
-        "zostawiæ samochód na ceg³ach",
-        "podleje benzyn¹, po¿ar bêdzie widoczny z wiêkszej odleg³oœci",
-        1,
-        "W WParty jeŸdzi siê … ulicy :",
-        "œrodkiem",
-        "po lewej stronie",
-        "po prawej stronie ",
-        3
+		"Znak zakazu B1 : ", // pytanie
+		"Oznacza zakaz wjazdu", // odp 1
+		"Pozwala na wjazd, ale w jednym kierunku", // odp 2
+		"Wjazd tylko dla ciê¿arówek", // odp 3
+		1, // nr prawid³owej odp od 1 do 3
+		"Dokonywanie regularnych przegl¹dów technicznych motocykla : ", // kolejne pytanie....
+		"Pozwala utrzymaæ motocykl we w³aœciwej sprawnoœci ",
+		"Nie jest koniecznie",
+		"Jest nie op³acalne ze wzglêdów pienieznych",
+		1,
+		"Stosunek uciœniêæ mostka do iloœci sztucznych oddechów u poszkodowanych wynosi:",
+		"30:2 ",
+		"2:30",
+		"1:5",
+		1,
+		"Znak B 22 zabrania : ",
+		"jazdy na wprost",
+		"skrêcenia w prawo",
+		"skrêcenia w lewo",
+		2,
+		"W WParty jeŸdzi siê  … ulicy :",
+		"œrodkiem",
+		"po lewej stronie",
+		"po prawej stronie ",
+		3
 	},	
 	// zestaw nr 4
 	{
-		 "W sytuacji kieruj¹cy pojazdem widz¹c pijanego na drodze pieszego powinien:",
-        "byæ przygotowany do zatrzymania pojazdu,",
-        "przyspieszyæ pojazdem",
-        "podaæ pieszemu kolejna butelkê piwa",
-        1,
-        "Podwójna linia ci¹g³a oznacza :", // kolejne pytanie....
-        "Mo¿na wyprzedzaæ",
-        "Mo¿na zawracaæ",
-        "Zakaz przeje¿d¿ania przez ta linie",
-        3,
-        "Predkosc max po za terenem zabudowanym wynosi :",
-        "90 km/h",
-        "120 km/h",
-        "50 km/h",
-        1,
-        "W jaki sposób sprawdzisz przytomnoœæ u poszkodowanego (doros³ego)?:",
-        "Chwycê poszkodowanego za barki i lekko potrz¹saj¹c zapytam np. Co siê sta³o?",
-        "Poklepiê go po twarzy",
-        "Polejê kwasem",
-        1,
-        "Na zakrêcie pozwala siê na : ",
-        "wyprzedzanie",
-        "zatrzymanie pojazdu",
-        "¯adna odpowiedz",
-        3
+		"Znak nakazu C2 :", // pytanie
+		"Nakazuje jazdê na wprost", // odp 1
+		"Zakazuje skrêcenie w prawo", // odp 2
+		"Nakazuje skrêcenie w prawo", // odp 3
+		3, // nr prawid³owej odp od 1 do 3
+		"Podwójna linia ci¹g³a oznacza :", // kolejne pytanie....
+		"Mo¿na wyprzedzaæ",
+		"Mo¿na zawracaæ",
+		"Zakaz przeje¿d¿ania przez ta linie",
+		3,
+		"Predkosc max po za terenem zabudowanym wynosi :",
+		"90 km/h",
+		"120 km/h",
+		"50 km/h",
+		1,
+		"W jaki sposób sprawdzisz przytomnoœæ u poszkodowanego (doros³ego)?:",
+		"Chwycê poszkodowanego za barki i lekko potrz¹saj¹c zapytam np. Co siê sta³o?",
+		"Poklepiê go po twarzy",
+		"Polejê kwasem",
+		1,
+		"Na zakrêcie pozwala siê na : ",
+		"wyprzedzanie",
+		"zatrzymanie pojazdu",
+		"¯adna odpowiedz",
+		3
 	},	
 	// zestaw nr 5
 	{
-		 "Przed rozpoczêciem jazdy kieruj¹cy samochodem osobowym powinien sprawdziæ:",
-        "czy okno jest zamkniête w samochodzie",
-        "zabranie pieniêdzy na ³apówki",
-        "ustawienie fotela, lusterek, zapiêcia pasów przez pasa¿erów",
-        3,
-        "Obowi¹zek udzielania pierwszej pomocy ofiarom wypadku ma:", // kolejne pytanie....
-        "Wszyscy wokó³ mnie tylko nie ja",
-        "Wy³¹cznie lekarze",
-        "Wszyscy w³¹cznie z mn¹",
-        3,
-        "Ekonomiczna jazda samochodem osobowym to:",
-        "Jazda na mo¿liwie najwy¿szym biegu bez przeci¹¿ania silnika",
-        "Gwa³townie hamowaæ oraz przyspieszaæ",
-        "Utrzymywanie za wszelk¹ cenê sta³ej prêdkoœci przy jeŸdzie pod górê,",
-        1,
-        "Prawid³owe trzymanie kierownicy podczas jazdy na wprost : ",
-        "jedna rêka na kierownicy na godzenie 12 a druga na skrzyni biegów",
-        "jedna rêka na godzinie 10 druga na 2 h ",
-        "jedna rêka zimny ³okieæ druga trzyma kierownice na godzinie 6 przy kolanach",
-        2,
-        "Umieszczone na jezdni punktowe elementy odblaskowe barwy czerwonej wyznaczaj¹:",
-        "Praw¹ krawêdŸ jezdni",
-        "Lew¹ krawêdŸ jezdni",
-        "Pasy ruchu",
-        1
+		"Znak B 25 :", // pytanie
+		"Nakazuje wyprzedzaæ", // odp 1
+		"Zabrania wyprzedzania", // odp 2
+		"Mo¿na bezpiecznie wyprzedzaæ ", // odp 3
+		2, // nr prawid³owej odp od 1 do 3
+		"Obowi¹zek udzielania pierwszej pomocy ofiarom wypadku ma:", // kolejne pytanie....
+		"Wszyscy wokó³ mnie tylko nie ja",
+		"Wy³¹cznie lekarze",
+		"Wszyscy w³¹cznie z mn¹",
+		3,
+		"Ekonomiczna jazda samochodem osobowym to:",
+		"Jazda na mo¿liwie najwy¿szym biegu bez przeci¹¿ania silnika",
+		"Gwa³townie hamowaæ oraz przyspieszaæ",
+		"Utrzymywanie za wszelk¹ cenê sta³ej prêdkoœci przy jeŸdzie pod górê,",
+		1,
+		"Prawid³owe trzymanie kierownicy podczas jazdy na wprost : ",
+		"jedna rêka na kierownicy na godzenie 12 a druga na skrzyni biegów",
+		"jedna rêka na godzinie 10 druga na 2 h ",
+		"jedna rêka zimny ³okieæ druga trzyma kierownice na godzinie 6  przy kolanach",
+		2,
+		"Umieszczone na jezdni punktowe elementy odblaskowe barwy czerwonej wyznaczaj¹:",
+		"Praw¹ krawêdŸ jezdni",
+		"Lew¹ krawêdŸ jezdni",
+		"Pasy ruchu",
+		1
 	},
 	// zestaw nr 6
 	{
 		"W razie uczestniczenia w wypadku drogowym, kieruj¹cy pojazdem powinien podaæ na ¿¹danie osób w nim uczestnicz¹cych:", // pytanie
-        "Dane techniczne swojego samochodu", // odp 1
-        "Dane swoich rodziców i OC", // odp 2
-        "Dane osobiste, samochodu i OC", // odp 3
-        3, // nr prawid³owej odp od 1 do 3
-        "W razie uczestniczenia w wypadku drogowym, w którym nie ma ofiar, kieruj¹cy pojazdem powinien:", // kolejne pytanie....
-        "Zatrzymaæ pojazd, nie powoduj¹c przy tym zagro¿enia bezpieczeñstwa ruchu.",
-        "Przejechaæ obok",
-        "Dobiæ ofiary wypadku, aby nie cierpia³y wiêcej",
-        1,
-        "W razie uczestniczenia w wypadku drogowym, w którym s¹ ofiary, kieruj¹cy pojazdem powinien:",
-        "Modliæ siê",
-        "Wezwaæ zespó³ ratownictwa medycznego i policje",
-        "Wezwaæ prezydenta",
-        2,
-        "W sytuacji kieruj¹cy pojazdem widz¹c pijanego na drodze pieszego powinien:",
-        "byæ przygotowany do zatrzymania pojazdu,",
-        "przyspieszyæ pojazdem",
-        "podaæ pieszemu kolejna butelkê piwa",
-        1,
-        "Jad¹c za pojazdem uprzywilejowanym, kierowca :",
-        "tr¹bimy aby szybciej jechali",
-        "Gaz do dechy - wyprzedzamy nie patrzymy siê",
-        "nie mo¿e wyprzedziæ pojazdu uprzywilejowanego - na obszarze zabudowanym,",
-        3
+		"Dane techniczne swojego samochodu", // odp 1
+		"Dane swoich rodziców i OC", // odp 2
+		"Dane osobiste, samochodu i OC", // odp 3
+		3, // nr prawid³owej odp od 1 do 3
+		"W razie uczestniczenia w wypadku drogowym, w którym nie ma ofiar, kieruj¹cy pojazdem powinien:", // kolejne pytanie....
+		"Zatrzymaæ pojazd, nie powoduj¹c przy tym zagro¿enia bezpieczeñstwa ruchu.",
+		"Przejechaæ obok",
+		"Dobiæ ofiary wypadku, aby nie cierpia³y wiêcej",
+		1,
+		"W razie uczestniczenia w wypadku drogowym, w którym s¹ ofiary, kieruj¹cy pojazdem powinien:",
+		"Modliæ siê",
+		"Wezwaæ zespó³ ratownictwa medycznego i policje",
+		"Wezwaæ prezydenta",
+		2,
+		"W sytuacji kieruj¹cy pojazdem widz¹c pijanego na drodze pieszego powinien:",
+		"byæ przygotowany do zatrzymania pojazdu,",
+		"przyspieszyæ pojazdem",
+		"podaæ pieszemu kolejna butelkê piwa",
+		1,
+		"Jad¹c za pojazdem uprzywilejowanym, kierowca :",
+		"tr¹bimy aby szybciej jechali",
+		"Gaz do dechy - wyprzedzamy nie patrzymy siê",
+		"nie mo¿e wyprzedziæ pojazdu uprzywilejowanego - na obszarze zabudowanym,",
+		3
 	},
 	// zestaw nr 7
 	{
@@ -5014,8 +5054,8 @@ new gTestQuestions[9][testQuestionsInfo] =
 		"podleje benzyn¹, po¿ar bêdzie widoczny z wiêkszej odleg³oœci",
 		1,
 		"W okresie docierania samochodu osobowego nie nale¿y:",
-		"korzystaæ z samochodu",
-		"wrzucaæ 4tego biegu",
+		"",
+		"",
 		"jeŸdziæ z prêdkoœci¹ zbli¿on¹ do maksymalnej,",
 		3,
 		"Dokonywanie regularnych przegl¹dów technicznych pojazdu:",
@@ -5027,58 +5067,58 @@ new gTestQuestions[9][testQuestionsInfo] =
 	// zestaw nr 8
 	{
 		"Przed rozpoczêciem d³u¿szej jazdy nale¿y sprawdziæ:", // pytanie
-        "stan lakieru", // odp 1
-        "stan zderzaka", // odp 2
-        "dzia³anie uk³adu hamulcowego i kierowniczego,", // odp 3
-        3, // nr prawid³owej odp od 1 do 3
-        "Lampki kontrolne informuj¹ce w czasie jazdy kierowcê o wa¿nym problemie technicznym s¹ barwy:", // kolejne pytanie....
-        "czerwonej.",
-        "zielonej",
-        "¿ó³tej",
-        1,
-        "Kontrola hydraulicznego hamulca roboczego polega na:",
-        "oddanie samochodu do mechanika",
-        "sprawdzeniu poziomu p³ynu do spryskiwaczy",
-        "sprawdzeniu poziomu p³ynu hamulcowego w zbiorniku.",
-        3,
-        "Ubytek oleju w silniku uzupe³nia siê:",
-        "rop¹",
-        "olejem polecanym przez producenta",
-        "benzyn¹",
-        2,
-        "Przed rozpoczêciem jazdy kieruj¹cy samochodem osobowym powinien sprawdziæ:",
-        "czy okno jest zamkniête w samochodzie",
-        "zabranie pieniêdzy na ³apówki",
-        "ustawienie fotela, lusterek, zapiêcia pasów przez pasa¿erów",
-        3
+		"stan lakieru", // odp 1
+		"stan zderzaka", // odp 2
+		"dzia³anie uk³adu hamulcowego i kierowniczego,", // odp 3
+		3, // nr prawid³owej odp od 1 do 3
+		"Lampki kontrolne informuj¹ce w czasie jazdy kierowcê o wa¿nym problemie technicznym s¹ barwy:", // kolejne pytanie....
+		"czerwonej.",
+		"zielonej",
+		"¿ó³tej",
+		1,
+		"Kontrola hydraulicznego hamulca roboczego polega na:",
+		"oddanie samochodu do mechanika",
+		"sprawdzeniu poziomu p³ynu do spryskiwaczy",
+		"sprawdzeniu poziomu p³ynu hamulcowego w zbiorniku.",
+		3,
+		"Ubytek oleju w silniku uzupe³nia siê:",
+		"rop¹",
+		"olejem polecanym przez producenta",
+		"benzyn¹",
+		2,
+		"Przed rozpoczêciem jazdy kieruj¹cy samochodem osobowym powinien sprawdziæ:",
+		"czy okno jest zamkniête w samochodzie",
+		"zabranie pieniêdzy na ³apówki",
+		"ustawienie fotela, lusterek, zapiêcia pasów przez pasa¿erów",
+		3
 	},
 	// zestaw nr 9
 	{
 		"Na prostym odcinku drogi wielopasowej zaleca siê jechaæ", // pytanie
-        "Jak najd³u¿ej jednym i tym samym pasem ruchu i prawym pasem", // odp 1
-        "Lewym pasem ruchu", // odp 2
-        "Slalom miêdzy pasami", // odp 3
-        1, // nr prawid³owej odp od 1 do 3
-        "Ekonomiczna jazda samochodem osobowym to:", // kolejne pytanie....
-        "Gaz do dechy",
-        "Unikanie gwa³townych przyspieszeñ i hamowañ,",
-        "Zmieniamy biegi/hamujemy jak w F1",
-        2,
-        "Droga hamowania samochodu osobowego na mokrej jezdni, jest:",
-        "D³u¿sza od drogi hamowania na jezdni suchej i krótsza na jezdni oblodzonej",
-        "Bardzo i to bardzo krótka",
-        "W ogóle nie nale¿y na takiej powierzchni hamowaæ",
-        1,
-        "Kieruj¹cy samochodem osobowym powinien mieæ przy sobie:",
-        "Dowód osobisty, prawo jazdy, OC",
-        "Zdjêcie ¿ony i dziecka",
-        "Pieni¹dze na ³apówkê",
-        1,
-        "Opuszczaj¹c pojazd, kieruj¹cy:",
-        "w ka¿dym przypadku, mo¿e pozostawiæ drzwi otwarte",
-        "mo¿e zaleciæ pasa¿erom wyjœcie tylko od strony ulicy",
-        "powinien upewniæ siê, czy nie utrudni ruchu innym pojazdom,",
-        3
+		"jak najd³u¿ej jednym i tym samym pasem ruchu i prawym pasem", // odp 1
+		"lewym pasem ruchu", // odp 2
+		"slalom miêdzy pasami", // odp 3
+		1, // nr prawid³owej odp od 1 do 3
+		"Ekonomiczna jazda samochodem osobowym to:", // kolejne pytanie....
+		"Gaz do dechy",
+		"unikanie gwa³townych przyspieszeñ i hamowañ,",
+		"zmieniamy biegi/hamujemy jak w F1",
+		2,
+		"Droga hamowania samochodu osobowego na mokrej jezdni, jest:",
+		"d³u¿sza od drogi hamowania na jezdni suchej i krótsza na jezdni oblodzonej",
+		"bardzo i to bardzo krótka",
+		"w ogóle nie nale¿y na takiej powierzchni hamowaæ",
+		1,
+		"Kieruj¹cy samochodem osobowym powinien mieæ przy sobie:",
+		"dowód osobisty, prawo jazdy, OC",
+		"zdjêcie ¿ony i dziecka",
+		"pieni¹dze na ³apówkê",
+		1,
+		"Opuszczaj¹c pojazd, kieruj¹cy:",
+		"praw¹ krawêdŸ jezdni",
+		"ot tak wyjœæ",
+		"powinien upewniæ siê, czy nie utrudni ruchu innym pojazdom,",
+		3
 	}
 };
 new gSelectedTest[CUSTOM_MAX_PLAYERS];
@@ -5121,13 +5161,12 @@ new Float:WFObj[31][6] = {
 /*18693*/{ 4.0167889595032, 8.4001379013062, -0.24687500298023, 0.0, 0.0, 0.0 }
 };
 
-new Float:WFCP[6][3] = {
+new Float:WFCP[5][3] = {
 /*Make weapon parts*/ { 3.4828429222107, -2.5014038085938, 1.078125 },
 /*Make weapon parts*/ { 2.8650646209717, -4.8278775215149, 1.078125 },
 /*Make weapon subparts*/ { -2.0474841594696,  -4.7468156814575, 1.078125 },
 /*Take/buy ammo/weapon (sub) parts*/ { -1.471581697464, -0.76670616865158, 1.078125 },
-/*Make weapon subparts*/ { -1.8708779811859, 6.9664425849915, 1.078125 },
-/*Safe*/ { -3.54, 3.22, 1.07 }
+/*Make weapon subparts*/ { -1.8708779811859, 6.9664425849915, 1.078125 }
 };
 
 enum vehTransportInfo
@@ -5233,21 +5272,14 @@ new gVehExport[vehExportInfo] =
 	24
 };
 
-new gAtmCp[12];
-new Float:gATM[12][3] = 
+new Float:gATM[6][3] = 
 {
 	{ 1238.11 , 328.388 , 19.4655 },
 	{ 200.729 , -62.2478 , 1.47812 },
 	{ 1367.99 , 393.505 , 19.43 },
 	{ 661.348 , -555.223 , 15.9359 },
 	{ -95.52 , 1083.22, 19.38 },
-	{ -310.63 , 1052.44, 19.99 },
-	{ 316.93, 1864.14, 1613.36 },
-	{ 319.66, 1864.36, 1613.36 },
-	{ 1103.09, -1428.22, 15.79 },
-	{ 1123.76, -1528.68, 15.60 },
-	{ 2209.87, -1149.79, 13.52 },
-	{ 1147.44, -1771.95, 16.59 }
+	{ -310.63 , 1052.44, 19.99 }
 };
 
 #define HorseTimerTextDrawLocX 547
@@ -5256,200 +5288,6 @@ new Float:gATM[12][3] =
 #define TimeOfHorseRaceMinutes 20
 #define HorseCashLowerBounds 100
 #define HorseCashHigherBounds 50000
-
-enum mapIconInfo
-{
-	mIconId,
-	Float:mPosX,
-	Float:mPosY,
-	Float:mPosZ,
-	mType,
-	mColor,
-	mWorld,
-	mInterior,
-	mStreamDistance
-};
-
-new gMapIcon[MAX_MAP_ICONS][mapIconInfo];
-
-enum publicAdsInfo
-{
-	mObjId,
-	mOwner[MAX_PLAYER_NAME],
-	Float:mObjPosX,
-	Float:mObjPosY,
-	Float:mObjPosZ,
-	Float:mObjRotX,
-	Float:mObjRotY,
-	Float:mObjRotZ,
-	mObjWorld,
-	mCpId,
-	Float:mCpPosX,
-	Float:mCpPosY,
-	Float:mCpPosZ,
-	mCpWorld,
-	mAdLine1Content[65],
-	mAdLine1TimeLeft,
-	mAdLine1Owner[MAX_PLAYER_NAME],
-	mAdLine2Content[65],
-	mAdLine2TimeLeft,
-	mAdLine2Owner[MAX_PLAYER_NAME],
-	mAdLine3Content[65],
-	mAdLine3TimeLeft,
-	mAdLine3Owner[MAX_PLAYER_NAME],
-	mAdLine4Content[65],
-	mAdLine4TimeLeft,
-	mAdLine4Owner[MAX_PLAYER_NAME],
-	mAdLine5Content[65],
-	mAdLine5TimeLeft,
-	mAdLine5Owner[MAX_PLAYER_NAME],
-	mAdLine6Content[65],
-	mAdLine6TimeLeft,
-	mAdLine6Owner[MAX_PLAYER_NAME],
-	mAdLine7Content[65],
-	mAdLine7TimeLeft,
-	mAdLine7Owner[MAX_PLAYER_NAME],
-	mAdLine8Content[65],
-	mAdLine8TimeLeft,
-	mAdLine8Owner[MAX_PLAYER_NAME],
-	mAdLine9Content[65],
-	mAdLine9TimeLeft,
-	mAdLine9Owner[MAX_PLAYER_NAME],
-	mAdLine10Content[65],
-	mAdLine10TimeLeft,
-	mAdLine10Owner[MAX_PLAYER_NAME]
-};
-new gPublicAds[MAX_PUBLIC_ADS][publicAdsInfo];
-
-enum pickupInfosInfo
-{
-	Float:mPosX,
-	Float:mPosY,
-	Float:mPosZ,
-	mWorld,
-	mInterior,
-	mPickupModel,
-	mPickupType,
-	mInfoTextLine1[128],
-	mInfoTextLine2[128],
-	mInfoTextLine3[128],
-	mInfoTextType,
-	mPickupId,
-	Text3D:m3dText1Id,
-	Text3D:m3dText2Id,
-	Text3D:m3dText3Id
-};
-new gPickupInfos[50][pickupInfosInfo];
-
-new gSearchItemType;
-new gSearchItemId;
-new gSearchItemParam1 = -999;
-new gSearchItemParam2 = -999;
-new gSearchItemParam3 = -999;
-new gSearchItemParam4 = -999;
-new gSearchItemParam5[64];
-
-enum playerReportsInfo
-{
-	mReportUsed,
-	mReportTimeLeft,
-	mReportContent[128],
-	mReporter[MAX_PLAYER_NAME],
-	mReported[MAX_PLAYER_NAME]
-};
-new gPlayersReports[30][playerReportsInfo];
-
-enum lsLocationsInfo
-{
-	mLocationDescription[64],
-	Float:mLocationPosCamX,
-	Float:mLocationPosCamY,
-	Float:mLocationPosCamZ,
-	Float:mLocationPosCamLookX,
-	Float:mLocationPosCamLookY,
-	Float:mLocationPosCamLookZ,
-	Float:mLocationPosX,
-	Float:mLocationPosY,
-	Float:mLocationPosZ,
-	mLocationPosCp
-};
-new gLsLocations[21][lsLocationsInfo] = 
-{
-	{ "Urz¹d LS", 1502.14, -1742.16, 44.11, 1500.07, -1746.71, 42.00, 1479.72, -1793.05, 15.35 },
-	{ "Policja LS", 1513.59, -1662.93, 33.83, 1518.37, -1664.37, 31.55, 1554.82, -1675.49, 16.19 },
-	{ "Bank LS", 1506.96, -1616.02, 38.19, 1505.82, -1611.15, 35.18, 1498.46, -1581.63, 13.84 },
-	{ "Biblioteka LS", 1306.01, -923.89, 50.60, 1307.96, -919.29, 49.02, 1316.61, -899.67, 39.57 },
-	{ "MZGK przy policji", 1629.28, -1643.89, 25.34, 1624.40, -1644.98, 21.97, 1607.99, -1640.29, 13.54 },
-	{ "MZGK przy dokach", 2209.15, -2179.58, 24.11, 2213.61, -2177.32, 21.57, 2226.15, -2177.99, 13.54 },
-	{ "MZGK przy stadionie", 2800.40, -1606.34, 26.35, 2796.37, -1607.14, 23.51, 2785.66, -1611.90, 10.92 },
-	{ "MZGK przy San News", 778.63, -1378.73, 22.42, 774.43, -1376.03, 19.86, 775.34, -1369.25, 13.52 },
-	{ "Szpital przy centrum handlowym", 1206.33, -1314.47, 26.62, 1202.09, -1316.46, 24.86, 1172.78, -1323.76, 15.40 },
-	{ "Szpital Jefferson", 2006.39, -1454.51, 39.99, 2009.10, -1450.30, 38.26, 2033.36, -1403.84, 17.27 },
-	{ "Pêtla autobusowa", 1815.92, -1883.63, 27.43, 1812.23, -1887.01, 25.35, 1794.97, -1914.96, 13.39 },
-	{ "WORD", 1151.44, -1746.38, 26.71, 1151.86, -1751.36, 24.35, 1153.83, -1771.47, 16.59 },
-	{ "Fabryka broni", 2457.03, -2085.14, 20.43, 2457.42, -2090.12, 18.99, 2460.77, -2119.65, 13.55 },
-	{ "Centrum handlowe", 1127.92, -1414.19, 47.32, 1128.01, -1419.19, 44.65, 1126.93, -1413.62, 25.89 },
-	{ "Motel Jefferson", 2192.39, -1108.54, 48.58, 2194.20, -1112.77, 46.63, 2233.08, -1159.39, 25.89 },
-	{ "Motel Idlewood", 2192.27, -1776.37, 30.30, 2189.24, -1780.35, 28.37, 2173.27, -1798.78, 13.36 },
-	{ "Salon Samochodowy - Urzêdowy", 2127.61, -1123.50, 35.76, 2128.26, -1127.84, 33.35, 2131.73, -1152.57, 24.14 },
-	{ "Hurtownia produktów - Flint Country", -98.99, -1128.31, 24.25, -103.66, -1126.53, 21.46, -130.51, -1118.26, 3.7 },
-	{ "Hurtownia produktów - Blue Berry", 90.31, -205.67, 37.53, 90.55, -210.67, 35.38, 93.63, -271.4, 1.57 },
-	{ "Hurtownia produktów - LVA Freight Depot", 1652.18, 917.51, 49.75, 1653.26, 922.39, 46.89, 1668.12, 948.23, 10.67 },
-	{ "Wiêzienie", 1843.16, -1596.83, 41.58, 1838.99, -1594.06, 39.73, 1806.22, -1575.43, 13.44 }
-};
-
-enum taxiLocationsInfo
-{
-	mLocationDescription[64],
-	Float:mPosX,
-	Float:mPosY,
-	Float:mPosZ,
-	Float:mPosCamX,
-	Float:mPosCamY,
-	Float:mPosCamZ,
-	Float:mPosCamLookX,
-	Float:mPosCamLookY,
-	Float:mPosCamLookZ
-};
-new gTaxiLocations[7][taxiLocationsInfo] = 
-{
-	{ "Urz¹d LS", 1480.226, -1739.641, 13.546, 1468.92, -1739.48, 18.77, 1473.86, -1738.68, 17.53 },
-	{ "Policja LS", 1536.805, -1651.242, 13.546, 1517.25, -1661.67, 19.31, 1520.40, -1657.79, 18.20 },
-	{ "WORD", 1166.669, -1767.476, 13.570, 1173.79, -1754.66, 19.28, 1173.45, -1759.65, 18.55 },
-	{ "Centrum handlowe", 1136.792, -1413.789, 13.641, 1121.10, -1388.63, 23.71, 1125.27, -1391.39, 21.86 },
-	{ "Motel Jefferson", 2239.412, -1146.886, 25.796, 2310.47, -1130.00, 50.97, 2306.12, -1132.47, 49.39 },
-	{ "Motel Idlewood", 2193.372, -1800.218, 13.546, 2182.88, -1822.44, 25.20, 2183.50, -1817.48, 23.08 },
-	{ "Lotnisko", 1718.722, -2328.082, -2.679, 1700.31, -2306.18, 5.70, 1705.07, -2307.72, 4.79}
-};
-
-enum prisonCellsInfo
-{
-	Float:mPosXCellEntrance,
-	Float:mPosYCellEntrance,
-	Float:mPosZCellEntrance,
-	Float:mPosXInCell,
-	Float:mPosYInCell,
-	Float:mPosZInCell
-}
-new gPrisonCells[10][prisonCellsInfo] = 
-{
-	{ 189.373, 158.0, 1002.943, 189.373, 162.086, 1002.943 },
-	{ 194.170, 158.0, 1002.909, 194.170, 162.151, 1002.909 },
-	{ 198.251, 158.0, 1003.029, 198.251, 161.843, 1003.029 },
-	{ 268.0, 77.528, 1001.039, 263.889, 77.528, 1001.039 },
-	{ 215.657, 144.5, 999.015, 215.657, 110.859, 999.015 },
-	{ 219.478, 144.5, 999.015, 219.478, 110.934, 999.015 },
-	{ 223.612, 144.5, 999.015, 223.612, 110.776, 999.015 },
-	{ 227.589, 144.5, 999.015, 227.589, 110.700, 999.015 },
-	{ 322.0, 312.5, 999.14, 320.0, 312.5, 999.14 },
-	{ 322.0, 316.5, 999.14, 320.0, 316.5, 999.14 }
-};
-new gPrisonCellsCp[10];
-
-new Float:gMainPrisonPos[3] = { 1799.0, -1578.07, 14.07 };
-new gMainPrisonCp;
-
-new Indicators_xqz[MAX_VEHICLES][6];
 
 new 
 	Text:gHorse1, 
@@ -5479,63 +5317,3 @@ new
 	gHorseRaceStarted,
 	gHorseWatching[CUSTOM_MAX_PLAYERS],
 	gHorsePrepared;
-
-new MaleSkins[] =
-{
-	1, 2, 3, 4, 5, 6, 7, 8, 14, 15, 16, 17, 18, 19, 20, 21,
-	22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36,
-	37, 38, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 57,
-	58, 59, 60, 61, 62, 66, 67, 68, 70, 71, 72, 73, 78, 79,
-	80, 81, 82, 83, 84, 86, 94, 95, 96, 97, 98, 99, 100, 101,
-	102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
-	114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125,
-	126, 127, 128, 132, 133, 134, 135, 136, 137, 142, 143, 144,
-	146, 147, 153, 154, 155, 156, 158, 159, 160, 161, 162, 163,
-	164, 165, 166, 167, 168, 170, 171, 172, 173, 174, 175, 176,
-	177, 179, 180, 181, 182, 183, 184, 185, 186, 187, 189, 200,
-	202, 203, 204, 206, 208, 209, 210, 212, 213, 217, 220, 221,
-	222, 223, 227, 228, 229, 230, 234, 235, 236, 239, 240, 241,
-	242, 247, 248, 249, 250, 252, 253, 254, 255, 258, 259, 260,
-	261, 262, 264, 268, 269, 270, 271, 272, 273, 289, 290, 291,
-	292, 293, 294, 295, 296, 297, 299
-};
-
-new FemaleSkins[] = 
-{
-	9, 10, 11, 12, 13, 31, 39, 40, 41, 53, 54, 55, 56, 63, 64,
-	65, 69, 75, 76, 77, 85, 87, 88, 89, 90, 91, 92, 93, 129, 130,
-	131, 138, 139, 140, 141, 145, 148, 150, 152, 157, 169, 172,
-	178, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 201,
-	205, 207, 211, 214, 215, 216, 218, 219, 224, 225, 226, 231,
-	232, 233, 237, 238, 243, 244, 245, 246, 251, 256, 257, 263,
-	298
-};
-/*	
-new Skins[] =
-{
-	0, 1, 2, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-	20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
-	34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48,
-	49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
-	63, 64, 66, 67, 68, 69, 70, 71, 72, 73, 75, 76, 77, 78,
-	79, 80, 81, 82, 83, 84, 85, 87, 88, 89, 90, 91, 92, 93,
-	94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105,
-	106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116,
-	117, 118, 120, 121, 122, 123, 124, 125, 126, 127, 128,
-	129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139,
-	140, 141, 142, 143, 144, 145, 146, 147, 148, 150, 151,
-	152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162,
-	163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
-	174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184,
-	185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
-	196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
-	207, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218,
-	219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
-	230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240,
-	241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251,
-	252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262,
-	263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 274,
-	275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285,
-	286, 287, 288, 290, 291, 292, 293, 294, 295, 296, 297,
-	298, 299
-};*/

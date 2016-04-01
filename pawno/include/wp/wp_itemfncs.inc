@@ -7,10 +7,10 @@
 *
 *************************************************************************************************************/
 
-#include <wp\itemfncs\wp_itemfncs_player>
-#include <wp\itemfncs\wp_itemfncs_biz>
-#include <wp\itemfncs\wp_itemfncs_veh>
-#include <wp\itemfncs\wp_itemfncs_house>
+#include <wp/itemfncs/wp_itemfncs_player>
+#include <wp/itemfncs/wp_itemfncs_biz>
+#include <wp/itemfncs/wp_itemfncs_veh>
+#include <wp/itemfncs/wp_itemfncs_house>
 
 stock ItemCountOfType(type)
 {
@@ -250,7 +250,7 @@ stock ItemName(itemtype, itemid)
 	{
 		if(itemid == 1)
 		{
-			format(string, sizeof(string), "{A0C544}這m (DEPRECATED){FFFFFF}");
+			format(string, sizeof(string), "{A0C544}這m{FFFFFF}");
 			return string;
 		}
 		else if(itemid == 2)
@@ -995,7 +995,7 @@ stock ItemName(itemtype, itemid)
 		}
 		else if(itemid == 150)
 		{
-			format(string, sizeof(string), "{6633DD}laska{FFFFFF}");
+			format(string, sizeof(string), "{6633D}laska{FFFFFF}");
 			return string;
 		}
 		else if(itemid == 151)
@@ -1106,36 +1106,6 @@ stock ItemName(itemtype, itemid)
 		else if(itemid == 172)
 		{
 			format(string, sizeof(string), "{FFEC80}neon bia造{FFFFFF}");
-			return string;
-		}
-		else if(itemid == 173)
-		{
-			format(string, sizeof(string), "{A0C544}aparat{FFFFFF}");
-			return string;
-		}
-		else if(itemid == 174)
-		{
-			format(string, sizeof(string), "{A0C544}skrzynka z narz璠ziami{FFFFFF}");
-			return string;
-		}
-		else if(itemid == 175)
-		{
-			format(string, sizeof(string), "{FFEC80}cz��ci silnika{FFFFFF}");
-			return string;
-		}
-		else if(itemid == 176)
-		{
-			format(string, sizeof(string), "{FFEC80}opona{FFFFFF}");
-			return string;
-		}
-		else if(itemid == 177)
-		{
-			format(string, sizeof(string), "{FFEC80}instalacja gazowa{FFFFFF}");
-			return string;
-		}
-		else if(itemid == 178)
-		{
-			format(string, sizeof(string), "{A0C544}tablica og這sze鞨FFFFFF}");
 			return string;
 		}
 	}
@@ -1259,16 +1229,6 @@ stock ItemName(itemtype, itemid)
 		if(itemid == 23)
 		{
 			format(string, sizeof(string), "{7E2217}ci篹ki pancerz{FFFFFF}");
-			return string;
-		}
-		if(itemid == 24)
-		{
-			format(string, sizeof(string), "{7E2217}ubranie{FFFFFF}");
-			return string;
-		}
-		if(itemid == 25)
-		{
-			format(string, sizeof(string), "{A0C544}umowa wypo篡czenia pojazdu{FFFFFF}");
 			return string;
 		}
 	}
@@ -1462,7 +1422,7 @@ stock ItemName(itemtype, itemid)
 		}
 		if(itemid == 5)
 		{
-			format(string, sizeof(string), "{FFF380}Titanum Silver akumulator{FFFFFF}"); // lepszy
+			format(string, sizeof(string), "{FFF380}Titanum SIlver akumulator{FFFFFF}"); // lepszy
 			return string;
 		}
 		if(itemid == 6)
@@ -1485,7 +1445,7 @@ stock ItemName(itemtype, itemid)
 		}
 		if(itemid == 3)
 		{
-			format(string, sizeof(string), "{FFEC80}Locos Low Chrome (wydech){FFFFFF}");
+			format(string, sizeof(string), "{FFEC80}Locos Low Chromer (wydech){FFFFFF}");
 			return string;
 		}
 		if(itemid == 4)
@@ -1861,7 +1821,7 @@ stock ItemName(itemtype, itemid)
 	{
 		format(string, sizeof(string), "{E56717}kluczyki z zestawu (uID %d){FFFFFF}", itemid);
 		return string;
-	}
+	}	
 	if(itemtype == 0)
 	{
 		format(string, sizeof(string), "slot pusty{FFFFFF}");
@@ -2181,18 +2141,6 @@ stock ItemWeight(itemtype, itemid)
 			return 2000;
 		if(itemid == 153) // swiatlo pidi pojedyncze
 			return 500;	
-		if(itemid == 173)
-			return 50;
-		if(itemid == 174)
-			return 5000;	
-		if(itemid == 175)
-			return 20000;	
-		if(itemid == 176)
-			return 2000;	
-		if(itemid == 177)
-			return 15000;	
-		if(itemid == 178)
-			return 1000;	
 	}
 	if(itemtype == 2)
 	{
@@ -2281,18 +2229,6 @@ stock ItemWeight(itemtype, itemid)
 			return 1500;
 		}
 		if(itemid == 21) // wytrych
-		{
-			return 100;
-		}
-		if(itemid == 22) // pancerz
-		{
-			return 2500;
-		}
-		if(itemid == 23) // ciezki pancerz
-		{
-			return 5000;
-		}
-		if(itemid == 21) // ubranie
 		{
 			return 100;
 		}
@@ -3246,6 +3182,7 @@ stock ComponentToItem(playerid, component)
 	}
 }
 
+
 stock ObjectModelToItemInsert(playerid, model)
 {
 	switch(model)
@@ -3269,226 +3206,13 @@ stock ObjectModelToItemInsert(playerid, model)
 	return 1;
 }
 
-stock ItemToWeapon(itemId)
-{
-	switch(itemId)
-	{
-		case 13: return 16;
-		case 14: return 17;
-		case 15: return 18;
-		case 16: return 22;
-		case 17: return 23;
-		case 18: return 24;
-		case 19: return 25;
-		case 20: return 26;
-		case 21: return 27;
-		case 22: return 28;
-		case 23: return 29;
-		case 24: return 30;
-		case 25: return 31;
-		case 26: return 32;
-		case 27: return 33;
-		case 28: return 34;
-		case 29: return 35;
-		case 30: return 36;
-		case 31: return 37;
-		case 32: return 38;
-		case 33: return 39;
-		case 34: return 41;
-		case 35: return 42;
-	}
-	return 0;
-}
 
-stock RemoveItemFromAll(itemType, itemId, param1 = -999, param2 = -999, param3 = -999, param4 = -999, param5[] = "")
-{
-	new slot, slotId, string[64];
 
-	gSearchItemType = itemType;
-	gSearchItemId = itemId;
-	gSearchItemParam1 = param1;
-	gSearchItemParam2 = param2;
-	gSearchItemParam3 = param3;
-	gSearchItemParam4 = param4;
-	format(gSearchItemParam5, 64, param5);
 
-	for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
-	{
-		if(!gPlayerLogged[i])
-		{
-			continue;
-		}
 
-		for(new pSlotId = 0; pSlotId < MAX_PLAYER_ITEM_SLOT; pSlotId++)
-		{
-			slot = PHaveItem(i, itemType, itemId, pSlotId);
 
-			if(param1 != -999)
-			{
-				if(SlotParam1(i, slotId) != param1)
-				{
-					continue;
-				}
-			}
-				
-			if(param2 != -999)
-			{
-				if(SlotParam2(i, slotId) != param2)
-				{
-					continue;
-				}
-			}
-			
-			if(param3 != -999)
-			{
-				if(SlotParam3(i, slotId) != param3)
-				{
-					continue;
-				}
-			}
-			
-			if(param4 != -999)
-			{	
-				if(SlotParam4(i, slotId) != param4)
-				{
-					continue;
-				}
-			}
-			
-			if(strcmp(gDSelectedItemP5[i], "", false) != 0)
-			{
-				SlotParam5(i, slotId);
-				
-				if(strcmp(gDSelectedItemP5[i], param5, false) != 0)
-				{
-					continue;
-				}
-			}
 
-			RemovePlayerItemUsed(i, slotId);
 
-		}
-	}
 
-	// Load players from db and check
-	
-	format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_users_items`");
-	wp_mysql_query(string, LOAD_ITEMS_FOR_DELETE, CUSTOM_MAX_PLAYERS, db_con2);
 
-	for(new i = 0; i < sizeof(Houses); i++)
-	{
 
-		houseBegin:
-		slot = HHaveItem(i, itemType, itemId);
-		
-		if(slot == 0)
-		{
-			continue;
-		}
-		
-		if(param1 != -999)
-		{
-			if(HSlotParam1(i, slot) != param1)
-			{
-				continue;
-			}
-		}
-		
-		if(param2 != -999)
-		{
-			if(HSlotParam2(i, slot) != param2)
-			{
-				continue;
-			}
-		}
-		
-		if(param3 != -999)
-		{
-			if(HSlotParam3(i, slot) != param3)
-			{
-				continue;
-			}
-		}
-		
-		if(param4 != -999)
-		{
-			if(HSlotParam4(i, slot) != param4)
-			{
-				continue;
-			}
-		}
-		
-		HSlotParam5(i, slot);
-		if(strlen(param5) > 0)
-		{
-			if(strcmp(gHSelectedItemP5[i], param5, false) == 0 && strlen(gHSelectedItemP5[i]) > 0)
-			{
-				continue;
-			}
-		}
-
-		RemoveHouseItem(i, slot);
-
-		goto houseBegin;
-	}
-
-	for(new i = 0; i < sizeof(gVehData); i++)
-	{
-		for(new pSlotId = 0; pSlotId < MAX_VEHICLE_ITEM_SLOT; pSlotId++)
-		{
-			slot = VHaveItem(i+1, itemType, itemId, pSlotId);
-			
-			if(slot == 0)
-			{
-				continue;
-			}
-
-			if(param1 != -999)
-			{
-				if(VSlotParam1(i, slotId) != param1)
-				{
-					continue;
-				}
-			}
-
-			if(param2 != -999)
-			{
-				if(VSlotParam2(i, slotId) != param2)
-				{
-					continue;
-				}
-			}
-
-			if(param3 != -999)
-			{
-				if(VSlotParam3(i, slotId) != param3)
-				{
-					continue;
-				}
-			}
-
-			if(param4 != -999)
-			{	
-				if(VSlotParam4(i, slotId) != param4)
-				{
-					continue;
-				}
-			}
-
-			if(strlen(param5) != 0)
-			{
-				VSlotParam5(i, slotId);
-				
-				if(strcmp(gVSelectedItemP5[i], param5, false) != 0)
-				{
-					continue;
-				}
-			}
-
-			RemoveVehItem(i, slotId);
-		}
-	}
-
-}
-
-// Thats all

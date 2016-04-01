@@ -10,7 +10,7 @@
 public OnGameModeInit()
 {
 	printf("[INIT:] OnGameModeInit started - WP-RP %s", VERSION);
-    SetGameModeText("WP-RP v.1.32");
+    SetGameModeText("WP-RP v.1.19.18");
 	
 	// TODO: house cost should be transfered to somekind of house faction manager
 	// For now cash from house goes nowhere...
@@ -19,11 +19,6 @@ public OnGameModeInit()
 	// TODO: There should be some activities in house (except item taking, etc.) that requires player
 	// 		to come back to house more often
 	
-	//dmap_GameModeInit();
-	//printf("ABCD");
-	//printf("strlen = %d", strlen("ABCD"));
-	//printf("first letter pos = %d", strfind("ABCD", "A"));
-	//printf("last letter pos = %d", strfind("ABCD", "D"));
 	
 	/*
 	* Anti DeAMX
@@ -55,24 +50,42 @@ public OnGameModeInit()
 	// LoadConfig loads MySQL connection data from file
 	// LoadConfig();
 	
-	printf("[INFO:] Using %s as database", db_database);
-	
-	if(!(db_con1 = mysql_connect(db_host,db_user,db_database,db_pass)))
+	if(!(db_con1 = mysql_connect(db_host,db_user,db_database, db_pass)))
 	{
 		GameModeExit();
 		return 1;
 	}
-	if(!(db_con2 = mysql_connect(db_host,db_user,db_database,db_pass)))
+	if(!mysql_ping(db_con1))
 	{
 		GameModeExit();
 		return 1;
 	}
-	if(!(db_con3 = mysql_connect(db_host,db_user,db_database,db_pass)))
+	if(!(db_con2 = mysql_connect(db_host,db_user,db_database, db_pass)))
 	{
 		GameModeExit();
 		return 1;
 	}
-	if(!(db_con4 = mysql_connect(db_host,db_user,db_database,db_pass)))
+	if(!mysql_ping(db_con2))
+	{
+		GameModeExit();
+		return 1;
+	}
+	if(!(db_con3 = mysql_connect(db_host,db_user,db_database, db_pass)))
+	{
+		GameModeExit();
+		return 1;
+	}
+	if(!mysql_ping(db_con3))
+	{
+		GameModeExit();
+		return 1;
+	}
+	if(!(db_con4 = mysql_connect(db_host,db_user,db_database, db_pass)))
+	{
+		GameModeExit();
+		return 1;
+	}
+	if(!mysql_ping(db_con4))
 	{
 		GameModeExit();
 		return 1;
@@ -105,26 +118,13 @@ public OnGameModeInit()
 	/*
 	* MWeather locations
 	*/
-	//MWeather_OnGameModeInit();
-	//gMW_warszawa = AddWeatherObserver("http://weather.yahoo.com/united-states/michigan/detroit-2391585/", 1200000);
-	//gMW_lasvegas = AddWeatherObserver("http://weather.yahoo.com/united-states/michigan/detroit-2391585/", 1200000);
-	//gMW_sanfrancisco = AddWeatherObserver("http://weather.yahoo.com/united-states/michigan/detroit-2391585/", 1200000);
-	//gMW_losangeles = AddWeatherObserver("http://weather.yahoo.com/united-states/michigan/detroit-2391585/", 1200000);
-	//SetRealWeatherEx(gMW_warszawa);
+	MWeather_OnGameModeInit();
+	gMW_warszawa = AddWeatherObserver("http://weather.yahoo.com/poland/masovian/warsaw-523920/", 1200000);
+	gMW_lasvegas = AddWeatherObserver("http://weather.yahoo.com/united-states/nevada/las-vegas-2436704/", 1200000);
+	gMW_sanfrancisco = AddWeatherObserver("http://weather.yahoo.com/united-states/nevada/las-vegas-2436704/", 1200000);
+	gMW_losangeles = AddWeatherObserver("http://weather.yahoo.com/united-states/california/los-angeles-2442047/", 1200000);
+	SetRealWeatherEx(gMW_warszawa);
 
-	// Event2 predef
-	gEvent2noteText1 = TextDrawCreate(230.000000, 309.000000, "_");
-	TextDrawAlignment(gEvent2noteText1, 0);
-	TextDrawBackgroundColor(gEvent2noteText1, 0x000000ff);
-	TextDrawFont(gEvent2noteText1, 2);
-	TextDrawLetterSize(gEvent2noteText1, 0.899999, 2.599999);
-	TextDrawColor(gEvent2noteText1, 0xffff00ff);
-	TextDrawSetOutline(gEvent2noteText1, 1);
-	TextDrawSetProportional(gEvent2noteText1, 1);
-	TextDrawSetShadow(gEvent2noteText1, 1);
-	
-	ResetEventsVariables();
-	
 	/*
 	* Fireworks script data load
 	*/
@@ -171,30 +171,21 @@ public OnGameModeInit()
 	
 	/*
 	* Hardcoded default checkpoints
-	*/
-	for(new i = 0; i < sizeof(BankPosition); i++)
-	{
-		BankPosition[i][mPickupId] = CreateDynamicPickup(1239, 1, BankPosition[i][X], BankPosition[i][Y], BankPosition[i][Z]);
-	}
+	*/	
+	CreateDynamicCP(BankPosition[X], BankPosition[Y], BankPosition[Z], 1.0);
 	
 	// ATMs
-	for(new i = 0; i < sizeof(gAtmCp); i++)
-	{
-		gAtmCp[i] = CreateDynamicCP(gATM[i][0], gATM[i][1], gATM[i][2], 1.0, -1, -1, -1, 5.0);
-	}
+	CreateDynamicCP(gATM[0][0], gATM[0][1], gATM[0][2], 1.0, 0, 0, -1, 5.0);
+	CreateDynamicCP(gATM[1][0], gATM[1][1], gATM[1][2], 1.0, 0, 0, -1, 5.0);
+	CreateDynamicCP(gATM[2][0], gATM[2][1], gATM[2][2], 1.0, 0, 0, -1, 5.0);
+	CreateDynamicCP(gATM[3][0], gATM[3][1], gATM[3][2], 1.0, 0, 0, -1, 5.0);
 	
 	// rafinery refuel and manage cp
 	gRafinery[RafResourceCP] = CreateDynamicCP(-985.0, -708.0, 32.0, 10.0);
 	
 	// government cp for work and taxes purpose
-	gGovCheckpoint = CreateDynamicCP(358.67, 169.11, 1008.38, 1.0);
-	gGovCheckpoint2 = CreateDynamicCP(358.63, 178.70, 1008.38, 1.0);
+	gGovCheckpoint = CreateDynamicCP(359.16, 169.23, 1008.38, 1.0);
 	
-	// medic checkpoints
-	gMedicCheckpoints[0] = CreateDynamicCP(-2675.36, 650.29, 10.29, 1.0);
-	gMedicCheckpoints[1] = CreateDynamicCP(1124.88, -2520.29, 113.81, 1.0);
-	gMedicCheckpoints[2] = CreateDynamicCP(285.58, 1893.55, 499.28, 1.0);
-
 	// businesses buy cp
 	gShopCP[0] = CreateDynamicCP(-28.0,-185.0,1004.0,0.8);
 	gShopCP[1] = CreateDynamicCP(3.0,-29.0,1004.0,0.8);
@@ -248,47 +239,21 @@ public OnGameModeInit()
 	gShopCP[49] = CreateDynamicCP(-2662.27, 1415.44, 906.27, 0.8, -1, -1, -1, 10.0);
 	gShopCP[50] = CreateDynamicCP(-2656.27, 1415.44, 906.27, 0.8, -1, -1, -1, 10.0);
 	gShopCP[51] = CreateDynamicCP(-2653.99, 1413.41, 906.27, 0.8, -1, -1, -1, 10.0);
-	gShopCP[52] = CreateDynamicCP(-460.63, -2014.97, 24.78, 0.8, -1, -1, -1, 10.0);
+	gShopCP[52] = CreateDynamicCP(-460.63, -2014.97, 24.78, 0.8, 1, -1, -1, 4.0);
 	gShopCP[53] = CreateDynamicCP(1240.11, -1651.99, 11.80, 0.8, -1, -1, -1, 10.0);
 	gShopCP[54] = CreateDynamicCP(1234.82, -1651.99, 11.80, 0.8, -1, -1, -1, 10.0);
 	gShopCP[55] = CreateDynamicCP(1231.82, -1649.92, 11.80, 0.8, -1, -1, -1, 10.0);
 	gShopCP[56] = CreateDynamicCP(1207.23, -30.98, 1000.95, 0.8, -1, -1, -1, 10.0);
 	gShopCP[57] = CreateDynamicCP(681.35, -453.83, -25.61, 0.8, -1, -1, -1, 10.0);
 	gShopCP[58] = CreateDynamicCP(1139.72, -6.75, 1000.67, 0.8, -1, -1, -1, 10.0);
-	gShopCP[59] = CreateDynamicCP(0.0, 0.0, 1004.17, 0.8, -1, -1, -1, 10.0);
-	gShopCP[60] = CreateDynamicCP(0.0, 0.0, 1004.17, 0.8, -1, -1, -1, 10.0);
-	gShopCP[61] = CreateDynamicCP(0.0, 0.0, 1004.17, 0.8, -1, -1, -1, 10.0);
-	gShopCP[62] = CreateDynamicCP(0.0, 0.0, 1004.17, 0.8, -1, -1, -1, 10.0);
+	// gShopCP[59] = CreateDynamicCP(822.0, 1.83, 1004.17, 0.8, -1, -1, -1, 10.0);
+	// gShopCP[60] = CreateDynamicCP(822.0, 4.14, 1004.17, 0.8, -1, -1, -1, 10.0);
+	// gShopCP[61] = CreateDynamicCP(822.0, -0.26, 1004.17, 0.8, -1, -1, -1, 10.0);
+	// gShopCP[62] = CreateDynamicCP(822.0, 6.42, 1004.17, 0.8, -1, -1, -1, 10.0);
 	gShopCP[59] = CreateDynamicCP(-103.88, -22.67, 1000.74, 0.8, -1, -1, -1, 10.0);
 	gShopCP[60] = CreateDynamicCP(-105.42, -10.61, 1000.74, 0.8, -1, -1, -1, 10.0);
 	gShopCP[61] = CreateDynamicCP(1242.19, -1649.01, 11.80, 0.8, -1, -1, -1, 10.0);
 	gShopCP[62] = CreateDynamicCP(370.14, -1693.02, 17.0, 0.8, -1, -1, -1, 10.0);
-	gShopCP[63] = CreateDynamicCP(1484.97, 1292.31, 1010.82, 0.8, -1, -1, -1, 10.0);
-	gShopCP[64] = CreateDynamicCP(1508.89, 1551.10, 1010.85, 0.8, -1, -1, -1, 10.0);
-	gShopCP[65] = CreateDynamicCP(1247.06, -670.85, 1194.2, 0.8, -1, -1, -1, 10.0);
-	gShopCP[66] = CreateDynamicCP(1687.13, -1454.92, 13.57, 0.8, -1, -1, -1, 10.0);
-	gShopCP[67] = CreateDynamicCP(1668.4, -1461.93, 17.11, 0.8, -1, -1, -1, 10.0);
-	gShopCP[68] = CreateDynamicCP(-394.7, 281.68, 489.96, 0.8, -1, -1, -1, 10.0);
-	gShopCP[69] = CreateDynamicCP(1645.65, -1456.13, 13.67, 0.8, -1, -1, -1, 10.0);
-	gShopCP[70] = CreateDynamicCP(310.23, 1830.11, 1597.99, 0.8, -1, -1, -1, 10.0);
-	gShopCP[71] = CreateDynamicCP(2902.77, 2471.81, -43.83, 0.8, -1, -1, -1, 10.0);
-	gShopCP[72] = CreateDynamicCP(2051.47, -1871.36, 14.70, 0.8, -1, -1, -1, 10.0);
-	gShopCP[73] = CreateDynamicCP(2493.22, -1782.49, 1014.53, 0.8, -1, -1, -1, 10.0);
-	gShopCP[74] = CreateDynamicCP(962.59, -1554.22, 21.51, 0.8, -1, -1, -1, 10.0);
-
-	for(new i = 0; i < sizeof(gPrisonCells); i++)
-	{
-		gPrisonCellsCp[i] = CreateDynamicCP(gPrisonCells[i][mPosXCellEntrance], gPrisonCells[i][mPosYCellEntrance], gPrisonCells[i][mPosZCellEntrance], 1.0);
-	}
-	gMainPrisonCp = CreateDynamicCP(gMainPrisonPos[0], gMainPrisonPos[1], gMainPrisonPos[2], 3.0, -1, -1, -1, 5.0);
-	
-	// businesses buy clothes cp
-	gClotheShopCP[0] = CreateDynamicCP(199.15, -128.51, 1003.51, 0.8, -1, -1, -1, 10.0);
-	gClotheShopCP[1] = CreateDynamicCP(215.79, -159.42, 1000.53, 0.8, -1, -1, -1, 10.0);
-	gClotheShopCP[2] = CreateDynamicCP(217.06, -98.62, 1005.25, 0.8, -1, -1, -1, 10.0);
-	gClotheShopCP[3] = CreateDynamicCP(213.58, -41.62, 1002.02, 0.8, -1, -1, -1, 10.0);
-	gClotheShopCP[4] = CreateDynamicCP(207.20, -4.85, 1001.21, 0.8, -1, -1, -1, 10.0);
-	gClotheShopCP[5] = CreateDynamicCP(180.88, -87.94, 1002.03, 0.8, -1, -1, -1, 10.0);
 	
 	// horse betting point
 	gHorsesCp[0] = CreateDynamicCP(833.60, 3.22, 1004.17, 0.8, -1, -1, -1, 10.0);
@@ -316,13 +281,13 @@ public OnGameModeInit()
 	// CreateDynamicPickup(1239,0,618.0,0.0,1001.0,-1,-1,-1,50.0); // punkt wymiany opon int transfender
 	
 	// exit point from prison yard
-	gP_PrisonYard = CreateDynamicPickup(1239, 23, -333.0, 1533.0, 75.0, 0, 0, -1, 100.0);
+	gP_PrisonYard = CreateDynamicPickup(1239, 23, -333.0, 1533.0, 75.0, 0, 0, -1, 100.0 );
 	
 	// swimming pool jump entrance
-	gP_SwimingPool = CreateDynamicPickup(1239, 23, 579.0, -2198.0, 2.0);
+	gP_SwimingPool = CreateDynamicPickup(1239, 23, 579.0, -2198.0, 2.0 );
 	
 	// lucky lottery pickup point
-	gP_Lottery = CreateDynamicPickup(1239, 23, 359.0, 167.0, 1008.38);
+	gP_Lottery = CreateDynamicPickup(1239, 23, 359.0, 167.0, 1008.0 );
 	
 	// pickup event reward receive point
 	gPickupEventPrizeReceive = CreateDynamicPickup(1239, 1, 358.78, 186.86, 1008.38);
@@ -334,12 +299,10 @@ public OnGameModeInit()
 	/*
 	* Hardcoded 3d texts
 	*/
-	for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
+	for( new i = 0; i < CUSTOM_MAX_PLAYERS; i++ )
 	{
-	//	gPlayerData[i][pCharDescriptionID] = Create3DTextLabel(" ", COLOR_BLACK, 0.0, 0.0, 0.0, 7.0, -1, 1);
-		gPlayerData[i][pCharDescriptionID] = CreateDynamic3DTextLabel(" ", COLOR_BLACK, 1720.81, 1443.44, 10.82, 7.0, -1, 1);
-		gPlayerData[i][pCharNameID] = Create3DTextLabel(" ", COLOR_BLACK, 0.0, 0.0, 0.0, 7.0, -1, 1);
-		playerAFK[i] = Create3DTextLabel(" ", COLOR_BLACK, 0.0, 0.0, 0.0, 7.0, -1, 1);
+		gPlayerData[i][pCharDescriptionID] = Create3DTextLabel(" ", COLOR_WHITE, 0.0, 0.0, 0.0, 7.0, -1, 1);
+		gPlayerData[i][pCharNameID] = Create3DTextLabel(" ", COLOR_WHITE, 0.0, 0.0, 0.0, 7.0, -1, 1);
 	}
 	
 	#if defined DEBUG
@@ -389,6 +352,19 @@ public OnGameModeInit()
 		TextDrawSetProportional(Status[i],1);
 		TextDrawSetShadow(Status[i],1);
 		
+		// Player status 2
+		PlayerStatus[i] = TextDrawCreate(0.0, 442.0, " ");
+		TextDrawUseBox(PlayerStatus[i], 1);
+		TextDrawBoxColor(PlayerStatus[i], 0x000000AA);
+		TextDrawAlignment(PlayerStatus[i], 0);
+		TextDrawBackgroundColor(PlayerStatus[i], 0x000000ff);
+		TextDrawFont(PlayerStatus[i], 1);
+		TextDrawLetterSize(PlayerStatus[i], 0.15, 0.525);
+		TextDrawColor(PlayerStatus[i], 0xffffffff);
+		TextDrawSetOutline(PlayerStatus[i], 1);
+		TextDrawSetProportional(PlayerStatus[i], 1);
+		TextDrawSetShadow(PlayerStatus[i], 1);
+		
 		// Vehicle status
 		gPlayerVars[i][mVehicleStatus] = TextDrawCreate(0.0, 434.5, " ");
 		TextDrawUseBox(gPlayerVars[i][mVehicleStatus], 1);
@@ -401,6 +377,9 @@ public OnGameModeInit()
 		TextDrawSetOutline(gPlayerVars[i][mVehicleStatus], 1);
 		TextDrawSetProportional(gPlayerVars[i][mVehicleStatus], 1);
 		TextDrawSetShadow(gPlayerVars[i][mVehicleStatus], 1);
+		
+		// San News info status
+		RedrawSanNewsBox(i);
 		
 		// Gang War status
 		GangWar[i] = TextDrawCreate(10.0, 275.0, " ");
@@ -438,9 +417,8 @@ public OnGameModeInit()
 	TextDrawTextSize(gPhoneText, 100.0, 50.0);
 	
 	// Health Description
-	//gHealthTextEnergy = TextDrawCreate(610.0, 108.6, "energia~n~glod~n~pragnienie~n~zatrucie~n~cholesterol~n~zoladek~n~witaminy~n~alkohol~n~narkotyki");
-	gHealthTextEnergy = TextDrawCreate(610.0, 108.6, "energia~n~glod~n~pragnienie");
-	TextDrawLetterSize(gHealthTextEnergy, 0.12, 0.58);
+	gHealthTextEnergy = TextDrawCreate(607.0, 130.0, "energia~n~~n~glod~n~~n~pragnienie~n~~n~zatrucie~n~~n~cholesterol~n~~n~zoladek~n~~n~witaminy~n~~n~alkohol~n~~n~narkotyki");
+	TextDrawLetterSize(gHealthTextEnergy, 0.15, 0.6);
 	TextDrawTextSize(gHealthTextEnergy, 50.0, 100.0);
 	TextDrawSetShadow(gHealthTextEnergy, 0);
 	
@@ -457,6 +435,46 @@ public OnGameModeInit()
 	TextDrawColor(gTextTime, 0xffffffff);
 	TextDrawSetShadow(gTextTime, 0);
 	TextDrawSetOutline(gTextTime, 2);
+	
+	// gHealthTextHunger = TextDrawCreate(607.0, 140.0, "glod");
+	// TextDrawLetterSize(gHealthTextHunger, 0.15, 0.6);
+	// TextDrawTextSize(gHealthTextHunger, 50.0, 10.0);
+	// TextDrawSetShadow(gHealthTextHunger, 0);
+	
+	// gHealthTextThirst = TextDrawCreate(607.0, 150.0, "pragnienie");
+	// TextDrawLetterSize(gHealthTextThirst, 0.15, 0.6);
+	// TextDrawTextSize(gHealthTextThirst, 50.0, 10.0);
+	// TextDrawSetShadow(gHealthTextThirst, 0);
+	
+	// gHealthTextPoison = TextDrawCreate(607.0, 160.0, "zatrucie");
+	// TextDrawLetterSize(gHealthTextPoison, 0.15, 0.6);
+	// TextDrawTextSize(gHealthTextPoison, 50.0, 10.0);
+	// TextDrawSetShadow(gHealthTextPoison, 0);
+	
+	// gHealthTextFat = TextDrawCreate(607.0, 170.0, "cholesterol");
+	// TextDrawLetterSize(gHealthTextFat, 0.15, 0.6);
+	// TextDrawTextSize(gHealthTextFat, 50.0, 10.0);
+	// TextDrawSetShadow(gHealthTextFat, 0);
+	
+	// gHealthTextStomach = TextDrawCreate(607.0, 180.0, "zoladek");
+	// TextDrawLetterSize(gHealthTextStomach, 0.15, 0.6);
+	// TextDrawTextSize(gHealthTextStomach, 50.0, 10.0);
+	// TextDrawSetShadow(gHealthTextStomach, 0);
+	
+	// gHealthTextVitamins = TextDrawCreate(607.0, 190.0, "witaminy");
+	// TextDrawLetterSize(gHealthTextVitamins, 0.15, 0.6);
+	// TextDrawTextSize(gHealthTextVitamins, 50.0, 10.0);
+	// TextDrawSetShadow(gHealthTextVitamins, 0);
+	
+	// gHealthTextDrunk = TextDrawCreate(607.0, 200.0, "alkohol");
+	// TextDrawLetterSize(gHealthTextDrunk, 0.15, 0.6);
+	// TextDrawTextSize(gHealthTextDrunk, 50.0, 10.0);
+	// TextDrawSetShadow(gHealthTextDrunk, 0);
+	
+	// gHealthTextNarcotics = TextDrawCreate(607.0, 210.0, "narkotyki");
+	// TextDrawLetterSize(gHealthTextNarcotics, 0.15, 0.6);
+	// TextDrawTextSize(gHealthTextNarcotics, 50.0, 10.0);
+	// TextDrawSetShadow(gHealthTextNarcotics, 0);
 	
 	// low health text draw
 	// gTdLHealth = TextDrawCreate(-20.000000,2.000000,"|");
@@ -529,9 +547,8 @@ public OnGameModeInit()
 	gGateSfGov3a = CreateDynamicObject(968, -2673.4760742188, 1280.4490966797, 55.559833526611, 0.000000, 0.000000, 0.000000);
 	gGateSfGov4a = CreateDynamicObject(968, -2682.7377929688, 1268.826171875, 55.559833526611, 0.000000, 0.000000, 0.000000);
 	gGateSfGov5a = CreateDynamicObject(968, -2691.3725585938, 1268.7795410156, 55.559833526611, 0.000000, 0.000000, 0.000000);
-	gGateSfTaxi1a = CreateDynamicObject(968, -1739.2216796875, 985.66516113281, 17.714046478271, 0.000000, 90, 100.51501464844);
-	gGateSfTaxi2a = CreateDynamicObject(968, -1739.2216796875, 985.6650390625, 17.714046478271, 0.000000, 90, 239.47900390625);
-	gGateLsPd1 = CreateDynamicObject(975, 1589.03, -1638.09, 14.14, 0.0, 0.0, 0.0);
+	gGateSfTaxi1a = CreateDynamicObject(968, -1739.2216796875, 985.66516113281, 17.714046478271, 0.000000, 90, 100.51501464844); // brama taxi
+	gGateSfTaxi2a = CreateDynamicObject(968, -1739.2216796875, 985.6650390625, 17.714046478271, 0.000000, 90, 239.47900390625); // brama taxi
 	
 	#if defined DEBUG
 		print("[INFO:] Loaded hardcoded objects");

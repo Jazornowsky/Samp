@@ -76,13 +76,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						if(PlayerStatusShowed[playerid])
 						{
-							PlayerTextDrawHide(playerid, PlayerStatus[playerid]);
+							TextDrawHideForPlayer(playerid,PlayerStatus[playerid]);
 							PlayerStatusShowed[playerid] = 0;
 						}
 						else
 						{
 							PlayerStatusShowed[playerid] = 1;
-							PlayerTextDrawShow(playerid, PlayerStatus[playerid]);
+							TextDrawShowForPlayer(playerid,PlayerStatus[playerid]);
 						}
 					}
 					case 3:
@@ -98,17 +98,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							gPlayerData[playerid][pShowHealthBars] = 0;
 							SavePlayerData(playerid, "ShowHealthBars");
-							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pEnergyProgressBarID]);
 							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pHungerProgressBarID]);
 							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pThirstProgressBarID]);
-							// HideProgressBarForPlayer(playerid, gPlayerData[playerid][pPoisonProgressBarID]);
-							// HideProgressBarForPlayer(playerid, gPlayerData[playerid][pFatProgressBarID]);
-							// HideProgressBarForPlayer(playerid, gPlayerData[playerid][pStomachProgressBarID]);
-							// HideProgressBarForPlayer(playerid, gPlayerData[playerid][pVitaminsProgressBarID]);
-							// HideProgressBarForPlayer(playerid, gPlayerData[playerid][pEnergyProgressBarID]);
-							// HideProgressBarForPlayer(playerid, gPlayerData[playerid][pDrunkProgressBarID]);
-							// HideProgressBarForPlayer(playerid, gPlayerData[playerid][pNarcoticProgressBarID]);
+							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pPoisonProgressBarID]);
+							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pFatProgressBarID]);
+							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pStomachProgressBarID]);
+							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pVitaminsProgressBarID]);
+							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pEnergyProgressBarID]);
+							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pDrunkProgressBarID]);
+							HideProgressBarForPlayer(playerid, gPlayerData[playerid][pNarcoticProgressBarID]);
 							TextDrawHideForPlayer(playerid, gHealthTextEnergy);
+							TextDrawHideForPlayer(playerid, gHealthTextHunger);
+							TextDrawHideForPlayer(playerid, gHealthTextThirst);
+							TextDrawHideForPlayer(playerid, gHealthTextPoison);
+							TextDrawHideForPlayer(playerid, gHealthTextFat);
+							TextDrawHideForPlayer(playerid, gHealthTextStomach);
+							TextDrawHideForPlayer(playerid, gHealthTextVitamins);
+							TextDrawHideForPlayer(playerid, gHealthTextDrunk);
+							TextDrawHideForPlayer(playerid, gHealthTextNarcotics);
 						}
 						else
 						{
@@ -117,22 +124,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							SetProgressBarValue(gPlayerData[playerid][pEnergyProgressBarID], gPlayerData[playerid][pEnergy]);
 							SetProgressBarValue(gPlayerData[playerid][pHungerProgressBarID], gPlayerData[playerid][pHunger]);
 							SetProgressBarValue(gPlayerData[playerid][pThirstProgressBarID], gPlayerData[playerid][pThirst]);
-							// SetProgressBarValue(gPlayerData[playerid][pPoisonProgressBarID], gPlayerData[playerid][pPoison]);
-							// SetProgressBarValue(gPlayerData[playerid][pFatProgressBarID], gPlayerData[playerid][pFat]);
-							// SetProgressBarValue(gPlayerData[playerid][pStomachProgressBarID], gPlayerData[playerid][pStomach]);
-							// SetProgressBarValue(gPlayerData[playerid][pVitaminsProgressBarID], gPlayerData[playerid][pVitamins]);
-							// SetProgressBarValue(gPlayerData[playerid][pDrunkProgressBarID], gPlayerData[playerid][pDrunk]);
-							// SetProgressBarValue(gPlayerData[playerid][pNarcoticProgressBarID], gPlayerData[playerid][pNarcotic]);
+							SetProgressBarValue(gPlayerData[playerid][pPoisonProgressBarID], gPlayerData[playerid][pPoison]);
+							SetProgressBarValue(gPlayerData[playerid][pFatProgressBarID], gPlayerData[playerid][pFat]);
+							SetProgressBarValue(gPlayerData[playerid][pStomachProgressBarID], gPlayerData[playerid][pStomach]);
+							SetProgressBarValue(gPlayerData[playerid][pVitaminsProgressBarID], gPlayerData[playerid][pVitamins]);
+							SetProgressBarValue(gPlayerData[playerid][pDrunkProgressBarID], gPlayerData[playerid][pDrunk]);
+							SetProgressBarValue(gPlayerData[playerid][pNarcoticProgressBarID], gPlayerData[playerid][pNarcotic]);
 							ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pEnergyProgressBarID]);
 							ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pHungerProgressBarID]);
 							ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pThirstProgressBarID]);
-							// ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pPoisonProgressBarID]);
-							// ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pFatProgressBarID]);
-							// ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pStomachProgressBarID]);
-							// ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pVitaminsProgressBarID]);
-							//ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pDrunkProgressBarID]);
-							//ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pNarcoticProgressBarID]);
+							ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pPoisonProgressBarID]);
+							ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pFatProgressBarID]);
+							ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pStomachProgressBarID]);
+							ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pVitaminsProgressBarID]);
+							ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pDrunkProgressBarID]);
+							ShowProgressBarForPlayer(playerid, gPlayerData[playerid][pNarcoticProgressBarID]);
 							TextDrawShowForPlayer(playerid, gHealthTextEnergy);
+							TextDrawShowForPlayer(playerid, gHealthTextHunger);
+							TextDrawShowForPlayer(playerid, gHealthTextThirst);
+							TextDrawShowForPlayer(playerid, gHealthTextPoison);
+							TextDrawShowForPlayer(playerid, gHealthTextFat);
+							TextDrawShowForPlayer(playerid, gHealthTextStomach);
+							TextDrawShowForPlayer(playerid, gHealthTextVitamins);
+							TextDrawShowForPlayer(playerid, gHealthTextDrunk);
+							TextDrawShowForPlayer(playerid, gHealthTextNarcotics);
 						}
 					}
 					case 5:
@@ -229,7 +244,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "%sDŸwiêki otoczenia				{33AA33}ON\n", string);
 				else
 					format(string, sizeof(string), "%sDŸwiêki otoczenia				{A10000}OFF\n", string);
-				ShowPlayerDialog(playerid, DIALOG_ONOFF, DIALOG_STYLE_LIST, ""#COLOR_TITLE"Panel gracza", string, "Wybierz", "Zamknij");
+				ShowPlayerDialog(playerid, DIALOG_ONOFF, DIALOG_STYLE_LIST, "Panel gracza", string, "Wybierz", "Zamknij");
 			}
 		}
 		case DIALOG_NEW_VERSION:
@@ -276,60 +291,35 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					new goodA = 0, slot[MAX_PLAYER_ITEM_SLOT];
 					if(gTestQuestionsA[playerid][0] == gTestQuestions[i][a1])
-					{
 						goodA++;
-					}
 					if(gTestQuestionsA[playerid][1] == gTestQuestions[i][a2])
-					{
 						goodA++;
-					}
 					if(gTestQuestionsA[playerid][2] == gTestQuestions[i][a3])
-					{
 						goodA++;
-					}
 					if(gTestQuestionsA[playerid][3] == gTestQuestions[i][a4])
-					{
 						goodA++;
-					}
 					if(gTestQuestionsA[playerid][4] == gTestQuestions[i][a5])
-					{
 						goodA++;
-					}
-					
 					if(goodA < 5)
 					{
 						if(TakingDrivingTestA[playerid])
-						{
 							TakingDrivingTestA[playerid] = 0;
-						}
 						else if(TakingDrivingTestB[playerid])
-						{
 							TakingDrivingTestB[playerid] = 0;
-						}
 						else if(TakingDrivingTestCE[playerid])
-						{
 							TakingDrivingTestCE[playerid] = 0;
-						}
-						
 						gTestResult[playerid] = 0;
-						
 						format(string, sizeof(string), "Test niezaliczony");
 						format(string2, sizeof(string2), "[INFO:] %s obla³ test", gPlayerData[playerid][pName]);
-						
 						foreach(Player, j)
 						{
-							if(!gPlayerLogged[j])
+							if(gPlayerLogged[j])
 							{
-								continue;
-							}
-							
-							PHaveItemEx(j, 3, 18, slot);
-							
-							for(new k = 1; k <= MAX_PLAYER_ITEM_SLOT; k++)
-							{
-								if(slot[k-1] && SlotParam1(j, k))
+								PHaveItemEx(j, 3, 18, slot);
+								for(new k = 1; k <= MAX_PLAYER_ITEM_SLOT; k++)
 								{
-									SendClientMessage(j, COLOR_LIGHTYELLOW2, string2);
+									if(slot[k-1] && SlotParam1(j, k))
+										SendClientMessage(j, COLOR_LIGHTYELLOW2, string2);
 								}
 							}
 						}
@@ -426,7 +416,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					addchance += 0.1;
 				if( gPlayerData[giveplayerid][pMagister] )
 					addchance += 0.05;
-				new Float:chance = 0.006*float(gPlayerData[giveplayerid][pLaw])+0.006*float(gPlayerData[giveplayerid][pPol])+0.006*float(gPlayerData[giveplayerid][pMat])+0.2*float(gPlayerData[giveplayerid][pLevel])-time+addchance;
+				new Float:chance = 0.006*float(gPlayerData[giveplayerid][pAng])+0.006*float(gPlayerData[giveplayerid][pPol])+0.006*float(gPlayerData[giveplayerid][pMat])+0.006*float(gPlayerData[giveplayerid][pHis])+0.2*float(gPlayerData[giveplayerid][pLevel])-time+addchance;
 				if( chance < 0 )
 					chance = 0.0;
 				if( ( gPlayerData[playerid][pBank] >= ( gLawyerOffer[playerid][offerCost] + gLawyerOffer[playerid][govCost] ) ) || ( gPlayerData[playerid][pCash] >= ( gLawyerOffer[playerid][offerCost] + gLawyerOffer[playerid][govCost] ) ) )
@@ -456,7 +446,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if( gPlayerData[playerid][pDuty] && DynamicFactions[ gLawyerOffer[playerid][playerOffering] ][fUseSkins] )
 							SetPlayerToFactionSkin(playerid);
 						else
-							SetPlayerSkinEx(playerid,gPlayerData[playerid][pSkin]);
+							SetPlayerSkin(playerid,gPlayerData[playerid][pSkin]);
 
 						GetPlayerPos(playerid,gPlayerData[playerid][pCrashX],gPlayerData[playerid][pCrashY],gPlayerData[playerid][pCrashZ]);
 
@@ -498,16 +488,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				new vehID = GetPlayerVehicleID(playerid);
-				
 				/* No truck */
-				if(vehID == INVALID_VEHICLE_ID)
+				if( vehID == INVALID_VEHICLE_ID )
 				{
-					ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_A, DIALOG_STYLE_MSGBOX, 	RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_INV_VEHID, RAF_RSC_CP_MENU_EXIT, "");
+					ShowPlayerDialog(playerid,
+													DIALOG_RAF_RSC_CP_INFO_A,
+													DIALOG_STYLE_MSGBOX,
+													RAF_RSC_CP_MENU_HEADER,
+													RAF_RSC_CP_MENU_INV_VEHID,
+													RAF_RSC_CP_MENU_EXIT,
+													"" );
 					return 1;
 				}
-				
 				/* Not a faction truck */
-				if(gVehData[vehID-1][mVehFaction] != FACTIONID_RAFINERY)
+				if( gVehData[vehID-1][mVehFaction] != FACTIONID_RAFINERY )
 				{
 					ShowPlayerDialog(playerid,
 													DIALOG_RAF_RSC_CP_INFO_A,
@@ -515,14 +509,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 													RAF_RSC_CP_MENU_HEADER,
 													RAF_RSC_CP_MENU_INV_VEHFAC,
 													RAF_RSC_CP_MENU_EXIT,
-													"");
+													"" );
 					return 1;
 				}
-				
 				new tlID = GetVehicleTrailer(vehID);
-				
 				/* Truck has no attached tanker */
-				if(tlID == 0)
+				if( tlID == 0 )
 				{
 					ShowPlayerDialog(playerid,
 													DIALOG_RAF_RSC_CP_INFO_A,
@@ -533,9 +525,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 													"");
 					return 1;
 				}
-				
 				/* Not a faction tanker */
-				if(gVehData[tlID-1][mVehFaction] != FACTIONID_RAFINERY)
+				if( gVehData[tlID-1][mVehFaction] != FACTIONID_RAFINERY )
 				{
 					ShowPlayerDialog(playerid,
 													DIALOG_RAF_RSC_CP_INFO_A,
@@ -543,15 +534,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 													RAF_RSC_CP_MENU_HEADER,
 													RAF_RSC_CP_MENU_INV_TLFAC,
 													RAF_RSC_CP_MENU_EXIT,
-													"");
+													"" );
 					return 1;
 				}
-				
 				/* Refuel petrol */
-				if(listitem == 0)
+				if( listitem == 0 )
 				{
 					/* Tanker is already filled with other type of fuel */
-					if(gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_PETROL && gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_NONE)
+					if( gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_PETROL && gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_NONE )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_B,
@@ -559,11 +549,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_INV_TYPE,
 														RAF_RSC_CP_MENU_BACK,
-														"");
+														"" );
 						return 1;
 					}
 					/* Tanker is already refueling */
-					if(gVehData[tlID-1][TankerIsRefueling])
+					if( gVehData[tlID-1][TankerIsRefueling] )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_A,
@@ -571,11 +561,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_AREFUELING,
 														RAF_RSC_CP_MENU_EXIT,
-														"");
+														"" );
 						return 1;
 					}
 					/* Tanker is already full */
-					if(gVehData[tlID-1][TankerResourceValue] >= MAX_TANKER_RESOURCE_VALUE)
+					if( gVehData[tlID-1][TankerResourceValue] >= MAX_TANKER_RESOURCE_VALUE )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_A,
@@ -583,11 +573,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_AMAX,
 														RAF_RSC_CP_MENU_EXIT,
-														"");
+														"" );
 						return 1;
 					}
 					/* No rafinery resource */
-					if(gRafinery[RafResourcePetrol] <= 0)
+					if( gRafinery[RafResourcePetrol] <= 0 )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_A,
@@ -595,7 +585,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_REFUELED_B,
 														RAF_RSC_CP_MENU_EXIT,
-														"");
+														"" );
 						return 1;
 					}
 					new Float:tX, Float:tY, Float:tZ;
@@ -610,15 +600,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 													RAF_RSC_CP_MENU_HEADER,
 													RAF_RSC_CP_MENU_REFUELING,
 													RAF_RSC_CP_MENU_EXIT,
-													"");
+													"" );
 					return 1;
 				}
-				
 				/* Refuel oil */
-				else if(listitem == 1)
+				if( listitem == 1 )
 				{
 					/* Tanker is already filled with other type of fuel */
-					if(gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_OIL && gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_NONE)
+					if( gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_OIL && gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_NONE )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_B,
@@ -626,11 +615,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_INV_TYPE,
 														RAF_RSC_CP_MENU_BACK,
-														"");
+														"" );
 						return 1;
 					}
 					/* Tanker is already refueling */
-					if(gVehData[tlID-1][TankerIsRefueling])
+					if( gVehData[tlID-1][TankerIsRefueling] )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_A,
@@ -638,11 +627,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_AREFUELING,
 														RAF_RSC_CP_MENU_EXIT,
-														"");
+														"" );
 						return 1;
 					}
 					/* Tanker is already full */
-					if(gVehData[tlID-1][TankerResourceValue] >= MAX_TANKER_RESOURCE_VALUE)
+					if( gVehData[tlID-1][TankerResourceValue] >= MAX_TANKER_RESOURCE_VALUE )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_A,
@@ -650,11 +639,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_AMAX,
 														RAF_RSC_CP_MENU_EXIT,
-														"");
+														"" );
 						return 1;
 					}
 					/* No rafinery resource */
-					if(gRafinery[RafResourceOil] <= 0)
+					if( gRafinery[RafResourceOil] <= 0 )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_A,
@@ -662,7 +651,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_REFUELED_B,
 														RAF_RSC_CP_MENU_EXIT,
-														"");
+														"" );
 						return 1;
 					}
 					new Float:tX, Float:tY, Float:tZ;
@@ -677,105 +666,80 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 													RAF_RSC_CP_MENU_HEADER,
 													RAF_RSC_CP_MENU_REFUELING,
 													RAF_RSC_CP_MENU_EXIT,
-													"");
+													"" );
 					return 1;
 				}
-				
 				/* Refuel gas */
-				else if(listitem == 2)
+				if( listitem == 2 )
 				{
 					/* Tanker is already filled with other type of fuel */
-					if(gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_GAS && gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_NONE)
+					if( gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_GAS && gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_NONE )
 					{
-						ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_B, DIALOG_STYLE_MSGBOX, RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_INV_TYPE, RAF_RSC_CP_MENU_BACK, "");
+						ShowPlayerDialog(playerid,
+														DIALOG_RAF_RSC_CP_INFO_B,
+														DIALOG_STYLE_MSGBOX,
+														RAF_RSC_CP_MENU_HEADER,
+														RAF_RSC_CP_MENU_INV_TYPE,
+														RAF_RSC_CP_MENU_BACK,
+														"" );
 						return 1;
 					}
-					
 					/* Tanker is already refueling */
-					if(gVehData[tlID-1][TankerIsRefueling])
+					if( gVehData[tlID-1][TankerIsRefueling] )
 					{
-						ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_A, DIALOG_STYLE_MSGBOX, RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_AREFUELING, RAF_RSC_CP_MENU_EXIT, "");
+						ShowPlayerDialog(playerid,
+														DIALOG_RAF_RSC_CP_INFO_A,
+														DIALOG_STYLE_MSGBOX,
+														RAF_RSC_CP_MENU_HEADER,
+														RAF_RSC_CP_MENU_AREFUELING,
+														RAF_RSC_CP_MENU_EXIT,
+														"" );
 						return 1;
 					}
-					
 					/* Tanker is already full */
-					if(gVehData[tlID-1][TankerResourceValue] >= MAX_TANKER_RESOURCE_VALUE)
+					if( gVehData[tlID-1][TankerResourceValue] >= MAX_TANKER_RESOURCE_VALUE )
 					{
-						ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_A, DIALOG_STYLE_MSGBOX, RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_AMAX, RAF_RSC_CP_MENU_EXIT, "");
+						ShowPlayerDialog(playerid,
+														DIALOG_RAF_RSC_CP_INFO_A,
+														DIALOG_STYLE_MSGBOX,
+														RAF_RSC_CP_MENU_HEADER,
+														RAF_RSC_CP_MENU_AMAX,
+														RAF_RSC_CP_MENU_EXIT,
+														"" );
 						return 1;
 					}
-					
 					/* No rafinery resource */
-					if(gRafinery[RafResourceGas] <= 0)
+					if( gRafinery[RafResourceGas] <= 0 )
 					{
-						ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_A, DIALOG_STYLE_MSGBOX, 	RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_REFUELED_B, RAF_RSC_CP_MENU_EXIT, "");
+						ShowPlayerDialog(playerid,
+														DIALOG_RAF_RSC_CP_INFO_A,
+														DIALOG_STYLE_MSGBOX,
+														RAF_RSC_CP_MENU_HEADER,
+														RAF_RSC_CP_MENU_REFUELED_B,
+														RAF_RSC_CP_MENU_EXIT,
+														"" );
 						return 1;
 					}
-					
 					new Float:tX, Float:tY, Float:tZ;
 					GetPlayerPos(playerid, tX, tY, tZ);
-					
 					gVehData[tlID-1][TankerIsRefueling] = 1;
-					gVehData[tlID-1][TankerResourceType] = TANKER_TYPE_GAS;					
+					gVehData[tlID-1][TankerResourceType] = TANKER_TYPE_GAS;
 					SaveVehData(tlID-1, "TankerResourceType");
-					
 					SetTimerEx("FuelTankerGas", FUEL_TANKER_STEP, false, "ifff", playerid, tX, tY, tZ);
-					
-					ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_A, DIALOG_STYLE_MSGBOX, RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_REFUELING, RAF_RSC_CP_MENU_EXIT, "");
-					
+					ShowPlayerDialog(playerid,
+													DIALOG_RAF_RSC_CP_INFO_A,
+													DIALOG_STYLE_MSGBOX,
+													RAF_RSC_CP_MENU_HEADER,
+													RAF_RSC_CP_MENU_REFUELING,
+													RAF_RSC_CP_MENU_EXIT,
+													"" );
 					return 1;
 				}
-				
-				/* Refuel avitaion fuel */
-				else if(listitem == 3)
-				{
-					/* Tanker is already filled with other type of fuel */
-					if(gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_GAS && gVehData[tlID-1][TankerResourceType] != TANKER_TYPE_NONE)
-					{
-						ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_B, DIALOG_STYLE_MSGBOX, RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_INV_TYPE, RAF_RSC_CP_MENU_BACK, "");
-						return 1;
-					}
-					
-					/* Tanker is already refueling */
-					if(gVehData[tlID-1][TankerIsRefueling])
-					{
-						ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_A, DIALOG_STYLE_MSGBOX, RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_AREFUELING, RAF_RSC_CP_MENU_EXIT, "");
-						return 1;
-					}
-					
-					/* Tanker is already full */
-					if(gVehData[tlID-1][TankerResourceValue] >= MAX_TANKER_RESOURCE_VALUE)
-					{
-						ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_A, DIALOG_STYLE_MSGBOX, RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_AMAX, RAF_RSC_CP_MENU_EXIT, "");
-						return 1;
-					}
-					
-					/* No rafinery resource */
-					if(gRafinery[RafResourceFly] <= 0)
-					{
-						ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_A, DIALOG_STYLE_MSGBOX, 	RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_REFUELED_B, RAF_RSC_CP_MENU_EXIT, "");
-						return 1;
-					}
-					
-					new Float:tX, Float:tY, Float:tZ;
-					GetPlayerPos(playerid, tX, tY, tZ);
-					
-					gVehData[tlID-1][TankerIsRefueling] = 1;
-					gVehData[tlID-1][TankerResourceType] = TANKER_TYPE_FLY;					
-					SaveVehData(tlID-1, "TankerResourceType");
-					
-					SetTimerEx("FuelTankerFly", FUEL_TANKER_STEP, false, "ifff", playerid, tX, tY, tZ);
-					
-					ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_INFO_A, DIALOG_STYLE_MSGBOX, RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_REFUELING, RAF_RSC_CP_MENU_EXIT, "");
-					
-					return 1;
-				}
-				
 				/* Return fuel to rafinery */
-				else if(listitem == 4)
+				if( listitem == 3 )
 				{
 					/* Tanker has no defined fuel type */
-					if(gVehData[tlID-1][TankerResourceType] == TANKER_TYPE_NONE)
+					if( gVehData[tlID-1][TankerResourceType] == TANKER_TYPE_NONE )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_B,
@@ -783,11 +747,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_NO_TYPE,
 														RAF_RSC_CP_MENU_BACK,
-														"");
+														"" );
 						return 1;
 					}
 					/* Tanker is empty */
-					if(gVehData[tlID-1][TankerResourceValue] == 0)
+					if( gVehData[tlID-1][TankerResourceValue] == 0 )
 					{
 						ShowPlayerDialog(playerid,
 														DIALOG_RAF_RSC_CP_INFO_A,
@@ -795,7 +759,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 														RAF_RSC_CP_MENU_HEADER,
 														RAF_RSC_CP_MENU_EMPTY,
 														RAF_RSC_CP_MENU_EXIT,
-														"");
+														"" );
 						return 1;
 					}
 					new Float:tX, Float:tY, Float:tZ;
@@ -808,7 +772,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 													RAF_RSC_CP_MENU_HEADER,
 													RAF_RSC_CP_MENU_DRAINING,
 													RAF_RSC_CP_MENU_EXIT,
-													"");
+													"" );
 					return 1;
 				}
 			}
@@ -1435,7 +1399,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactory9MM] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactory9MM" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 16), ItemPrice(1,16), ItemPrice(1,16)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 16), ItemPrice(1,16), ItemPrice(1,16)*howmuch);
 					}
 					case 1: // 9mm sil
 					{
@@ -1452,7 +1416,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactory9MMSil] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactory9MMSil" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 17), ItemPrice(1,17), ItemPrice(1,17)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 17), ItemPrice(1,17), ItemPrice(1,17)*howmuch);
 					}
 					case 2: // deag
 					{
@@ -1469,7 +1433,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryDesEagle] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactoryDesEagle" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 18), ItemPrice(1,18), ItemPrice(1,18)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 18), ItemPrice(1,18), ItemPrice(1,18)*howmuch);
 					}
 					case 3: // micro smg
 					{
@@ -1486,7 +1450,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryMicroSMG] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactoryMicroSMG" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 22), ItemPrice(1,22), ItemPrice(1,22)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 22), ItemPrice(1,22), ItemPrice(1,22)*howmuch);
 					}
 					case 4: // mp5
 					{
@@ -1503,7 +1467,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryMP5] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactoryMP5" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 23), ItemPrice(1,23), ItemPrice(1,23)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 23), ItemPrice(1,23), ItemPrice(1,23)*howmuch);
 					}
 					case 5: // tec9
 					{
@@ -1520,7 +1484,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryTec9] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactoryTec9" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 26), ItemPrice(1,26), ItemPrice(1,26)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 26), ItemPrice(1,26), ItemPrice(1,26)*howmuch);
 					}
 					case 6: // shot
 					{
@@ -1537,7 +1501,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryShotgun] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactoryShotgun" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 19), ItemPrice(1,19), ItemPrice(1,19)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 19), ItemPrice(1,19), ItemPrice(1,19)*howmuch);
 					}
 					case 7: // ak47
 					{
@@ -1554,7 +1518,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryAK47] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactoryAK47" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 24), ItemPrice(1,24), ItemPrice(1,24)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 24), ItemPrice(1,24), ItemPrice(1,24)*howmuch);
 					}
 					case 8: // m4
 					{
@@ -1571,7 +1535,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryM4] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactoryM4" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 25), ItemPrice(1,25), ItemPrice(1,25)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 25), ItemPrice(1,25), ItemPrice(1,25)*howmuch);
 					}
 					case 9: // rifle
 					{
@@ -1588,7 +1552,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryRifle] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactoryRifle" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 27), ItemPrice(1,27), ItemPrice(1,27)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 27), ItemPrice(1,27), ItemPrice(1,27)*howmuch);
 					}
 					case 10: // srifle
 					{
@@ -1605,7 +1569,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactorySRifle] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactorySRifle" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 28), ItemPrice(1,28), ItemPrice(1,28)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 28), ItemPrice(1,28), ItemPrice(1,28)*howmuch);
 					}
 				}
 				ShowPlayerDialog(playerid, DIALOG_WLMENU_4_WEAPON_B_NFO, DIALOG_STYLE_MSGBOX, DIALOG_WMENU_TITLE_TXT, string, "Wybierz", "Wróæ");
@@ -1672,7 +1636,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactory9MM" );
 						Businesses[bizid][W9MM] += howmuch;
 						SaveBizData(bizid, "W9MM" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 16), ItemPrice(1,16), ItemPrice(1,16)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 16), ItemPrice(1,16), ItemPrice(1,16)*howmuch);
 					}
 					case 1: // 9mm sil
 					{
@@ -1687,7 +1651,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactory9MMSil" );
 						Businesses[ bizid ][W9MM] += howmuch;
 						SaveBizData( bizid, "W9MMSil" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 17), ItemPrice(1,17), ItemPrice(1,17)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 17), ItemPrice(1,17), ItemPrice(1,17)*howmuch);
 					}
 					case 2: // deag
 					{
@@ -1702,7 +1666,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactoryDesEagle" );
 						Businesses[ bizid ][WDesEagle] += howmuch;
 						SaveBizData( bizid, "WDesEagle" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 18), ItemPrice(1,18), ItemPrice(1,18)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 18), ItemPrice(1,18), ItemPrice(1,18)*howmuch);
 					}
 					case 3: // micro smg
 					{
@@ -1717,7 +1681,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactoryMicroSMG" );
 						Businesses[ bizid ][WMicroSMG] += howmuch;
 						SaveBizData( bizid, "WMicroSMG" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 22), ItemPrice(1,22), ItemPrice(1,22)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 22), ItemPrice(1,22), ItemPrice(1,22)*howmuch);
 					}
 					case 4: // mp5
 					{
@@ -1732,7 +1696,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactoryMP5" );
 						Businesses[ bizid ][WMP5] += howmuch;
 						SaveBizData( bizid, "WMP5" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 23), ItemPrice(1,23), ItemPrice(1,23)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 23), ItemPrice(1,23), ItemPrice(1,23)*howmuch);
 					}
 					case 5: // tec9
 					{
@@ -1747,7 +1711,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactoryTec9" );
 						Businesses[ bizid ][WTec9] += howmuch;
 						SaveBizData( bizid, "WTec9" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 26), ItemPrice(1,26), ItemPrice(1,26)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 26), ItemPrice(1,26), ItemPrice(1,26)*howmuch);
 					}
 					case 6: // shot
 					{
@@ -1762,7 +1726,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactoryShotgun" );
 						Businesses[ bizid ][WShotgun] += howmuch;
 						SaveBizData( bizid, "WShotgun" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 19), ItemPrice(1,19), ItemPrice(1,19)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 19), ItemPrice(1,19), ItemPrice(1,19)*howmuch);
 					}
 					case 7: // ak47
 					{
@@ -1777,7 +1741,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactoryAK47" );
 						Businesses[ bizid ][WAK47] += howmuch;
 						SaveBizData( bizid, "WAK47" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 24), ItemPrice(1,24), ItemPrice(1,24)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 24), ItemPrice(1,24), ItemPrice(1,24)*howmuch);
 					}
 					case 8: // m4
 					{
@@ -1792,7 +1756,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactoryM4" );
 						Businesses[ bizid ][WM4] += howmuch;
 						SaveBizData( bizid, "WM4" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 25), ItemPrice(1,25), ItemPrice(1,25)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 25), ItemPrice(1,25), ItemPrice(1,25)*howmuch);
 					}
 					case 9: // rifle
 					{
@@ -1807,7 +1771,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactoryRifle" );
 						Businesses[ bizid ][WRifle] += howmuch;
 						SaveBizData( bizid, "WRifle" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 27), ItemPrice(1,27), ItemPrice(1,27)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 27), ItemPrice(1,27), ItemPrice(1,27)*howmuch);
 					}
 					case 10: // srifle
 					{
@@ -1822,7 +1786,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactorySRifle" );
 						Businesses[ bizid ][WSRifle] += howmuch;
 						SaveBizData( bizid, "WSRifle" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 28), ItemPrice(1,28), ItemPrice(1,28)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 28), ItemPrice(1,28), ItemPrice(1,28)*howmuch);
 					}
 				}
 				ShowPlayerDialog(playerid, DIALOG_WLMENU_4_WEAPON_B_NFO, DIALOG_STYLE_MSGBOX, DIALOG_WMENU_TITLE_TXT, string, "Wybierz", "Wróæ");
@@ -2097,7 +2061,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactory9MMAmmo] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactory9MMAmmo" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 36), ItemPrice(1,36), ItemPrice(1,36)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 36), ItemPrice(1,36), ItemPrice(1,36)*howmuch);
 					}
 					case 1: // 50ae
 					{
@@ -2114,7 +2078,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactory50AEAmmo] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactory50AEAmmo" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 37), ItemPrice(1,37), ItemPrice(1,37)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 37), ItemPrice(1,37), ItemPrice(1,37)*howmuch);
 					}
 					case 2: // buckshot
 					{
@@ -2131,7 +2095,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryBuckshot] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactoryBuckshot" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 38), ItemPrice(1,38), ItemPrice(1,38)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 38), ItemPrice(1,38), ItemPrice(1,38)*howmuch);
 					}
 					case 3: // 762mm
 					{
@@ -2148,7 +2112,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactory762MMAmmo] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactory762MMAmmo" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 39), ItemPrice(1,39), ItemPrice(1,39)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 39), ItemPrice(1,39), ItemPrice(1,39)*howmuch);
 					}
 					case 4: //  127mm
 					{
@@ -2165,7 +2129,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData( gPlayerData[playerid][pFaction], "Bank" );
 						DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactory127MMAmmo] += howmuch;
 						SaveFData( gPlayerData[playerid][pFaction], "WFactory127MMAmmo" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 40), ItemPrice(1,40), ItemPrice(1,40)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 40), ItemPrice(1,40), ItemPrice(1,40)*howmuch);
 					}
 				}
 				ShowPlayerDialog(playerid, DIALOG_WLMENU_4_AMMO_B_NFO, DIALOG_STYLE_MSGBOX, DIALOG_WMENU_TITLE_TXT, string, "Wróæ", "");
@@ -2232,7 +2196,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactory9MMAmmo" );
 						Businesses[bizid][W9MMAmmo] += howmuch;
 						SaveBizData(bizid, "W9MMAmmo" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 36), ItemPrice(1,36), ItemPrice(1,36)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 36), ItemPrice(1,36), ItemPrice(1,36)*howmuch);
 					}
 					case 1: // 50ae
 					{
@@ -2247,7 +2211,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactory50AEAmmo" );
 						Businesses[bizid][W50AEAmmo] += howmuch;
 						SaveBizData(bizid, "W50AEAmmo" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 37), ItemPrice(1,37), ItemPrice(1,37)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 37), ItemPrice(1,37), ItemPrice(1,37)*howmuch);
 					}
 					case 2: // buckshot
 					{
@@ -2262,7 +2226,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactoryBuckshot" );
 						Businesses[bizid][WBuckshot] += howmuch;
 						SaveBizData(bizid, "WBuckshot" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 38), ItemPrice(1,38), ItemPrice(1,38)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 38), ItemPrice(1,38), ItemPrice(1,38)*howmuch);
 					}
 					case 3: // 762mm
 					{
@@ -2277,7 +2241,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactory762MMAmmo" );
 						Businesses[bizid][W762MMAmmo] += howmuch;
 						SaveBizData(bizid, "W762MMAmmo" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 39), ItemPrice(1,39), ItemPrice(1,39)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 39), ItemPrice(1,39), ItemPrice(1,39)*howmuch);
 					}
 					case 4: //  127mm
 					{
@@ -2292,7 +2256,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveWFactoryData( "WFactory127MMAmmo" );
 						Businesses[bizid][W127MMAmmo] += howmuch;
 						SaveBizData(bizid, "W127MMAmmo" );
-						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po $%d, koszt ca³kowity $%d", howmuch, ItemName(1, 40), ItemPrice(1,40), ItemPrice(1,40)*howmuch);
+						format(string, sizeof(string), "Zamówi³eœ %d sztuk %s po %d$, koszt ca³kowity %d$", howmuch, ItemName(1, 40), ItemPrice(1,40), ItemPrice(1,40)*howmuch);
 					}
 				}
 				ShowPlayerDialog(playerid, DIALOG_WLMENU_4_AMMO_B_NFO, DIALOG_STYLE_MSGBOX, DIALOG_WMENU_TITLE_TXT, string, "Wróæ", "");
@@ -2701,20 +2665,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if (listitem == 5) // tec9
 				{
-					format( string2, sizeof(string2), DIALOG_WMENU_BUY_CHECKOUT2_TXT,
-					ItemName( 1, 26 ),
-					DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryTec9] );
-					format( string, sizeof(string), "%sWymagane czêœci:\n- szkielet broni [%d/3]\n- zespó³ zamka [%d/2]\n- magazynek [%d/2]\n- sprê¿yna powrotna [%d/1]\n- komplet œrubek [%d/1]\n- t³umik [%d/1]\n- zestaw monta¿owy Tec9 [%d/1]",
-					string2,
-					DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart1],
-					DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart2],
-					DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart3],
-					DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart4],
-					DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart5],
-					DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart6],
-					DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryTec9Part]);
+					// format( string2, sizeof(string2), DIALOG_WMENU_BUY_CHECKOUT2_TXT,
+					// ItemName( 1, 26 ),
+					// DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryTec9] );
+					// format( string, sizeof(string), "%sWymagane czêœci:\n- szkielet broni [%d/3]\n- zespó³ zamka [%d/2]\n- magazynek [%d/2]\n- sprê¿yna powrotna [%d/1]\n- komplet œrubek [%d/1]\n- t³umik [%d/1]\n- zestaw monta¿owy Tec9 [%d/1]",
+					// string2,
+					// DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart1],
+					// DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart2],
+					// DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart3],
+					// DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart4],
+					// DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart5],
+					// DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryPistolPart6],
+					// DynamicFactions[ gPlayerData[playerid][pFaction] ][WFactoryTec9Part]);
 
-					ShowPlayerDialog( playerid, DIALOG_WMENU_3_WEAPON_MAKE, DIALOG_STYLE_MSGBOX, DIALOG_WMENU_TITLE_TXT, string, "Zmontuj", "Wróæ" );
+					// ShowPlayerDialog( playerid, DIALOG_WMENU_3_WEAPON_MAKE, DIALOG_STYLE_MSGBOX, DIALOG_WMENU_TITLE_TXT, string, "Zmontuj", "Wróæ" );
+					ShowPlayerDialog( playerid, DIALOG_WMENU_3_INFO, DIALOG_STYLE_MSGBOX, "Broñ jest niedostêpna", string, "Zmontuj", "Wróæ" );
 
 					return 1;
 				}
@@ -2776,12 +2741,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					InsertPlayerItemEx(playerid, 3, 21, 4, 0, 0, 0, "Puste", 1);
 					DynamicFactions[gPlayerData[playerid][pFaction]][fBank] -= 5;
 					SaveFData(gPlayerData[playerid][pFaction], "Bank");
-				}
-				else if(listitem == 14) // pancerz
-				{
-					gPlayerData[playerid][pArmour] = 50;
-					SavePlayerData(playerid, "Armour");
-					SetPlayerArmourEx(playerid, 50);
 				}
 			}
 			else
@@ -8751,7 +8710,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						if( strval(inputtext) > 0 && strval(inputtext) < 300 )
 						{
-							SetPlayerSkinEx(playerid,strval(inputtext));
+							SetPlayerSkin(playerid,strval(inputtext));
 							GivePlayerCash(playerid, -80);
 							gPlayerData[playerid][pSkin] = strval(inputtext);
 							Businesses[gBuyBusinessID[playerid]][Products]--;
@@ -8857,7 +8816,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new i = gBuyBusinessID[playerid];
 			if(response)
 			{
-				if(PHaveItemParam1Ex(playerid, 10, -1, Businesses[i][BUID]) || PHaveItemParam1Ex(playerid, 11, -1, Businesses[i][BUID]) || (Businesses[i][BGov] && gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT))
+				if(PHaveItemParam1Ex(playerid, 2, -1, Businesses[i][BUID]) || PHaveItemParam1Ex(playerid, 4, -1, Businesses[i][BUID]) || PHaveItemParam1Ex(playerid, 10, -1, Businesses[i][BUID]) ||
+					PHaveItemParam1Ex(playerid, 11, -1, Businesses[i][BUID]) || (Businesses[i][BGov] && gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT))
 				{
 					FBuyMenu:
 					if(gListOverItem[playerid] == 1)
@@ -8999,7 +8959,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(listitem == 0)
 				{
-					format(string, sizeof(string), "Stara cena: $%d\n\nWpisz now¹ cene produktu:", BizItemSlotPrice(i, gListItem[playerid]+1));
+					format(string, sizeof(string), "Stara cena: %d$\n\nWpisz now¹ cene produktu:", BizItemSlotPrice(i, gListItem[playerid]+1));
 					ShowPlayerDialog(playerid, DIALOG_FBUY_3, DIALOG_STYLE_INPUT, "Restauracja", string, "Zmieñ", "Wróæ");
 					return 1;
 				}
@@ -9010,7 +8970,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if(listitem == 2)
 				{
-					format(string, sizeof(string), "Stara cena: $%d\n\nPodaj now¹ cene skuput itema", BizItemSlotBuy(i, gListItem[playerid]+1));
+					format(string, sizeof(string), "Stara cena: %d$\n\nPodaj now¹ cene skuput itema", BizItemSlotBuy(i, gListItem[playerid]+1));
 					ShowPlayerDialog(playerid, DIALOG_FBUY_4, DIALOG_STYLE_INPUT, "Restauracja", string, "Zmieñ", "Wróæ");
 					return 1;
 				}
@@ -9080,8 +9040,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if(listitem == 1)
 				{
 					format(string, sizeof(string), "1. %s\n2. %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n10. %s\n11. %s",
-						ItemName(1, 9), ItemName(1, 125), ItemName(1, 126), ItemName(1, 127), ItemName(1, 128),
-						ItemName(1, 129), ItemName(1, 130), ItemName(1, 131), ItemName(1, 132)
+						ItemName(1, 9), ItemName(1, 124), ItemName(1, 125), ItemName(1, 126), ItemName(1, 127), ItemName(1, 128),
+						ItemName(1, 129), ItemName(1, 130), ItemName(1, 131)
 					);
 				}
 				ShowPlayerDialog(playerid, DIALOG_FBUY_6, DIALOG_STYLE_LIST, "Restauracja", string, "Wybierz", "Wróæ");
@@ -9128,20 +9088,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 		}
-		case DIALOG_FBUY_MSG:								// Message with return
+		case DIALOG_FBUY_MSG:							// Message with return
 		{
 			gListOverItem[playerid] = 1;
 			goto FBuyMenu;
 			return 1;
 		}
-		case DIALOG_FBUY_MSG2:								// Message with return
+		case DIALOG_FBUY_MSG2:							// Message with return
 		{
 			ShowBizFProductList(playerid, gBuyBusinessItemListID[playerid]);
 			return 1;
 		}
 		case DIALOG_BUY_1:
 		{
-			if(response)
+			if( response )
 			{
 				switch( listitem )
 				{
@@ -9183,48 +9143,36 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						);
 						if(strcmp(gPlayerData[playerid][pName], Businesses[i][Owner], false) == 0 || (Businesses[i][BGov] && gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT))
 						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P, DIALOG_STYLE_LIST, "Sklep", string, "Wybierz", "WyjdŸ");
+							ShowPlayerDialog(playerid, DIALOG_BUY_2P, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Wybierz", "WyjdŸ");
 						}
 						else
 						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P, DIALOG_STYLE_LIST, "Sklep", string, "Kup", "WyjdŸ");
+							ShowPlayerDialog(playerid, DIALOG_BUY_2P, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Kup", "WyjdŸ");
 						}
-						return 1;
 					}
 					case 1:
 					{
-						if(Businesses[gBuyBusinessID[playerid]][BizType] == BIZT_GAS)
+						new GSID, refillprice;
+						for( new i = 0; i < sizeof(GasStations); i++ )
 						{
-							new GSID, refillprice;
-							for( new i = 0; i < sizeof(GasStations); i++ )
+							if( GasStations[i][BusinessID] == gBuyBusinessID[playerid] )
 							{
-								if( GasStations[i][BusinessID] == gBuyBusinessID[playerid] )
-								{
-									GSID = i;
-									break;
-								}
+								GSID = i;
+								break;
 							}
-							refillprice += floatround(gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][PetrolPrice];
-							refillprice += floatround(gPlayerData[playerid][pGasStationRefOil][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][OilPrice];
-							refillprice += floatround(gPlayerData[playerid][pGasStationRefGas][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][GasPrice];
-							format(string, sizeof( string ), "Zatankowano:\n- %dltr benzyny za $%d\n- %dltr ropy za $%d\n- %dltr gazu za $%d\n\n£¹czna kwota do zap³aty: $%d",
-							floatround(gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]]),
-							floatround(gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][PetrolPrice],
-							floatround(gPlayerData[playerid][pGasStationRefOil][gBuyBusinessID[playerid]]),
-							floatround(gPlayerData[playerid][pGasStationRefOil][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][OilPrice],
-							floatround(gPlayerData[playerid][pGasStationRefGas][gBuyBusinessID[playerid]]),
-							floatround(gPlayerData[playerid][pGasStationRefGas][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][GasPrice],
-							refillprice);
-							ShowPlayerDialog( playerid, DIALOG_BUY_2F, DIALOG_STYLE_MSGBOX, "Stacja paliw", string, "Zap³aæ", "Wróæ" );
 						}
-						else
-						{
-							ShowBizInfo(playerid);
-						}
-					}
-					case 2:
-					{
-						ShowBizInfo(playerid);
+						refillprice += floatround(gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][PetrolPrice];
+						refillprice += floatround(gPlayerData[playerid][pGasStationRefOil][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][OilPrice];
+						refillprice += floatround(gPlayerData[playerid][pGasStationRefGas][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][GasPrice];
+						format(string, sizeof( string ), "Zatankowano:\n- %dltr benzyny za %d$\n- %dltr ropy za %d$\n- %dltr gazu za %d$\n\n£¹czna kwota do zap³aty: %d$",
+						floatround(gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]]),
+						floatround(gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][PetrolPrice],
+						floatround(gPlayerData[playerid][pGasStationRefOil][gBuyBusinessID[playerid]]),
+						floatround(gPlayerData[playerid][pGasStationRefOil][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][OilPrice],
+						floatround(gPlayerData[playerid][pGasStationRefGas][gBuyBusinessID[playerid]]),
+						floatround(gPlayerData[playerid][pGasStationRefGas][gBuyBusinessID[playerid]], floatround_round) * GasStations[GSID][GasPrice],
+						refillprice);
+						ShowPlayerDialog( playerid, DIALOG_BUY_2F, DIALOG_STYLE_MSGBOX, "Stacja paliw", string, "Zap³aæ", "Wróæ" );
 					}
 				}
 				return 1;
@@ -9232,12 +9180,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BUY_2F:
 		{
-			if(response)
+			if( response )
 			{
 				new GSID, refillpricep, refillpriceo, refillpriceg, refillprice;
-				for(new i = 0; i < sizeof(GasStations); i++)
+				for( new i = 0; i < sizeof(GasStations); i++ )
 				{
-					if(GasStations[i][BusinessID] == gBuyBusinessID[playerid])
+					if( GasStations[i][BusinessID] == gBuyBusinessID[playerid] )
 					{
 						GSID = i;
 						break;
@@ -9246,22 +9194,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				refillpricep = refillprice += floatround(gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]] * GasStations[GSID][PetrolPrice], floatround_round);
 				refillpriceo = refillprice += floatround(gPlayerData[playerid][pGasStationRefOil][gBuyBusinessID[playerid]] * GasStations[GSID][OilPrice], floatround_round);
 				refillpriceg = refillprice += floatround(gPlayerData[playerid][pGasStationRefGas][gBuyBusinessID[playerid]] * GasStations[GSID][GasPrice], floatround_round);
-				
-				ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
-				
-				if(refillprice > gPlayerData[playerid][pCash])
+				if( refillprice > gPlayerData[playerid][pCash] )
 				{
 					new lefttp = refillprice - gPlayerData[playerid][pCash];
-					
-					format(string, sizeof(string), "Zap³acono: $%d\nPozosta³o do zap³aty: $%d\n\nMusisz jak najszybciej op³aciæ zaleg³¹ kwote !\nW przeciwnym wypadku zacznie siê Tob¹ interesowaæ policja !", gPlayerData[playerid][pCash], lefttp);
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja paliw", string, "Zamknij", "");
-					
-					if(refillpricep > gPlayerData[playerid][pCash])
+					format( string, sizeof(string), "Zap³acono: %d$\nPozosta³o do zap³aty: %d$\n\nMusisz jak najszybciej op³aciæ zaleg³¹ kwote !\nW przeciwnym wypadku zacznie siê Tob¹ interesowaæ policja !", gPlayerData[playerid][pCash], lefttp );
+					ShowPlayerDialog( playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja paliw", string, "Zamknij", "" );
+					if( refillpricep > gPlayerData[playerid][pCash] )
 					{
-						gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]] = floatround(gPlayerData[playerid][pCash]/GasStations[GSID][PetrolPrice], floatround_round);
-						SavePlayerData(playerid, "GasStationRefPetrol", gBuyBusinessID[playerid]);
+						gPlayerData[playerid][pGasStationRefPetrol][ gBuyBusinessID[playerid] ] = floatround(gPlayerData[playerid][pCash]/GasStations[GSID][PetrolPrice], floatround_round);
+						SavePlayerData( playerid, "GasStationRefPetrol", gBuyBusinessID[playerid] );
 						
-						Businesses[gBuyBusinessID[playerid]][Till] += gPlayerData[playerid][pCash];
+						Businesses[ gBuyBusinessID[playerid] ][Till] += gPlayerData[playerid][pCash];
 						
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelPetrolToday] += gPlayerData[playerid][pCash];
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelPetrolTotal] += gPlayerData[playerid][pCash];
@@ -9270,14 +9213,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveBizData(gBuyBusinessID[playerid], "IncomeFuelPetrolTotal");
 						SaveBizData(gBuyBusinessID[playerid], "IncomeTotal");
 						
-						GivePlayerCash(playerid, -gPlayerData[playerid][pCash]);
+						GivePlayerCash( playerid, -gPlayerData[playerid][pCash] );
 						return 1;
 					}
 					else
 					{
-						gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]] = 0;
+						gPlayerData[playerid][pGasStationRefPetrol][ gBuyBusinessID[playerid] ] = 0;
 						
-						Businesses[gBuyBusinessID[playerid]][Till] += refillpricep;
+						Businesses[ gBuyBusinessID[playerid] ][Till] += refillpricep;
 						
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelPetrolToday] += refillpricep;
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelPetrolTotal] += refillpricep;
@@ -9286,14 +9229,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveBizData(gBuyBusinessID[playerid], "IncomeFuelPetrolTotal");
 						SaveBizData(gBuyBusinessID[playerid], "IncomeTotal");
 						
-						GivePlayerCash(playerid, -refillpricep);
+						GivePlayerCash( playerid, -refillpricep );
 					}
-					if(refillpriceo > gPlayerData[playerid][pCash])
+					if( refillpriceo > gPlayerData[playerid][pCash] )
 					{
-						gPlayerData[playerid][pGasStationRefOil][gBuyBusinessID[playerid]] = floatround(gPlayerData[playerid][pCash]/GasStations[GSID][OilPrice], floatround_round);
-						SavePlayerData(playerid, "GasStationRefOil", gBuyBusinessID[playerid]);
+						gPlayerData[playerid][pGasStationRefOil][ gBuyBusinessID[playerid] ] = floatround(gPlayerData[playerid][pCash]/GasStations[GSID][OilPrice], floatround_round);
+						SavePlayerData( playerid, "GasStationRefOil", gBuyBusinessID[playerid] );
 						
-						Businesses[gBuyBusinessID[playerid]][Till] += gPlayerData[playerid][pCash];
+						Businesses[ gBuyBusinessID[playerid] ][Till] += gPlayerData[playerid][pCash];
 						
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelOilToday] += gPlayerData[playerid][pCash];
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelOilTotal] += gPlayerData[playerid][pCash];
@@ -9302,14 +9245,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveBizData(gBuyBusinessID[playerid], "IncomeFuelOilTotal");
 						SaveBizData(gBuyBusinessID[playerid], "IncomeTotal");
 						
-						GivePlayerCash(playerid, -gPlayerData[playerid][pCash]);
+						GivePlayerCash( playerid, -gPlayerData[playerid][pCash] );
 						return 1;
 					}
 					else
 					{
-						gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]] = 0;
+						gPlayerData[playerid][pGasStationRefPetrol][ gBuyBusinessID[playerid] ] = 0;
 						
-						Businesses[gBuyBusinessID[playerid]][Till] += refillpriceo;
+						Businesses[ gBuyBusinessID[playerid] ][Till] += refillpriceo;
 						
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelOilToday] += refillpriceo;
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelOilTotal] += refillpriceo;
@@ -9318,14 +9261,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveBizData(gBuyBusinessID[playerid], "IncomeFuelOilTotal");
 						SaveBizData(gBuyBusinessID[playerid], "IncomeTotal");
 						
-						GivePlayerCash(playerid, -refillpriceo);
+						GivePlayerCash( playerid, -refillpriceo );
 					}
-					if(refillpriceg > gPlayerData[playerid][pCash])
+					if( refillpriceg > gPlayerData[playerid][pCash] )
 					{
-						gPlayerData[playerid][pGasStationRefGas][gBuyBusinessID[playerid]] = floatround(gPlayerData[playerid][pCash]/GasStations[GSID][GasPrice], floatround_round);
-						SavePlayerData(playerid, "GasStationRefGas", gBuyBusinessID[playerid]);
+						gPlayerData[playerid][pGasStationRefGas][ gBuyBusinessID[playerid] ] = floatround(gPlayerData[playerid][pCash]/GasStations[GSID][GasPrice], floatround_round);
+						SavePlayerData( playerid, "GasStationRefGas", gBuyBusinessID[playerid] );
 						
-						Businesses[gBuyBusinessID[playerid]][Till] += gPlayerData[playerid][pCash];
+						Businesses[ gBuyBusinessID[playerid] ][Till] += gPlayerData[playerid][pCash];
 						
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelGasToday] += gPlayerData[playerid][pCash];
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelGasTotal] += gPlayerData[playerid][pCash];
@@ -9334,14 +9277,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveBizData(gBuyBusinessID[playerid], "IncomeFuelGasTotal");
 						SaveBizData(gBuyBusinessID[playerid], "IncomeTotal");
 						
-						GivePlayerCash(playerid, -gPlayerData[playerid][pCash]);
+						GivePlayerCash( playerid, -gPlayerData[playerid][pCash] );
 						return 1;
 					}
 					else
 					{
-						gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]] = 0;
+						gPlayerData[playerid][pGasStationRefPetrol][ gBuyBusinessID[playerid] ] = 0;
 						
-						Businesses[gBuyBusinessID[playerid]][Till] += refillpriceg;
+						Businesses[ gBuyBusinessID[playerid] ][Till] += refillpriceg;
 						
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelGasToday] += refillpriceg;
 						Businesses[gBuyBusinessID[playerid]][mIncomeFuelGasTotal] += refillpriceg;
@@ -9350,19 +9293,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveBizData(gBuyBusinessID[playerid], "IncomeFuelGasTotal");
 						SaveBizData(gBuyBusinessID[playerid], "IncomeTotal");
 						
-						GivePlayerCash(playerid, -refillpriceg);
+						GivePlayerCash( playerid, -refillpriceg );
 					}
-					SaveBizData(gBuyBusinessID[playerid], "Till");
+					SaveBizData( gBuyBusinessID[playerid], "Till" );
 				}
 				else
 				{
-					format(string, sizeof(string), "Zap³acono: $%d\nPozosta³o do zap³aty: $%d\n\nZatankowane paliwo zosta³o op³acone !", refillprice, 0);
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja paliw", string, "Zamknij", "");
+					format( string, sizeof(string), "Zap³acono: %d$\nPozosta³o do zap³aty: %d$\n\nZatankowane paliwo zosta³o op³acone !", refillprice, 0 );
+					ShowPlayerDialog( playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja paliw", string, "Zamknij", "" );
 					
-					Businesses[gBuyBusinessID[playerid]][Till] += refillprice;
-					SaveBizData(gBuyBusinessID[playerid], "Till");
-					
-					GivePlayerCash(playerid, -refillprice);
+					Businesses[ gBuyBusinessID[playerid] ][Till] += refillprice;
 					
 					Businesses[gBuyBusinessID[playerid]][mIncomeFuelPetrolToday] += refillpricep;
 					Businesses[gBuyBusinessID[playerid]][mIncomeFuelPetrolTotal] += refillpricep;
@@ -9370,14 +9310,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SaveBizData(gBuyBusinessID[playerid], "IncomeFuelPetrolToday");
 					SaveBizData(gBuyBusinessID[playerid], "IncomeFuelPetrolTotal");
 					SaveBizData(gBuyBusinessID[playerid], "IncomeTotal");
-					
 					Businesses[gBuyBusinessID[playerid]][mIncomeFuelOilToday] += refillpriceo;
 					Businesses[gBuyBusinessID[playerid]][mIncomeFuelOilTotal] += refillpriceo;
 					Businesses[gBuyBusinessID[playerid]][mIncomeTotal] += refillpriceo;
 					SaveBizData(gBuyBusinessID[playerid], "IncomeFuelOilToday");
 					SaveBizData(gBuyBusinessID[playerid], "IncomeFuelOilTotal");
 					SaveBizData(gBuyBusinessID[playerid], "IncomeTotal");
-					
 					Businesses[gBuyBusinessID[playerid]][mIncomeFuelGasToday] += refillpriceg;
 					Businesses[gBuyBusinessID[playerid]][mIncomeFuelGasTotal] += refillpriceg;
 					Businesses[gBuyBusinessID[playerid]][mIncomeTotal] += refillpriceg;
@@ -9385,12 +9323,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SaveBizData(gBuyBusinessID[playerid], "IncomeFuelGasTotal");
 					SaveBizData(gBuyBusinessID[playerid], "IncomeTotal");
 					
-					gPlayerData[playerid][pGasStationRefPetrol][gBuyBusinessID[playerid]] = 0;
-					gPlayerData[playerid][pGasStationRefOil][gBuyBusinessID[playerid]] = 0;
-					gPlayerData[playerid][pGasStationRefGas][gBuyBusinessID[playerid]] = 0;
-					SavePlayerData(playerid, "GasStationRefPetrol", gBuyBusinessID[playerid]);
-					SavePlayerData(playerid, "GasStationRefOil", gBuyBusinessID[playerid]);
-					SavePlayerData(playerid, "GasStationRefGas", gBuyBusinessID[playerid]);
+					GivePlayerCash( playerid, -refillprice );
+					gPlayerData[playerid][pGasStationRefPetrol][ gBuyBusinessID[playerid] ] = 0;
+					gPlayerData[playerid][pGasStationRefOil][ gBuyBusinessID[playerid] ] = 0;
+					gPlayerData[playerid][pGasStationRefGas][ gBuyBusinessID[playerid] ] = 0;
+					SavePlayerData( playerid, "GasStationRefPetrol", gBuyBusinessID[playerid] );
+					SavePlayerData( playerid, "GasStationRefOil", gBuyBusinessID[playerid] );
+					SavePlayerData( playerid, "GasStationRefGas", gBuyBusinessID[playerid] );
+					SaveBizData( gBuyBusinessID[playerid], "Till" );
 				}
 				return 1;
 			}
@@ -9409,7 +9349,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						listitem = gListItem[playerid];
 					}
 					gListItem[playerid] = listitem;
-					ShowPlayerDialog(playerid, DIALOG_BUY_3P, DIALOG_STYLE_LIST, "Sklep", "1. Zmieñ cene\n2. Zmieñ produkt\n3. Cena kupna\n4. Kup", "Wybierz", "Wróæ");
+					ShowPlayerDialog(playerid, DIALOG_BUY_3P, DIALOG_STYLE_LIST, "Sklep 24/7", "1. Zmieñ cene\n2. Zmieñ produkt\n3. Cena kupna\n4. Kup", "Wybierz", "Wróæ");
 					return 1;
 				}
 				else
@@ -9435,11 +9375,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product1price] <= 0)
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product1type] == 3 && Businesses[i][Product1] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if(GetPlayerCash(playerid) >= Businesses[i][Product1price])
@@ -9473,7 +9408,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -9493,11 +9427,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product2price] <= 0 )
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product2type] == 3 && Businesses[i][Product2] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if( GetPlayerCash(playerid) >= Businesses[i][Product2price] )
@@ -9531,7 +9460,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -9551,11 +9479,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product3price] <= 0 )
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product3type] == 3 && Businesses[i][Product3] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if( GetPlayerCash(playerid) >= Businesses[i][Product3price] )
@@ -9589,7 +9512,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -9609,11 +9531,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product4price] <= 0 )
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product4type] == 3 && Businesses[i][Product4] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if( GetPlayerCash(playerid) >= Businesses[i][Product4price] )
@@ -9647,7 +9564,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -9667,11 +9583,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product5price] <= 0 )
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product5type] == 3 && Businesses[i][Product5] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if( GetPlayerCash(playerid) >= Businesses[i][Product5price] )
@@ -9705,7 +9616,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -9725,11 +9635,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product6price] <= 0 )
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product6type] == 3 && Businesses[i][Product6] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if( GetPlayerCash(playerid) >= Businesses[i][Product6price] )
@@ -9763,7 +9668,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -9783,11 +9687,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product7price] <= 0 )
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product7type] == 3 && Businesses[i][Product7] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if( GetPlayerCash(playerid) >= Businesses[i][Product7price] )
@@ -9821,7 +9720,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -9841,11 +9739,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product8price] <= 0 )
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product8type] == 3 && Businesses[i][Product8] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if( GetPlayerCash(playerid) >= Businesses[i][Product8price] )
@@ -9879,7 +9772,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -9899,11 +9791,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product9price] <= 0 )
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product9type] == 3 && Businesses[i][Product9] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if( GetPlayerCash(playerid) >= Businesses[i][Product9price] )
@@ -9937,7 +9824,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -9957,11 +9843,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(Businesses[i][Product10price] <= 0 )
 						{
 							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_6_TXT, "Wróæ", "");
-							return 1;
-						}
-						if(Businesses[i][Product10type] == 3 && Businesses[i][Product10] == 24)
-						{
-							ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Niepowodzenie", DIALOG_BUY_9_TXT, "Wróæ", "");
 							return 1;
 						}
 						if( GetPlayerCash(playerid) >= Businesses[i][Product10price] )
@@ -9995,7 +9876,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							ShowPlayerDialog(playerid,DIALOG_BUY_2P_MSG,DIALOG_STYLE_MSGBOX,"Sukces",DIALOG_BUY_1_TXT,"Wróæ","");
 							Audio_Play(playerid, AUDIO_BUY1, false, false, false);
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 
 							return 1;
 						}
@@ -10011,7 +9891,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				goto ProdList;
 			}
-			return 1;
 		}
 		case DIALOG_BUY_3P:
 		{
@@ -10045,28 +9924,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						case 19: { price = Businesses[i][Product20Price]; }
 						case 20: { price = Businesses[i][Product21Price]; }
 					}
-					format( string, sizeof(string), "Stara cena: $%d\n\nWpisz now¹ cene produktu:", price );
+					format( string, sizeof(string), "Stara cena: %d$\n\nWpisz now¹ cene produktu:", price );
 					ShowPlayerDialog( playerid, DIALOG_BUY_4P, DIALOG_STYLE_INPUT, "Sklep 24/7", string, "Zmieñ", "Wróæ" );
 					return 1;
 				}
 				else if(listitem == 1)
 				{
-					if(Businesses[gPlayerVars[playerid][mAtBizID]][BizType] == BIZT_BAR)
-					{
-						format(string, sizeof(string), "Lista nr 1");
-						ShowPlayerDialog(playerid, DIALOG_BUY_5P_BAR, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Wybierz", "Wróæ");
-					}
-					else
-					{
-						format(string, sizeof(string), "Lista nr 1\nLista nr 2\nLista nr 3\nLista nr 4\nLista nr 5");
-						ShowPlayerDialog(playerid, DIALOG_BUY_5P, DIALOG_STYLE_LIST, "Sklep 24/7 - przedmioty", string, "Wybierz", "Wróæ");
-					}
+					format(string, sizeof(string), "Lista nr 1\nLista nr 2\nLista nr 3\nLista nr 4\nLista nr 5");
+					ShowPlayerDialog(playerid, DIALOG_BUY_5P, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Wybierz", "Wróæ");
 					return 1;
 				}
 				else if(listitem == 2)
 				{
 					productBuyPrice:
-					format(string, sizeof(string), "Stara cena: $%d\n\nPodaj now¹ cene skuput itema", BizItemSlotBuy(i, gListItem[playerid]+1));
+					format(string, sizeof(string), "Stara cena: %d$\n\nPodaj now¹ cene skuput itema", BizItemSlotBuy(i, gListItem[playerid]+1));
 					ShowPlayerDialog(playerid, DIALOG_BUY_7P, DIALOG_STYLE_INPUT, "Sklep 24/7", string, "Wróæ", "");
 					return 1;
 				}
@@ -10259,7 +10130,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						gBuyBusinessItemListID[playerid] = 0;
 						format(string, sizeof(string), "1. %s\n2. %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n10. %s\n11. %s\n12. %s\n13. %s\n14. %s\n",
-							ItemName(1, 174), ItemName(1, 2), ItemName(1, 4), ItemName(1, 5), ItemName(1, 6), ItemName(1, 7), ItemName(1, 8),
+							ItemName(1, 1), ItemName(1, 2), ItemName(1, 4), ItemName(1, 5), ItemName(1, 6), ItemName(1, 7), ItemName(1, 8),
 							ItemName(1, 9), ItemName(1, 10), ItemName(1, 11), ItemName(1, 12), ItemName(1, 105), ItemName(1, 106), ItemName(1, 107)
 						);
 						format(string, sizeof(string), "%s15. %s\n16. %s\n17. %s\n18. %s\n19. %s\n20. %s\n21. %s\n22. %s\n23. %s\n24. %s\n25. %s\n26. %s\n27. %s\n28. %s\n", string,
@@ -10278,19 +10149,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ItemName(1, 152), ItemName(1, 153), ItemName(1, 154), ItemName(1, 155), ItemName(1, 156), ItemName(1, 157), ItemName(1, 158),
 							ItemName(1, 159), ItemName(1, 160), ItemName(1, 161), ItemName(1, 162), ItemName(1, 165)
 						);
-						format(string, sizeof(string), "%s71. %s\n72. %s\n73. %s\n74. %s\n75. %s\n76. %s\n77. %s\n78. %s\n79. %s\n80. %s\n81. %s\n82. %s\n83. %s\n84. %s\n", string,
-							ItemName(1, 166), ItemName(1, 173), ItemName(1, 175), ItemName(1, 176), ItemName(0, 0), ItemName(0, 0), ItemName(0, 0),
-							ItemName(0, 0), ItemName(0, 0), ItemName(0, 0), ItemName(0, 0), ItemName(0, 0)
-						);
-						ShowPlayerDialog(playerid, DIALOG_BUY_6P, DIALOG_STYLE_LIST, "Sklep", string, "Wybierz", "Wróæ");
+						ShowPlayerDialog(playerid, DIALOG_BUY_6P, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Wybierz", "Wróæ");
 						return 1;
 					}
 					case 1:
 					{
 						gBuyBusinessItemListID[playerid] = 1;
-						format(string, sizeof(string), "1. %s\n2. %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n10. %s",
-							ItemName(3, 1), ItemName(3, 2), ItemName(3, 8), ItemName(3, 12), ItemName(3,13), ItemName(3, 14), ItemName(3, 15), ItemName(3, 3),
-							ItemName(3, 22), ItemName(3, 24)
+						format(string, sizeof(string), "1. %s\n2. %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s",
+							ItemName(3, 1), ItemName(3, 2), ItemName(3, 8), ItemName(3, 12), ItemName(3,13), ItemName(3, 14), ItemName(3, 15), ItemName(3, 3), ItemName(3, 22)
 						);
 						ShowPlayerDialog(playerid, DIALOG_BUY_6P, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Wybierz", "Wróæ");
 						return 1;
@@ -10338,230 +10204,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialog(playerid, DIALOG_BUY_6P, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Wybierz", "Wróæ");
 					}
 				}
-			}
-			else
-			{
-				gListOverItem[playerid] = 1;
-				goto BuyMenu;
-			}
-		}
-		case DIALOG_BUY_5P_BAR:								// Change product
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					case 0:
-					{
-						gBuyBusinessItemListID[playerid] = 0;
-						format(string, sizeof(string), "1. %s\n2. %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n10. %s\n11. %s",
-							ItemName(1, 12), ItemName(1, 125), ItemName(1, 126), ItemName(1, 127), ItemName(6, 1), ItemName(6, 2),
-							ItemName(6, 3), ItemName(6, 4), ItemName(6, 5), ItemName(6, 6), ItemName(6, 7)
-						);
-						ShowPlayerDialog(playerid, DIALOG_BUY_6P_BAR, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Wybierz", "Wróæ");
-						return 1;
-					}
-				}
-			}
-			else
-			{
-				gListOverItem[playerid] = 1;
-				goto BuyMenu;
-			}
-		}
-		case DIALOG_BUY_6P_BAR:								// Change product
-		{
-			if(response)
-			{
-				new i = gBuyBusinessID[playerid];
-				new prodID, prodType;
-				if(gBuyBusinessItemListID[playerid] == 0)
-				{
-					switch(listitem)
-					{
-						case 0:
-						{
-							prodID = 12;
-							prodType = 1;
-						}
-						case 1:
-						{
-							prodID = 125;
-							prodType = 1;
-						}
-						case 2:
-						{
-							prodID = 126;
-							prodType = 1;
-						}
-						case 3:
-						{
-							prodID = 127;
-							prodType = 1;
-						}
-						case 4:
-						{
-							prodID = 1;
-							prodType = 6;
-						}
-						case 5:
-						{
-							prodID = 2;
-							prodType = 6;
-						}
-						case 6:
-						{
-							prodID = 3;
-							prodType = 6;
-						}
-						case 7:
-						{
-							prodID = 4;
-							prodType = 6;
-						}
-						case 8:
-						{
-							prodID = 5;
-							prodType = 6;
-						}
-						case 9:
-						{
-							prodID = 6;
-							prodType = 6;
-						}
-						case 10:
-						{
-							prodID = 7;
-							prodType = 6;
-						}
-					}
-				}
-				switch(gListItem[playerid])
-				{
-					case 0:
-					{
-						if(Businesses[i][Product1] != prodID || Businesses[i][Product1type] != prodType)
-						{
-							Businesses[i][Product1] = prodID;
-							Businesses[i][Product1type] = prodType;
-							Businesses[i][Product1count] = 0;
-							SaveBizData(i, "Product1");
-							SaveBizData(i, "Product1type");
-							SaveBizData(i, "Product1count");
-						}
-					}
-					case 1:
-					{
-						if(Businesses[i][Product2] != prodID || Businesses[i][Product2type] != prodType)
-						{
-							Businesses[i][Product2] = prodID;
-							Businesses[i][Product2type] = prodType;
-							Businesses[i][Product2count] = 0;
-							SaveBizData(i, "Product2");
-							SaveBizData(i, "Product2type");
-							SaveBizData(i, "Product2count");
-						}
-					}
-					case 2:
-					{
-						if(Businesses[i][Product3] != prodID || Businesses[i][Product3type] != prodType)
-						{
-							Businesses[i][Product3] = prodID;
-							Businesses[i][Product3type] = prodType;
-							Businesses[i][Product3count] = 0;
-							SaveBizData(i, "Product3");
-							SaveBizData(i, "Product3type");
-							SaveBizData(i, "Product3count");
-						}
-					}
-					case 3:
-					{
-						if(Businesses[i][Product4] != prodID || Businesses[i][Product4type] != prodType)
-						{
-							Businesses[i][Product4] = prodID;
-							Businesses[i][Product4type] = prodType;
-							Businesses[i][Product4count] = 0;
-							SaveBizData(i, "Product4");
-							SaveBizData(i, "Product4type");
-							SaveBizData(i, "Product4count");
-						}
-					}
-					case 4:
-					{
-						if(Businesses[i][Product5] != prodID || Businesses[i][Product5type] != prodType)
-						{
-							Businesses[i][Product5] = prodID;
-							Businesses[i][Product5type] = prodType;
-							Businesses[i][Product5count] = 0;
-							SaveBizData(i, "Product5");
-							SaveBizData(i, "Product5type");
-							SaveBizData(i, "Product5count");
-						}
-					}
-					case 5:
-					{
-						if(Businesses[i][Product6] != prodID || Businesses[i][Product6type] != prodType)
-						{
-							Businesses[i][Product6] = prodID;
-							Businesses[i][Product6type] = prodType;
-							Businesses[i][Product6count] = 0;
-							SaveBizData(i, "Product6");
-							SaveBizData(i, "Product6type");
-							SaveBizData(i, "Product6count");
-						}
-					}
-					case 6:
-					{
-						if(Businesses[i][Product7] != prodID || Businesses[i][Product7type] != prodType)
-						{
-							Businesses[i][Product7] = prodID;
-							Businesses[i][Product7type] = prodType;
-							Businesses[i][Product7count] = 0;
-							SaveBizData(i, "Product7");
-							SaveBizData(i, "Product7type");
-							SaveBizData(i, "Product7count");
-						}
-					}
-					case 7:
-					{
-						if(Businesses[i][Product8] != prodID || Businesses[i][Product8type] != prodType)
-						{
-							Businesses[i][Product8] = prodID;
-							Businesses[i][Product8type] = prodType;
-							Businesses[i][Product8count] = 0;
-							SaveBizData(i, "Product8");
-							SaveBizData(i, "Product8type");
-							SaveBizData(i, "Product8count");
-						}
-					}
-					case 8:
-					{
-						if(Businesses[i][Product9] != prodID || Businesses[i][Product9type] != prodType)
-						{
-							Businesses[i][Product9] = prodID;
-							Businesses[i][Product9type] = prodType;
-							Businesses[i][Product9count] = 0;
-							SaveBizData(i, "Product9");
-							SaveBizData(i, "Product9type");
-							SaveBizData(i, "Product9count");
-						}
-					}
-					case 9:
-					{
-						if(Businesses[i][Product10] != prodID || Businesses[i][Product10type] != prodType)
-						{
-							Businesses[i][Product10] = prodID;
-							Businesses[i][Product10type] = prodType;
-							Businesses[i][Product10count] = 0;
-							SaveBizData(i, "Product10");
-							SaveBizData(i, "Product10type");
-							SaveBizData(i, "Product10count");
-						}
-					}
-				}
-				changed:
-				ShowPlayerDialog(playerid, DIALOG_BUY_2P_MSG, DIALOG_STYLE_MSGBOX, "Sklep 24/7", "Zmieni³eœ produkt !", "Wróæ", "");
-				return 1;
 			}
 			else
 			{
@@ -10970,11 +10612,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							prodID = 22;
 							prodType = 3;
 						}
-						case 9:
-						{
-							prodID = 24;
-							prodType = 3;
-						}
 					}
 				}
 				else if(gBuyBusinessItemListID[playerid] == 2)
@@ -11314,7 +10951,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			goto productBuyPrice;
 			return 1;
 		}
-		case DIALOG_ITEM_FACTORY_1:							// How many items ?
+		case DIALOG_ITEM_FACTORY_1:					// How many items ?
 		{
 			if(response)
 			{
@@ -11420,7 +11057,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			return 1;
 		}
-		case DIALOG_ITEM_FACTORY_2:							// Buy confirmation
+		case DIALOG_ITEM_FACTORY_2:					// Buy confirmation
 		{
 			if(response)
 			{
@@ -11442,13 +11079,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
 						}
-						if(gItemFactories[i][item1price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
 						gBuyItemFactoryItemCount[playerid] = strval(inputtext);
 						format(string, sizeof(string), DIALOG_ITEM_FACTORY_B_CONFIRM, strval(inputtext), gItemFactories[i][item1price]*strval(inputtext));
 						format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
@@ -11460,13 +11090,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(strval(inputtext) < gItemFactories[i][item2minBuy])
 						{
 							format(string, sizeof(string), DIALOG_ITEM_FACTORY_MIN_BUY, gItemFactories[i][item2minBuy]);
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
-						if(gItemFactories[i][item2price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
 							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
@@ -11486,13 +11109,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
 						}
-						if(gItemFactories[i][item3price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
 						gBuyItemFactoryItemCount[playerid] = strval(inputtext);
 						format(string, sizeof(string), DIALOG_ITEM_FACTORY_B_CONFIRM, strval(inputtext), gItemFactories[i][item3price]*strval(inputtext));
 						format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
@@ -11504,13 +11120,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(strval(inputtext) < gItemFactories[i][item4minBuy])
 						{
 							format(string, sizeof(string), DIALOG_ITEM_FACTORY_MIN_BUY, gItemFactories[i][item4minBuy]);
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
-						if(gItemFactories[i][item4price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
 							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
@@ -11530,13 +11139,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
 						}
-						if(gItemFactories[i][item5price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
 						gBuyItemFactoryItemCount[playerid] = strval(inputtext);
 						format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
 						format(string, sizeof(string), DIALOG_ITEM_FACTORY_B_CONFIRM, strval(inputtext), gItemFactories[i][item5price]*strval(inputtext));
@@ -11552,13 +11154,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
 						}
-						if(gItemFactories[i][item6price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
 						gBuyItemFactoryItemCount[playerid] = strval(inputtext);
 						format(string, sizeof(string), DIALOG_ITEM_FACTORY_B_CONFIRM, strval(inputtext), gItemFactories[i][item6price]*strval(inputtext));
 						format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
@@ -11570,13 +11165,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(strval(inputtext) < gItemFactories[i][item7minBuy])
 						{
 							format(string, sizeof(string), DIALOG_ITEM_FACTORY_MIN_BUY, gItemFactories[i][item7minBuy]);
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
-						if(gItemFactories[i][item7price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
 							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
@@ -11597,13 +11185,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
 						}
-						if(gItemFactories[i][item8price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
 						gBuyItemFactoryItemCount[playerid] = strval(inputtext);
 						format(string, sizeof(string), DIALOG_ITEM_FACTORY_B_CONFIRM, strval(inputtext), gItemFactories[i][item8price]*strval(inputtext));
 						format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
@@ -11615,13 +11196,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(strval(inputtext) < gItemFactories[i][item9minBuy])
 						{
 							format(string, sizeof(string), DIALOG_ITEM_FACTORY_MIN_BUY, gItemFactories[i][item9minBuy]);
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
-						if(gItemFactories[i][item9price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
 							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
@@ -11641,13 +11215,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
 							return 1;
 						}
-						if(gItemFactories[i][item10price] <= 0)
-						{
-							format(string, sizeof(string), "Nie mo¿esz kupiæ tego produktu.");
-							format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_3, DIALOG_STYLE_MSGBOX, string2, string, "Wróæ", "");
-							return 1;
-						}
 						gBuyItemFactoryItemCount[playerid] = strval(inputtext);
 						format(string, sizeof(string), DIALOG_ITEM_FACTORY_B_CONFIRM, strval(inputtext), gItemFactories[i][item10price]*strval(inputtext));
 						format(string2, sizeof(string2), DIALOG_ITEM_FACTORY_TITLE, gItemFactories[i][fName]);
@@ -11657,12 +11224,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 		}
-		case DIALOG_ITEM_FACTORY_3:							// Bad input - return
+		case DIALOG_ITEM_FACTORY_3:					// Bad input - return
 		{
 			goto itemFactoryInput;
 			return 1;
 		}
-		case DIALOG_ITEM_FACTORY_4:							// Item list
+		case DIALOG_ITEM_FACTORY_4:					// Item list
 		{
 			itemFactoryList:
 			new i = gBuyItemFactoryID[playerid];
@@ -11702,7 +11269,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			ShowPlayerDialog(playerid, DIALOG_ITEM_FACTORY_1, DIALOG_STYLE_LIST, string2,  string, "Wybierz", "WyjdŸ");
 			return 1;
 		}
-		case DIALOG_ITEM_FACTORY_5:							// Actual bought
+		case DIALOG_ITEM_FACTORY_5:					// Actual bought
 		{
 			if(response)
 			{
@@ -12412,263 +11979,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 		}
-		case DIALOG_GOVERNMENT2_1:
-		{
-			if(response)
-			{
-				if(listitem == 0)
-				{
-					format(string, sizeof(string), "SELECT HIGH_PRIORITY `ID`, `Faction`, `Rank` FROM `samp_users` WHERE `Rank` = 1 AND (`Faction` = '0' OR `Faction` = '2' OR `Faction` = '3' OR `Faction` = '4' OR `Faction` = '9' OR `Faction` = '11')");
-					wp_mysql_query(string, DEF_FAC_LEADERS, playerid, db_con1);
-					return 1;
-				}
-			}
-		}
 		case DIALOG_GOVERNMENT_1:
 		{
 			if(response)
 			{
-				// Jobs
 				if(listitem == 0)
 				{
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS,DIALOG_STYLE_LIST,"Zatrudnij siê","1. Roznosiciel gazet \n2. Detektyw \n3. Prawnik \n4. Sprzedawca produktów \n5. Kierowca autobusu \n6. Kierowca œmieciarki \n7. Kierowca myjki drogowej \n8. Rolnik \n9. Mechanik \n10. Sprzedawca/ekspedient \n11. Zrezygnuj z obecnej pracy", "Wybierz","Wróæ");
+					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS,DIALOG_STYLE_LIST,"Zatrudnij siê","1. Roznosiciel gazet \n2. Detektyw \n3. Prawnik \n4. Sprzedawca produktów \n5. Kierowca autobusu \n6. Kierowca œmieciarki \n7. Kierowca myjki drogowej \n8. Farmer \n9. Mechanik \n10. Sprzedawca/ekspedient \n11. Zrezygnuj z obecnej pracy", "Wybierz","Wróæ");
 				}
-				// Actual taxes
-				else if(listitem == 1) 
+				else
 				{
-					format(string, sizeof(string), ""#COLOR_BEGIN"Podatek VAT (bazowy) - "#COLOR_DEFAULT"%.4f%%\n"#COLOR_BEGIN"Podatek VAT - "#COLOR_DEFAULT"%.4f%%\n"#COLOR_BEGIN"Podatek od radia - "#COLOR_DEFAULT"$%d\n"#COLOR_BEGIN"Podatek od bogatych (próg: $%d) - "#COLOR_DEFAULT"%.4f%%\n"#COLOR_BEGIN"Podatek od biznesu - "#COLOR_DEFAULT"%.4f%%\n\n",
-						DynamicTaxes[VatTaxMin],
-						DynamicTaxes[VatTaxMax],
-						DynamicTaxes[RadioTax],
-						DynamicTaxes[TheRich],
-						DynamicTaxes[RichTax],
-						DynamicTaxes[BusinessTax]);
-					
-					format(string, sizeof(string), "%s"#COLOR_BEGIN2"Podatek od typu pojazdu:\n"#COLOR_BEGIN"Motocykle: "#COLOR_DEFAULT"1$\n"#COLOR_BEGIN"Terenowe: "#COLOR_DEFAULT"4$\n"#COLOR_BEGIN"Sportowe: "#COLOR_DEFAULT"6$\n"#COLOR_BEGIN"Ciê¿arowe: "#COLOR_DEFAULT"8$\n"#COLOR_BEGIN"Pozosta³e: "#COLOR_DEFAULT"2$\n\n"#COLOR_BEGIN"Podatek za emisje spalin: "#COLOR_DEFAULT"od 2$ do 9$",
-						string);
-						
-					ShowPlayerDialog(playerid, DIALOG_GOVERNMENT_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Aktualne podatki", string, "Zamknij", "Wróæ");
-				}
-				// ID make
-				else if(listitem == 2)
-				{
-					if(InsertPlayerItemEx(playerid, 3, 5, 0, 0, 0, 0, gPlayerData[playerid][pName]) == 0)
-					{
-						ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Nie posiadasz miejsca na dowód !","Zamknij","Wróæ");
-						return 1;
-					}
-					format(string, sizeof(string), "[INFO:] Otrzyma³eœ dowód od urzêdnika");
-					SendClientMessage(playerid, COLOR_GREEN, string);
-					format(string, sizeof(string), "odbiera dowód od urzêdnika");
-					PlayerActionMessage(playerid, 15.0, string);
-					format(string, sizeof(string), "[GOVERNMENT:] Identity maked by: %s for %s", "NPC", gPlayerData[playerid][pName]);
-					GovermentLog(string);
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Otrzyma³eœ dowód","Zamknij","Wróæ");
-				}
-				// Car licence make
-				else if(listitem == 3)
-				{					
-					if(gPlayerData[playerid][pCash] < DRIVING_LICENCE_COST)
-					{
-						format(string, sizeof(string), "Nie posiadasz wystarczaj¹cej iloœci pieniêdzy na wyrobienie prawa jazdy (koszt: %d).", DRIVING_LICENCE_COST);
-						ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja",string,"Zamknij","Wróæ");
-						return 1;
-					}
-					
-					new slot;
-					slot = PHaveItem(playerid, 3, 11);
-					
-					if(slot == 0)
-					{
-						ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Nie posiadasz dokumentu potwierdzaj¹cego zdania prawa jazdy.","Zamknij","Wróæ");
-						return 1;
-					}
-					
-					SlotParam5(playerid, slot);
-					
-					if(strcmp(gDSelectedItemP5[playerid], gPlayerData[playerid][pName], false, strlen(gDSelectedItemP5[playerid])) != 0)
-					{
-						ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Dokument, który posiadasz nie nale¿y do ciebie !","Zamknij","Wróæ");
-						return 1;
-					}
-					
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_LIC,DIALOG_STYLE_LIST,"Wybierze kategorie prawa jazdy", "Kategoria A\nKategoria B\nKategoria C+E", "Wybierz", "Wróæ");
-				}
-				// dowod rejestracyjny pojazdu
-				else if(listitem == 4)
-				{
-					ShowPlayerDialog(playerid, DIALOG_GOVERNMENT_VEH_REG, DIALOG_STYLE_INPUT, "Informacja", "WprowadŸ rejestracje pojazdu", "Dalej", "Wróæ");
-					return 1;
+					format(string, sizeof(string), "Podatek VAT (bazowy) - %.4f%%\nPodatek VAT - %.4f%%\nPodatek od radia - %d$\nPodatek od bogatych (próg: %d$) - %.4f%%\nPodatek od biznesu - %.4f%%\n\nPodatek od typu pojazdu:\nMotocykle: 1$\nTerenowe: 4$\nSportowe: 6$\nCiê¿arowe: 8$\nPozosta³e: 2$\n\nPodatek za emisje spalin: od 2$ do 9$",
+					DynamicTaxes[VatTaxMin],
+					DynamicTaxes[VatTaxMax],
+					DynamicTaxes[RadioTax],
+					DynamicTaxes[TheRich],
+					DynamicTaxes[RichTax],
+					DynamicTaxes[BusinessTax]);
+					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_TAX,DIALOG_STYLE_MSGBOX,"Aktualne podatki",string,"Zamknij","Wróæ");
 				}
 			}
 		}
-		case DIALOG_GOVERNMENT_INFO:
+		case DIALOG_GOVERNMENT_TAX:
 		{
 			if(!response)
-				ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_1,DIALOG_STYLE_LIST,""#COLOR_TITLE"Co chcesz zrobiæ ?",DIALOG_GOVERNMENT_1_TXT,"Wybierz","Zamknij");
-		}
-		case DIALOG_GOVERNMENT_VEH_REG:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_GOVERNMENT_VEH_REG, DIALOG_STYLE_INPUT, "Informacja", "Podana zosta³a niepoprawna rejestracja.\nProsze spróbowaæ ponownie.", "Dalej", "Wróæ");
-					return 1;
-				}
-				
-				new vehId = CarSerialToID(strval(inputtext));
-				
-				if(vehId == -1)
-				{
-					ShowPlayerDialog(playerid, DIALOG_GOVERNMENT_VEH_REG, DIALOG_STYLE_INPUT, "Informacja", "Nie ma pojazdu o takiej rejestracji.\nProsze spróbowaæ ponownie.", "Dalej", "Wróæ");
-					return 1;
-				}
-				
-				if(strcmp(gVehData[vehId][Owner], gPlayerData[playerid], false) != 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_GOVERNMENT_VEH_REG, DIALOG_STYLE_INPUT, "Informacja", "Nie jesteœ w³aœcicielem tego pojazdu.\nProsze wprowadziæ inn¹ rejestracje.", "Dalej", "Wróæ");
-					return 1;
-				}
-				
-				InsertPlayerItemEx(playerid, 3, 19, strval(inputtext), gVehData[vehId][mVehVinNo], 0, 0, gPlayerData[playerid][pName]);
-				PlayerActionMessage(playerid, 15.0, "odbiera dowód rjestracyjny pojazdu");
-				ShowPlayerDialog(playerid, DIALOG_GOVERNMENT_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Otrzyma³eœ dowód rejestracyjny pojazdu.", "Zamknij", "Wróæ");
-
-				return 1;
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_GOVERNMENT_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Operacja anulowana.", "Zamknij", "Wróæ");
-				
-				return 1;
-			}
-		}
-		case DIALOG_GOVERNMENT_LIC:
-		{
-			if(response)
-			{
-				new slot, days, licSlot;
-				slot = PHaveItem(playerid, 3, 11);
-				// Category A
-				if(listitem == 0)
-				{					
-					if(SlotParam1(playerid, slot) == 0)
-					{
-						ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Dokument, który posiadasz nie odnosi sie do prawa jazdy kat. A","Zamknij","Wróæ");
-						return 1;
-					}
-					days = SlotParam1(playerid, slot);
-					licSlot = PHaveItem(playerid, 3, 6);
-					if(licSlot > 0)
-					{
-						if(SlotParam1(playerid, licSlot) > 0)
-						{
-							ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Posiadasz ju¿ prawo jazdy kat. A i nie mo¿esz go przed³u¿yæ.","Zamknij","Wróæ");
-							return 1;
-						}
-						else
-						{
-							SetPSlotParam1(playerid, licSlot, days);
-							RemovePlayerItemExUsed(playerid, slot);
-						}
-					}
-					else
-					{
-						licSlot = InsertPlayerItemEx(playerid, 3, 6, days, 0, 0, 0, gPlayerData[playerid][pName], 1);
-						if(licSlot <= 0)
-						{
-							ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Nie posiadasz miejsca na dokument !","Zamknij","Wróæ");
-							return 1;
-						}
-						RemovePlayerItemExUsed(playerid, slot);		
-					}
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Otrzyma³eœ prawo jazdy kat. A","Zamknij","Wróæ");
-					format(string, sizeof(string), "przekazuje dokument oraz pieni¹dze do urzêdnika");
-					PlayerActionMessage(playerid, 15.0, string);
-					format(string, sizeof(string), "odbiera prawo jazdy od urzêdnika");
-					PlayerActionMessage(playerid, 15.0, string);					
-				}
-				// Category B
-				else if(listitem == 1)
-				{					
-					if(SlotParam2(playerid, slot) == 0)
-					{
-						ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Dokument, który posiadasz nie odnosi sie do prawa jazdy kat. A","Zamknij","Wróæ");
-						return 1;
-					}
-					days = SlotParam2(playerid, slot);
-					licSlot = PHaveItem(playerid, 3, 6);
-					if(licSlot > 0)
-					{
-						if(SlotParam2(playerid, licSlot) > 0)
-						{
-							ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Posiadasz ju¿ prawo jazdy kat. B i nie mo¿esz go przed³u¿yæ.","Zamknij","Wróæ");
-							return 1;
-						}
-						else
-						{
-							SetPSlotParam2(playerid, licSlot, days);
-							RemovePlayerItemExUsed(playerid, slot);
-						}
-					}
-					else
-					{
-						licSlot = InsertPlayerItemEx(playerid, 3, 6, 0, days, 0, 0, gPlayerData[playerid][pName], 1);
-						if(licSlot <= 0)
-						{
-							ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Nie posiadasz miejsca na dokument !","Zamknij","Wróæ");
-							return 1;
-						}
-						RemovePlayerItemExUsed(playerid, slot);		
-					}
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Otrzyma³eœ prawo jazdy kat. B","Zamknij","Wróæ");
-					format(string, sizeof(string), "przekazuje dokument oraz pieni¹dze do urzêdnika");
-					PlayerActionMessage(playerid, 15.0, string);
-					format(string, sizeof(string), "odbiera prawo jazdy od urzêdnika");
-					PlayerActionMessage(playerid, 15.0, string);					
-				}
-				// Category CE
-				else if(listitem == 2)
-				{					
-					if(SlotParam3(playerid, slot) == 0)
-					{
-						ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Dokument, który posiadasz nie odnosi sie do prawa jazdy kat. C+E","Zamknij","Wróæ");
-						return 1;
-					}
-					days = SlotParam3(playerid, slot);
-					licSlot = PHaveItem(playerid, 3, 6);
-					if(licSlot > 0)
-					{
-						if(SlotParam3(playerid, licSlot) > 0)
-						{
-							ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Posiadasz ju¿ prawo jazdy kat. C+E i nie mo¿esz go przed³u¿yæ.","Zamknij","Wróæ");
-							return 1;
-						}
-						else
-						{
-							SetPSlotParam3(playerid, licSlot, days);
-							RemovePlayerItemExUsed(playerid, slot);
-						}
-					}
-					else
-					{
-						licSlot = InsertPlayerItemEx(playerid, 3, 6, 0, 0, days, 0, gPlayerData[playerid][pName], 1);
-						if(licSlot <= 0)
-						{
-							ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Nie posiadasz miejsca na dokument !","Zamknij","Wróæ");
-							return 1;
-						}
-						RemovePlayerItemExUsed(playerid, slot);		
-					}
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_INFO,DIALOG_STYLE_MSGBOX,"Informacja","Otrzyma³eœ prawo jazdy kat. C+E","Zamknij","Wróæ");
-					format(string, sizeof(string), "przekazuje dokument oraz pieni¹dze do urzêdnika");
-					PlayerActionMessage(playerid, 15.0, string);
-					format(string, sizeof(string), "odbiera prawo jazdy od urzêdnika");
-					PlayerActionMessage(playerid, 15.0, string);					
-				}
-			}
-			return 1;
+				ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_1,DIALOG_STYLE_LIST,"Co chcesz zrobiæ ?",DIALOG_GOVERNMENT_1_TXT,"Wybierz","Zamknij");
 		}
 		case DIALOG_GOVERNMENT_JOBS:
 		{
@@ -12676,15 +12011,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				gSelectedSlot[playerid] = listitem;
 				if(listitem == 0) // roznosiciel gazet
-				{
-					format(string, sizeof(string), "Jesteœ teraz roznosicielem gazet.\nKomendy:\n/wezprace - /zrezygnujzpracy - /komendypracy\n/pobierzgazety - /rzucgazete\nGazety pobiera siê w punkcie poboru pracy roznosiciela gazet i wpisaniu komendy /pobierzgazety.\n\n");
-					format(string, sizeof(string), "%sRoznoszenie gazet odbywa sie poprzez podejœcie pod dom lub biznes i wpisaniu komendy /rzucgazete\n\nJednorazowo mo¿esz pobraæ %d gazet.\nStawka za gazete: $%d", string, NewsBoyJob[TakeJobPapersCount], NewsBoyJob[TakeJobReward]);
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê", string,DIALOG_GOV_APPLY_TXT,"Wróæ");
-				}
+					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","W tej pracy twoim zadaniem bêdzie roznoszenie gazet pod domy w mieœcie.\nWynagrodzenie za jedn¹ dostarczon¹ gazete to 2$\n\nWymagania:\nBRAK",DIALOG_GOV_APPLY_TXT,"Wróæ");
 				else if (listitem == 1) // detektyw
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Jako detektyw masz mo¿liwoœæ œledzenia osób oraz pojazdów.\nMo¿esz zarabiaæ oferuj¹c swoje uslugi innym.\n\nWymagania:\nlicencjat z matematyki",DIALOG_GOV_APPLY_TXT,"Wróæ");
+					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Jako detektyw masz mo¿liwoœæ œledzenia osób oraz pojazdów.\nMo¿esz zarabiaæ oferuj¹c swoje uslugi innym.\n\nWymagania:\n2 poziom WF-u\n4 poziom matematyki",DIALOG_GOV_APPLY_TXT,"Wróæ");
 				else if (listitem == 2) // prawnik
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Prawnik ma mo¿liwoœæ skrócenia kary osobom siedz¹cym w wiêzieniu.\nMo¿esz zarabiaæ oferuj¹c swoje uslugi innym.\n\nWymagania:\nlicencjat z nauk matematycznych i tytu³ magistra z nauk prawniczych",DIALOG_GOV_APPLY_TXT,"Wróæ");
+					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Prawnik ma mo¿liwoœæ skrócenia kary osobom siedz¹cym w wiêzieniu.\nMo¿esz zarabiaæ oferuj¹c swoje uslugi innym.\n\nWymagania:\n4 poaziom matematyki",DIALOG_GOV_APPLY_TXT,"Wróæ");
 				else if (listitem == 3) // sprzedawca produktów
 					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Sprzedawca produktów sprzedaje produkty wlaœcicielom biznesów przy czym sam ustala ich cene.\n\nWymagania:\nPrawo jazdy",DIALOG_GOV_APPLY_TXT,"Wróæ");
 				else if (listitem == 4) // kierowca autobusu
@@ -12692,14 +12023,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if (listitem == 5) // kierowca œmieciarki
 					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Kierowca œmieciarki zbiera œmieci z miast w San Andreas.\n\nWymagania:\nPrawo jazdy",DIALOG_GOV_APPLY_TXT,"Wróæ");
 				else if (listitem == 6) // kierowca myjki drogowej
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Kierowca myjki drogowej dba o czystoœæ ulic w San Andreas\n\nWymagania:\nDowód osobisty",DIALOG_GOV_APPLY_TXT,"Wróæ");
+					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Kierowca myjki drogowej dba o czystoœæ ulic w San Andreas\n\nWymagania:\nPrawo jazdy",DIALOG_GOV_APPLY_TXT,"Wróæ");
 				else if (listitem == 7) // farmer
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Rolnik œcina plony je¿d¿¹c kombajnem, nastêpnie zsypuje to co udalo mu sie uzbieraæ do magazynu.\n\nWymagania:\nBRAK",DIALOG_GOV_APPLY_TXT,"Wróæ");
+					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Farmer œcina plony je¿d¿¹c kombajnem, nastêpnie zsypuje to co udalo mu sie uzbieraæ do magazynu.\n\nWymagania:\nBRAK",DIALOG_GOV_APPLY_TXT,"Wróæ");
 				else if (listitem == 8) // mechanik
-					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Mechanik zajmuje siê ró¿nymi pojazdami i dba o ich sprawnoœæ za co uzyskuje odpowiednie wynagordzenie.\n\nWymagania:\nlicencjat z nauk technicznych",DIALOG_GOV_APPLY_TXT,"Wróæ");
+					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Mechanik zajmuje siê ró¿nymi pojazdami i dba o ich sprawnoœæ za co uzyskuje odpowiednie wynagordzenie.\n\nWymagania:\n1 poziom WF-u\n1 poziom Matematyki",DIALOG_GOV_APPLY_TXT,"Wróæ");
 				else if (listitem == 9) // sprzedawca/ekspedient
 					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_2,DIALOG_STYLE_MSGBOX,"Zatrudnij siê","Sprzedawca/ekspedient sprzedaje produkty w sklepie (biznesie).\nPraca polega na przesiadywaniu w biznesie i obsludze wchodz¹cych klientów.\n\nWymagania:\nBRAK",DIALOG_GOV_APPLY_TXT,"Wróæ");
-				else if (listitem == 10) // rezygnacja
+				else if (listitem == 10)
 				{
 					if(gPlayerData[playerid][pJob] != 0)
 					{
@@ -12728,7 +12059,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_1,DIALOG_STYLE_LIST,""#COLOR_TITLE"Co chcesz zrobiæ ?",DIALOG_GOVERNMENT_1_TXT,"Wybierz","Zamknij");
+				ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_1,DIALOG_STYLE_LIST,"Co chcesz zrobiæ ?",DIALOG_GOVERNMENT_1_TXT,"Wybierz","Zamknij");
 			}
 		}
 		case DIALOG_GOVERNMENT_JOBS_2:
@@ -12739,162 +12070,115 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS_3,DIALOG_STYLE_MSGBOX,"Informacja","Posiadasz ju¿ prace !\nZanim weŸmiesz now¹ musisz zwolniæ siê ze starej.","Wróæ","");
 				else
 				{
-					//NewsBoy
 					if(gSelectedSlot[playerid] == 0)
 					{
-						gPlayerData[playerid][pJob] = 21;
+						gPlayerData[playerid][pJob] = 21; //NewsBoy
 						SavePlayerData(playerid, "Job");
-						format(string, sizeof(string), "Jesteœ teraz roznosicielem gazet\nKomendy :\n/wezprace /zrezygnujzpracy /komendypracy\n/pobierzgazety /rzucgazete\nGazety pobiera siê w punkcie poboru pracy roznosiciela gazet i wpisaniu komendy /pobierzgazety\n\n");
-						format(string, sizeof(string), "%sRoznoszenie gazet odbywa siê poprzez podejœcie pod dom lub biznes i wpisaniu /rzucgazete.\n\nJednorazowo mo¿esz przenosiæ do %d gazety.\nStawka za jedn¹ gazete to $%d.", string, NewsBoyJob[TakeJobPapersCount], NewsBoyJob[TakeJobReward]);
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
 					}
-					//Detective Job
 					else if (gSelectedSlot[playerid] == 1)
 					{
-						if(gPlayerData[playerid][pMat] >= 2)
+						if(gPlayerData[playerid][pWf] < 2 || gPlayerData[playerid][pMat] < 4)
 						{
-						
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz detektywem, wpisz /komendypracy.");
-							gPlayerData[playerid][pJob] = 3; 
-
-							SavePlayerData(playerid, "Job");
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Do tej pracy wymagany jest przynajmniej 2 poziom WFu oraz 4 poziom matematyki");
 						}
 						else
 						{
-							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Do tej pracy wymagany jest przynajmniej licencjat z nauk matematycznych");
-							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Wykszta³cenie zdobêdziesz w bibliotece (Mapa -> lokalizacje)");
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz detektywem, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 3; //Detective Job
+
+							SavePlayerData(playerid, "Job");
 						}
-						
 					}
-					//Lawyer Job
 					else if (gSelectedSlot[playerid] == 2)
 					{
-						if(gPlayerData[playerid][pMat] > 2 || gPlayerData[playerid][pLaw] > 3)
+						if(gPlayerData[playerid][pMat] < 5)
 						{
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz prawnikiem, wpisz /komendypracy.");
-							gPlayerData[playerid][pJob] = 4; 
-
-							SavePlayerData(playerid, "Job");
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Musisz mieæ co najmniej 5 poziom matematyki aby zdobyæ t¹ prace");
 						}
 						else
 						{
-							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Do tej pracy wymagany jest przynajmniej licencjat z nauk matematycznych i tytu³ magistra z nauk prawniczych");
-							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Wykszta³cenie zdobêdziesz w bibliotece (Mapa -> lokalizacje)");
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz prawnikiem, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 4; //Lawyer Job
+
+							SavePlayerData(playerid, "Job");
 						}
 					}
-					//Products Seller Job
 					else if (gSelectedSlot[playerid] == 3)
 					{
 						if(PHaveItemParam5Ex(playerid, 3, 6, gPlayerData[playerid][pName]) == -1)
-						{
-							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Prawo jazdy jest wymagane do tej pracy !");
-						}
-						else if(!gPlayerData[playerid][pHighSchool])
-						{
-							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Œrednie wykszta³cenie jest wymagane do tej pracy");
-							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Wykszta³cenie zdobêdziesz w bibliotece (Mapa -> lokalizacje)");
-						}
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Prawo jazdy jest wymagane do tej pracy !");
 						else
 						{
 							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz sprzedawc¹ produktów, wpisz /komendypracy.");
-							gPlayerData[playerid][pJob] = 5; 
+							gPlayerData[playerid][pJob] = 5; //Products Seller Job
 
 							SavePlayerData(playerid, "Job");
 						}
 					}
-					//Bus Driver
 					else if (gSelectedSlot[playerid] == 4)
 					{
 						new slot = PHaveItem(playerid, 3, 6);
 						if(slot == 0 || SlotParam2(playerid, slot) <= 0)
-						{
 							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Prawo jazdy jest wymagane do tej pracy !");
-						}
 						else
 						{
-							SlotParam5(playerid, slot);
-							
-							if(strcmp(gDSelectedItemP5[playerid], gPlayerData[playerid][pName], false) != 0 || strlen(gDSelectedItemP5[playerid]) == 0)
-							{
-								SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Prawo jazdy jest wymagane do tej pracy !");
-								return 1;
-							}
-							
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz kierowc¹ autobusu, wpisz /komendypracy.");
-							gPlayerData[playerid][pJob] = 13; 
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz kierowc¹ autobusu, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 13; //Bus Driver
 
 							SavePlayerData(playerid, "Job");
 						}
 					}
-					//Mzgk Driver
 					else if (gSelectedSlot[playerid] == 5)
 					{
 						new slot = PHaveItem(playerid, 3, 6);
 						if(slot == 0 || SlotParam2(playerid, slot) <= 0)
-						{
 							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Prawo jazdy jest wymagane do tej pracy !");
-						}
 						else
 						{
-							SlotParam5(playerid, slot);
-							
-							if(strcmp(gDSelectedItemP5[playerid], gPlayerData[playerid][pName], false) != 0 || strlen(gDSelectedItemP5[playerid]) == 0)
-							{
-								SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Prawo jazdy jest wymagane do tej pracy !");
-								return 1;
-							}
-							
 							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz kierowc¹ œmieciarki wpisz /komendypracy.");
-							gPlayerData[playerid][pJob] = 14; 
+							gPlayerData[playerid][pJob] = 14; //Mzgk Driver
 
 							SavePlayerData(playerid, "Job");
 						}
 					}
-					//Sweeper Driver
 					else if (gSelectedSlot[playerid] == 6)
 					{
 						new slot = PHaveItemParam5Ex(playerid, 3, 5, gPlayerData[playerid][pName]);
 						if(slot == -1)
-						{
 							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Dowód jest wymagany do tej pracy !");
-						}
 						else
 						{
-							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz kierowc¹ myjki drogowej, wpisz /komendypracy.");
-							gPlayerData[playerid][pJob] = 15; 
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz kierowc¹ myjki samochodowej, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 15; //Sweeper Driver
 
 							SavePlayerData(playerid, "Job");
 						}
 					}
-					//Farmer Driver
 					else if (gSelectedSlot[playerid] == 7)
 					{
-						SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz rolnikiem, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 18; 
+						SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz Farmerem, wpisz /komendypracy.");
+						gPlayerData[playerid][pJob] = 18; //Farmer Driver
 
 						SavePlayerData(playerid, "Job");
 					}
-					// Mechanik
 					else if (gSelectedSlot[playerid] == 8)
 					{
-						if(gPlayerData[playerid][pTech] < 2)
+						if(gPlayerData[playerid][pWf] < 1 || gPlayerData[playerid][pMat] < 1)
 						{
-							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Musisz mieæ co najmniej licencjat z nauk technicznych");
-							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Wykszta³cenie zdobêdziesz w bibliotece (Mapa -> lokalizacje)");
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Musisz mieæ co najmniej 1 poziom WFu i 1 poziom matematyki ¿eby zdobyæ t¹ prace");
 						}
 						else
 						{
 							SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz mechanikiem, wpisz /komendypracy.");
-							gPlayerData[playerid][pJob] = 17; 
+							gPlayerData[playerid][pJob] = 17; // Mechanik
 
 							SavePlayerData(playerid, "Job");
 						}
 					}
-					//Seller
 					else if (gSelectedSlot[playerid] == 9)
 					{
 						SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz sprzedawc¹/ekspedientem, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 19; 
+						gPlayerData[playerid][pJob] = 19; //Seller
 
 						SavePlayerData(playerid, "Job");
 					}
@@ -12903,14 +12187,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS,DIALOG_STYLE_LIST,"Zatrudnij siê","1. Roznosiciel gazet \n2. Detektyw \n3. Prawnik \n4. Sprzedawca produktów \n5. Kierowca autobusu \n6. Kierowca œmieciarki \n7. Kierowca myjki drogowej \n8. Rolnik \n9. Mechanik \n10. Sprzedawca/ekspedient \n11. Zrezygnuj z obecnej pracy", "Wybierz","Wróæ");
+				ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_JOBS,DIALOG_STYLE_LIST,"Zatrudnij siê","1. Roznosiciel gazet \n2. Detektyw \n3. Prawnik \n4. Sprzedawca produktów \n5. Kierowca autobusu \n6. Kierowca œmieciarki \n7. Kierowca myjki drogowej \n8. Farmer \n9. Mechanik \n10. Sprzedawca/ekspedient \n11. Zrezygnuj z obecnej pracy", "Wybierz","Wróæ");
 				return 1;
 			}
 		}
 		case DIALOG_GOVERNMENT_JOBS_3:
 		{
 			if(response)
-				ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_1,DIALOG_STYLE_LIST,""#COLOR_TITLE"Co chcesz zrobiæ ?",DIALOG_GOVERNMENT_1_TXT,"Wybierz","Zamknij");
+				ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_1,DIALOG_STYLE_LIST,"Co chcesz zrobiæ ?",DIALOG_GOVERNMENT_1_TXT,"Wybierz","Zamknij");
 			return 1;
 		}
 		case DIALOG_HITEM_1: // menu glowne itemow w domu
@@ -14143,7 +13427,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				/*
 				TRICKY: dont change it unless u know what are u doing...
-				Which page should be loaded ?
+				Whic page should be loaded ?
 				*/
 				gSelectedSlot[playerid] = listitem+1;
 				if(gPreviousDialogList[playerid] != -1)
@@ -14222,9 +13506,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 3) && (SlotItem(playerid, gSelectedSlot[playerid], 12)))
 				{
 					if(SlotParam1(playerid, gSelectedSlot[playerid]))
-						ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Wy³¹cz GPS\n5. Poka¿ liste miejsc","Akceptuj","Wróæ");
+						ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Wy³¹cz GPS","Akceptuj","Wróæ");
 					else
-						ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. W³¹cz GPS\n5. Poka¿ liste miejsc","Akceptuj","Wróæ");
+						ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. W³¹cz GPS","Akceptuj","Wróæ");
 				}
 				/* Walky-talky */
 				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 3) && (SlotItem(playerid, gSelectedSlot[playerid], 2) || SlotItem(playerid, gSelectedSlot[playerid], 13)))
@@ -14260,30 +13544,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					ShowPlayerDialog(playerid,DIALOG_ITEM_2, DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Zamontuj w pojeŸdzie","Akceptuj","Wróæ");
 				}
-				/* Fix parts for vehciles - engine */
-				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 175))
-				{
-					ShowPlayerDialog(playerid, DIALOG_ITEM_2, DIALOG_STYLE_LIST, "Dzia³anie", "1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Napraw pojazd", "Akceptuj", "Wróæ");
-				}
-				/* Fix parts for vehciles - wheels */
-				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 176))
-				{
-					ShowPlayerDialog(playerid, DIALOG_ITEM_2, DIALOG_STYLE_LIST, "Dzia³anie", "1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Wymieñ ko³o", "Akceptuj", "Wróæ");
-				}
-				/* Fix parts for vehciles - bulb */
-				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 7))
-				{
-					ShowPlayerDialog(playerid, DIALOG_ITEM_2, DIALOG_STYLE_LIST, "Dzia³anie", "1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Wymieñ ¿arówkê", "Akceptuj", "Wróæ");
-				}
-				/* Fix parts for vehciles - hook */
-				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 10))
-				{
-					ShowPlayerDialog(playerid, DIALOG_ITEM_2, DIALOG_STYLE_LIST, "Dzia³anie", "1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Zamontuj hak", "Akceptuj", "Wróæ");
-				}
-				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 177))
-				{
-					ShowPlayerDialog(playerid, DIALOG_ITEM_2, DIALOG_STYLE_LIST, "Dzia³anie", "1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Zamontuj instalacje", "Akceptuj", "Wróæ");
-				}
 				/* Luck Lottery Ticket */
 				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 3) && SlotItem(playerid, gSelectedSlot[playerid], 10))
 					ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Poka¿ skreœlone liczby\n5. Odbierz wygran¹","Akceptuj","Wróæ");
@@ -14307,11 +13567,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					&& ((ShowSlotItem(playerid, gSelectedSlot[playerid]) >= 13	&& ShowSlotItem(playerid, gSelectedSlot[playerid]) <= 32) || (ShowSlotItem(playerid, gSelectedSlot[playerid]) >= 145 && ShowSlotItem(playerid, gSelectedSlot[playerid]) <= 150)))
 				{
 					ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. WeŸ broñ","Akceptuj","Wróæ");
-				}
-				/* Aparat */
-				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && ShowSlotItem(playerid, gSelectedSlot[playerid]) == 173)
-				{
-					ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. WeŸ aparat","Akceptuj","Wróæ");
 				}
 				/* House radio */
 				else if( ( PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 106) ) )
@@ -14350,20 +13605,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Zdejmij","Akceptuj","Wróæ");
 					else
 						ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Za³ó¿","Akceptuj","Wróæ");
-				}
-				/* Clothes */
-				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 3) && SlotItem(playerid, gSelectedSlot[playerid], 24))
-				{
-					ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Przebie¿ siê","Akceptuj","Wróæ");
-				}
-				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 178))
-				{
-					ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Ustaw tablice","Akceptuj","Wróæ");
-				}
-				/* Mapa */
-				else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 105))
-				{
-					ShowPlayerDialog(playerid, DIALOG_ITEM_2, DIALOG_STYLE_LIST, "Dzia³anie", "1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar\n4. Poka¿ liste miejsc", "Akceptuj", "Wróæ");
 				}
 				else // pozostale itemy
 					ShowPlayerDialog(playerid,DIALOG_ITEM_2,DIALOG_STYLE_LIST,"Dzia³anie","1. Przeka¿ item\n2. Wyrzuæ item\n3. Sprzedaj towar","Akceptuj","Wróæ");
@@ -14570,7 +13811,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								return 1;
 							}
 							RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_LIST, "Informacja", "Za³o¿y³eœ pancerz !", "Wróæ", "");
+							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_LIST, "Informacja", "Za³o¿y³eœ zbroje !", "Wróæ", "");
 							SetPlayerArmourEx(playerid, 50);
 							return 1;
 						}
@@ -14582,7 +13823,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								return 1;
 							}
 							RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_LIST, "Informacja", "Za³o¿y³eœ pancerz !", "Wróæ", "");
+							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_LIST, "Informacja", "Za³o¿y³eœ zbroje !", "Wróæ", "");
 							SetPlayerArmourEx(playerid, 100);
 							return 1;
 						}
@@ -14714,7 +13955,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 3) && SlotItem(playerid, gSelectedSlot[playerid], 19))
 					{
 						SlotParam5(playerid, gSelectedSlot[playerid]);
-						format(string, sizeof(string), "Dowód rejestracyjny pojazdu\n\nW³aœciciel: %s\nNumer VIN: %d\nNumer rejestracyjny: %d\n\nUbezpieczenie OC na kwote: $%d\nUbeczpienie AC na kwote: $%d", 
+						format(string, sizeof(string), "Dowód rejestracyjny pojazdu\n\nW³aœciciel: %s\nNumer VIN: %d\nNumer rejestracyjny: %d\n\nUbezpieczenie OC na kwote: %d$\nUbeczpienie AC na kwote: %d$", 
 							gDSelectedItemP5[playerid], SlotParam2(playerid, gSelectedSlot[playerid]), SlotParam1(playerid, gSelectedSlot[playerid]), SlotParam3(playerid, gSelectedSlot[playerid]), SlotParam4(playerid, gSelectedSlot[playerid]));
 						ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Dokument", string, "Zamknij", "");
 					}
@@ -14753,51 +13994,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						
 						return 1;
 					}
-					else if((PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1)) && (SlotItem(playerid, gSelectedSlot[playerid], 11) || SlotItem(playerid, gSelectedSlot[playerid], 122) || SlotItem(playerid, gSelectedSlot[playerid], 123) || SlotItem(playerid, gSelectedSlot[playerid], 124)))
+					/* Mountable vehicle part */
+					else if((PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && (SlotItem(playerid, gSelectedSlot[playerid], 11) || SlotItem(playerid, gSelectedSlot[playerid], 122) || SlotItem(playerid, gSelectedSlot[playerid], 123) || SlotItem(playerid, gSelectedSlot[playerid], 124) || SlotItem(playerid, gSelectedSlot[playerid], 152) ||
+					SlotItem(playerid, gSelectedSlot[playerid], 153) || SlotItem(playerid, gSelectedSlot[playerid], 154) || SlotItem(playerid, gSelectedSlot[playerid], 155) || SlotItem(playerid, gSelectedSlot[playerid], 156) || SlotItem(playerid, gSelectedSlot[playerid], 157) || 
+					SlotItem(playerid, gSelectedSlot[playerid], 158) || SlotItem(playerid, gSelectedSlot[playerid], 159) || SlotItem(playerid, gSelectedSlot[playerid], 160) || SlotItem(playerid, gSelectedSlot[playerid], 161) || SlotItem(playerid, gSelectedSlot[playerid], 162) ||
+					SlotItem(playerid, gSelectedSlot[playerid], 163) || SlotItem(playerid, gSelectedSlot[playerid], 164) || SlotItem(playerid, gSelectedSlot[playerid], 165) || SlotItem(playerid, gSelectedSlot[playerid], 166) || SlotItem(playerid, gSelectedSlot[playerid], 167))))
 					{
 						if(gPlayerData[playerid][pJob] != JOB_MECHANIC && !AdminDuty[playerid])
 						{
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie mo¿esz zamontowaæ tej czêœci - nie jesteœ mechanikiem !", "Wróæ", "");
 							return 1;
 						}
-						
-						if(gPlayerData[playerid][pFaction2] == 255)
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz nale¿eæ do firmy aby naprawiaæ pojazdy.", "Wróæ", "");
-							return 1;
-						}
-						
-						new inCompanyMech = 0;
-						
-						for(new i = 0; i < sizeof(Building); i++)
-						{
-							if(Building[i][FactionOwnerId] != gPlayerData[playerid][pFaction2])
-							{
-								continue;
-							}
-							
-							if(!PlayerToPoint(15.0, playerid, Building[i][EnterX], Building[i][EnterY], Building[i][EnterZ]) && !PlayerToPoint(30.0, playerid, Building[i][ExitX], Building[i][ExitY], Building[i][ExitZ]))
-							{
-								continue;
-							}
-							
-							inCompanyMech = 1;
-						}
-						
-						if(!inCompanyMech && !AdminDuty[playerid])
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê przy warsztacie twojej firmy.", "Wróæ", "");
-							return 1;
-						}
-						
 						new vehid = GetPlayerVehicleID(playerid);
 						if(vehid == 0)
 						{
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie jesteœ w pojeŸdzie", "Wróæ", "");
 							return 1;
 						}
-						
-						// alarm samochodowy
 						if(SlotItem(playerid, gSelectedSlot[playerid], 11))
 						{
 							if(gVehData[vehid-1][Alarm])
@@ -14812,7 +14025,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ udany !", "Wróæ", "");
 							return 1;
 						}
-						// komputer policyjny
 						else if(SlotItem(playerid, gSelectedSlot[playerid], 122))
 						{
 							if(gVehData[vehid-1][VPoliceComputer])
@@ -14828,7 +14040,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ udany !", "Wróæ", "");
 							return 1;
 						}
-						// cb radio
 						else if(SlotItem(playerid, gSelectedSlot[playerid], 123))
 						{
 							if(gVehData[vehid-1][VCBRadio] == 1 || gVehData[vehid-1][VCBRadio] == 2)
@@ -14843,7 +14054,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ udany !", "Wróæ", "");
 						}
-						// cb radio ex
 						else if(SlotItem(playerid, gSelectedSlot[playerid], 124))
 						{
 							if(gVehData[vehid-1][VCBRadio] == 1 || gVehData[vehid-1][VCBRadio] == 2)
@@ -14858,6 +14068,240 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ udany !", "Wróæ", "");
 						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 152))
+						{
+							if(gVehData[vehid-1][mVehSirenObjModel])
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Pojazd posiada ju¿ œwiat³a policyjne !", "Wróæ", "");
+								return 1;
+							}
+							gVehData[vehid-1][mVehSirenObjModel] = 19419;
+							if(MountSirenToVehicle(vehid-1) != 2)
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "W tym pojeŸdzie nie mo¿na zamontowaæ œwiate³ policyjnych.", "Wróæ", "");
+								gVehData[vehid-1][mVehSirenObjModel] = 0;
+								return 1;
+							}
+							PlayerActionMessage(playerid, 15.0, "montuje œwiat³a policyjne w pojeŸdzie");
+							RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+							PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
+							SaveVehData(vehid-1, "VehSirenObjModel");
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 153))
+						{
+							if(gVehData[vehid-1][mVehSirenObjModel])
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Pojazd posiada ju¿ œwiat³a policyjne !", "Wróæ", "");
+								return 1;
+							}
+							gVehData[vehid-1][mVehSirenObjModel] = 18646;
+							if(MountSirenToVehicle(vehid-1) != 2)
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "W tym pojeŸdzie nie mo¿na zamontowaæ œwiate³ policyjnych.", "Wróæ", "");
+								gVehData[vehid-1][mVehSirenObjModel] = 0;
+								return 1;
+							}
+							PlayerActionMessage(playerid, 15.0, "montuje œwiat³a policyjne w pojeŸdzie");
+							RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+							PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
+							SaveVehData(vehid-1, "VehSirenObjModel");
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 154))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 19308) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 155))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 19309) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 156))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 19310) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 157))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 19311) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 158))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 19280) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 159))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 19281) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 160))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 19282) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 161))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 19283) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 162))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 19284) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 163))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 18647) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 164))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 18648) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 165))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 18649) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 166))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 18650) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
+						else if(SlotItem(playerid, gSelectedSlot[playerid], 167))
+						{
+							if(AttachObjectToVehicleSlot(vehid, 18651) != -1)
+							{
+								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
+								return 1;
+							}
+							else
+							{
+								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
+								return 1;
+							}
+						}
 					}
 					/* Mountable vehicle part - batteries */
 					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 7))
@@ -14868,21 +14312,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie mo¿esz zamontowaæ tej czêœci - nie jesteœ mechanikiem !", "Wróæ", "");
 							return 1;
 						}
-						
-						if(IsPlayerInAnyVehicle(playerid))
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz byæ na zewn¹trz pojazdu", "Wróæ", "");
-							return 1;
-						}
-						
 						new vehid = GetClosestVehicle(playerid);
-						
 						if(vehid == INVALID_VEHICLE_ID)
 						{
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie jesteœ przy ¿adnym pojeŸdzie", "Wróæ", "");
 							return 1;
 						}
-						
 						// Check if player is in front of vehicle engine
 						if(IsABoat(vehid) == 0 && IsABike(vehid) == 0 && IsAPlane(vehid) == 0 && IsAHelicopter(vehid) == 0 && IsAMotorBike(vehid) == 0)
 						{
@@ -14890,7 +14325,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							GetPlayerFacingAngle(playerid, ac);
 							GetVehiclePos(vehid, gVehData[vehid-1][mVehX], gVehData[vehid-1][mVehY], gVehData[vehid-1][mVehZ]);
 							GetVehicleZAngle(vehid, va);
-							
 							for(new i = 0; i < sizeof(CarsLenghts); i++)
 							{
 								if(CarsLenghts[i][lenghtModel] == gVehData[vehid-1][mVehModel])
@@ -14976,571 +14410,51 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					/* Mountable vehicle parts - tuning parts */
 					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 8))
 					{
+						// check if player is mechanic
 						if(gPlayerData[playerid][pJob] != JOB_MECHANIC && !AdminDuty[playerid])
 						{
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie mo¿esz zamontowaæ tej czêœci - nie jesteœ mechanikiem !", "Wróæ", "");
 							return 1;
 						}
-						
-						if(gPlayerData[playerid][pFaction2] == 255)
+						new vehid = GetPlayerVehicleID(playerid);
+						if(!vehid)
 						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz nale¿eæ do firmy aby naprawiaæ pojazdy.", "Wróæ", "");
+							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie jesteœ przy ¿adnym pojeŸdzie", "Wróæ", "");
 							return 1;
 						}
-						
-						new inCompanyMech = 0;
-							
-						for(new i = 0; i < sizeof(Building); i++)
+						if(!MountVehicleItem(ShowSlotItem(playerid, gSelectedSlot[playerid]), vehid-1))
 						{
-							if(Building[i][FactionOwnerId] != gPlayerData[playerid][pFaction2])
-							{
-								continue;
-							}
-							
-							if(!PlayerToPoint(15.0, playerid, Building[i][EnterX], Building[i][EnterY], Building[i][EnterZ]) && !PlayerToPoint(30.0, playerid, Building[i][ExitX], Building[i][ExitY], Building[i][ExitZ]))
-							{
-								continue;
-							}
-							
-							inCompanyMech = 1;
-						}
-						
-						if(!inCompanyMech && !AdminDuty[playerid])
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê przy warsztacie twojej firmy.", "Wróæ", "");
+							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Ta czêœæ nie pasuje do tego pojazdu !", "Wróæ", "");
 							return 1;
 						}
-						
-						if(IsPlayerInAnyVehicle(playerid))
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê na zewn¹trz pojazdu.", "Wróæ", "");
-							return 1;
-						}
-						
-						new vehId = GetClosestVehicle(playerid);
-	
-						if(vehId == INVALID_VEHICLE_ID)
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê przy pojeŸdzie aby u¿yæ tych czêœci.", "Wróæ", "");
-							return 1;
-						}
-						
-						if(gVehData[vehId-1][EngineOn])
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Wy³¹cz silnik przed rozpoczêciem napraw.", "Wróæ", "");
-							return 1;
-						}
-						
-						ShowPlayerDialog(playerid, DIALOG_TUNING_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ zajmie 15 sekund i nie mo¿na go przerwaæ.\nCzy chcesz kontunuuowaæ?", "Dalej", "Wróæ");
-						
+						RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+						PlayerActionMessage(playerid, 15.0, "montuje czêœæ");
+						PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
 						return 1;
 					}
 					/* Mountable vehicle parts - stock parts */
 					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 9))
 					{
+						// check if player is mechanic
 						if(gPlayerData[playerid][pJob] != JOB_MECHANIC && !AdminDuty[playerid])
 						{
 							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie mo¿esz zamontowaæ tej czêœci - nie jesteœ mechanikiem !", "Wróæ", "");
 							return 1;
 						}
-						
-						if(gPlayerData[playerid][pFaction2] == 255)
+						new vehid = GetClosestVehicle(playerid);
+						if(vehid == INVALID_VEHICLE_ID)
 						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz nale¿eæ do firmy aby naprawiaæ pojazdy.", "Wróæ", "");
+							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie jesteœ przy ¿adnym pojeŸdzie", "Wróæ", "");
 							return 1;
 						}
-						
-						new inCompanyMech = 0;
-							
-						for(new i = 0; i < sizeof(Building); i++)
+						if(!MountVehicleStockItem(ShowSlotItem(playerid, gSelectedSlot[playerid]), vehid-1))
 						{
-							if(Building[i][FactionOwnerId] != gPlayerData[playerid][pFaction2])
-							{
-								continue;
-							}
-							
-							if(!PlayerToPoint(15.0, playerid, Building[i][EnterX], Building[i][EnterY], Building[i][EnterZ]) && !PlayerToPoint(30.0, playerid, Building[i][ExitX], Building[i][ExitY], Building[i][ExitZ]))
-							{
-								continue;
-							}
-							
-							inCompanyMech = 1;
-						}
-						
-						if(!inCompanyMech && !AdminDuty[playerid])
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê przy warsztacie twojej firmy.", "Wróæ", "");
+							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Ta czêœæ nie pasuje do tego pojazdu !", "Wróæ", "");
 							return 1;
 						}
-						
-						if(IsPlayerInAnyVehicle(playerid))
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê na zewn¹trz pojazdu.", "Wróæ", "");
-							return 1;
-						}
-						
-						new vehId = GetClosestVehicle(playerid);
-	
-						if(vehId == INVALID_VEHICLE_ID)
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê przy pojeŸdzie aby u¿yæ tych czêœci.", "Wróæ", "");
-							return 1;
-						}
-						
-						if(gVehData[vehId-1][EngineOn])
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Wy³¹cz silnik przed rozpoczêciem napraw.", "Wróæ", "");
-							return 1;
-						}
-						
-						ShowPlayerDialog(playerid, DIALOG_STOCK_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ zajmie 15 sekund i nie mo¿na go przerwaæ.\nCzy chcesz kontunuuowaæ?", "Dalej", "Wróæ");
-						
-						return 1;
-					}
-					/* Fix parts for vehciles */
-					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) &&
-					(SlotItem(playerid, gSelectedSlot[playerid], 7) || SlotItem(playerid, gSelectedSlot[playerid], 10) || SlotItem(playerid, gSelectedSlot[playerid], 153) ||
-					SlotItem(playerid, gSelectedSlot[playerid], 154) || SlotItem(playerid, gSelectedSlot[playerid], 155) || SlotItem(playerid, gSelectedSlot[playerid], 156) ||
-					SlotItem(playerid, gSelectedSlot[playerid], 177) || SlotItem(playerid, gSelectedSlot[playerid], 157) || SlotItem(playerid, gSelectedSlot[playerid], 158) ||
-					SlotItem(playerid, gSelectedSlot[playerid], 159)  || SlotItem(playerid, gSelectedSlot[playerid], 160)  || SlotItem(playerid, gSelectedSlot[playerid], 161) ||
-					SlotItem(playerid, gSelectedSlot[playerid], 162) || SlotItem(playerid, gSelectedSlot[playerid], 167) || SlotItem(playerid, gSelectedSlot[playerid], 168) ||
-					SlotItem(playerid, gSelectedSlot[playerid], 169) || SlotItem(playerid, gSelectedSlot[playerid], 170) || SlotItem(playerid, gSelectedSlot[playerid], 171) ||
-					SlotItem(playerid, gSelectedSlot[playerid], 172) || SlotItem(playerid, gSelectedSlot[playerid], 175) ||	SlotItem(playerid, gSelectedSlot[playerid], 176)))
-					{
-						if(!AdminDuty[playerid])
-						{
-							if(gPlayerData[playerid][pJob] != JOB_MECHANIC)
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Nie mo¿esz zamontowaæ tej czêœci poniewa¿ nie jesteœ mechanikiem.", "Wróæ", "");
-								return 1;
-							}
-						
-							if(gPlayerData[playerid][pFaction2] == 255)
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz nale¿eæ do firmy aby naprawiaæ pojazdy.", "Wróæ", "");
-								return 1;
-							}
-							
-							new inCompanyMech = 0;
-							
-							for(new i = 0; i < sizeof(Building); i++)
-							{
-								if(Building[i][FactionOwnerId] != gPlayerData[playerid][pFaction2])
-								{
-									continue;
-								}
-								
-								if(!PlayerToPoint(15.0, playerid, Building[i][EnterX], Building[i][EnterY], Building[i][EnterZ]) && !PlayerToPoint(30.0, playerid, Building[i][ExitX], Building[i][ExitY], Building[i][ExitZ]))
-								{
-									continue;
-								}
-								
-								inCompanyMech = 1;
-							}
-							
-							if(!inCompanyMech && !AdminDuty[playerid])
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê przy warsztacie twojej firmy.", "Wróæ", "");
-								return 1;
-							}
-						
-							if(!PHaveItem(playerid, 1, 174))
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz mieæ skrzynke z narzêdziami aby u¿yæ tych czêœci.", "Wróæ", "");
-								return 1;
-							}
-						}
-						
-						if(IsPlayerInAnyVehicle(playerid))
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz byæ na zewn¹trz pojazdu.", "Wróæ", "");
-							return 1;
-						}
-						
-						new vehId = GetClosestVehicle(playerid);
-	
-						if(vehId == INVALID_VEHICLE_ID)
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê przy pojeŸdzie aby u¿yæ tych czêœci.", "Wróæ", "");
-							return 1;
-						}
-						
-						if(gVehData[vehId-1][EngineOn])
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Wy³¹cz silnik przed rozpoczêciem napraw.", "Wróæ", "");
-							return 1;
-						}
-						
-						// instalacja gazowa
-						if(SlotItem(playerid, gSelectedSlot[playerid], 177))
-						{						
-							if(gVehData[vehId-1][Fuel] == 2)
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Ten pojazd jest ju¿ wyposa¿ony w instalacje gazow¹.", "Wróæ", "");
-								return 1;
-							}
-							
-							new pToGas = 0;
-							for(new i = 0; i < sizeof(CarsData); i++)
-							{
-								if(CarsData[i][Model] == gVehData[vehId-1][mVehModel])
-								{
-									if(CarsData[i][ToGas])
-									{
-										pToGas = 1;
-										break;
-									}
-								}
-							}
-							
-							if(pToGas == 0)
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Do tego pojazdu nie mo¿na zamontowaæ instalacji gazowej.", "Wróæ", "");
-								return 1;
-							}
-							
-							ShowPlayerDialog(playerid, DIALOG_LPG_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ zajmie 15 sekund i nie mo¿na go przerwaæ.\nCzy napewno chcesz kontynuuowaæ?", "Dalej", "Wróæ");
-						}
-						// listwa taxi 1
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 154))
-						{
-							if(IsAnyFreeVehObjectSlot(vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_TAXILIGHT1_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ zajmie 15 sekund i nie mo¿na go przerwaæ.\nCzy napewno chcesz kontynuuowaæ?", "Dalej", "Wróæ");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// listwa taxi 2
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 155))
-						{
-							if(IsAnyFreeVehObjectSlot(vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_TAXILIGHT2_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ zajmie 15 sekund i nie mo¿na go przerwaæ.\nCzy napewno chcesz kontynuuowaæ?", "Dalej", "Wróæ");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// listwa taxi 3
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 156))
-						{
-							if(IsAnyFreeVehObjectSlot(vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_TAXILIGHT3_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ zajmie 15 sekund i nie mo¿na go przerwaæ.\nCzy napewno chcesz kontynuuowaæ?", "Dalej", "Wróæ");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// listwa taxi 4
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 157))
-						{
-							if(IsAnyFreeVehObjectSlot(vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_TAXILIGHT4_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ zajmie 15 sekund i nie mo¿na go przerwaæ.\nCzy napewno chcesz kontynuuowaæ?", "Dalej", "Wróæ");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// lampa halogenowa
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 158))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 19280) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// dioda biala
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 159))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 19281) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// dioda czerwona
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 160))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 19282) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// dioda zielona
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 161))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 19283) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// dioda niebieska
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 162))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 18648) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// neon czerwony
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 167))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 18649) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// neon niebieski
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 168))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 18650) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// neon zielony
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 169))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 18651) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// neon ¿ó³ty
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 170))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 18652) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// neon ró¿owy
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 171))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 18653) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// neon bia³y
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 172))
-						{
-							if(AttachObjectToVehicleSlot(vehId, 18654) != -1)
-							{
-								RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zamontowa³eœ element do pojazdu", "Wróæ", "");
-								return 1;
-							}
-							else
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Brak wolnego slotu do zamontowania elementu w pojeŸdzie", "Wróæ", "");
-								return 1;
-							}
-						}
-						// œwiat³a policyjne
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 152))
-						{
-							if(gVehData[vehId-1][mVehSirenObjModel])
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Pojazd posiada ju¿ œwiat³a policyjne !", "Wróæ", "");
-								
-								return 1;
-							}
-							
-							gVehData[vehId-1][mVehSirenObjModel] = 19419;
-							SaveVehData(vehId-1, "VehSirenObjModel");
-							
-							if(IsSirenMountableToVehicle(vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "W tym pojeŸdzie nie mo¿na zamontowaæ œwiate³ policyjnych.", "Wróæ", "");
-								gVehData[vehId-1][mVehSirenObjModel] = 0;
-								
-								return 1;
-							}
-							
-							ShowPlayerDialog(playerid, DIALOG_POLICELIGHT_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ zajmie 15 sekund i nie mo¿na go przerwaæ.\nCzy napewno chcesz kontynuuowaæ?", "Dalej", "Wróæ");
-							
-							return 1;
-						}
-						// œwiat³a policyjne
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 153))
-						{
-							if(gVehData[vehId-1][mVehSirenObjModel])
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Pojazd posiada ju¿ œwiat³a policyjne !", "Wróæ", "");
-								
-								return 1;
-							}
-							
-							gVehData[vehId-1][mVehSirenObjModel] = 18646;
-							SaveVehData(vehId-1, "VehSirenObjModel");
-							
-							if(IsSirenMountableToVehicle(vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "W tym pojeŸdzie nie mo¿na zamontowaæ œwiate³ policyjnych.", "Wróæ", "");
-								gVehData[vehId-1][mVehSirenObjModel] = 0;
-								
-								return 1;
-							}
-							
-							ShowPlayerDialog(playerid, DIALOG_POLICELIGHT_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ zajmie 15 sekund i nie mo¿na go przerwaæ.\nCzy napewno chcesz kontynuuowaæ?", "Dalej", "Wróæ");
-							
-							return 1;
-						}
-						// ¿arówka
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 7))
-						{
-							if(!IsInFrontOfHood(playerid, vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz byæ przed mask¹ aby wymieniæ ¿arówkê.", "Wróæ", "");
-								return 1;
-							}
-							
-							if(!IsHoodOpened(playerid, vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Otwórz maske przed rozpoczêciem naprawy.", "Wróæ", "");
-								return 1;
-							}
-							
-							ShowPlayerDialog(playerid, DIALOG_BULB_CHANGE_SELECT, DIALOG_STYLE_LIST, "Wybierz któr¹ ¿arówke chcesz wymieniæ", "Od strony pasa¿era\nOd strony kierowcy\nTyln¹ od strony kierowcy\nTyln¹ od strony pasa¿era", "Wybierz", "Wróæ");
-						}
-						// hak holowniczy
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 10))
-						{							
-							ShowPlayerDialog(playerid, DIALOG_HOOK_ADD_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Naprawa zajmie 15 sekund i nie mo¿na jej przerwaæ.\nCzy chcesz kontunuuowaæ?", "Dalej", "Wróæ");
-						}
-						// czêœci silnika
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 175))
-						{						
-							if(!IsInFrontOfHood(playerid, vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz byæ przed silnikiem aby go naprawiæ.", "Wróæ", "");
-								return 1;
-							}
-							
-							if(!IsHoodOpened(playerid, vehId))
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Otwórz maske przed rozpoczêciem naprawy.", "Wróæ", "");
-								return 1;
-							}
-							
-							new Float:vehHp;						
-							GetVehicleHealth(vehId, vehHp);
-							
-							if(vehHp >= 1000.0 && !gVehData[vehId-1][CarDamaged])
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Silnik tego pojazdu nie wymaga naprawy.", "Wróæ", "");
-								return 1;
-							}
-							
-							if(vehHp <= 500.0)
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Ten silnik jest zbyt uszkodzony i nie jest mo¿liwa jego naprawa.", "Wróæ", "");
-								return 1;
-							}
-							
-							ShowPlayerDialog(playerid, DIALOG_ENGINE_REPAIR_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Naprawa zajmie 15 sekund i nie mo¿na jej przerwaæ.\nCzy chcesz kontunuuowaæ?", "Tak", "Anuluj");
-						}
-						// opona
-						else if(SlotItem(playerid, gSelectedSlot[playerid], 176))
-						{
-							GetVehiclePos(vehId, gVehData[vehId-1][mVehX], gVehData[vehId-1][mVehY], gVehData[vehId-1][mVehZ]);
-							
-							if(!PlayerToPoint(5.0, playerid, gVehData[vehId-1][mVehX], gVehData[vehId-1][mVehY], gVehData[vehId-1][mVehZ]))
-							{
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Jesteœ zbyt daleko od pojazdu.", "Wróæ", "");
-								return 1;
-							}
-							
-							ShowPlayerDialog(playerid, DIALOG_SELECT_WHEEL_TO_FIX, DIALOG_STYLE_LIST, "Wybierz, które ko³o chcesz wymieniæ", "Lewe przednie\nPrawe przednie\nLewe tylne\nPrawe tylne", "Dalej", "Wróæ");
-							return 1;
-						}
-						
+						RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
+						PlayerActionMessage(playerid, 15.0, "montuje czêœæ");
+						PlayerPlaySound(playerid, 1133, 0.0, 0.0, 0.0);
 						return 1;
 					}
 					/* Lucky Lottery Ticked */
@@ -15683,32 +14597,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(SlotParam1(playerid, gSelectedSlot[playerid]))
 						{
 							SetPSlotParam1(playerid, gSelectedSlot[playerid], 0);
-							
+							format(string, sizeof(string), "%s [%d]", GetPlayerNameEx(playerid), playerid);
 							if(IsPlayerVip(playerid))
-							{
-								format(string, sizeof(string), "{C2A2DA}%s [%d]", GetPlayerNameEx(playerid), playerid);
-							}
+								Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_PURPLE, string);
 							else
-							{
-								format(string, sizeof(string), "{FFFFFF}%s [%d]", GetPlayerNameEx(playerid), playerid);
-							}
-							
-							Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_BLACK, string);
+								Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_WHITE, string);
 						}
 						else
 						{
 							SetPSlotParam1(playerid, gSelectedSlot[playerid], 1);
-							
+							format(string, sizeof(string), "Twarz za chust¹ [%d]", playerid);
 							if(IsPlayerVip(playerid))
-							{
-								format(string, sizeof(string), "{C2A2DA}Twarz za chust¹ [%d]", playerid);
-							}
+								Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_PURPLE, string);
 							else
-							{
-								format(string, sizeof(string), "{FFFFFF}Twarz za chust¹ [%d]", playerid);
-							}
-							
-							Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_BLACK, string);
+								Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_WHITE, string);
 						}
 					}
 					/* Zegarki */
@@ -15981,7 +14883,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						// }
 						// else return SendClientMessage(playerid, RED, "[INFO:] Ju¿ u¿y³eœ jednego zestawu, musisz poczekaæ a¿ siê skoñczy");
 					}
-					
 					/* Zestaw fajerwerków */
 					// if( PSlotItemTypeCompare(playerid,  gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 8) )
 					// {
@@ -16341,95 +15242,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Nie znajdujesz siê w domu !");
 						return 1;
 					}
-					/* Clothes */
-					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 3) && SlotItem(playerid, gSelectedSlot[playerid], 24))
-					{
-						if(gPlayerVars[playerid][mAtHouseID] == -1)
-						{
-							if(gPlayerVars[playerid][mAtBizID] == -1)
-							{
-								noClotheChange:
-								ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Aby zmieniæ ubranie musisz znajdowaæ siê w domu", "Zamknij", "");
-								return 1;
-							}
-							else
-							{
-								if(!BizHaveItem(gPlayerVars[playerid][mAtBizID], 3, 24))
-								{
-									goto noClotheChange;
-								}
-							}
-						}
-						new newSkin = SlotParam1(playerid, gSelectedSlot[playerid]);
-						
-						SetPSlotParam1(playerid, gSelectedSlot[playerid], gPlayerData[playerid][pSkin]);
-						
-						gPlayerData[playerid][pSkin] = newSkin;
-						SavePlayerData(playerid, "Skin");
-						
-						SetPlayerSkinEx(playerid, gPlayerData[playerid][pSkin]);
-						
-						ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Zmieni³eœ ubranie", "Zamknij", "");
-					}
-					/* Aparat */
-					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 173))
-					{
-						PlayerActionMessage(playerid, 15.0, "wyjmuje aparat");
-						GivePlayerGun(playerid, 43, 300);
-						RemovePlayerItemUsed(playerid, gSelectedSlot[playerid]);
-						return 1;
-					}
-					/* tablica og³oszeñ */
-					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 178))
-					{
-						if(gPlayerVars[playerid][mAtBuildingId] == -1)
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Tablice og³oszeñ mo¿na ustawiaæ tylko wewn¹trz w³asnego budynku.", "Wróæ", "");
-							return 1;
-						}
-						
-						if(Building[gPlayerVars[playerid][mAtBuildingId]][FactionOwnerId] != gPlayerData[playerid][pFaction] && Building[gPlayerVars[playerid][mAtBuildingId]][FactionOwnerId] != gPlayerData[playerid][pFaction2])
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Tablice og³oszeñ mo¿na ustawiaæ tylko wewn¹trz w³asnego budynku.", "Wróæ", "");
-							return 1;
-						}
-						
-						for(new i = 0; i < sizeof(gPublicAds); i++)
-						{
-							if(gPublicAds[i][mObjId])
-							{
-								continue;
-							}
-							
-							GetPlayerPos(playerid, gPublicAds[i][mObjPosX], gPublicAds[i][mObjPosY], gPublicAds[i][mObjPosZ]);
-							GetXYInFrontOfPlayer(playerid, gPublicAds[i][mObjPosX], gPublicAds[i][mObjPosY], 2.0);
-							
-							gPublicAds[i][mObjWorld] = GetPlayerVirtualWorld(playerid);								
-							gPublicAds[i][mObjId] = CreateDynamicObject(3335, gPublicAds[i][mObjPosX], gPublicAds[i][mObjPosY], gPublicAds[i][mObjPosZ], gPublicAds[i][mObjRotX], gPublicAds[i][mObjRotY], gPublicAds[i][mObjRotZ], gPublicAds[i][mObjWorld]);
-							format(gPublicAds[i][mOwner], MAX_PLAYER_NAME, gPlayerData[playerid][pName]);
-						
-							SavePublicAdsData(i, "Owner");
-							SavePublicAdsData(i, "ObjPos");
-						
-							defer RefreshPublicAd(i);
-						
-							RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-						
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Ustawi³eœ now¹ tablice og³oszeñ.", "Wróæ", "");
-							
-							return 1;
-						}
-					}
-					/* mapa */
-					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 1) && SlotItem(playerid, gSelectedSlot[playerid], 105))
-					{
-						format(string, sizeof(string), "");
-						for(new i = 0; i < sizeof(gLsLocations); i++)
-						{
-							format(string, sizeof(string), "%s%s\n", string, gLsLocations[i][mLocationDescription]);
-						}
-						ShowPlayerDialog(playerid, DIALOG_MAP_LOCATIONS, DIALOG_STYLE_LIST, "Dostêpne lokacje", string, "Akceptuj", "Wróæ");
-					}
 				}
 				/* Complex */
 				else if(listitem == 4)
@@ -16510,7 +15322,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								gPhoneTextBlinking[playerid] = 0;
 								format(string, sizeof(string), "UPDATE `samp_sms` SET `New` = '0' WHERE `ReceiverNumber` = '%d' AND `New` = '1' ",
 									gPhoneTextReceived[playerid]);
-								wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con3);
+								mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con3);
 								gPhoneTextReceived[playerid] = 0;
 							}
 							ShowPlayerDialog(playerid, DIALOG_SMS, DIALOG_STYLE_LIST, "Dzia³anie", "1. Wyœwietl wiadomoœci\n2. Wyœlij now¹ wiadomoœæ", "Wybierz", "Wróc");
@@ -16528,22 +15340,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(string, sizeof(string), "Zawartoœæ kanistra: %d/25ltr\nTyp: %s", SlotParam1(playerid, gSelectedSlot[playerid]), fuelTypeTXT);
 						ShowPlayerDialog(playerid, DIALOG_ITEM_1, DIALOG_STYLE_MSGBOX, "Kanister", string, "Wróæ", "" );
 						return 1;
-					}
-					/* GPS */
-					else if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 3) && (SlotItem(playerid, gSelectedSlot[playerid], 12)))
-					{
-						if(!SlotParam1(playerid, gSelectedSlot[playerid]))
-						{
-							ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Informacja", "GPS jest wy³¹czony", "Wróæ", "Zamknij");
-							return 1;
-						}
-						
-						format(string, sizeof(string), "");
-						for(new i = 0; i < sizeof(gLsLocations); i++)
-						{
-							format(string, sizeof(string), "%s%s\n", string, gLsLocations[i][mLocationDescription]);
-						}
-						ShowPlayerDialog(playerid, DIALOG_GPS_LOCATIONS, DIALOG_STYLE_LIST, "Dostêpne lokacje", string, "Akceptuj", "Wróæ");
 					}
 				}
 				/* Complex */
@@ -16646,9 +15442,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						gPlayerVars[playerid][mPhoneDataReceived] = 0;
 						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Pobieranie danych z sieci...");
-						format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_phones` WHERE `Nr` = '%d' AND `SimID` = '%d'",
+						format(string, sizeof(string), "SELECT * FROM `samp_phones` WHERE `Nr` = '%d' AND `SimID` = '%d'",
 							SlotParam2(playerid, gSelectedSlot[playerid]), SlotParam4(playerid, gSelectedSlot[playerid]));
-						wp_mysql_query(string, CHECK_PHONE_STATUS, playerid, db_con2);
+						mysql_query(string, CHECK_PHONE_STATUS, playerid, db_con2);
 					}
 				}
 				/* Complex */
@@ -16718,20 +15514,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Info", "W tym bizniesie nie ma juz miejsca na ten przedmiot", "Dalej", "");
 					return 1;
 				}
-				
 				if(SlotParam6(playerid, gSelectedSlot[playerid]) < strval(inputtext))
 				{					
 					format(string, sizeof(string), "Nie posiadasz tyle danego produktu na tym slocie !\nObecnie posiadasz %d sztuk tego produktu.\nWprowadŸ ponownie liczbe produktów do sprzeda¿y.", SlotParam6(playerid, gSelectedSlot[playerid]));
 					ShowPlayerDialog(playerid, DIALOG_ITEM_4, DIALOG_STYLE_INPUT, "Info", string, "Dalej", "");
 					return 1;
 				}
-				
-				if(BizItemSlotBuy(i, slot) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_ITEM_4, DIALOG_STYLE_INPUT, "Info", "W³aœciciel sklepu nie ustali³ ceny skupu.", "Dalej", "");
-					return 1;
-				}
-				
 				
 				// sprawdzamy ile biznes pomiesci produktu danego typu
 				if(strval(inputtext) < ItemsOnBizSlot(PSlotItemType(playerid, gSelectedSlot[playerid]), ShowSlotItem(playerid, gSelectedSlot[playerid])))
@@ -16741,7 +15529,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						if(BizItemSlotBuy(i, slot)*maxCanCarry <= Businesses[i][Till])
 						{
-							format(string, sizeof(string), "Chcesz sprzedaæ %d itemów do biznesu.\nZysk z tranzakcji wynosi³by $%d\nCzy potwierdzasz sprzeda¿ ?", maxCanCarry, BizItemSlotBuy(i, slot)*maxCanCarry);
+							format(string, sizeof(string), "Chcesz sprzedaæ %d itemów do biznesu.\nZysk z tranzakcji wynosi³by %d$\nCzy potwierdzasz sprzeda¿ ?", maxCanCarry, BizItemSlotBuy(i, slot)*maxCanCarry);
 							gBuyBusinessItemSellCount[playerid] = maxCanCarry;
 						}
 						else
@@ -16754,7 +15542,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						if(BizItemSlotBuy(i, slot)*strval(inputtext) <= Businesses[i][Till])
 						{
-							format(string, sizeof(string), "Chcesz sprzedaæ %d itemów do biznesu.\nZysk z tranzakcji wynosi³by $%d\nCzy potwierdzasz sprzeda¿ ?", strval(inputtext), BizItemSlotBuy(i, slot)*strval(inputtext));
+							format(string, sizeof(string), "Chcesz sprzedaæ %d itemów do biznesu.\nZysk z tranzakcji wynosi³by %d$\nCzy potwierdzasz sprzeda¿ ?", strval(inputtext), BizItemSlotBuy(i, slot)*strval(inputtext));
 							gBuyBusinessItemSellCount[playerid] = strval(inputtext);
 						}
 						else
@@ -16768,7 +15556,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(BizItemSlotBuy(i, slot)*maxCanCarry <= Businesses[i][Till] && maxCanCarry > 0)
 					{
-						format(string, sizeof(string), "Chcesz sprzedaæ %d itemów do biznesu.\nZysk z tranzakcji wynosi³by $%d\nCzy potwierdzasz sprzeda¿ ?", maxCanCarry, BizItemSlotBuy(i, slot)*maxCanCarry);
+						format(string, sizeof(string), "Chcesz sprzedaæ %d itemów do biznesu.\nZysk z tranzakcji wynosi³by %d$\nCzy potwierdzasz sprzeda¿ ?", maxCanCarry, BizItemSlotBuy(i, slot)*maxCanCarry);
 						gBuyBusinessItemSellCount[playerid] = maxCanCarry;
 					}
 					else
@@ -16883,7 +15671,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				
-				format(string, sizeof(string), "Sprzeda³eœ itemy !\nZarobi³eœ $%d", BizItemSlotBuy(i, slot)*gBuyBusinessItemSellCount[playerid]);
+				format(string, sizeof(string), "Sprzeda³eœ itemy !\nZarobi³eœ %d$", BizItemSlotBuy(i, slot)*gBuyBusinessItemSellCount[playerid]);
 				GivePlayerCash(playerid, BizItemSlotBuy(i, slot)*gBuyBusinessItemSellCount[playerid]);
 				Businesses[i][Till] -= BizItemSlotBuy(i, slot)*gBuyBusinessItemSellCount[playerid];
 				SaveBizData(i, "Till");
@@ -16920,9 +15708,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Ta karta nie przed³u¿a wa¿noœci konta dla tej sieci", "Wróæ", "");
 						return 1;
 					}					
-					format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_phones` WHERE `Nr` = '%d' AND `SimID` = '%d'",
+					format(string, sizeof(string), "SELECT * FROM `samp_phones` WHERE `Nr` = '%d' AND `SimID` = '%d'",
 						SlotParam2(playerid, slot), SlotParam4(playerid, slot));
-					wp_mysql_query(string, CHECK_PHONE_TYPE_EXTENSION, playerid, db_con1);
+					mysql_query(string, CHECK_PHONE_TYPE_EXTENSION, playerid, db_con1);
 					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Sprawdzanie stanu konta... Poczekaj na komunikat wynikowy przed ponownym u¿yciem /mi", "Ok", "");
 				}
 				/* SIM Card enter */
@@ -16998,7 +15786,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(PSlotItemTypeCompare(playerid, gSelectedSlot[playerid], 3) && SlotItem(playerid, gSelectedSlot[playerid], 19))
 					{
 						SlotParam5(playerid, gSelectedSlot[playerid]);
-						format(string, sizeof(string), "Dowód rejestracyjny pojazdu\n\nW³aœciciel: %s\nNumer VIN: %d\nNumer rejestracyjny: %d\n\nUbezpieczenie OC na kwote: $%d\nUbeczpienie AC na kwote: $%d", 
+						format(string, sizeof(string), "Dowód rejestracyjny pojazdu\n\nW³aœciciel: %s\nNumer VIN: %d\nNumer rejestracyjny: %d\n\nUbezpieczenie OC na kwote: %d$\nUbeczpienie AC na kwote: %d$", 
 							gDSelectedItemP5[playerid], SlotParam2(playerid, gSelectedSlot[playerid]), SlotParam1(playerid, gSelectedSlot[playerid]), SlotParam3(playerid, gSelectedSlot[playerid]), SlotParam4(playerid, gSelectedSlot[playerid]));
 						ShowPlayerDialog(giveplayerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Dokument", string, "Zamknij", "");
 					}					
@@ -17258,7 +16046,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(listitem == 0)
 				{
-					format(string, sizeof(string), "Oferta na abonament\n\nOp³ata aktywacyjna: $%d\nDarmowe minuty/SMSy: %d/%d\nKoszt dziennego abonamentu: $%d\nKoszt za minute po³¹czenia: $%d\nKoszt SMS: $%d\n\nOferta sieci mo¿e ulec zmianie w czasie korzystania z sieci",
+					format(string, sizeof(string), "Oferta na abonament\n\nOp³ata aktywacyjna: %d$\nDarmowe minuty/SMSy: %d/%d\nKoszt dziennego abonamentu: %d$\nKoszt za minute po³¹czenia: %d$\nKoszt SMS: %d$\n\nOferta sieci mo¿e ulec zmianie w czasie korzystania z sieci",
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mSimFreeMins],
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mSimFreeSms],
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mSimActivationCost],
@@ -17269,7 +16057,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if(listitem == 1)
 				{
-					format(string, sizeof(string), "Oferta na karte\n\nOp³ata aktywacyjna: $%d\nDostêpne ceny kart: $%d/%d dni, $%d/%d dni, $%d/%d dni, $%d/%d dni\nKoszt za minute po³¹czenia: $%d\nKoszt SMS: $%d\n\nOferta sieci mo¿e ulec zmianie w czasie korzystania z sieci",
+					format(string, sizeof(string), "Oferta na karte\n\nOp³ata aktywacyjna: %d$\nDostêpne ceny kart: %d$/%d dni, %d$/%d dni, %d$/%d dni, %d$/%d dni\nKoszt za minute po³¹czenia: %d$\nKoszt SMS: %d$\n\nOferta sieci mo¿e ulec zmianie w czasie korzystania z sieci",
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mSimActivationCost],
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewCost1],
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewTime1],
@@ -17288,29 +16076,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] £adowanie danych...");
 					format(string, sizeof(string), "SELECT `ID` , `Nr` , `SimID` FROM `samp_phones` WHERE `PlayerName` = '%s' AND `Faction` = '%d' ORDER BY `ID` ASC",
 						gPlayerData[playerid][pName], Businesses[gBuyBusinessID[playerid]][mFaction]);
-					wp_mysql_query(string, PHONE_LIST_SIM_REPLACE, playerid, db_con1);
+					mysql_query(string, PHONE_LIST_SIM_REPLACE, playerid, db_con1);
 				}
 				else if(listitem == 3)
 				{
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] £adowanie danych...");
 					format(string, sizeof(string), "SELECT `ID` , `Nr` , `SimID` FROM `samp_phones` WHERE `PlayerName` = '%s' AND `Faction` = '%d' ORDER BY `ID` ASC",
 						gPlayerData[playerid][pName], Businesses[gBuyBusinessID[playerid]][mFaction]);
-					wp_mysql_query(string, PHONE_LIST_FEE_RESIGN, playerid, db_con1);
+					mysql_query(string, PHONE_LIST_FEE_RESIGN, playerid, db_con1);
 				}
 				else if(listitem == 4)
 				{
-					format(string, sizeof(string), "1. Karta o wartoœci $%d. Przed³u¿enie wa¿noœci konta o %d\n",
+					format(string, sizeof(string), "1. Karta o wartoœci %d$. Przed³u¿enie wa¿noœci konta o %d\n",
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewCost1],
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewTime1]);
-					format(string, sizeof(string), "%s2. Karta o wartoœci $%d. Przed³u¿enie wa¿noœci konta o %d\n",
+					format(string, sizeof(string), "%s2. Karta o wartoœci %d$. Przed³u¿enie wa¿noœci konta o %d\n",
 						string,
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewCost2],
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewTime2]);
-					format(string, sizeof(string), "%s3. Karta o wartoœci $%d. Przed³u¿enie wa¿noœci konta o %d\n",
+					format(string, sizeof(string), "%s3. Karta o wartoœci %d$. Przed³u¿enie wa¿noœci konta o %d\n",
 						string,
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewCost3],
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewTime3]);
-					format(string, sizeof(string), "%s4. Karta o wartoœci $%d. Przed³u¿enie wa¿noœci konta o %d",
+					format(string, sizeof(string), "%s4. Karta o wartoœci %d$. Przed³u¿enie wa¿noœci konta o %d",
 						string,
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewCost4],
 						DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mCardRenewTime4]);
@@ -17320,14 +16108,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(Businesses[gBuyBusinessID[playerid]][mFactionTimeLeft] > 0)
 					{
-						format(string, sizeof(string), "Jeœli postanowisz teraz zerwaæ umowe z obecn¹ sieci¹ zap³acisz kare w wysokoœci $%d.\nDo koñca okresu ochronnego zosta³o %d dni",
+						format(string, sizeof(string), "Jeœli postanowisz teraz zerwaæ umowe z obecn¹ sieci¹ zap³acisz kare w wysokoœci %d$.\nDo koñca okresu ochronnego zosta³o %d dni",
 							DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mBizPenaltyValue], Businesses[gBuyBusinessID[playerid]][mFactionTimeLeft]);
 						ShowPlayerDialog(playerid, DIALOG_BUY_SIM_2_RESIGN_CONTRACT, DIALOG_STYLE_MSGBOX, "Informacja", string, "Kontynuuj", "Wróæ");
 						return 1;
 					}
 					format(string, sizeof(string), "Zerwa³eœ umowe z %s", DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][Name]);
 					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-					Businesses[gBuyBusinessID[playerid]][mFaction] = -1;
+					Businesses[gBuyBusinessID[playerid]][mFaction] = 255;
 					SaveBizData(gBuyBusinessID[playerid], "Faction");					
 				}
 			}
@@ -17361,7 +16149,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				gRandSimNumber[playerid] = random(999999);				
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Trwa generowanie numeru...");
 				format(string, sizeof(string), "SELECT `Nr` FROM `samp_phones` WHERE `Nr` = '%d'",gRandNumber[playerid]);
-				wp_mysql_query(string, CHECK_PHONE_FEE, playerid, db_con3);
+				mysql_query(string, CHECK_PHONE_FEE, playerid, db_con3);
 				
 				return 1;
 			}
@@ -17398,7 +16186,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				gRandSimNumber[playerid] = random(999999);				
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Trwa generowanie numeru...");
 				format(string, sizeof(string), "SELECT `Nr` FROM `samp_phones` WHERE `Nr` = '%d'",gRandNumber[playerid]);
-				wp_mysql_query(string, CHECK_PHONE_CARD, playerid, db_con3);
+				mysql_query(string, CHECK_PHONE_CARD, playerid, db_con3);
 				return 1;
 			}
 			else
@@ -17416,7 +16204,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new tmpid = random(999999);			
 				format(string, sizeof(string), "UPDATE `samp_phones` SET `SimID` = '%d' WHERE `PlayerName` = '%s' AND `Nr` = '%d' AND `SimID` = '%d'",
 					tmpid, gPlayerData[playerid][pName], gPhoneList[listitem][mPhoneNr], gPhoneList[listitem][mPhoneSimID]);
-				wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 				gPhoneList[listitem][mPhoneSimID] = tmpid;
 				InsertPlayerItemEx(playerid, 3, 16, gRandNumber[playerid], gBuyBusinessID[playerid], gPhoneList[listitem][mPhoneSimID], 0, "Puste");
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Otrzyma³eœ now¹ karte SIM, poprzednia karta zosta³a zablokowana", "Ok", "");
@@ -17430,7 +16218,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{			
 				format(string, sizeof(string), "DELETE FROM `samp_phones` WHERE `PlayerName` = '%s' AND `Nr` = '%d' AND `SimID` = '%d'",
 					gPlayerData[playerid][pName], gPhoneList[listitem][mPhoneNr], gPhoneList[listitem][mPhoneSimID]);
-				wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+				mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Zrezygnowa³eœ z abonamentu.", "Ok", "");
 			}
 			else
@@ -17495,12 +16283,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(Businesses[gBuyBusinessID[playerid]][Till] < DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mBizPenaltyValue])
 				{
-					format(string, sizeof(string), "W biznesie nie ma wystarczaj¹cej iloœci pieniêdzy ! Potrzeba $%d", DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mBizPenaltyValue]);
+					format(string, sizeof(string), "W biznesie nie ma wystarczaj¹cej iloœci pieniêdzy ! Potrzeba %d$", DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][mBizPenaltyValue]);
 					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Ok", "");
 				}
 				format(string, sizeof(string), "Zerwa³eœ umowe z %s", DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][Name]);
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-				Businesses[gBuyBusinessID[playerid]][mFaction] = -1;
+				Businesses[gBuyBusinessID[playerid]][mFaction] = 255;
 				SaveBizData(gBuyBusinessID[playerid], "Faction");
 				Businesses[gBuyBusinessID[playerid]][Till] -= DynamicFactions[Businesses[gBuyBusinessID[playerid]][mFaction]][Name];
 				SaveBizData(gBuyBusinessID[playerid], "Till");
@@ -17536,9 +16324,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(k++ == listitem)
 						{
 							format(string, sizeof(string), "Oferta sieci %s - nazwa sieci: %s\n\n", DynamicFactions[i][Name], DynamicFactions[i][mCompanyName]);
-							format(string, sizeof(string), "%sFirma oferuje $%d za podpisanie umowy na okres %d dni.\n", 
+							format(string, sizeof(string), "%sFirma oferuje %d$ za podpisanie umowy na okres %d dni.\n", 
 								string, DynamicFactions[i][mBizJoinCash], DynamicFactions[i][mBizJoinTime]);
-							format(string, sizeof(string), "%sW przypadku wczeœniejszego zerwania umowy w³aœciciel biznesu ponosi kare w wysokoœci $%d.\n",
+							format(string, sizeof(string), "%sW przypadku wczeœniejszego zerwania umowy w³aœciciel biznesu ponosi kare w wysokoœci %d$.\n",
 								string, DynamicFactions[i][mBizPenaltyValue]);
 							format(string, sizeof(string), "%sW³aœciciel biznesu otrzymuje %.2f%% zysku za sprzeda¿ produktów oraz %.2f%% zysku z wykonanych po³¹czeñ przez u¿ytkowników sieci.\n",
 								string, DynamicFactions[i][mBizOfferIncome], DynamicFactions[i][mBizConIncome]);
@@ -17592,9 +16380,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(listitem == 0)
 				{
 					B1DIALOG_SMS:
-					format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_sms` WHERE `SenderNumber` = '%d' OR `ReceiverNumber` = '%d' GROUP BY `ID` LIMIT 50",
+					format(string, sizeof(string), "SELECT * FROM `samp_sms` WHERE `SenderNumber` = '%d' OR `ReceiverNumber` = '%d' GROUP BY `ID` LIMIT 50",
 						SlotParam2(playerid, gSelectedSlot[playerid]), SlotParam2(playerid, gSelectedSlot[playerid]));
-					wp_mysql_query(string, PHONE_SMS_LIST, playerid, db_con1);
+					mysql_query(string, PHONE_SMS_LIST, playerid, db_con1);
 				}
 				else if(listitem == 1)
 				{
@@ -17633,7 +16421,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if(listitem == 1)
 				{
 					format(string, sizeof(string), "DELETE FROM `samp_sms` WHERE `ID` = '%d'", gSmsList[gSelectedNumberID[playerid]][mSmsId]);
-					wp_mysql_query(string, SAVE, playerid, db_con1);
+					mysql_query(string, SAVE, playerid, db_con1);
 					ShowPlayerDialog(playerid, DIALOG_SMS_5, DIALOG_STYLE_MSGBOX, "Informacja", "SMS zosta³ usuniêty", "Wróæ", "");
 				}
 			}
@@ -17698,9 +16486,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(gSmsList[0][mSmsReceiverName], MAX_PLAYER_NAME, " ");
 				gSmsList[0][mSmsSenderSimId] = SlotParam4(playerid, gSelectedSlot[playerid]);
 				format(gSmsList[0][mSmsContent], 256, "%s", inputtext);
-				format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_phones` WHERE `Nr` = '%d' AND `SimID` = '%d' ",
+				format(string, sizeof(string), "SELECT * FROM `samp_phones` WHERE `Nr` = '%d' AND `SimID` = '%d' ",
 					SlotParam2(playerid, gSelectedSlot[playerid]), SlotParam4(playerid, gSelectedSlot[playerid]));
-				wp_mysql_query(string, SEND_SMS, playerid, db_con1);
+				mysql_query(string, SEND_SMS, playerid, db_con1);
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Wysy³anie SMSa...", "Zamknij", "");
 				return 1;
 			}
@@ -17719,28 +16507,28 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				gListItem[playerid] = listitem;
 				switch(listitem)
 				{
-					case 0: format(string, sizeof(string), "Podaj nowy koszt aktywacji - poprzednia wartoœæ: $%d", DynamicFactions[fID][mSimActivationCost]);
-					case 1: format(string, sizeof(string), "Podaj koszt abonamentu dziennego- poprzednia wartoœæ: $%d", DynamicFactions[fID][mSimDailyFee]);
+					case 0: format(string, sizeof(string), "Podaj nowy koszt aktywacji - poprzednia wartoœæ: %d$", DynamicFactions[fID][mSimActivationCost]);
+					case 1: format(string, sizeof(string), "Podaj koszt abonamentu dziennego- poprzednia wartoœæ: %d$", DynamicFactions[fID][mSimDailyFee]);
 					case 2: format(string, sizeof(string), "Podaj iloœæ darmowych minut w abonamencie- poprzednia wartoœæ: %d", DynamicFactions[fID][mSimFreeMins]);
 					case 3: format(string, sizeof(string), "Podaj iloœæ darmowych smsów w abonamencie- poprzednia wartoœæ: %d", DynamicFactions[fID][mSimFreeSms]);
-					case 4: format(string, sizeof(string), "Podaj koszt jednej minuty w abonamencie - poprzednia wartoœæ: $%d", DynamicFactions[fID][mCallCostFee]);
-					case 5: format(string, sizeof(string), "Podaj koszt jednego smsa w abonamencie - poprzednia wartoœæ: $%d", DynamicFactions[fID][mSmsCostFee]);
-					case 6: format(string, sizeof(string), "Podaj koszt jednej minuty w ofercie na karte - poprzednia wartoœæ: $%d", DynamicFactions[fID][mCallCostCard]);
-					case 7: format(string, sizeof(string), "Podaj koszt jednego smsa w ofercie na karte - poprzednia wartoœæ: $%d", DynamicFactions[fID][mSmsCostCard]);
+					case 4: format(string, sizeof(string), "Podaj koszt jednej minuty w abonamencie - poprzednia wartoœæ: %d$", DynamicFactions[fID][mCallCostFee]);
+					case 5: format(string, sizeof(string), "Podaj koszt jednego smsa w abonamencie - poprzednia wartoœæ: %d$", DynamicFactions[fID][mSmsCostFee]);
+					case 6: format(string, sizeof(string), "Podaj koszt jednej minuty w ofercie na karte - poprzednia wartoœæ: %d$", DynamicFactions[fID][mCallCostCard]);
+					case 7: format(string, sizeof(string), "Podaj koszt jednego smsa w ofercie na karte - poprzednia wartoœæ: %d$", DynamicFactions[fID][mSmsCostCard]);
 					case 8: format(string, sizeof(string), "Podaj wa¿noœæ karty po aktywacji - poprzednia wartoœæ: %d dni", DynamicFactions[fID][mCardValidity]);
-					case 9: format(string, sizeof(string), "Podaj kwote do³adowania I - poprzednia wartoœæ: $%d", DynamicFactions[fID][mCardRenewCost1]);
+					case 9: format(string, sizeof(string), "Podaj kwote do³adowania I - poprzednia wartoœæ: %d$", DynamicFactions[fID][mCardRenewCost1]);
 					case 10: format(string, sizeof(string), "Podaj czas przed³u¿enia do³adowania I - poprzednia wartoœæ: %d", DynamicFactions[fID][mCardRenewTime1]);
-					case 11: format(string, sizeof(string), "Podaj kwote do³adowania II - poprzednia wartoœæ: $%d", DynamicFactions[fID][mCardRenewCost2]);
+					case 11: format(string, sizeof(string), "Podaj kwote do³adowania II - poprzednia wartoœæ: %d$", DynamicFactions[fID][mCardRenewCost2]);
 					case 12: format(string, sizeof(string), "Podaj czas przed³u¿enia do³adowania II - poprzednia wartoœæ: %d", DynamicFactions[fID][mCardRenewTime2]);
-					case 13: format(string, sizeof(string), "Podaj kwote do³adowania III - poprzednia wartoœæ: $%d", DynamicFactions[fID][mCardRenewCost3]);
+					case 13: format(string, sizeof(string), "Podaj kwote do³adowania III - poprzednia wartoœæ: %d$", DynamicFactions[fID][mCardRenewCost3]);
 					case 14: format(string, sizeof(string), "Podaj czas przed³u¿enia do³adowania III - poprzednia wartoœæ: %d", DynamicFactions[fID][mCardRenewTime3]);
-					case 15: format(string, sizeof(string), "Podaj kwote do³adowania IV - poprzednia wartoœæ: $%d", DynamicFactions[fID][mCardRenewCost4]);
+					case 15: format(string, sizeof(string), "Podaj kwote do³adowania IV - poprzednia wartoœæ: %d$", DynamicFactions[fID][mCardRenewCost4]);
 					case 16: format(string, sizeof(string), "Podaj czas przed³u¿enia do³adowania IV - poprzednia wartoœæ: %d", DynamicFactions[fID][mCardRenewTime4]);
 					case 17: format(string, sizeof(string), "Podaj procentowy zysk z po³¹czeñ - poprzednia wartoœæ: %.2f", DynamicFactions[fID][mBizConIncome]);
 					case 18: format(string, sizeof(string), "Podaj procentowy zysk ze sprzeda¿y ofert - poprzednia wartoœæ: %.2f", DynamicFactions[fID][mBizOfferIncome]);
-					case 19: format(string, sizeof(string), "Podaj zysk dla biznesu za podpisaniu umowy - poprzednia wartoœæ: $%d", DynamicFactions[fID][mBizJoinCash]);
+					case 19: format(string, sizeof(string), "Podaj zysk dla biznesu za podpisaniu umowy - poprzednia wartoœæ: %d$", DynamicFactions[fID][mBizJoinCash]);
 					case 20: format(string, sizeof(string), "Podaj czas na jaki podpisywana bêdzie umowa - poprzednia wartoœæ: %d dni", DynamicFactions[fID][mBizJoinTime]);
-					case 21: format(string, sizeof(string), "Podaj wysokoœæ kary jak¹ poniesie biznes za przedwczesne zerwanie umowy - poprzednia wartoœæ: $%d", DynamicFactions[fID][mBizPenaltyValue]);
+					case 21: format(string, sizeof(string), "Podaj wysokoœæ kary jak¹ poniesie biznes za przedwczesne zerwanie umowy - poprzednia wartoœæ: %d$", DynamicFactions[fID][mBizPenaltyValue]);
 					case 22: format(string, sizeof(string), "Podaj now¹ nazwe sieci - poprzednia wartoœæ: %s", DynamicFactions[fID][mCompanyName]);
 				}
 				ShowPlayerDialog(playerid, DIALOG_NETWORK_COMP_2, DIALOG_STYLE_INPUT, "WprowadŸ now¹ wartoœæ", string, "Zapisz", "Anuluj");
@@ -17752,7 +16540,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(strval(inputtext) < 0)
 				{
-					ShowPlayerDialog(playerid, DIALOG_NETWORK_COMP_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Wartoœci nie mog¹ byæ ujemne !", "Wróæ", "Zamknij");
+					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Wartoœci nie mog¹ byæ ujemne !", "Ok", "");
 					return 1;
 				}
 				new fID = gPlayerData[playerid][pFaction2];
@@ -17874,20 +16662,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SaveFData(fID, "CompanyName");
 					}
 				}
-				ShowPlayerDialog(playerid, DIALOG_NETWORK_COMP_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Nowa wartoœæ zosta³a przypisana", "Wróæ", "Zamknij");
+				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nowa wartoœæ zosta³a przypisana", "Ok", "");
 			}
-			else
-			{
-				ShowPlayerPhoneCompany(playerid);
-			}
-		}
-		case DIALOG_NETWORK_COMP_MSG:
-		{
-			if(response)
-			{
-				ShowPlayerPhoneCompany(playerid);
-			}
-		}
+		}					
 		case DIALOG_PHONE:
 		{
 			if(response)
@@ -17970,9 +16747,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					
 					gCallDataReceived[playerid] = 0;
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "£¹czenie...");
-					format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_phones` WHERE `Nr` = '%d' AND `SimID` = '%d'",
+					format(string, sizeof(string), "SELECT * FROM `samp_phones` WHERE `Nr` = '%d' AND `SimID` = '%d'",
 						SlotParam2(playerid, gSelectedSlot[playerid]), SlotParam4(playerid, gSelectedSlot[playerid]));
-					wp_mysql_query(string, CHECK_PHONE_TYPE_CALL, playerid, db_con3);
+					mysql_query(string, CHECK_PHONE_TYPE_CALL, playerid, db_con3);
 					
 					gPlayerVars[playerid][mPhoneNr] = SlotParam2(playerid, gSelectedSlot[playerid]);
 
@@ -18100,7 +16877,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(number == 444)
 				{
 					new anyone = 0;
-					defer DisconnectPhone(playerid);
 					foreach(Player, i)
 					{
 						if(gPlayerLogged[i])
@@ -18120,16 +16896,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessage(playerid, COLOR_GREEN, "[TELEFON:] Witamy, centrum TAXI, zg³oszenie przyjête, prosimy o cierpliwoœæ");
 					new location[MAX_ZONE_NAME];
 					GetPlayer2DZone(playerid, location, MAX_ZONE_NAME);
-					
 					format(string, sizeof(string), "[RADIO:] Osoba potrzebuje taksówki - Lokacja: %s", location);
 					SendFactionTypeMessage(6, COLOR_GREEN, string);
-				
 					new Float:x,Float:y,Float:z;
-					
 					GetPlayerPos(playerid,x,y,z);
-					
 					PhoneAnimation(playerid);
-					
 					foreach(Player, i)
 					{
 						if(gPlayerLogged[i])
@@ -18143,8 +16914,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									{
 										if(slot[j] && SlotParam1(i, j+1))
 										{
-											SetPlayerCheckpoint(i, x, y, z, 10.0);
-											defer ClearCheckpointsForPlayer(i);
+											SetPlayerCheckpoint(j, x, y, z, 10.0);
+											ClearCheckpointsForPlayer(i);
 										}
 									}
 								}
@@ -18156,8 +16927,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(number == 555)
 				{
 					new anyone = 0;
-					defer DisconnectPhone(playerid);
-					
 					foreach(Player, i)
 					{
 						if(gPlayerLogged[i])
@@ -18171,7 +16940,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SendClientMessage(playerid, COLOR_ORANGE, "[TELEFON:] Witamy, Warsztat Samochodowy, w tej chwili nie ma wolnych mechaników, prosimy spróbowaæ póŸniej");
 						return 1;
 					}
-					
 					SendClientMessage(playerid, COLOR_GREEN, "[TELEFON:] Witamy, Warsztat Samochodowy, zg³oszenie przyjête, prosimy o cierpliwoœæ");
 					new location[MAX_ZONE_NAME];
 					GetPlayer2DZone(playerid, location, MAX_ZONE_NAME);
@@ -18193,8 +16961,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									{
 										if(gPlayerVars[playerid][mAtHouseID] != -1)
 											SetPlayerCheckpoint(i, Houses[gPlayerVars[playerid][mAtHouseID]][EnterX], Houses[gPlayerVars[playerid][mAtHouseID]][EnterY], Houses[gPlayerVars[playerid][mAtHouseID]][EnterZ], 10.0);
-										else if(gPlayerVars[playerid][mAtBuildingId] != -1)
-											SetPlayerCheckpoint(i, Building[gPlayerVars[playerid][mAtBuildingId]][EnterX], Building[gPlayerVars[playerid][mAtBuildingId]][EnterY], Building[gPlayerVars[playerid][mAtBuildingId]][EnterZ], 10.0);
+										else if(gPlayerVars[playerid][mAtBuildingID] != -1)
+											SetPlayerCheckpoint(i, Building[gPlayerVars[playerid][mAtBuildingID]][EnterX], Building[gPlayerVars[playerid][mAtBuildingID]][EnterY], Building[gPlayerVars[playerid][mAtBuildingID]][EnterZ], 10.0);
 										else if(gPlayerVars[playerid][mAtBizID] != -1)
 											SetPlayerCheckpoint(i, Businesses[gPlayerVars[playerid][mAtBizID]][EnterX], Businesses[gPlayerVars[playerid][mAtBizID]][EnterY], Businesses[gPlayerVars[playerid][mAtBizID]][EnterZ], 10.0);
 										else
@@ -18213,146 +16981,96 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new Float:x, Float:y, Float:z, anyone = 0;
 					new location[MAX_ZONE_NAME];
 					GetPlayerPos(playerid, x, y, z);
-					defer DisconnectPhone(playerid);
 					
 					foreach(Player, i)
 					{
-						if(!gPlayerLogged[i])
+						if(gPlayerLogged[i])
 						{
-							continue;
-						}
-						
-						if(gPlayerData[i][pFaction] == 255)
-						{
-							continue;
-						}
-						
-						if(DynamicFactions[gPlayerData[i][pFaction]][fType] == FACTIONT_POLICE)
-						{
-							anyone = 1;
+							if(gPlayerData[i][pFaction] == FACTIONID_POLICE)
+								anyone = 1;
 						}
 					}
-					
 					if(!anyone)
 					{
 						SendClientMessage(playerid, COLOR_ORANGE, "[TELEFON:] Komisariat policji, w tej chwili wszystkie jednostki s¹ zajête, prosze spróbowaæ póŸniej");
 						return 1;
 					}
-					
 					SendClientMessage(playerid, COLOR_GREEN, "[TELEFON:] Komisariat policji, zg³oszenie przyjête, prosze pozostaæ na miejscu do przybycia patrolu");
-					
 					GetPlayer2DZone(playerid, location, MAX_ZONE_NAME);
-					
 					format(string, sizeof(string), "Otrzymano nowe zg³oszenie - osoba potrzebuj¹cej pomocy przy %s", location);
 					SendCBMessage(41, string);
 					
-					for(new i = 0; i < 11; i++)
+					if(!DynamicFactions[FACTIONID_POLICE][fNotification1])
 					{
-						if(DynamicFactions[i][fType] != FACTIONT_POLICE)
-						{
-							continue;
-						}
-						
-						if(!DynamicFactions[i][fNotification1])
-						{
-							DynamicFactions[i][fNotification1] = 5;
-							DynamicFactions[i][fNotification1ID] = playerid;
-						}
-						else if(!DynamicFactions[i][fNotification2])
-						{
-							DynamicFactions[i][fNotification2] = 5;
-							DynamicFactions[i][fNotification2ID] = playerid;
-						}
-						else if(!DynamicFactions[i][fNotification3])
-						{
-							DynamicFactions[i][fNotification3] = 5;
-							DynamicFactions[i][fNotification3ID] = playerid;
-						}
-						else if(!DynamicFactions[i][fNotification4])
-						{
-							DynamicFactions[i][fNotification4] = 5;
-							DynamicFactions[i][fNotification4ID] = playerid;
-						}
-						else if(!DynamicFactions[i][fNotification5])
-						{
-							DynamicFactions[i][fNotification5] = 5;
-							DynamicFactions[i][fNotification5ID] = playerid;
-						}
+						DynamicFactions[FACTIONID_POLICE][fNotification1] = 5;
+						DynamicFactions[FACTIONID_POLICE][fNotification1ID] = playerid;
+					}
+					else if(!DynamicFactions[FACTIONID_POLICE][fNotification2])
+					{
+						DynamicFactions[FACTIONID_POLICE][fNotification2] = 5;
+						DynamicFactions[FACTIONID_POLICE][fNotification2ID] = playerid;
+					}
+					else if(!DynamicFactions[FACTIONID_POLICE][fNotification3])
+					{
+						DynamicFactions[FACTIONID_POLICE][fNotification3] = 5;
+						DynamicFactions[FACTIONID_POLICE][fNotification3ID] = playerid;
+					}
+					else if(!DynamicFactions[FACTIONID_POLICE][fNotification4])
+					{
+						DynamicFactions[FACTIONID_POLICE][fNotification4] = 5;
+						DynamicFactions[FACTIONID_POLICE][fNotification4ID] = playerid;
+					}
+					else if(!DynamicFactions[FACTIONID_POLICE][fNotification5])
+					{
+						DynamicFactions[FACTIONID_POLICE][fNotification5] = 5;
+						DynamicFactions[FACTIONID_POLICE][fNotification5ID] = playerid;
 					}
 					
 					foreach(Player, i)
 					{
-						if(!gPlayerLogged[i])
+						if(gPlayerLogged[i])
 						{
-							continue;
-						}
-						
-						if(gPlayerData[i][pFaction] == 255)
-						{								
-							continue;
-						}
-						
-						if(DynamicFactions[i][fType] != FACTIONT_POLICE)
-						{
-							continue;
-						}
-							
-						PHaveItemEx(i, 3, 12, slot);
-						for(new j = 0; j < MAX_PLAYER_ITEM_SLOT; j++)
-						{
-							if(slot[j] && SlotParam1(i, j+1))
-							{
-								if(gPlayerVars[playerid][mAtHouseID] != -1)
+							if(gPlayerData[i][pFaction] == FACTIONID_POLICE)
+							{								
+								PHaveItemEx(i, 3, 12, slot);
+								for(new j = 0; j < MAX_PLAYER_ITEM_SLOT; j++)
 								{
-									SetPlayerCheckpoint(i, Houses[gPlayerVars[playerid][mAtHouseID]][EnterX], Houses[gPlayerVars[playerid][mAtHouseID]][EnterY], Houses[gPlayerVars[playerid][mAtHouseID]][EnterZ], 10.0);
+									if(slot[j] && SlotParam1(i, j+1))
+									{
+										if(gPlayerVars[playerid][mAtHouseID] != -1)
+											SetPlayerCheckpoint(i, Houses[gPlayerVars[playerid][mAtHouseID]][EnterX], Houses[gPlayerVars[playerid][mAtHouseID]][EnterY], Houses[gPlayerVars[playerid][mAtHouseID]][EnterZ], 10.0);
+										else if(gPlayerVars[playerid][mAtBuildingID] != -1)
+											SetPlayerCheckpoint(i, Building[gPlayerVars[playerid][mAtBuildingID]][EnterX], Building[gPlayerVars[playerid][mAtBuildingID]][EnterY], Building[gPlayerVars[playerid][mAtBuildingID]][EnterZ], 10.0);
+										else if(gPlayerVars[playerid][mAtBizID] != -1)
+											SetPlayerCheckpoint(i, Businesses[gPlayerVars[playerid][mAtBizID]][EnterX], Businesses[gPlayerVars[playerid][mAtBizID]][EnterY], Businesses[gPlayerVars[playerid][mAtBizID]][EnterZ], 10.0);
+										else
+											SetPlayerCheckpoint(i, x, y, z, 10.0);
+										defer ClearCheckpointsForPlayer(i);
+										break;
+									}
 								}
-								else if(gPlayerVars[playerid][mAtBuildingId] != -1)
-								{	
-									SetPlayerCheckpoint(i, Building[gPlayerVars[playerid][mAtBuildingId]][EnterX], Building[gPlayerVars[playerid][mAtBuildingId]][EnterY], Building[gPlayerVars[playerid][mAtBuildingId]][EnterZ], 10.0);
-								}
-								else if(gPlayerVars[playerid][mAtBizID] != -1)
-								{	
-									SetPlayerCheckpoint(i, Businesses[gPlayerVars[playerid][mAtBizID]][EnterX], Businesses[gPlayerVars[playerid][mAtBizID]][EnterY], Businesses[gPlayerVars[playerid][mAtBizID]][EnterZ], 10.0);
-								}
-								else
-								{
-									SetPlayerCheckpoint(i, x, y, z, 10.0);
-								}
-								
-								defer ClearCheckpointsForPlayer(i);
-								
-								break;
 							}
 						}
 					}
-					
 					return 1;
 				}
 				else if(number == 999)
 				{
 					new Float:x, Float:y, Float:z, anyone = 0;
 					new location[MAX_ZONE_NAME];
-					defer DisconnectPhone(playerid);
-					
 					foreach(Player, i)
 					{
-						if(!gPlayerLogged[i])
+						if(gPlayerLogged[i])
 						{
-							continue;
-						}
-						
-						if(gPlayerData[i][pFaction] == FACTIONID_MEDICS)
-						{
-							anyone = 1;
+							if(gPlayerData[i][pFaction] == FACTIONID_MEDICS)
+								anyone = 1;
 						}
 					}
-					
 					if(!anyone)
 					{
 						SendClientMessage(playerid, COLOR_ORANGE, "[TELEFON:] Pogotowie ratunkowe, w tej chwili wszystkie jednostki s¹ zajête, prosze spróbowaæ póŸniej");
 						return 1;
 					}
-					
 					SendClientMessage(playerid, COLOR_GREEN, "[TELEFON:] Pogotowie ratunkowe, zg³oszenie przyjête, prosze pozostaæ na miejscu do przybycia patrolu");
 					GetPlayer2DZone(playerid, location, MAX_ZONE_NAME);
 					format(string, sizeof(string), "Otrzymano nowe zg³oszenie - osoba potrzebuj¹cej pomocy przy %s", location);
@@ -18398,8 +17116,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									{
 										if(gPlayerVars[playerid][mAtHouseID] != -1)
 											SetPlayerCheckpoint(i, Houses[gPlayerVars[playerid][mAtHouseID]][EnterX], Houses[gPlayerVars[playerid][mAtHouseID]][EnterY], Houses[gPlayerVars[playerid][mAtHouseID]][EnterZ], 10.0);
-										else if(gPlayerVars[playerid][mAtBuildingId] != -1)
-											SetPlayerCheckpoint(i, Building[gPlayerVars[playerid][mAtBuildingId]][EnterX], Building[gPlayerVars[playerid][mAtBuildingId]][EnterY], Building[gPlayerVars[playerid][mAtBuildingId]][EnterZ], 10.0);
+										else if(gPlayerVars[playerid][mAtBuildingID] != -1)
+											SetPlayerCheckpoint(i, Building[gPlayerVars[playerid][mAtBuildingID]][EnterX], Building[gPlayerVars[playerid][mAtBuildingID]][EnterY], Building[gPlayerVars[playerid][mAtBuildingID]][EnterZ], 10.0);
 										else if(gPlayerVars[playerid][mAtBizID] != -1)
 											SetPlayerCheckpoint(i, Businesses[gPlayerVars[playerid][mAtBizID]][EnterX], Businesses[gPlayerVars[playerid][mAtBizID]][EnterY], Businesses[gPlayerVars[playerid][mAtBizID]][EnterZ], 10.0);
 										else
@@ -18419,8 +17137,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_wanted` WHERE `PlayerName` = '%s'", inputtext);
-				wp_mysql_query(string, SHOW_WANTED_LIST, playerid, db_con2);
+				format(string, sizeof(string), "SELECT * FROM `samp_wanted` WHERE `PlayerName` = '%s'", inputtext);
+				mysql_query(string, SHOW_WANTED_LIST, playerid, db_con2);
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Wyszukiwanie...");
 			}
 		}
@@ -18440,13 +17158,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				strcat( string, "{FFFFFF}Witaj na serwerze WParty !\n\n" );
 				strcat( string, "Aby siê zalogowaæ wpisz swoje has³o do postaci.\n\n\n" );
-				strcat( string, "{F52222}Jeœli nie posiadasz jeszcze postaci musisz wpierw zarejestrowaæ swoje konto\nna forum WParty.eu a nastêpnie utworzyæ postaæ\npostêpuj¹æ wed³ug podanych tam wskazówek.\n\n" );
+				strcat( string, "{F52222}Jeœli nie posiadasz jeszcze postaci musisz wpierw zarejestrowaæ swoje konto\nna forum WParty.pl a nastêpnei utworzyæ postaæ\npostêpuj¹æ wed³ug podanych tam wskazówek.\n\n" );
 				strcat( string, "{FAEC25}Jeœli zapomnia³eœ has³a do postaci mo¿esz je zmieniæ loguj¹c siê na forum\na nastêpnie przechodz¹c do panelu zarz¹dzania postaciami.\n\n\n" );
 				strcat( string, "{FFFFFF}Wpisz has³o:" );
-				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, ""#COLOR_TITLE"Logowanie", string, "Zaloguj", "");
+				ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Logowanie", string, "Zaloguj", "");
 			}
 		}
-		// Fireworks
 		/*case FWCPM:
 		{
 			if(response == 0) return SendClientMessage(playerid, WHITE, "[NotimeBot]: You closed the Fire Work Control Panel");
@@ -18862,114 +17579,73 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				switch(listitem)
 				{
-					// Regulamin
 					case 0:
 					{
 						ShowPlayerDialog(playerid, DIALOG_HELP_3, DIALOG_STYLE_LIST, "WParty - regulamin", "1. Gra\n2. Frakcje\n3. Szpital\n4. Policja\n5. Cywile\n6. Gangi\n7. Mafie i szajki\n8. Urzêdnicy\n9. Kodeks drogowy\n10. Mandaty", "Wybierz", "Zamknij");
 						return 1;
 					}
-					// Jak zacz¹æ
 					case 1:
-					{
-						ShowPlayerDialog(playerid, DIALOG_HELP_4, DIALOG_STYLE_LIST, #COLOR_TITLE"Pomoc - Jak zacz¹æ",
-							"Podstawowe itemy\nUrz¹d Miasta - dokumenty, pierwsza praca\nPrawo jazdy\nPierwszy samochód\nWykszta³cenie\nFrakcja/Firma/Biznes\nKomendy", 
-							"Wybierz", "Wróæ");
-					}
-					// FAQ
-					case 2:
-					{
-                        strcat( string, "Czêste zadawane pytania.\n\n" );
-                        strcat( string, "Nie widzê ikonek na mapce. Co zrobiæ ?\n" );
-                        strcat( string, "Kup mapê oraz GPS. Pamiêtaj o w³¹czeniu GPS'u\n\n" );
-                        strcat( string, "Gdzie jest bank?.\n" );
-                        strcat( string, "Bank jest oznaczony zielonym dolarem na radarze. \n\n" );
-                        strcat( string, "Gdzie kupiê telefon?.\n" );	
-                        strcat( string, "Telefon kupisz w sklepie ogólnym, który oznaczony jest czerwonym znakiem S na mapce.\n\n" );
-                        strcat( string, "Kiedy mogê odebraæ wyp³atê/zasi³ek?\n" );
-                        strcat( string, "Wyp³ata automatycznie wp³ywa na Twoje konto oko³o 6-7 nad ranem czasu rzeczywistego, pod warunkiem ¿e przegra³eœ jedn¹ godzinê dziennie w frakcji/firmie .\n\n" );
-                        strcat( string, "Gdzie mogê kupiæ/wypo¿yczyæ auto/motor? \n" );
-                        strcat( string, "Pojazdy mo¿esz kupowaæ w salonie samochodowym, jest on zaznaczony bia³¹ liter¹ S na mapce.\n Cennik pojazdów znajdziesz pod komend¹: /samochody1-12.\n\n" );
-                        strcat( string, "Jak zmieniæ skin?\n" );
-                        strcat( string, "Wygl¹d naszej postaci mo¿emy zmieniæ w ciucholandzie.\nWszystkie takie sklepy s¹ oznaczone 'bluzk¹' na radarze.\n\n" );
-                        strcat( string, "Jak i gdzie wyrobiæ prawo jazdy?\n" );
-                        strcat( string, "Prawo jazdy mo¿esz wyrobiæ w Urzêdzie Miasta, które jest oznaczone ¿ó³tym kó³kiem na mapce.\nDo pozytywnego zdania prawa jazdy trzeba zdaæ test teoretyczny i praktyczny w Oœrodku Szkolenia Kierowców.\nWiêcej informacji znajdziesz w dziale /pomoc > WORD lub na forum: www.wparty.eu\n\n" );
-                        strcat( string, "Gdzie znajdê jak¹œ pracê dorywcz¹?\n" );
-                        strcat( string, "Wszystkie legalne prace s¹ dostêpne w Urzêdzie Miasta, pozosta³e s¹ obok miejsca pracy albo lokalizacjê ich znaj¹ tylko przestêpcy \n\n" );
-                        strcat( string, "Jak zatrudniæ siê w frakcji/biznesie?\n" );
-                        strcat( string, "Aby znaleŸæ pracê w frakcji, najpierw polecam zapoznaæ siê z wymogami rekrutacji danej frakcji/biznesu.\nKa¿da frakcja/biznes tworzy odpowiednie tematy, w których s¹ informacje potrzebne do zdobycia pracy.\nAdres forum: www.wparty.eu\n\n" );
-                        strcat( string, "Mam 'BW', co robiæ?\n" );
-                        strcat( string, "Musisz czekaæ na pomoc - je¿eli siê jej doczekasz Twoja pamiêæ zostaje zachowana.\nW przypadku up³yniêcia czasu, bez uzyskania pomocy zapominamy o tym kto nas pobi³ i budzimy siê.\n\n" );
-                        strcat( string, "Krêci' mi siê w g³owie, co zrobiæ?\n" );
-                        strcat( string, "Musisz udaæ siê do szpitala na konsultacje z lekarzem.\nJest on oznaczony czerwonym krzy¿em na mapce.\n\n" );
-                        ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Czêste zadawane pytania", string, "Wróæ", "");
-					}
-					// Licencje
-					case 3:
 					{
 						strcat( string, "Dostêpne licencje:\n\n" );
 						strcat( string, "PRAWO JAZDY\nWymagane jest do ró¿ne rodzaju pojazdów oraz jest podzielone na 3 kategorie (A, B, C+E).\n" );
-						strcat( string, "Aby zdaæ na prawo jazdy trzeba przejœæ trzy etapowy proces - teoria, plac oraz jazdê po mieœcie.\n\n" );
-						strcat( string, "LICENCJA NA £ODZIE\nUmo¿liwia sterowanie ³odziami. Wymagane jest zaliczenie egzaminu polegaj¹cego na przep³yniêciu wyznaczonego odcinka.\n\n" );
+						strcat( string, "Aby zdaæ na prawo jazdy trzeba przejœæ trzy etapowy proces - teoria, plac oraz jazdy po mieœcie.\n\n" );
+						strcat( string, "LICENCJA NA £ODZIE\nUmo¿liwia p³ywanie ³odziami. Wymagane jest zaliczenie egzaminu polegaj¹cego na przep³yniêciu wyznaczonego odczinka.\n\n" );
 						strcat( string, "LICENCJA PILOTA SAMLOTU\nUmo¿liwia legalne korzystanie z samolotów. Tylko zakup.\n\n" );
 						strcat( string, "LICENCJA PILOTA ŒMIG£OWCA\nUmo¿liwia legalne korzystanie z helikopterów. Tylko zakup.\n\n" );
 						strcat( string, "LICENCJA NA BROÑ\nUmo¿liwia legalne posiadanie broni palnej. Tylko zakup.\n" );
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Licencje", string, "Wróæ", "" );
 					}
-					// Animacje
-					case 4:
+					case 2:
 					{
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Animacje", "Animacje znajdziesz pod komend¹ /animacje(2)", "Wróæ", "" );
+						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Animacje", "Animacje znajdziesz pod komend¹ /animacje(2)", "Wróæ", "" );// tu te¿ uzupe³niæ.
 					}
-					// Pojazdy
-					case 5:
+					case 3:
 					{
-						strcat( string, "Pojazdy.\n\n" );
-						strcat( string, "Istnieje mo¿liwoœæ kupienia pojazdu nowego, u¿ywanego lub wypo¿yczyæ pojazd.\n\n" );
-						strcat( string, "POJAZDY NOWE\nZostaj¹ importowane przez w³aœcicieli salonów samochodowych.\n" );
-						strcat( string, "którzy ustawiaj¹ niezbedne parametry w pojeŸdzie.\n" );
-						strcat( string, "Kupuj¹c pojazd z salonu mamy pewnoœæ ¿e nie posiada on ¿adnych wad fabrycznych.\n\n" );
-						strcat( string, "POJAZDY U¯YWANE\nWystawiane s¹ na sprzeda¿ w ró¿nej konfiguracji i o ró¿nych przebiegach przez swoich w³aœcicieli" );
-						strcat( string, "Taki pojazd mo¿e wygl¹daæ dobrze ale mo¿e posiadaæ ukryte wady\n\n" );
-						strcat( string, "Wypo¿yczenie pojazdów\n Wystarczy znajleœæ pojazd z napisem \"Ten pojazd jest na wynajem\"\n" );
-						strcat( string, "Wpisaæ komendê /wynajmnijpojazd i mo¿esz siê cieszyæ pojazdem.\n" );
-						strcat( string, "Wynajêty samochód nale¿y zwróciæ pod salon samochodowy z którego pochodzi.\n\n" );
+						strcat( string, "Istnieje mo¿liwoœæ kupna pojazdu nowego lub u¿ywanego.\n\n" );
+						strcat( string, "POJAZDY NOWE\nS¹ one importowane przez w³aœcicieli salonów samochodowych.\n" );
+						strcat( string, "Ich cene ustawia tak¿e w³aœciciel salonu.\n" );
+						strcat( string, "Kupuj¹c pojazd z salonu mamy pewnoœæ ¿e nie posiada on ¿adnych mankamentów.\n\n" );
+						strcat( string, "POJAZDY U¯YWANE\nWystawiane na sprzeda¿ w ró¿nych stanach i o ró¿nych przebiegach przez swoich w³aœcicieli" );
+						strcat( string, "Taki pojazd mo¿e wygl¹daæ dobrze ale mo¿e posiadaæ ukryte mankamenty\n\n" );
 						strcat( string, "LICENCJE\nAby legalnie prowadziæ samochód lub motor wymagane jest PRAWO JAZDY.\nW przypadku samolotów czy te¿ helikopterów jest to licencja pilota.\n\n" );
 						strcat( string, "KOMENDY\n/komendypojazdow\n\n" );
 						strcat( string, "Aby zamkn¹æ pojazd skorzystaj z kluczyka - przejdŸ do /mi, nastêpnie wybierz kluczyk o odpowiednio przypisanej rejestracji a nastêpnie wybierz \"u¿yj\"." );
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Pojazd", string, "Wróæ", "");
 					}
-					// Prace
-					case 6:
+					case 4:
 					{
-						strcat(string, "Do wyboru jest wiele ró¿nego typu prac, jednak¿e niektóre maj¹ pewne wymagania na które napotkasz próbuj¹c podj¹æ siê danej pracy.\n\n");
+						strcat(string, "Do wyboru jest wiele ró¿nego typu prac, jednak¿e niektóre maj¹ pewne wymagania na które napotkasz próbuj¹c podj¹c siê danej pracy.\n\n");
 						strcat(string, "Pierwsz¹ prace naj³atwiej dostaæ w Urzêdzie Miasta który jest oznaczony ¿ó³t¹ kropk¹ na Twoje mapie.\n");
 						strcat(string, "Aby zatrudniæ siê nale¿y wpisaæ /wezprace\n\n" );
 						strcat(string, "Aby dowiedzieæ siê wiêcej o danej pracy po jej wyborze nale¿y wpisaæ komendê /komendypracy\n");
 						strcat(string, "Aby zrezygnowaæ z pracy nale¿y tak¿e udaæ siê do Urzêdu Miasta.");
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Praca", string, "Wróæ", "");
 					}
-					// Paski zdrowia - opis
-					case 7:
+					case 5:
 					{
-						strcat( string, "W œwiece WParty istnieje 9 stanów postaci :\n" );
-						strcat( string, " - energia - ¿ó³ty pasek, najwa¿niejszy pasek zaraz po ¿yciu Twojego bohatera, odpowiada samopoczucie Twojego bohatera, nigdy nie miej go PUSTEGO, \n spowoduje to spadanie Twoich punktów zdrowia. Zregenerowaæ mo¿esz go poprzez zjedzenie np kebaba z frytkami.\n \n" );
-						strcat( string, " - g³ód - czerwony pasek, wskazuje jak bardzo jest g³odny Twój bohater, g³odny bohater spala wiêcej energii, szybciej siê odwadnia. Uzupe³nia siê go poprzez spo¿ywanie posi³ków \n \n" );
-						strcat( string, " - pragnienie - niebieski pasek, wskazuje jak bardzo Twojemu bohaterowi chce siê piæ, bardzo spragniony bohater wiêcej spala energii, szybciej robi siê g³odny, \n Uzupe³nia siê go poprzez picie wody lub napoi\n \n" );
+						strcat( string, "W œwiece WParty istnieje 9 pasków stanu postaci :\n" );
+						strcat( string, " - energia - ¿ó³ty pasek, najwa¿niejszy pasek zaraz po ¿yciu Twojego bohatera, odpowiada samopoczucie Twojego bohatera, nigdy nie miej go PUSTEGO, \n spowoduje to spadanie Twoich punktów zdrowia. Zregenerowaæ to mo¿esz poprzez jedzenie najlepiej dan, np pizze, kebaba z frytkami.\n \n" );
+						strcat( string, " - g³ód - czerwony pasek, wskazuje jak bardzo jest g³odny Twój bohater, g³odny bohater spala wiecej energii, szybciej sie odwadnia. Uzupe³nia sie poprzez jedzenie dañ \n \n" );
+						strcat( string, " - pragnienie - niebieski pasek, wskazuje jak bardzo Twójemu bohaterowi chce sie piæ, bardzo spragniony bohater wiêcej spala energii, szybciej robi sie g³odny, \n Uzupe³nia siê poprzez picie wody lub napoi\n \n" );
+						strcat( string, " - zatrucie - zielony pasek,spowodowany nadmiernym jedzeniem szkodliwych produktów przez Twojego bohatera np. 5x pizza WParty, \n stan trucizny 40% organizm sam go zwalcza lecz powy¿ej powoduje szkodliwe dolegliwoœci dla Twojego bohatera, energia szybciej \"znika\", \n g³ód oraz pragnienie \"rosnie\". Redukcja trucizny powyzej 40% mozna poprzez wizyte u lekarza. \n \n" );
+						strcat( string, " - cholestelor - blady ¿ó³ty pasek, informuje Twojego bohatera o posiadaniu t³uszczu w swoim ciele, nadmiar jego oraz niedosyt jest szkodliwy. Stan poprawny jest od 30 do 70 procent \n Pasek sam spada z czasem\n \n \n" );
+						strcat( string, " - ¿o³¹dek - fioletowy pasek, ile Twój bohater mo¿e zjeœæ naraz, przekroczenie progi powoduje nie przyjemne dla organizmu \"¿yganie\", \n co obni¿a wartoœci pozosta³ych pasków Pasek sam spada z czasem. \n \n" );
+						strcat( string, " - witaminy - pomaranczowy pasek, iloœæ witamin we krwi Twojego bohatera, nale¿y spo¿ywaæ rownie¿ owoce, warzywa aby utrzymaæ stabilny stan owego paska. \n Nale¿y go trzymaæ w granicach 20-70 procentach. \n \n" );
+						strcat( string, " - alkohol - iloœæ alkoholu we krwi Twojego bohatera, powoduje kiwanie sie g³owy, chodzenie \"wê¿ykiem\" itd. , przy odpowiednim poziomie jest odporniejszy na uderzenia/postrza³y \n \n" );
+						strcat( string, " - narkotyki - iloœæ narkotyków we krwi Twojego bohatera, obecnie trwaj¹ pracê nad efektami dodatnimi/ujemnymi. \n\n" ); 
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Paski zdrowia - opis", string, "Wróæ", "");
 					}
-					// Paski zdrowia - FAQ
-					case 8:
+					case 6:
 					{
 						strcat( string, " Jak utrzymaæ optymalny poziom zdrowia Twojego bohatera \n \n" );
-						strcat( string, " - nie jed¿ ci¹gle tego samego kilka razy pod rz¹d, jed¿ pierwsze danie (kurczak), przek¹skê(czekoladê, surówkê) oraz wypij wodê/sok \n \n " );
-						strcat( string, " - utrzymuj kontakt z lekarzem, w razie k³opotów pomo¿e w wyborze leku odpowiedniego dla Twojego bohatera\n \n" );
-						strcat( string, " - pamiêtaj o jedzeniu warzyw i owoców, one utrzymaj¹ odpowiedni poziom witamin w organizmie\n \n" );
-						strcat( string, " - energia (¿ó³ty pasek) regeneruje siê równie¿ w domu \n \n " );
-						strcat( string, " - na Wparty Wikipedia zn¹jduj¹ siê tabele przedstawiaj¹ca dok³adnie co który produkt czego daje, dziêki temu zoptymalizujesz swoj¹ dietê \n \n " ); 
+						strcat( string, " - nie jed¿ ci¹gle tego samego kilka razy pod rz¹d, jed¿ pierwsze danie (kurczak), przek¹skê(czekolade,suróweczke) oraz wypij wode/sok \n \n " );
+						strcat( string, " - utrzymuj kontakt z lekarzem, wrazie k³opotów pomo¿e w wyborze leku odpowiedniego dla Twojego bohatera\n \n" );
+						strcat( string, " - pamietaj o jedzeniu warzyw i owoców, one utrzymaja odpowiedni poziom witamin w organizmie\n \n" );
+						strcat( string, " - enegia (¿ó³ty pasek) regeneruje sie równie¿ w domu \n \n " );
+						strcat( string, " - œci¹gnij tabele przedstawiaj¹ca dok³adnie co ktory produkt czego daje, dziêki temu zoptymalizujesz swoj¹ diete \n \n " ); 
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Paski zdrowia - FAQ", string, "Wróæ", "");
 					}
-					// Czaty
-					case 9:
+					case 7:
 					{
 						strcat( string, "Dostêpne czaty w grze:\n\n" );
 						strcat( string, "OOC - czat globalny - /o\n" );
@@ -18978,8 +17654,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						strcat( string, "W wypadku chatu globalnego OOC dostêpne s¹ 4 kana³y gdzie mo¿na rozmawiaæ z innymi osobami - /kanalooc" );
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Czaty", string, "Wróæ", "");// TODO: To ktoœ musi skoñczyæ.
 					}
-					// Ikony na mapie
-					case 10: 
+					// ikony na mapie
+					case 8: 
 					{
 						strcat(string, "Na WParty spotkasz wiele ró¿norodnych ikonek na mapie. O to ich objaœnienia : \n");
 						strcat(string, "- ¿ó³te kó³eczko - urz¹d, taxi\n");
@@ -18998,26 +17674,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						strcat(string, "- niebieski wóz - WORD, salon samochodowy\n");						
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Ikony na mapie", string, "Wróæ", "");
 					}
-					// Problemy/bugi
-					case 11:
+					// problemy/bugi
+					case 9:
 					{
 						strcat(string, "Jeœli napotka³eœ na powa¿ny problem zg³oœ go administratorowi na s³u¿bie, jeœli go nie ma, \n zostaw wiadomoœæ przez cmd /zglosproblem lub napisz na forum w odpowiednim dziale. \n\n Pamiêtaj Czekaj na swoj¹ kolej !!! \n \n \n");
 						strcat(string, "W sprawie bugów nalegamy zostawiaæ wiadomoœci poprzez cmd /zglosproblem lub zrobienie tematu na forum w odpowiednim dziale. \n Spamowanie do adminów na czacie tylko denerwuje administracje oraz robi straszny noobowski spam.");
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Problemy, bugi", string, "Wróæ", "");
 					}
 					// Narkotyki
-					case 12:
+					case 10:
 					{
-						strcat(string, "Narkotyki na WParty dziel¹ siê na 3 rodzaje : \n");
+						strcat(string, "Narkotyki na WParty dziel¹ sie na 3 rodzaje : \n");
 						strcat(string, "- joint zwiêkszaj¹cy hp\n");
 						strcat(string, "- joint zwiêkszaj¹cy odpornoœæ na ból \n");
-						strcat(string, "- joint zmniejsza odczucie g³odu \n \n");
+						strcat(string, "- joint zmiejsza oddczucie g³odu \n \n");
 						strcat(string, "Zdobycie narkotyku jest bardzo proste, wystarczy znaleŸæ dzik¹ rosn¹ca roœlinkê gdzieœ poœrodku lasu, zerwaæ roœlinkê. \n Otrzymasz wtedy liœæ narkotyku oraz nasionko (oczywiœcie jest szansa na otrzymanie nasionka). \n Nasionko zasadziæ w dogodnym miejscu, liœæ zwin¹æ i zapaliæ jointa. \n \n");
 						strcat(string, "Trzymanie przy sobie narkotyków jest zabroniona. Funkcjonariusze Prawa zabior¹ narkotyki, pacjenta wsadz¹ do wiêzienia oraz dadz¹ mandat. Proszê siê pilnowaæ !!!");
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Narkotyki", string, "Wróæ", "");
 					}
 					// Hurtownie
-					case 13:
+					case 11:
 					{
 						strcat(string, "Hurtownie odgrywaj¹ bardzo wa¿na role w œwiecie WParty. \n");
 						strcat(string, "Hurtownie sa budynkami w których spo³eczeñstwo WParty zaopatruje siê w przedmioty codziennego u¿ytku. \n");
@@ -19028,7 +17704,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Hurtownie", string, "Wróæ", "");
 					}
 					// Wyœcigi
-					case 14:
+					case 12:
 					{
 						strcat(string, "Po ca³ym œwiecie WParty rozrzucone s¹ wyœcigi uliczne. Oznaczone s¹ one pickup'ami w kszta³cie nitra. \n");
 						strcat(string, "System wyœcigów jest bardzo prosty, wchodzisz w pickup wyœcigu, wpisujesz /menuwyœcigu, dalej zgodnie z instrukcjami pokazanymi na ekranie. \n");
@@ -19039,7 +17715,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Wyœcigi", string, "Wróæ", "");
 					}
 					// Prawko
-					case 15:
+					case 13:
 					{
 						strcat(string, "Wiejskie/Wojewódzkie oœrodki ruchu drogowego rozlokowane s¹ w najwiêkszych wsiach/miastach \n");
 						strcat(string, "Oœrodki znajdziesz za pomoc¹ GPS, ikonka na mapie samochód niebieski. \n \n");
@@ -19063,13 +17739,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						strcat(string, "Przed egzaminem poæwicz plac, nie za³ój kilku z³ na naukê, nawet komuœ zap³aæ aby poduczy³ pokaza³. Egzaminatorzy rzadko kiedy maj¹ czas na naukê.\n");
 						strcat(string, "Pod uczy siê pytañ, zaoszczêdzisz pieniêdzy, czasu i nerwów.\n");
 						strcat(string, "Pamiêtaj o podstawowych zasadach RP podczas egzaminu.\n");
-						strcat(string, "Oraz ostatnia wskazówka PAMIETAJ TO JEST EGZAMIN TU SIE WYMAGA !!! przygotuj sie sumiennie, egzaminatorzy czekaj¹ tylko aby Ciê OBLAÆ !!! \n \n");
+						strcat(string, "Oraz ostatnia wskazówka PAMIETAJ TO JEST EGZAMIN TU SIE WYMAGA !!! przygotuj sie sumiennie, egzaminatorzy tylko czekaj¹ aby Ciê OBLAC !!! \n \n");
 						strcat(string, "Wiêcej informacji na forum WParty. \n \n");
 						strcat(string, "Wszelkie problemy oraz bugi prosimy pisaæ na forum lub /zglosproblem");
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "WORD", string, "Wróæ", "");
 					}
 					// Domy
-					case 16:
+					case 14:
 					{
 						strcat(string, "W WParty rozró¿niamy 4 rodzaje domów : \n");
 						strcat(string, "- domy z meblami\n");
@@ -19089,11 +17765,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Domy", string, "Wróæ", "");
 					}
 					// Biznesy
-					case 17:
+					case 15:
 					{						
 						strcat(string, "W WParty znajdziesz biznesy : \n \n");
 						strcat(string, "- 24/7 - do 10 slotów, przeró¿nych przedmiotów \n");
-						strcat(string, "- bary - do 10 slotów, g³ównie alkohole \n");
+						strcat(string, "- bary -do 10 slotów, g³ównie alkohole \n");
 						strcat(string, "- studia reklamowe - rozsy³anie wiadomoœci, kupowanie ikonek na mapie do innych biznesów \n");
 						strcat(string, "- salony samochodowe \n");
 						strcat(string, "- CPN'y \n");
@@ -19124,7 +17800,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Pomoc", DIALOG_HELP_MAIN_TXT, "Akceptuj", "Wstecz");
 			return 1;
 		}
-		// Regulamin
 		case DIALOG_HELP_3:
 		{
 			if(response)
@@ -19138,15 +17813,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						strcat(string, "3. Nie wolno reklamowaæ serwera na innych forach ³ami¹c ich zasady (np. Nie wolno spamowaæ reklam¹ na innym serwerze). \n");
 						strcat(string, "4. Kategorycznie zakazane jest u¿ywanie z wszelkich programów trzecich wspomagaj¹cych grê lub przeszkadzaj¹cych grê innych graczy. \nKar¹ jest permanentna banicja bez mo¿liwoœci apelacji.\n");
 						strcat(string, "5. Zakazane jest korzystanie z jakichkolwiek b³êdów gry dla w³asnej korzyœci. Kar¹ jest reset konta/ ban.\n");
-						strcat(string, "6. Na serwerze porz¹dku pilnuj¹ administratorzy i moderatorzy. \nStaraj¹ siê pomagaæ, tak wiêc natarczywe kierowanie siê do nich bêdzie ukarane.\n");
+						strcat(string, "6. Na serwerze porz¹dku pilnuj¹ supporterzy i administratorzy. \nStaraj¹ siê pomagaæ, tak wiêc natarczywe kierowanie siê do nich bêdzie ukarane.\n");
 						strcat(string, "7. Zakazuje siê ¿ebractwa (za wyj¹tkiem tak odgrywanej postaci) i feed'owania innych graczy (dawanie wiêkszych kwot nowym graczom, \nni¿sze ceny produktów/ samochodów).\n");
-						strcat(string, "8. Oszukiwanie administratora i moderatora jest zabronione.\n");
+						strcat(string, "8. Oszukiwanie administracji jest zabronione.\n");
 						strcat(string, "9. Natarczywe kierowanie siê do administracji z proœb¹ o podniesie rangi konta na supportera lub admina jest zabronione. \nKara: wykluczenie z u¿ytkowników serwera.\n");
 						strcat(string, "10. Administracja nie bierze odpowiedzialnoœci za stan konta gracza ani treœci w nim zawarte.\n");
 						strcat(string, "11. Wszelkie zmiany, b³êdy s¹ zg³aszane na forum lub za pomoc¹ cmd /zglosproblem\n");
 						strcat(string, "12. Wszelkie raporty powinny byæ jak najdok³adniejsze. Treœci niezrozumia³e, b¹dŸ spam skoñczy siê kar¹.\n");
 						strcat(string, "13. Jeœli podejrzewasz ¿e ktoœ móg³ w³amaæ siê na Twoje konto prosimy o natychmiastowe zg³oszenie siê do administracji wraz z dowodami potwierdzaj¹cymi podejrzenia.\n");
-						strcat(string, "14. Konta WParty VIP nie s¹ zwolnione z ¿adnego punktu w regulaminie. \nDostaj¹c bana trac¹ postaæ ic, nie ma mo¿liwoœci oddania VIP itema, neonów itd.\n");
+						strcat(string, "14. Konta WParty VIP nie s¹ zwolnione z ¿adnego punktu w regulaminie. \nDostaj¹c bana trac¹ postaæ ic, nie ma mo¿liwoœci oddania VIP itema, neonow itd.\n");
 						strcat(string, "15. Obelgi OOC, oszustwa w stronê innych graczy bêd¹ koñczyæ siê banem.\n");
 						strcat(string, "16. Zmuszanie innych osób do odgrywania jakiejkolwiek akcji jest zabronione. (PG)\n");
 						strcat(string, "17. Ci¹g³e, lub d³ugie bieganie (truchtanie równie¿) bez istniej¹cego powodu, w celu szybszego dotarcia do celu (co In Character by³oby nie mo¿liwe) jest zabronione.\n");
@@ -19176,7 +17851,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						strcat(string, "1. Nale¿y dbaæ o pojazdy frakcyjne.\n");
 						strcat(string, "2. Postacie bêd¹ce w s³u¿bach porz¹dkowych s¹ upowa¿nione do wykorzystywania powergamingu, aczkolwiek nie nadu¿ywaj¹c go.\n");
 						strcat(string, "3. Wszelk¹ odpowiedzialnoœæ za zniszczenia pojazdów odpowiada osoba kieruj¹ca, wyj¹tkiem jest wydarzenie drogowe lub strzelanina.\n");
-						strcat(string, "4. Wszelkie aplikacje na nowy rodzaj frakcji/ organizacji ma byæ z³o¿ony na forum. org. przestepcze w Organizacje Przestêpcze -> Aplikacje a inne organizacje w Organizacje Prywatne -> Aplikacje\n");
+						strcat(string, "4. Wszelkie aplikacje na nowy rodzaj frakcji/ organizacji ma byæ z³o¿ony na forum, w dziale propozycje (nie dotyczy organizacji przestêpczych)\n");
 						strcat(string, "5. Lider frakcji ma obowi¹zek wystawienia listy pracowników w swoim dziale. Odpowiada on równie¿ za zaopatrzenie frakcji i za pracowników!\n");
 						strcat(string, "6. Lider frakcji sta³ych (S³u¿by pogotowia, porz¹dkowe, Urz¹d, Rafineria) przed odejœciem ma za zadanie przekazanie lidera innej osobie. \n");
 						strcat(string, "7. Pojazdy u¿ytku publicznego (autobusy, kombajny) wykorzystywane do innych celów ni¿ zarabianie pieniêdzy jest zakazane \n(Nie wolno u¿ywaæ ich jako prywatnego transportu).\n");
@@ -19261,7 +17936,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 6:
 					{
 						strcat(string, "1. Nale¿y pamiêtaæ, ¿e bêd¹c w mafii jesteœmy zale¿ni od lidera organizacji. To on decyduje w wiêkszej mierze o naszych poczynaniach, czy te¿ losach.\nOczywiœcie poza przyjêciem kogoœ w swoje szeregi, ma te¿ prawo usuniêcia owego bez wiêkszego t³umaczenia. Wchodz¹c do organizacji jesteœmy w pe³ni œwiadomi ewentualnego CK.\n");
-						strcat(string, "2. Mafie maj¹ prawo posiadania szajki przestêpczej lub projektu IC pod sob¹ z wspólnymi korzyœciami (np. handlowanie narkotykami)\n");
+						strcat(string, "2. Mafie maj¹ prawo posiadania szajki przestêpczej lub projektu IC pod sob¹ z wspólnymi korzyœciami (np.handlowanie narkotykami)\n");
 						strcat(string, "3. Mafie i Szajki posiadaj¹ mo¿liwoœæ porwania osoby postronnej, w celach maj¹tkowych tylko w przypadku, gdy porwanie by³ ówczeœnie zaplanowane.\n");
 						strcat(string, "4. Jeœli na serwerze s¹ dwie mafie to maj¹ prawo walki miêdzy sob¹ (Mafie maj¹ w³asne tereny)\n");
 						strcat(string, "5. Mafie maj¹ takie same uprawnienia i zakazy jak gangi.\n");
@@ -19281,7 +17956,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						strcat(string, "2. Wydawanie odpowiedniej iloœci pozwoleñ na dzieñ - 7.\n");
 						strcat(string, "3. Sprawdzanie stanu biznesów oraz domów kupionych.\n");
 						strcat(string, "4. Sprawdzanie cen przedmiotów, paliwa itd. w biznesach.\n");
-						strcat(string, "5. Dbanie o biznesy urzêdowe - sprawdzanie czy s¹ produkty, zmiana ich, ustawianie sprawiedliwych cen skupu (skup mo¿e byæ +-20 max od ceny w fabryce !!!).\n");
+						strcat(string, "5. Dbanie o biznesy urzêdowe - sprawdzanie czy s¹ produkty, zmiana ich, ustawianie sprawiedliwych cen skupu (skup mo¿e byæ +-10 max od ceny w fabryce !!!).\n");
 						strcat(string, "6. Wszelkie lenistwo ze strony Urzêdników bêdzie karane .\n");
 						ShowPlayerDialog(playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Regulamin - urzêdnicy", string, "Wróæ", "");
 						return 1;
@@ -19296,158 +17971,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 9:
 					{
 						strcat(string, "Mandaty : \n");
-						strcat(string, "Talifikator zale¿ny jest aktualnego Szefa Policji, który wzraz z urzêdem ustawia wartoœci mandatów.\n");
+						strcat(string, "Za ka¿dy 1 pkt – 50 z³\n");
+						strcat(string, "Obraza obywatela – 200 z³ \n");
+						strcat(string, "Posiadanie nielegalnej broni – 1000 z³\n");
+						strcat(string, "Posiadanie narkotyków – 1000 z³\n");
+						strcat(string, "Brak dokumentów – 2000 z³ + odebranie samochodu\n\n");
+						strcat(string, "Punkty karne : \n");
+						strcat(string, "10 pkt - Kierowanie pojazdem mechanicznym w stanie nietrzeŸwoœci lub bêd¹c pod wp³ywem œrodka odurzaj¹cego, Nieudzielenie pomocy ofiarom wypadku, Pope³nienie przestêpstwa drogowego, \nNieprawid³owe wyprzedzanie ( w niedozwolonych miejscach, przez pasy dla pieszych), Nie udzielenia pierwszeñstwa pieszemu na pasach, Przewóz osób na dachu\n");
+						strcat(string, "8 pkt - przekroczenie prêdkoœci powy¿ej 50 ustalonej, Unikanie kontroli przez Policjê\n");
+						strcat(string, "6 pkt - Niezastosowanie siê do: sygna³ów œwietlnych, sygna³ów i poleceñ podawanych przez osoby uprawnione do kierowania ruchem drogowym, wymuszenie pierwszeñstwa przejazdu\n");
+						strcat(string, "4 pkt - przekroczenie prêdkoœci powy¿ej 20 ustalonej, Niestosowanie siê podczas jazdy do obowi¹zku u¿ywania wymaganych przepisami œwiate³, Posiadanie sygna³ów ostrzegawczych (koguty), \nJazda lew¹ stron¹ pasa, Parkowanie w zakazanych miejscach, Brak zapiêtych pasów,\n");
+						strcat(string, "Odholowanie wozu : \n");
+						strcat(string, "- niew³aœciwie zaparkowany\n");
+						strcat(string, "- stoi od d³u¿szego czasu(1 tydzieñ czasu rzeczywistego) i blokuje parking/chodnik\n");
+						strcat(string, "- nie posiadanie dokumentów samochodu/prawo jazdy \n");
+						strcat(string, "- bra³ udzia³ w wypadku, przestêpstwie \n");
+						strcat(string, "Wykupienie samochodu z placu kosztuje 500 z³ do tygodnia, 2000 z³ d³u¿ej ni¿ 1 tydzieñ. Policjant wypisuje wtedy mandat do zap³acenia.\n");
+						strcat(string, "Przewinienia ³¹cz¹ siê ze sob¹ !!!\n");
 						ShowPlayerDialog(playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Regulamin - mandaty", string, "Wróæ", "");
 						return 1;
 					}
-					case 10:
-					{
-						strcat( string, "Podstawowe itemy.\n\n" );
-						strcat( string, "Wszystkie podstawe itemy kupisz w Market LS.\n" );
-						strcat( string, "Do Market LS dojechaæ mo¿esz taxi, autobusem lub na w³asn¹ rêkê.\n" );
-						strcat( string, "Lokalizcje znajdziesz poprzez /mi > item mapa > lokalizacje.\n" );
-						strcat( string, "Plecak, zwiêksza iloœæ slotów w ekwipunku - sklep ogólny.\n" );
-						strcat( string, "GPS, pokazuje lokalizacje biznesów na mapie, posiada wbudowane podstawowe lokalizacje - sklep ogólny.\n" );
-						strcat( string, "Karta SIM - Salon sieci komórkowej.\n" );
-						strcat( string, "Komórka - sklep ogólny\n" );
-						
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Podstawowe itemy", string, "Wróæ", "");
-					}
-					case 11:
-					{
-						strcat( string, "Urz¹d Miasta - Dokumenty, pierwsza praca.\n\n" );
-						strcat( string, "W urzêdzie wyrobisz wszystkie niezbêdne dokumenty od dowodu osobistego po ubezpieczenie.\n" );
-						strcat( string, "Urz¹d Miasta znajdziesz poprzez /mi > item mapa > lokalizacje.\n" );
-						strcat( string, "Do urzêdu mo¿esz udaæ siê: taksówk¹, autobusem, lub wypo¿yczonym samochodem\n" );
-						strcat( string, "Bêd¹c w urzedzie nie zapomnij sprawdziæ dostêpnych prac.\n" );
-						strcat( string, "Na pocz¹tek polecamy pracê \"sweepera\", wymaga tylko dowodu osobistego.\n" );
-						strcat( string, "Miejsca w których znajduj¹ sie sweepery znajdziesz przez mapê > lokalizacje > MZGK.\n" );					
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Urz¹d Miasta - Dokumenty, pierwsza praca", string, "Wróæ", "");
-					}
-					case 12:
-					{
-						strcat( string, "Prawo Jazdy.\n\n" );
-						strcat( string, "Lokalizacjê WORD znajdziesz poprzez /mi > item mapa > lokalizacje > WORD.\n" );
-						strcat( string, "Do WORD mo¿esz udaæ siê: taksówk¹, autobusem, lub wypo¿yczonym samochodem\n" );
-						strcat( string, "Wszelkie informacje jak zdobyæ prawko znajdziesz pod komend¹ /pomoc > Prawo Jazdy.\n" );	
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Prawo Jazdy", string, "Wróæ", "");
-					}
-					case 13:
-					{
-						strcat( string, "Pierwszy samochód.\n\n" );
-						strcat( string, "Aby zdobyæ pierwszy samochud udaj siê do salonu samochodowego.\n" );
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Prawo Jazdy", string, "Wróæ", "");
-					}
-					case 14:
-					{
-						strcat( string, "Wykszta³cenie.\n\n" );
-						strcat( string, "Wykszta³cenie potrzebne jest do podjêcia bardziej zaawansowancych prac w Wparty.\n" );
-						strcat( string, "Dla przyk³adu: mechanik wymaga licencjatu z nauk technicznych, prawnik licencjatu z nauhk matematycznych i prawniczy. \n" );
-						strcat( string, "Punkty wykszta³cenie s¹ doœæ tanie, ale mo¿na naraz kupiæ tylko 20 punktów wykszta³cenia.\n" );	
-						strcat( string, "Czyli uzyskanie szko³y œredniej zajmnie Ci 4 dni. \n" );
-						strcat( string, "Punkty wyszkszta³cenia znajdziesz poprzez /mi > mapa > lokalizacje > Biblioteka. \n" );
-						strcat( string, "Do Biblioteki mo¿esz udaæ siê: taksówk¹, autobusem, lub wypo¿yczonym samochodem\n" );
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Wykszta³cenie", string, "Wróæ", "");
-					}
-					case 15:
-					{
-						strcat( string, "Frakcja/Firma/Biznes.\n\n" );
-                        strcat( string, "Od Ciebie nale¿y ostatni krok, czy wybierzesz wpierw dostanie siê do obecnej frakcji.\n" );
-                        strcat( string, "czy mo¿e za³o¿ysz w³asn¹ firmê albo kupisz biznes. \n" );
-                        strcat( string, "Oczywiœcie, ¿e mo¿esz z czasem posiadaæ wszystkie rzeczy, nie ma problemu.\n" );	
-                        strcat( string, "Do frakcji dostaniesz siê poprzez aplikacjê na forum www.wparty.eu. \n" );
-                        strcat( string, "W³asn¹ frakcjê równie¿ mo¿esz stworzyæ- trzeba wpierw spe³niæ kilka wymagañ opisanych na forum \n" );
-                        strcat( string, "Firmê za³o¿yæ mo¿esz poprzez komendê /utworzfrakcje > wybieraj¹c odpowiedni dla Ciebie wybór firmy\n" );
-                        strcat( string, "Biznes, kupiæ mo¿esz poprzez dogadanie siê z urzêdnikiem miasta, który pokieruje Ciê dalej \n" );
-                        ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Frakcja/Firma/Biznes", string, "Wróæ", "");
-					}
-					case 16:
-					{
-						strcat( string, "Komendy\n\n" );
-						strcat( string, "wyswietlisz gui od /komendy\n" );
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Komendy", string, "Wróæ", "");
-					}
 				}
-			}
-		}
-		case DIALOG_HELP_4:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					case 0:
-					{
-						strcat( string, "Podstawowe itemy.\n\n" );
-						strcat( string, "Wszystkie podstawe itemy kupisz w Market LS.\n" );
-						strcat( string, "Do Market LS dojechaæ mo¿esz taxi, autobusem lub na w³asn¹ rêkê.\n" );
-						strcat( string, "Lokalizcje znajdziesz poprzez /mi > item mapa > lokalizacje.\n" );
-						strcat( string, "Plecak, zwiêksza iloœæ slotów w ekwipunku - sklep ogólny.\n" );
-						strcat( string, "GPS, pokazuje lokalizacje biznesów na mapie, posiada wbudowane podstawowe lokalizacje - sklep ogólny.\n" );
-						strcat( string, "Karta SIM - Salon sieci komórkowej.\n" );
-						strcat( string, "Komórka - sklep ogólny\n" );
-						
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Podstawowe itemy", string, "Wróæ", "");
-					}
-					case 1:
-					{
-						strcat( string, "Urz¹d Miasta - Dokumenty, pierwsza praca.\n\n" );
-						strcat( string, "W urzêdzie wyrobisz wszystkie niezbêdne dokumenty od dowodu osobistego po ubezpieczenie.\n" );
-						strcat( string, "Urz¹d Miasta znajdziesz poprzez /mi > item mapa > lokalizacje.\n" );
-						strcat( string, "Do urzêdu mo¿esz udaæ siê: taksówk¹, autobusem, lub wypo¿yczonym samochodem\n" );
-						strcat( string, "Bêd¹c w urzedzie nie zapomnij sprawdziæ dostêpnych prac.\n" );
-						strcat( string, "Na pocz¹tek polecamy pracê \"sweepera\", wymaga tylko dowodu osobistego.\n" );
-						strcat( string, "Miejsca w których znajduj¹ sie sweepery znajdziesz przez mapê > lokalizacje > MZGK.\n" );					
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Urz¹d Miasta - Dokumenty, pierwsza praca", string, "Wróæ", "");
-					}
-					case 2:
-					{
-						strcat( string, "Prawo Jazdy.\n\n" );
-						strcat( string, "Lokalizacjê WORD znajdziesz poprzez /mi > item mapa > lokalizacje > WORD.\n" );
-						strcat( string, "Do WORD mo¿esz udaæ siê: taksówk¹, autobusem, lub wypo¿yczonym samochodem\n" );
-						strcat( string, "Wszelkie informacje jak zdobyæ prawko znajdziesz pod komend¹ /pomoc > Prawo Jazdy.\n" );	
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Prawo Jazdy", string, "Wróæ", "");
-					}
-					case 3:
-					{
-						strcat( string, "Pierwszy samochód.\n\n" );
-						strcat( string, "Aby zdobyæ pierwszy samochud udaj siê do salonu samochodowego.\n" );
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Prawo Jazdy", string, "Wróæ", "");
-					}
-					case 4:
-					{
-						strcat( string, "Wykszta³cenie.\n\n" );
-						strcat( string, "Wykszta³cenie potrzebne jest do podjêcia bardziej zaawansowancych prac w Wparty.\n" );
-						strcat( string, "Dla przyk³adu: mechanik wymaga licencjatu z nauk technicznych, prawnik licencjatu z nauhk matematycznych i prawniczy. \n" );
-						strcat( string, "Punkty wykszta³cenie s¹ doœæ tanie, ale mo¿na naraz kupiæ tylko 20 punktów wykszta³cenia.\n" );	
-						strcat( string, "Czyli uzyskanie szko³y œredniej zajmnie Ci 4 dni. \n" );
-						strcat( string, "Punkty wyszkszta³cenia znajdziesz poprzez /mi > mapa > lokalizacje > Biblioteka. \n" );
-						strcat( string, "Do Biblioteki mo¿esz udaæ siê: taksówk¹, autobusem, lub wypo¿yczonym samochodem\n" );
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Wykszta³cenie", string, "Wróæ", "");
-					}
-					case 5:
-					{
-						strcat( string, "Frakcja/Firma/Biznes.\n\n" );
-						strcat( string, "Od Ciebie nale¿y ostatni krok, czy wybierzesz wpierw dostanie siê do obecnej frakcji.\n" );
-						strcat( string, "czy mo¿e za³o¿ysz w³asn¹ firmê albo kupisz biznes. \n" );
-						strcat( string, "Oczywiœcie, ¿e mo¿esz z czasem posiadaæ wszystkie rzeczy, nie ma problemu.\n" );	
-						strcat( string, "Do frakcji dostaniesz siê poprzez aplikacjê na forum www.wparty.eu. \n" );
-						strcat( string, "Mo¿esz rownie¿ stworzyæ w³asn¹ frakcjê - trzeba wpierw spe³niæ kilka wymagañ opisanych na forum \n" );
-						strcat( string, "Firme za³o¿yæ mo¿esz poprzez komendê /utworzfrakcje > wybieraj¹c odpowiedni dla Ciebie wybór firmy\n" );
-						strcat( string, "Biznes, kupiæ mo¿esz poprzez dogadanie siê z urzêdnikiem miasta, który pokieruje Ciê dalej \n" );
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Wykszta³cenie", string, "Wróæ", "");
-					}
-					case 6:
-					{
-						strcat( string, "Komendy\n\n" );
-						strcat( string, "Aby wyœwietliæ wszystkie komendy u¿yj /komendy\n" );
-						ShowPlayerDialog( playerid, DIALOG_HELP_2, DIALOG_STYLE_MSGBOX, "Komendy", string, "Wróæ", "");
-					}
-				}
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST, "Pomoc", DIALOG_HELP_MAIN_TXT, "Wybierz", "WyjdŸ");
 			}
 		}
 		case DIALOG_POLICE_COMPUTER_1:
@@ -19529,8 +18073,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(gPlayerVars[playerid][lPoliceComputerPName], MAX_PLAYER_NAME, "%s", inputtext);
 				wantedList:
 				PlayerActionMessage(playerid, 15.0, "sprawdza dane w kompuetrze");
-				format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_wanted` WHERE `PlayerName` = '%s' ORDER BY `ID` ASC", gPlayerVars[playerid][lPoliceComputerPName]);
-				wp_mysql_query(string, SHOW_WANTED_LIST, playerid, db_con1);
+				format(string, sizeof(string), "SELECT * FROM `samp_wanted` WHERE `PlayerName` = '%s' ORDER BY `ID` ASC", gPlayerVars[playerid][lPoliceComputerPName]);
+				mysql_query(string, SHOW_WANTED_LIST, playerid, db_con1);
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Wyszukiwanie...");
 			}
 			else
@@ -19557,17 +18101,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case 0:
 					{
-						format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_wanted` WHERE `PlayerName` = '%s' ORDER BY `ID` ASC",
+						format(string, sizeof(string), "SELECT * FROM `samp_wanted` WHERE `PlayerName` = '%s' ORDER BY `ID` ASC",
 							gPlayerVars[playerid][lPoliceComputerPName]);
-						wp_mysql_query(string, SHOW_SWANTED_LIST, playerid, db_con1);
+						mysql_query(string, SHOW_SWANTED_LIST, playerid, db_con1);
 						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Wyszukiwanie...");
 						return 1;
 					}
 					case 1:
 					{
-						format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_wanted` WHERE `PlayerName` = '%s' ORDER BY `ID` ASC",
+						format(string, sizeof(string), "SELECT * FROM `samp_wanted` WHERE `PlayerName` = '%s' ORDER BY `ID` ASC",
 							gPlayerVars[playerid][lPoliceComputerPName]);
-						wp_mysql_query(string, SHOW_DWANTED_LIST, playerid, db_con1);
+						mysql_query(string, SHOW_DWANTED_LIST, playerid, db_con1);
 						// ShowPlayerDialog(playerid, DIALOG_POLICE_COMPUTER_3D, DIALOG_STYLE_MSGBOX, "Komputer policyjny", "Wpis zosta³ usuniêty", "Wróæ", "Zamknij");
 						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Operacja w toku...");
 						return 1;
@@ -19722,7 +18266,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new Year, Month, Day;
 				getdate(Year, Month, Day);
 				format(string, sizeof(string), "INSERT INTO `samp_wanted` (`PlayerName` , `Description` , `CommitedDay` , `CommitedMonth` , `CommitedYear`) VALUES ('%s' , '%s' , '%d' , '%d' , '%d')", gPlayerVars[playerid][lPoliceComputerPName], inputtext, Day, Month, Year);
-				wp_mysql_query(string, SAVE, playerid, db_con2);
+				mysql_query(string, SAVE, playerid, db_con2);
 				ShowPlayerDialog(playerid, DIALOG_POLICE_COMPUTER_5C, DIALOG_STYLE_MSGBOX, "Komputer policyjny", "Wprowadzono nowy wpis", "Wróæ", "Zamknij");
 				return 1;
 			}
@@ -19760,25 +18304,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else
 			{
 				ShowPlayerDialog(gPlayerVars[playerid][mHealID], DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Leczenie", "Osoba odrzuci³a propozycje uleczenia", "Zamknij", "");
-				return 1;
-			}
-		}
-		case DIALOG_HEAL_ASK_BOT:
-		{
-			if(response)
-			{
-				if(gPlayerData[playerid][pBank] < DynamicFactions[FACTIONID_MEDICS][fHealPrice])
-				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Leczenie", "Nie masz wystarczaj¹cej iloœci pieniêdzy na leczenie", "Zamknij", "");
-					return 1;
-				}
-				SetPlayerHealth(playerid, 100.0);
-				gPlayerData[playerid][pHP] = 100.0;
-				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Zosta³eœ uleczony !");
-				SetPlayerDrunkLevelEx(playerid, 2000);
-				gPlayerData[playerid][pBank] -= DynamicFactions[FACTIONID_MEDICS][fHealPrice];
-				DynamicFactions[FACTIONID_MEDICS][fBank] -= ((DynamicFactions[FACTIONID_MEDICS][fHealCost]+floatround(DynamicFactions[FACTIONID_MEDICS][fHealCost]*DynamicTaxes[VatTaxMin]))-DynamicFactions[FACTIONID_MEDICS][fHealPrice]);
-				SaveFData(FACTIONID_MEDICS, "Bank");
 				return 1;
 			}
 		}
@@ -19980,15 +18505,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(listitem == 0)
 				{
-					format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_races_tracks_hotlaps` WHERE `RaceId` = '%d' AND `Name` = '%s'",
+					format(string, sizeof(string), "SELECT * FROM `samp_races_tracks_hotlaps` WHERE `RaceId` = '%d' AND `Name` = '%s'",
 						gPlayerVars[playerid][mSelectedRace], gPlayerData[playerid][pName]);
-					wp_mysql_query(string, LOAD_RACER_STATS, playerid, db_con2);
+					mysql_query(string, LOAD_RACER_STATS, playerid, db_con2);
 				}
 				else
 				{
-					format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_races_tracks_hotlaps` WHERE `RaceId` = '%d' ORDER BY `Time` ASC LIMIT 1",
-						gPlayerVars[playerid][mSelectedRace]);
-					wp_mysql_query(string, LOAD_RACER_STATS_BEST, playerid, db_con2);
 				}
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "£adowanie danych...", "Zamknij", "");
 				return 1;
@@ -20012,7 +18534,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 0:
 					{
 						gListItem[playerid] = 0;
-						format(string, sizeof(string), "Wybra³eœ typ frakcji: GANG\n\nGang jest frakcj¹ czerpi¹c¹ zyski z kradzierzy oraz napadów.\nIm wiêkszy teren frakcja kontroluje tym wiêksze przychody mo¿e osi¹gn¹æ.\n");
+						format(string, sizeof(string), "Wybra³eœ typ frakcji: GANG\nKoszt za³o¿enia frakcji: 20 000$\n\nGang jest frakcj¹ czerpi¹c¹ zyski z kradzierzy oraz napadów.\nIm wiêkszy teren frakcja kontroluje tym wiêksze przychody mo¿e osi¹gn¹æ.\n");
 						strcat(string, "Specjaln¹ funkcj¹ tej frakcji jest fabryka broni w której cz³onkowie gangu mog¹ sk³adaæ nielegaln¹ broñ");
 						strcat(string, "\n\nCzy napewno chcesz stworzyæ t¹ frakcje ?");
 						ShowPlayerDialog(playerid, DIALOG_MAKE_FACTION_2, DIALOG_STYLE_MSGBOX, "Opis frakcji", string, "Tak", "Zamknij");
@@ -20021,7 +18543,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 1:
 					{
 						gListItem[playerid] = 1;
-						format(string, sizeof(string), "Wybra³eœ typ frakcji: KORPORACJA TAKSÓWKARSKA\nKoszt za³o¿enia 15 000$\n\nKorporacja taksówkarska jest frakcj¹ czerpi¹c¹ zyski z przewo¿enia pasa¿erów autami nale¿¹cymi do frakcji.\n");
+						format(string, sizeof(string), "Wybra³eœ typ frakcji: KORPORACJA TAKSÓWKARSKA\nKoszt za³o¿enia 20 000$\n\nKorporacja taksówkarska jest frakcj¹ czerpi¹c¹ zyski z przewo¿enia pasa¿erów autami nale¿¹cymi do frakcji.\n");
 						strcat(string, "Za³o¿ycie korporacji ustala koszty przejazdu taksówek (koszt wejœcia do taksówki a tak¿e cene za 1km).\n");
 						strcat(string, "Taksówk¹ mo¿e byæ praktycznie ka¿dy pojazd. Wystarczy, do niego dokupiæ listwe informuj¹c¹ ¿e jest to pojazd TAXI.\n");
 						strcat(string, "\nCzy napewno chcesz stworzyæ t¹ frakcje ?");
@@ -20031,7 +18553,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 2:
 					{
 						gListItem[playerid] = 2;
-						format(string, sizeof(string), "Wybra³eœ FIRMÊ TELEKOMUNIKACYJN¥\nKoszt za³o¿enia: 40 000$\n\nFirma telekomunikacyjna czerpie zyski ze sprzeda¿y telefonów oraz us³ug telekomunikacyjnych.\n");
+						format(string, sizeof(string), "Wybra³eœ typ frakcji: FIRMA TELEKOMUNIKACYJNA\nKoszt za³o¿enia: 50 000$\n\nFirma telekomunikacyjna czerpie zyski ze sprzeda¿y telefonów oraz us³ug telekomunikacyjnych.\n");
 						strcat(string, "Firma telekomunikacyjna do prosperowania wymaga salonu w którym mo¿e oferowaæ swoje us³ugi.\n");
 						strcat(string, "W³aœciciel firmy ustala koszty po³¹czeñ, ceny za SMSy, etc.");
 						strcat(string, "\n\nCzy napewno chcesz za³o¿yæ firme telekomunikacyjn¹ ?");						
@@ -20040,11 +18562,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 3:
 					{
 						gListItem[playerid] = 3;
-						format(string, sizeof(string), "Wybra³eœ FIRMÊ - SIEÆ OBIEKTÓW US£UGOWYCH\nKoszt za³o¿enia 25 000$\n\nSama firma nie jest w stanie w ¿aden sposób generowaæ zysków.\n");
-						strcat(string, "Dziêki firmie, w³aœciciel mo¿e posiadaæ sieæ biznesów, z którymi mo¿e podpisaæ umowy i zarabiaæ na ich zyskach.\n");
-						strcat(string, "Oprócz tego mo¿liwe jest te¿ wykupienie budynku, który mo¿na przeznaczyæ na magazyn lub warsztat samochodowy.\n");
-						strcat(string, "Za³o¿yciel mo¿e tak¿e zatrudniaæ pracowników (w tej chwili g³ównie mechaników, którzy mogliby pracowaæ w warsztacie).\n");
-						strcat(string, "\n\nCzy napewno chcesz za³o¿yæ firme tego typu ?");						
+						format(string, sizeof(string), "Wybra³eœ typ frakcji: FIRMA - SIEÆ OBIEKTÓW US£UGOWYCH\nKoszt za³o¿enia 55 000$\n\nSama firma nie jest w stanie w ¿aden sposób generowaæ zysków.\n");
+						strcat(string, "Do tego wymaga co najmniej jednego biznesu oferuj¹cego swoje us³ugi z którym musi mieæ podpisan¹ umowe.\n");
+						strcat(string, "Dziêki za³o¿eniu tej firmy w³aœciciel mo¿e posiadaæ wiêcej ni¿ jeden biznes za³o¿ony przez niego samego a tak¿e posiadaæ umowy z innymi w³aœcicielami biznesów.\n");
+						strcat(string, "\n\nCzy napewno chcesz za³o¿yæ firme sieci obiektów us³ugowych ?");						
 						ShowPlayerDialog(playerid, DIALOG_MAKE_FACTION_2, DIALOG_STYLE_MSGBOX, "Opis frakcji", string, "Tak", "Zamknij");
 					}
 				}
@@ -20063,6 +18584,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nale¿ysz ju¿ do jednej frakcji.\nNie mo¿esz przynale¿eæ do drugiej.", "WyjdŸ", "");
 							return 1;
 						}
+						if(gPlayerData[playerid][pCash] < 20000)
+						{
+							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz omawianej kwoty (20 000$) na za³o¿enie frakcji.", "WyjdŸ", "");
+							return 1;
+						}
 						ShowPlayerDialog(playerid, DIALOG_MAKE_FACTION_3, DIALOG_STYLE_INPUT, "Tworzenie frakcji", "Podaj nazwe frakcji", "Dalej", "Zamknij");
 						return 1;
 					}
@@ -20073,9 +18599,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Posiadasz ju¿ firme.\nNie mo¿esz za³o¿yæ drugiej.", "WyjdŸ", "");
 							return 1;
 						}
-						if(gPlayerData[playerid][pCash] < 40000)
+						if(gPlayerData[playerid][pCash] < 50000)
 						{
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz omawianej kwoty (40 000$) na za³o¿enie firmy.", "WyjdŸ", "");
+							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz omawianej kwoty (50 000$) na za³o¿enie firmy.", "WyjdŸ", "");
 							return 1;
 						}
 						ShowPlayerDialog(playerid, DIALOG_MAKE_FACTION_3, DIALOG_STYLE_INPUT, "Tworzenie frakcji", "Podaj nazwe firmy", "Dalej", "Zamknij");
@@ -20088,9 +18614,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Posiadasz ju¿ firme.\nNie mo¿esz za³o¿yæ drugiej.", "WyjdŸ", "");
 							return 1;
 						}
-						if(gPlayerData[playerid][pCash] < 25000)
+						if(gPlayerData[playerid][pCash] < 55000)
 						{
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz omawianej kwoty (25 000$) na za³o¿enie firmy.", "WyjdŸ", "");
+							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie posiadasz omawianej kwoty (55 000$) na za³o¿enie firmy.", "WyjdŸ", "");
 							return 1;
 						}
 						ShowPlayerDialog(playerid, DIALOG_MAKE_FACTION_3, DIALOG_STYLE_INPUT, "Tworzenie frakcji", "Podaj nazwe firmy", "Dalej", "Zamknij");
@@ -20129,6 +18655,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							gPlayerData[playerid][pFaction] = i;
 							SavePlayerData(playerid, "Rank");
 							SavePlayerData(playerid, "Faction");
+							GivePlayerCash(playerid, -20000);
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Utworzy³eœ gang.\nAby zarz¹dzaæ frakcj¹, wpisz /komendyfrakcji.", "Zamknij", "");
 							return 1;
 						}
@@ -20154,7 +18681,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							gPlayerData[playerid][pFaction] = i;
 							SavePlayerData(playerid, "Rank");
 							SavePlayerData(playerid, "Faction");
-							GivePlayerCash(playerid, -15000);
+							GivePlayerCash(playerid, -20000);
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Utworzy³eœ korporacje taksówkarsk¹.\nAby zarz¹dzaæ frakcj¹, wpisz /komendyfrakcji.", "Zamknij", "");
 							return 1;
 						}
@@ -20180,7 +18707,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							gPlayerData[playerid][pFaction2] = i;
 							SavePlayerData(playerid, "Rank2");
 							SavePlayerData(playerid, "Faction2");
-							GivePlayerCash(playerid, -40000);
+							GivePlayerCash(playerid, -50000);
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Utworzy³eœ firme telekomunikacyjn¹.\nAby zarz¹dzaæ firm¹ skorzystaj z komend: /komendyfrakcji oraz /komendyfirmy.", "Zamknij", "");
 							return 1;
 						}
@@ -20206,7 +18733,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							gPlayerData[playerid][pFaction2] = i;
 							SavePlayerData(playerid, "Rank2");
 							SavePlayerData(playerid, "Faction2");
-							GivePlayerCash(playerid, -25000);
+							GivePlayerCash(playerid, -55000);
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Utworzy³eœ firme sieci us³ug.\nAby zarz¹dzaæ firm¹ skorzystaj z komend: /komendyfrakcji oraz /komendyfirmy.", "Zamknij", "");
 							return 1;
 						}
@@ -20218,31 +18745,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_RADIO_CHANNELS:
 		{
+			// if(idstacji > 18 || idstacji < 1)
+			// {
+				// SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Niew³aœciwy nr stacji");
+				// return 1;
+			// }
 			if(response)
 			{
 				if(IsPlayerInAnyVehicle(playerid))
 				{
 					new seat;
-					
 					seat = GetPlayerVehicleSeat(playerid);
-					
 					if(seat > 1)
 					{
 						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Siedzisz za daleko od radia !");
 						return 1;
 					}
-					
 					new vehid = GetPlayerVehicleID(playerid);
-					
 					if(gVehData[vehid-1][RadioOn])
 					{
-						PlayerActionMessage(playerid, 5.0, "zmienia kana³");
+						PlayerActionMessage(playerid,15.0,"zmienia kana³");
 					}
 					else
 					{
-						PlayerActionMessage(playerid, 5.0, "w³¹cza radio");
+						PlayerActionMessage(playerid,15.0,"w³¹cza radio");
 					}
-					
 					PlayCarRadioStation(playerid, listitem+1, vehid);
 
 					return 1;
@@ -20258,8 +18785,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				format(string, sizeof(string), "SELECT HIGH_PRIORITY * FROM `samp_questions` WHERE `ID` = '%d'", listitem+1);
-				wp_mysql_query(string, LOAD_DRIVER_BOOK_QUESTION, playerid, db_con2);
+				format(string, sizeof(string), "SELECT * FROM `samp_questions` WHERE `id` = '%d'", listitem+1);
+				mysql_query(string, LOAD_DRIVER_BOOK_QUESTION, playerid, db_con2);
 				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "£adowanie danych...", "Zamknij", "");
 			}
 		}
@@ -20319,2699 +18846,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(strcmp(gPoliceComputerPassword, inputtext, false) != 0 && strlen(inputtext) == strlen(gPoliceComputerPassword))
+				if(strcmp(gPoliceComputerPassword, inputtext, false, strlen(gPoliceComputerPassword)) != 0)
 				{					
-					ShowPlayerDialog(playerid, DIALOG_LOGIN_KP, DIALOG_STYLE_INPUT, #COLOR_TITLE"Logowanie do panelu", "Poda³eœ niepoprawne has³o !\nSpróbuj jeszcze raz.", "Loguj", "WyjdŸ");
+					ShowPlayerDialog(playerid, DIALOG_LOGIN_KP, DIALOG_STYLE_INPUT, "Logowanie do panelu", "Poda³eœ niepoprawne has³o !\nSpróbuj jeszcze raz.", "Loguj", "WyjdŸ");
 					return 1;
 				}
 				ShowPoliceComputer(playerid);
-			}
-		}
-		case DIALOG_BUY_BUS_TICKET:
-		{
-			if(response)
-			{
-				new vehicleid = GetPlayerVehicleID(playerid);
-				new driverId;
-				
-				if(vehicleid != 0)
-				{
-					if(vehicleid == 1998 || vehicleid == 1999)
-					{
-						if(IsPlayerVip(playerid))
-						{
-							gPlayerVars[playerid][mBusTicketBuyTime] = 0;
-							
-							if(vehicleid == 1999)
-							{
-								GivePlayerCash(playerid, -floatround(gBusTrackTicketCost[0]*BUS_TICKET_VIP_DISCOUNT));		
-								DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gBusTrackTicketCost[0]*BUS_TICKET_VIP_DISCOUNT);	
-								format(string, sizeof(string), "Zap³aci³eœ $%d za bilet", floatround(gBusTrackTicketCost[0]*BUS_TICKET_VIP_DISCOUNT));
-							}
-							else if(vehicleid == 1998)
-							{
-								// NOTE: Non existing track
-								GivePlayerCash(playerid, -floatround(20*BUS_TICKET_VIP_DISCOUNT));		
-								DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(20*BUS_TICKET_VIP_DISCOUNT);
-								format(string, sizeof(string), "Zap³aci³eœ $%d za bilet", floatround(20*BUS_TICKET_VIP_DISCOUNT));
-							}
-							SaveFData(FACTIONID_GOVERNMENT, "Bank");
-							
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Kupno biletu", string, "Zamknij", "");
-						}
-						else
-						{
-							gPlayerVars[playerid][mBusTicketBuyTime] = 0;
-							
-							if(vehicleid == 1999)
-							{
-								GivePlayerCash(playerid, -(gBusTrackTicketCost[0]));		
-								DynamicFactions[FACTIONID_GOVERNMENT][fBank] += gBusTrackTicketCost[0];	
-								format(string, sizeof(string), "Zap³aci³eœ $%d za bilet", gBusTrackTicketCost[0]);
-							}
-							else if(vehicleid == 1998)
-							{
-								// NOTE: Non existing track
-								GivePlayerCash(playerid, -20);		
-								DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 20;
-								format(string, sizeof(string), "Zap³aci³eœ $%d za bilet", 20);
-							}
-							SaveFData(FACTIONID_GOVERNMENT, "Bank");
-							
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Kupno biletu", string, "Zamknij", "");
-						}
-					}
-					else
-					{
-						driverId = GetPlayerInVehicleSeat(vehicleid, 0);
-						if(driverId != -1)
-						{
-							if(gBusDriverOnDuty[driverId])
-							{
-								if(IsPlayerVip(playerid))
-								{
-									GivePlayerCash(playerid, -floatround((gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]*BUS_TICKET_VIP_DISCOUNT)));
-									DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]*BUS_TICKET_VIP_DISCOUNT);
-									SaveFData(FACTIONID_GOVERNMENT, "Bank");
-									gPlayerVars[playerid][mBusTicketBuyTime] = 0;
-									gJobProfit[driverId] += floatround(gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]*0.5);
-									format(string, sizeof(string), "Zap³aci³eœ $%d za bilet", floatround(gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]*BUS_TICKET_VIP_DISCOUNT));
-									ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Kupno biletu", string, "Zamknij", "");
-									SendClientMessage(driverId, COLOR_LIGHTYELLOW2, "[INFO:] Otrzyma³eœ 50%% prowizji ze sprzeda¿y biletu");
-								}
-								else
-								{
-									GivePlayerCash(playerid, -(gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]));
-									DynamicFactions[FACTIONID_GOVERNMENT][fBank] += (gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]);								
-									SaveFData(FACTIONID_GOVERNMENT, "Bank");								
-									gPlayerVars[playerid][mBusTicketBuyTime] = 0;
-									gJobProfit[driverId] += floatround(gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]*0.5);
-									format(string, sizeof(string), "Zap³aci³eœ $%d za bilet", (gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]));
-									ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Kupno biletu", string, "Zamknij", "");
-									SendClientMessage(driverId, COLOR_LIGHTYELLOW2, "[INFO:] Otrzyma³eœ 50%% prowizji ze sprzeda¿y biletu");
-								}
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				gPlayerVars[playerid][mBusTicketBuyTime] = 0;
-				RemovePlayerFromVehicle(playerid);
-			}
-		}
-		case DIALOG_F_PAYMENT_1:
-		{
-			if(response)
-			{
-				gPlayerVars[playerid][mEditRank] = listitem+1;
-				payment1Input:
-				format(string, sizeof(string), "Edytujesz range nr %d", gPlayerVars[playerid][mEditRank]);
-				ShowPlayerDialog(playerid, DIALOG_F_PAYMENT_2, DIALOG_STYLE_INPUT, string, "Wpisz jak wysok¹ wyp³ate ma otrzymywaæ dana ranga:", "Dalej", "Zamknij");
-				return 1;
-			}
-		}
-		case DIALOG_F_PAYMENT_2:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_F_PAYMENT_2_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				if(strval(inputtext) > 5000)
-				{
-					ShowPlayerDialog(playerid, DIALOG_F_PAYMENT_2_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				if(strval(inputtext) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_F_PAYMENT_2_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				switch(gPlayerVars[playerid][mEditRank])
-				{
-					case 1: PayRank[gPlayerData[playerid][pFaction]][Rank1] = strval(inputtext);
-					case 2: PayRank[gPlayerData[playerid][pFaction]][Rank2] = strval(inputtext);
-					case 3: PayRank[gPlayerData[playerid][pFaction]][Rank3] = strval(inputtext);
-					case 4: PayRank[gPlayerData[playerid][pFaction]][Rank4] = strval(inputtext);
-					case 5: PayRank[gPlayerData[playerid][pFaction]][Rank5] = strval(inputtext);
-					case 6: PayRank[gPlayerData[playerid][pFaction]][Rank6] = strval(inputtext);
-					case 7: PayRank[gPlayerData[playerid][pFaction]][Rank7] = strval(inputtext);
-					case 8: PayRank[gPlayerData[playerid][pFaction]][Rank8] = strval(inputtext);
-					case 9: PayRank[gPlayerData[playerid][pFaction]][Rank9] = strval(inputtext);
-					case 10: PayRank[gPlayerData[playerid][pFaction]][Rank10] = strval(inputtext);
-				}
-				
-				SavePayRank();
-				
-				format(string, sizeof(string), "Zmieni³eœ wysokoœæ wyp³aty dla rangi %d", gPlayerVars[playerid][mEditRank]);
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-			}
-		}
-		case DIALOG_F_PAYMENT_2_MSG:
-		{
-			goto payment1Input;
-		}
-		case DIALOG_F2_PAYMENT_1:
-		{
-			if(response)
-			{
-				payment2Input:
-				gPlayerVars[playerid][mEditRank] = listitem+1;
-				format(string, sizeof(string), "Edytujesz range nr %d", gPlayerVars[playerid][mEditRank]);
-				ShowPlayerDialog(playerid, DIALOG_F2_PAYMENT_2, DIALOG_STYLE_INPUT, string, "Wpisz jak wysok¹ wyp³ate ma otrzymywaæ dana ranga:", "Dalej", "Zamknij");
-				return 1;
-			}
-		}
-		case DIALOG_F2_PAYMENT_2:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_F2_PAYMENT_2_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				if(strval(inputtext) > 999)
-				{
-					ShowPlayerDialog(playerid, DIALOG_F2_PAYMENT_2_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				if(strval(inputtext) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_F2_PAYMENT_2_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				switch(gPlayerVars[playerid][mEditRank])
-				{
-					case 1: PayRank[gPlayerData[playerid][pFaction2]][Rank1] = strval(inputtext);
-					case 2: PayRank[gPlayerData[playerid][pFaction2]][Rank2] = strval(inputtext);
-					case 3: PayRank[gPlayerData[playerid][pFaction2]][Rank3] = strval(inputtext);
-					case 4: PayRank[gPlayerData[playerid][pFaction2]][Rank4] = strval(inputtext);
-					case 5: PayRank[gPlayerData[playerid][pFaction2]][Rank5] = strval(inputtext);
-					case 6: PayRank[gPlayerData[playerid][pFaction2]][Rank6] = strval(inputtext);
-					case 7: PayRank[gPlayerData[playerid][pFaction2]][Rank7] = strval(inputtext);
-					case 8: PayRank[gPlayerData[playerid][pFaction2]][Rank8] = strval(inputtext);
-					case 9: PayRank[gPlayerData[playerid][pFaction2]][Rank9] = strval(inputtext);
-					case 10: PayRank[gPlayerData[playerid][pFaction2]][Rank10] = strval(inputtext);
-				}
-				
-				SavePayRank();
-				
-				format(string, sizeof(string), "Zmieni³eœ wysokoœæ wyp³aty dla rangi %d", gPlayerVars[playerid][mEditRank]);
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-			}
-		}
-		case DIALOG_F2_PAYMENT_2_MSG:
-		{
-			goto payment2Input;
-		}
-		case DIALOG_F_ARMENT_1:
-		{
-			if(response)
-			{
-				gPlayerVars[playerid][mEditRank] = listitem+1;
-				format(string, sizeof(string), "Edytujesz range nr %d", gPlayerVars[playerid][mEditRank]);
-				ShowPlayerDialog(playerid, DIALOG_F_ARMENT_2, DIALOG_STYLE_LIST, string, "1. Pierwsza broñ\n2. Amunicja do pierwszej broni\n3. Druga broñ", "Wybierz", "Zamknij");
-				return 1;
-			}
-		}
-		case DIALOG_F_ARMENT_2:
-		{
-			if(response)
-			{
-				
-				switch(listitem)
-				{
-					// bron nr 1
-					case 0:
-					{
-						format(string, sizeof(string), "Edytujesz range nr %d, wybierasz I broñ", gPlayerVars[playerid][mEditRank]);
-						ShowPlayerDialog(playerid, DIALOG_F_ARMENT_W_1, DIALOG_STYLE_LIST, string,
-							"1. brak\n2. pistolet\n3. pistolet z t³umikiem\n4. Desert Eagle\n5. shotgun\n6. UZI\n7. MP5\n8. AK-47\n9. M4\n10. Tec-9\n11. Snajperka",
-							"Wybierz", "Zamknij");
-					}
-					// ammo broni 1
-					case 1:
-					{
-						ammo1Input:
-						format(string, sizeof(string), "Edytujesz range nr %d, wybierasz iloœæ amunicji do I broni", gPlayerVars[playerid][mEditRank]);						
-						ShowPlayerDialog(playerid, DIALOG_F_ARMENT_A_1, DIALOG_STYLE_INPUT, string, "Wpisz ile pocisków bêdzie pobierane z frakcji przy ka¿dym pobraniu broni:", "Dalej", "Zamknij");
-					}
-					// bron nr 2
-					case 2:
-					{
-						format(string, sizeof(string), "Edytujesz range nr %d, wybierasz II broñ", gPlayerVars[playerid][mEditRank]);
-						ShowPlayerDialog(playerid, DIALOG_F_ARMENT_W_2, DIALOG_STYLE_LIST, string,
-							"1. brak\n2. Brass Knuckles\n3. pa³ka policyjna\n4. nó¿\n5. kij bejsbolowy\n6. katana",
-							"Wybierz", "Zamknij");
-					}
-					/*// ammo broni 2
-					case 3:
-					{
-						format(string, sizeof(string), "Edytujesz range nr %d, wybierasz iloœæ amunicji do II broni", gPlayerVars[playerid][mEditRank]);						
-						ShowPlayerDialog(playerid, DIALOG_F_ARMENT_A_1, DIALOG_STYLE_INPUT, string, "Wpisz ile pocisków bêdzie pobierane z frakcji przy ka¿dym pobraniu broni:", "Dalej", "Zamknij");
-					}*/
-				}
-			}
-		}
-		case DIALOG_F_ARMENT_W_1:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					// brak
-					case 0:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 0);
-					}
-					// pistolet
-					case 1:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 22);
-					}
-					// pistolet z tlumikiem
-					case 2:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 23);
-					}
-					// desert eagle
-					case 3:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 24);
-					}
-					// shotgun
-					case 4:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 25);
-					}
-					// uzi
-					case 5:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 28);
-					}
-					// Mp5
-					case 6:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 29);
-					}
-					// ak47
-					case 7:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 30);
-					}
-					// m4
-					case 8:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 31);
-					}
-					// tec9
-					case 9:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 32);
-					}
-					// snajperka
-					case 10:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, 24);
-					}
-				}
-				
-				format(string, sizeof(string), "Zmieni³eœ I broñ dla rangi %d", gPlayerVars[playerid][mEditRank]);
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-			}
-		}
-		case DIALOG_F_ARMENT_A_1:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_F_ARMENT_A_1_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				if(strval(inputtext) > 999)
-				{
-					ShowPlayerDialog(playerid, DIALOG_F_ARMENT_A_1_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				if(strval(inputtext) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_F_ARMENT_A_1_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				SetFactionRankAmmo(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 1, strval(inputtext));
-				
-				format(string, sizeof(string), "Zmieni³eœ iloœæ amunicji I broni dostêpnej dla rangi %d", gPlayerVars[playerid][mEditRank]);
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-			}
-		}
-		case DIALOG_F_ARMENT_A_1_MSG:
-		{
-			goto ammo1Input;
-		}
-		case DIALOG_F_ARMENT_W_2:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					// brak
-					case 0:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 2, 0);
-					}
-					// bras knuckles
-					case 1:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 2, 1);
-					}
-					// pa³ka policyjna
-					case 2:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 2, 3);
-					}
-					// nó¿
-					case 3:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 2, 4);
-					}
-					// kij bejsbolowy
-					case 4:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 2, 5);
-					}
-					// katana
-					case 5:
-					{
-						SetFactionRankWeapon(gPlayerData[playerid][pFaction], gPlayerVars[playerid][mEditRank], 2, 8);
-					}
-				}
-				
-				format(string, sizeof(string), "Zmieni³eœ II broñ dla rangi %d", gPlayerVars[playerid][mEditRank]);
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-			}
-		}
-		case DIALOG_MEDIC_1:
-		{
-			if(response)
-			{
-				format(string, sizeof(string), "Czy zgadzasz siê ponieœæ op³ate za uleczenie w wysokoœci $%d ?\nWartoœæ zostanie pobrana z twojego konta bankowego.",
-					DynamicFactions[FACTIONID_MEDICS][fHealPrice]);
-				ShowPlayerDialog(playerid, DIALOG_HEAL_ASK_BOT, DIALOG_STYLE_MSGBOX, "Leczenie", string, "Tak", "Nie");						
-				return 1;
-			}
-		}
-		case DIALOG_COMPANY:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					// zatrudnij pracownika
-					case 0:
-					{
-						companyHire:
-						ShowPlayerDialog(playerid, DIALOG_COMPANY_HIRE, DIALOG_STYLE_INPUT, "Panel firmy - zatrudnij", "Wpisz ID gracza, którego chcesz zatrudniæ", "Dalej", "Wróæ");
-						return 1;
-					}
-					// zwolnij pracownika
-					case 1:
-					{
-						companyFire:
-						format(string, sizeof(string), "SELECT `PlayerName` FROM `samp_users_other` WHERE `Faction2` = '%d'", gPlayerData[playerid][pFaction2]);
-						wp_mysql_query(string, COMPANY_MEMBERS_DISMISS, playerid, db_con1);
-						return 1;
-					}
-					// wynagrodzenie
-					case 2:
-					{
-						payments:
-						ShowPlayerDialog(playerid, DIALOG_COMPANY_PAYMENT, DIALOG_STYLE_INPUT, "Firma - wynagrodzenie pracownika", "Wpisz jak wysok¹ wyp³ate ma otrzymywaæ pracownik:", "Dalej", "Zamknij");
-						return 1;
-					}
-				}
-			}
-		}
-		case DIALOG_FACTION:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					// zatrudnij pracownika
-					case 0:
-					{
-						factionHire:
-						ShowPlayerDialog(playerid, DIALOG_FACTION_HIRE, DIALOG_STYLE_INPUT, "Panel frakcji - zaproœ", "Wpisz ID gracza, którego chcesz zaprosiæ", "Dalej", "Wróæ");
-						
-						return 1;
-					}
-					// zwolnij pracownika
-					case 1:
-					{
-						factionFire:
-						format(string, sizeof(string), "SELECT `PlayerName` FROM `samp_users` WHERE `Faction` = '%d'", gPlayerData[playerid][pFaction]);
-						wp_mysql_query(string, FACTION_MEMBERS_DISMISS, playerid, db_con1);
-						
-						return 1;
-					}
-					// zmien range
-					case 2:
-					{
-						factionRank:
-						format(string, sizeof(string), "SELECT `PlayerName` , `Rank` FROM `samp_users` WHERE `Faction` = '%d'", gPlayerData[playerid][pFaction]);
-						wp_mysql_query(string, FACTION_MEMBERS_RANK, playerid, db_con1);
-						
-						return 1;
-					}
-					// zmien skin
-					case 3:
-					{
-						factionSkin:
-						
-						format(string, sizeof(string), "1. %s - %d", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin1]);
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 2)
-						{
-							format(string, sizeof(string), "%s\n2. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank2], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin2]);
-						}
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 3)
-						{
-							format(string, sizeof(string), "%s\n3. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank3], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin3]);
-						}
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 4)
-						{
-							format(string, sizeof(string), "%s\n4. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank4], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin4]);
-						}
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 5)
-						{
-							format(string, sizeof(string), "%s\n5. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank5], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin5]);
-						}
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 6)
-						{
-							format(string, sizeof(string), "%s\n6. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank6], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin6]);
-						}
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 7)
-						{
-							format(string, sizeof(string), "%s\n7. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank7], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin7]);
-						}
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 8)
-						{
-							format(string, sizeof(string), "%s\n8. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank8], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin8]);
-						}
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 9)
-						{
-							format(string, sizeof(string), "%s\n9. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank9], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin9]);
-						}
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 10)
-						{
-							format(string, sizeof(string), "%s\n10. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank10], DynamicFactions[gPlayerData[playerid][pFaction]][fSkin10]);
-						}
-						
-						ShowPlayerDialog(playerid, DIALOG_FACTION_SKIN_SELECT, DIALOG_STYLE_LIST, "Panel frakcji - skiny", string, "Wybierz", "Zamknij");
-						return 1;
-					}
-					// wynagrodzenie
-					case 4:
-					{
-						factionPayments:
-						new payRankId;
-						new idFound = 0;
-						
-						for(payRankId = 0; payRankId < sizeof(PayRank); payRankId++)
-						{
-							if(PayRank[payRankId][FactionID] == gPlayerData[playerid][pFaction])
-							{
-								idFound = 1;
-								break;
-							}
-						}
-						
-						if(idFound)
-						{
-							format(string, sizeof(string), "1. %s - %d", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1], PayRank[payRankId][Rank1]);
-							if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 2)
-							{
-								format(string, sizeof(string), "%s\n2. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank2], PayRank[payRankId][Rank2]);
-							}
-							if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 3)
-							{
-								format(string, sizeof(string), "%s\n3. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank3], PayRank[payRankId][Rank2]);
-							}
-							if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 4)
-							{
-								format(string, sizeof(string), "%s\n4. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank4], PayRank[payRankId][Rank2]);
-							}
-							if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 5)
-							{
-								format(string, sizeof(string), "%s\n5. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank5], PayRank[payRankId][Rank2]);
-							}
-							if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 6)
-							{
-								format(string, sizeof(string), "%s\n6. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank6], PayRank[payRankId][Rank2]);
-							}
-							if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 7)
-							{
-								format(string, sizeof(string), "%s\n7. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank7], PayRank[payRankId][Rank2]);
-							}
-							if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 8)
-							{
-								format(string, sizeof(string), "%s\n8. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank8], PayRank[payRankId][Rank2]);
-							}
-							if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 9)
-							{
-								format(string, sizeof(string), "%s\n9. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank9], PayRank[payRankId][Rank2]);
-							}
-							if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 10)
-							{
-								format(string, sizeof(string), "%s\n10. %s - %d", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank10], PayRank[payRankId][Rank2]);
-							}
-							
-							ShowPlayerDialog(playerid, DIALOG_FACTION_PAYMENT, DIALOG_STYLE_LIST, "Panel frakcji - wynagrodzenie", string, "Wybierz", "Zamknij");
-							return 1;
-						}
-						
-						ShowPlayerDialog(playerid, DIALOG_FACTION_PAYMENT_MSG, DIALOG_STYLE_LIST, "Panel frakcji - wynagrodzenie", "Wyst¹pi³ problem - skontaktuj siê z administratorem", "Wybierz", "Zamknij");
-						return 1;
-					}
-				}
-			}
-		}
-		case DIALOG_FACTION_SKIN_SELECT:
-		{
-			if(response)
-			{
-				gListItem[playerid] = listitem+1;
-				
-				switch(gListItem[playerid])
-				{
-					case 1: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); }
-					case 2: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); }
-					case 3: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); }
-					case 4: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); }
-					case 5: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); } 
-					case 6: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); }
-					case 7: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); }
-					case 8: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); }
-					case 9: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); }
-					case 10: { format(string, sizeof(string), "Wpisz ID skina który chcesz przypisaæ randze %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]); }
-				}
-				ShowPlayerDialog(playerid, DIALOG_FACTION_SKIN_INPUT, DIALOG_STYLE_INPUT, "Panel frakcji - skiny", string, "Zatwierdz", "Wróæ");
-			}
-		}
-		case DIALOG_FACTION_SKIN_INPUT:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_SKIN_INPUT, DIALOG_STYLE_INPUT, "Panel frakcji - skiny", "Niepoprawna wartoœæ.\nSpróbuj ponownie", "ZatwierdŸ", "Wróæ");
-					return 1;
-				}
-				
-				if(strval(inputtext) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_SKIN_INPUT, DIALOG_STYLE_INPUT, "Panel frakcji - skiny", "Niepoprawna wartoœæ.\nSpróbuj ponownie", "ZatwierdŸ", "Wróæ");
-					return 1;
-				}
-				
-				switch(gListItem[playerid])
-				{
-					case 1:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin1] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin1");
-					}
-					case 2:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin2] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin2");
-					}
-					case 3:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin3] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin3");
-					}
-					case 4:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin4] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin4");
-					}
-					case 5:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin5] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin5");
-					}
-					case 6:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin6] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin6");
-					}
-					case 7:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin7] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin7");
-					}
-					case 8:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin8] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin8");
-					}
-					case 9:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin9] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin9");
-					}
-					case 10:
-					{
-						DynamicFactions[gPlayerData[playerid][pFaction]][fSkin10] = strval(inputtext);
-						SaveFData(gPlayerData[playerid][pFaction], "Skin10");
-					}
-				}
-				
-				ShowPlayerDialog(playerid, DIALOG_FACTION_SKIN_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - skiny", "Zmiany zosta³y zapisane", "Wróæ", "Zamknij");
-				return 1;
-			}
-			else
-			{
-				goto factionSkin;
-			}
-		}
-		case DIALOG_FACTION_SKIN_MSG:
-		{
-			if(response)
-			{
-				goto factionSkin;
-			}
-		}
-		case DIALOG_FACTION_PAYMENT:
-		{
-			if(response)
-			{
-				gListItem[playerid] = listitem+1;
-				
-				ShowPlayerDialog(playerid, DIALOG_FACTION_PAYMENT_ENTER, DIALOG_STYLE_INPUT, "Panel frakcji - wynagrodzenie", "Podaj wysokoœæ wyp³aty", "ZatwierdŸ", "Zamknij");
-				return 1;
-			}
-		}
-		case DIALOG_FACTION_PAYMENT_ENTER:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_PAYMENT_ENTER, DIALOG_STYLE_INPUT, "Panel frakcji - wynagrodzenie", "Niepoprawna wartoœæ.\nSpróbuj ponownie:", "ZatwierdŸ", "Zamknij");
-					return 1;
-				}
-				
-				if(strval(inputtext) < 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_PAYMENT_ENTER, DIALOG_STYLE_INPUT, "Panel frakcji - wynagrodzenie", "Niepoprawna wartoœæ.\nSpróbuj ponownie:", "ZatwierdŸ", "Zamknij");
-					return 1;
-				}
-				
-				new payRankId;
-				new idFound = 0;
-				for(payRankId = 0; payRankId < sizeof(PayRank); payRankId++)
-				{
-					if(PayRank[payRankId][FactionID] == gPlayerData[playerid][pFaction])
-					{
-						idFound = 1;
-						break;
-					}
-				}
-				if(idFound)
-				{
-					switch(gListItem[playerid])
-					{
-						case 1:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank1] = strval(inputtext);
-						}
-						case 2:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank2] = strval(inputtext);
-						}
-						case 3:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank3] = strval(inputtext);
-						}
-						case 4:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank4] = strval(inputtext);
-						}
-						case 5:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank5] = strval(inputtext);
-						}
-						case 6:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank6] = strval(inputtext);
-						}
-						case 7:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank7] = strval(inputtext);
-						}
-						case 8:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank8] = strval(inputtext);
-						}
-						case 9:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank9] = strval(inputtext);
-						}
-						case 10:
-						{
-							PayRank[gPlayerData[playerid][pFaction]][Rank10] = strval(inputtext);
-						}
-					}
-					
-					ShowPlayerDialog(playerid, DIALOG_FACTION_PAYMENT_MSG, DIALOG_STYLE_INPUT, "Panel frakcji - wynagrodzenie", "Zmieni³eœ wartoœæ wyp³aty.", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				ShowPlayerDialog(playerid, DIALOG_FACTION_PAYMENT_MSG, DIALOG_STYLE_INPUT, "Panel frakcji - wynagrodzenie", "Wyst¹pi³ problem - skontaktuj siê z administratorem.", "Wróæ", "Zamknij");
-				return 1;
-			}
-		}
-		case DIALOG_FACTION_PAYMENT_MSG:
-		{
-			if(response)
-			{
-				goto factionPayments;
-			}
-		}
-		case DIALOG_FACTION_HIRE:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - zatrudnij", "Niepoprawna wartoœæ.\nSpróbuj jeszcze raz.", "Wróæ", "");
-					return 1;
-				}
-				
-				if(strval(inputtext) < 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - zatrudnij", "Niepoprawna wartoœæ.\nSpróbuj jeszcze raz.", "Wróæ", "");
-					return 1;
-				}
-				
-				if(strval(inputtext) >= CUSTOM_MAX_PLAYERS)
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - zatrudnij", "Niepoprawna wartoœæ.\nSpróbuj jeszcze raz.", "Wróæ", "");
-					return 1;
-				}
-				
-				new hiringPlayerId = strval(inputtext);
-				
-				if(!gPlayerLogged[hiringPlayerId])
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - zatrudnij", "Pod tym ID nie ma zalogowanego gracza.", "Wróæ", "");
-					return 1;
-				}
-				
-				FactionRequest[hiringPlayerId] = gPlayerData[playerid][pFaction];
-				
-				format(string, sizeof(string), "Zosta³eœ zaproszony do %s przez %s (wpisz /akceptuj frakcje) aby do³¹czyæ", DynamicFactions[gPlayerData[playerid][pFaction]][Name], GetPlayerNameEx(playerid));				
-				SendClientMessage(hiringPlayerId, COLOR_LIGHTBLUE, string);
-				
-				format(string, sizeof(string), "Wys³a³eœ propozycje zatrudnienia do %s.", GetPlayerNameEx(hiringPlayerId));
-				ShowPlayerDialog(playerid, DIALOG_FACTION_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel firmy - zaproœ", string, "Wróæ", "");
-			}
-		}
-		case DIALOG_FACTION_HIRE_MSG:
-		{
-			goto factionHire;
-		}
-		case DIALOG_FACTION_DISMISS:
-		{
-			if(response)
-			{
-				if(strcmp(gPlayerData[playerid][pName], gFactionMembersToFire[playerid][listitem], true) == 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_DISMISS_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - wyproœ", "Nie mo¿esz sam siebie wyprosiæ.", "Wróæ", "");
-					return 1;
-				}
-				
-				foreach(Player, i)
-				{
-					if(!gPlayerLogged[i])
-					{
-						continue;
-					}
-					
-					if(strcmp(gPlayerData[i][pName], gFactionMembersToFire[playerid][listitem], false) == 0)
-					{
-						format(string,sizeof(string), "Zosta³eœ wyproszony z frakcji %s", DynamicFactions[gPlayerData[playerid][pFaction]][Name]);
-						SendClientMessage(i, COLOR_ORANGE, string);
-						
-						gPlayerData[i][pFaction] = 255;
-						gPlayerData[i][pRank] = 0;
-
-						SavePlayerData(i, "Faction");
-						SavePlayerData(i, "Rank");
-						
-						format(string, sizeof(string), "Wyprosi³eœ %s z frakcji.", GetPlayerNameEx(playerid));
-						ShowPlayerDialog(playerid, DIALOG_FACTION_DISMISS_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - wyproœ", string, "Wróæ", "");
-
-						format(string, sizeof(string), "[FRAKCJA:] %s zosta³ wyproszony z frakcji przez %s.", GetPlayerNameEx(i),GetPlayerNameEx(playerid));
-						SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, string);
-						
-						return 1;
-					}
-				}
-				
-				UpdatePlayerDataByName(gFactionMembersToFire[playerid][listitem], "Faction", 255);
-				
-				format(string, sizeof(string), "Wyprosi³eœ %s z frakcji.", gFactionMembersToFire[playerid][listitem]);
-				ShowPlayerDialog(playerid, DIALOG_FACTION_DISMISS_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - wyproœ", string, "Wróæ", "");
-			}
-		}
-		case DIALOG_FACTION_DISMISS_MSG:
-		{
-			goto factionFire;
-		}
-		case DIALOG_FACTION_RANK:
-		{
-			if(response)
-			{
-				if(strcmp(gPlayerData[playerid][pName], gFactionMembersToFire[playerid][listitem], true) == 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_FACTION_RANK_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - wyproœ", "Nie mo¿esz zmieniæ swojej rangi.", "Wróæ", "");
-					return 1;
-				}
-				
-				gListItem[playerid] = listitem;
-				
-				format(string, sizeof(string), "1. %s", DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]);
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 2)
-				{
-					format(string, sizeof(string), "%s\n2. %s", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank2]);
-				}
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 3)
-				{
-					format(string, sizeof(string), "%s\n3. %s", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank3]);
-				}
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 4)
-				{
-					format(string, sizeof(string), "%s\n4. %s", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank4]);
-				}
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 5)
-				{
-					format(string, sizeof(string), "%s\n5. %s", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank5]);
-				}
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 6)
-				{
-					format(string, sizeof(string), "%s\n6. %s", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank6]);
-				}
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 7)
-				{
-					format(string, sizeof(string), "%s\n7. %s", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank7]);
-				}
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 8)
-				{
-					format(string, sizeof(string), "%s\n8. %s", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank8]);
-				}
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 9)
-				{
-					format(string, sizeof(string), "%s\n9. %s", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank9]);
-				}
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fRankAmount] >= 10)
-				{
-					format(string, sizeof(string), "%s\n10. %s", string, DynamicFactions[gPlayerData[playerid][pFaction]][fRank10]);
-				}
-				
-				ShowPlayerDialog(playerid, DIALOG_FACTION_RANK_SELECT, DIALOG_STYLE_LIST, "Panel frakcji - wybierz range", string, "Wybierz", "Zamknij");
-				
-				return 1;
-			}
-		}
-		case DIALOG_FACTION_RANK_SELECT:
-		{
-			if(response)
-			{
-				foreach(Player, i)
-				{
-					if(strcmp(gPlayerData[i][pName], gFactionMembersToFire[playerid][gListItem[playerid]], false) == 0)
-					{
-						new rank[35];
-						switch(listitem+1)
-						{
-							case 1:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank1]);
-							}
-							case 2:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank2]);
-							}
-							case 3:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank3]);
-							}
-							case 4:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank4]);
-							}
-							case 5:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank5]);
-							}
-							case 6:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank6]);
-							}
-							case 7:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank7]);
-							}
-							case 8:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank8]);
-							}
-							case 9:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank9]);
-							}
-							case 10:
-							{
-								format(rank, sizeof(rank), DynamicFactions[gPlayerData[playerid][pFaction]][fRank10]);
-							}
-						}
-							
-						format(string,sizeof(string), "Zosta³a ci przydzielona nowa ranga: %s", rank);
-						SendClientMessage(i, COLOR_FACTIONCHAT, string);
-						
-						gPlayerData[i][pRank] = listitem+1;
-						SavePlayerData(i, "Rank");
-						
-						format(string, sizeof(string), "Zmieni³eœ range %s.", GetPlayerNameEx(i));
-						ShowPlayerDialog(playerid, DIALOG_FACTION_DISMISS_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - ranga", string, "Wróæ", "");
-						
-						return 1;
-					}
-				}
-				
-				UpdatePlayerDataByName(gFactionMembersToFire[playerid][gListItem[playerid]], "Rank", listitem+1);
-				
-				format(string, sizeof(string), "Zmieni³eœ range %s.", gFactionMembersToFire[playerid][gListItem[playerid]]);
-				ShowPlayerDialog(playerid, DIALOG_FACTION_RANK_MSG, DIALOG_STYLE_MSGBOX, "Panel frakcji - ranga", string, "Wróæ", "");
-			}
-		}
-		case DIALOG_FACTION_RANK_MSG:
-		{
-			goto factionRank;
-		}
-		case DIALOG_COMPANY_HIRE:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_COMPANY_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel firmy - zatrudnij", "Niepoprawna wartoœæ.\nSpróbuj jeszcze raz.", "Wróæ", "");
-					return 1;
-				}
-				
-				if(strval(inputtext) < 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_COMPANY_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel firmy - zatrudnij", "Niepoprawna wartoœæ.\nSpróbuj jeszcze raz.", "Wróæ", "");
-					return 1;
-				}
-				
-				if(strval(inputtext) >= CUSTOM_MAX_PLAYERS)
-				{
-					ShowPlayerDialog(playerid, DIALOG_COMPANY_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel firmy - zatrudnij", "Niepoprawna wartoœæ.\nSpróbuj jeszcze raz.", "Wróæ", "");
-					return 1;
-				}
-				
-				new hiringPlayerId = strval(inputtext);
-				
-				if(!gPlayerLogged[hiringPlayerId])
-				{
-					ShowPlayerDialog(playerid, DIALOG_COMPANY_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel firmy - zatrudnij", "Pod tym ID nie ma zalogowanego gracza.", "Wróæ", "");
-					return 1;
-				}
-				
-				CompanyRequest[hiringPlayerId] = gPlayerData[playerid][pFaction2];
-				
-				format(string, sizeof(string), "Zosta³eœ zaproszony do %s przez %s (wpisz /akceptuj firme) aby do³¹czyæ", DynamicFactions[gPlayerData[playerid][pFaction2]][Name], GetPlayerNameEx(playerid));				
-				SendClientMessage(hiringPlayerId, COLOR_LIGHTBLUE, string);
-				
-				format(string, sizeof(string), "Wys³a³eœ propozycje zatrudnienia do %s.", GetPlayerNameEx(hiringPlayerId));
-				ShowPlayerDialog(playerid, DIALOG_COMPANY_HIRE_MSG, DIALOG_STYLE_MSGBOX, "Panel firmy - zatrudnij", string, "Wróæ", "");
-			}
-		}
-		case DIALOG_COMPANY_HIRE_MSG:
-		{
-			goto companyHire;
-		}
-		case DIALOG_COMPANY_DISMISS:
-		{
-			if(response)
-			{
-				if(strcmp(gPlayerData[playerid][pName], gCompanyMembersToFire[playerid][listitem], true) == 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_COMPANY_DISMISS_MSG, DIALOG_STYLE_MSGBOX, "Panel firmy - zwolnij", "Nie mo¿esz sam siebie zwolniæ", "Wróæ", "");
-					return 1;
-				}
-				
-				foreach(Player, i)
-				{
-					if(strcmp(gPlayerData[i][pName], gCompanyMembersToFire[playerid][listitem], true) == 0)
-					{
-						format(string,sizeof(string), "Zosta³eœ zwolniony z firmy %s", DynamicFactions[gPlayerData[playerid][pFaction2]][Name]);
-						SendClientMessage(i, COLOR_ORANGE, string);
-						
-						gPlayerData[i][pFaction2] = 255;
-						gPlayerData[i][pRank2] = 0;
-
-						SavePlayerData(i, "Faction2");
-						SavePlayerData(i, "Rank2");
-						
-						format(string, sizeof(string), "Wyprosi³eœ %s z firmy", GetPlayerNameEx(playerid));
-						ShowPlayerDialog(playerid, DIALOG_COMPANY_DISMISS_MSG, DIALOG_STYLE_MSGBOX, "Panel firmy - zwolnij", string, "Wróæ", "");
-
-						format(string, sizeof(string), "[FRAKCJA:] %s zosta³ wyproszony z frakcji przez %s.",GetPlayerNameEx(i),GetPlayerNameEx(playerid));
-						SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, string);
-						
-						return 1;
-					}
-				}
-					
-				UpdatePlayerDataByName(gCompanyMembersToFire[playerid][listitem], "Faction2", 255);
-				
-				format(string, sizeof(string), "Wyprosi³eœ %s z firmy", gCompanyMembersToFire[playerid][listitem]);
-				ShowPlayerDialog(playerid, DIALOG_COMPANY_DISMISS_MSG, DIALOG_STYLE_MSGBOX, "Panel firmy - zwolnij", string, "Wróæ", "");
-			}
-		}
-		case DIALOG_COMPANY_DISMISS_MSG:
-		{
-			goto companyFire;
-		}
-		case DIALOG_COMPANY_PAYMENT_MSG:
-		{
-			goto payments;
-		}
-		case DIALOG_COMPANY_PAYMENT:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_COMPANY_PAYMENT_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				if(strval(inputtext) > 5000)
-				{
-					ShowPlayerDialog(playerid, DIALOG_COMPANY_PAYMENT_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				if(strval(inputtext) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_COMPANY_PAYMENT_MSG, DIALOG_STYLE_MSGBOX, "Informacja", "Niepoprawna wartoœæ. Spróbuj ponownie", "Wróæ", "Zamknij");
-					return 1;
-				}
-				
-				PayRank[gPlayerData[playerid][pFaction2]][Rank2] = strval(inputtext);
-
-				SavePayRank();
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Wysokoœæ wyp³aty dla pracowników zosta³a zmieniona", "Zamknij", "");
-			}
-			else
-			{
-				return 1;
-			}
-		}
-		case DIALOG_OBJECT_TXT:
-		{
-			gPlayerVars[playerid][mEditObj] = strval(inputtext);
-			SetDynamicObjectMaterialText(gPlayerVars[playerid][mEditObj], 2, "\n\nLinia 1 - potrzebujesz mechanika ? dzwon 666 154 123|Nie potrzebu", 140, "Arial", 20, 0, 0xFFFFFFFF, 1, 1);
-			return 1;
-		}
-		case DIALOG_ENGINE_REPAIR_CONFIRM:
-		{
-			if(response)
-			{
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = 175;
-				gPlayerVars[playerid][mRepairingItemType] = 1;
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Naprawa w toku...", "Zamknij", "");
-				
-				GetPlayerFacingAngle(playerid, gPlayerData[playerid][pCrashAngle]);
-				SetPlayerFacingAngle(playerid, gPlayerData[playerid][pCrashAngle]+180.0);
-				
-				ApplyAnimation(playerid, "CAR", "Fixn_Car_Loop", 4.1, 1, 0, 0, 1, 0, 1);
-				
-				
-				return 1;
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ naprawe silnika.", "Wróæ", "");
-				
-				return 1;
-			}
-		}
-		case DIALOG_SELECT_WHEEL_TO_FIX:
-		{
-			if(response)
-			{
-				gPlayerVars[playerid][mWheelToChange] = listitem;
-				ShowPlayerDialog(playerid, DIALOG_WHEEL_REPAIR_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Naprawa zajmie 15 sekund i nie mo¿na jej przerwaæ.\nCzy chcesz kontunuuowaæ?", "Tak", "Anuluj");
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ wymiane ko³a.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_WHEEL_REPAIR_CONFIRM:
-		{
-			if(response)
-			{
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Naprawa w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = 176;
-				gPlayerVars[playerid][mRepairingItemType] = 1;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ wymiane ko³a.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_BULB_CHANGE_SELECT:
-		{
-			if(response)
-			{
-				gPlayerVars[playerid][mBulbToChange] = listitem;
-				ShowPlayerDialog(playerid, DIALOG_BULB_CHANGE_CONFIRM, DIALOG_STYLE_MSGBOX, "Informacja", "Naprawa zajmie 15 sekund i nie mo¿na jej przerwaæ.\nCzy chcesz kontunuuowaæ?", "Tak", "Anuluj");
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ wymiane ¿arówki.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_BULB_CHANGE_CONFIRM:
-		{
-			if(response)
-			{
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Naprawa w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = 7;
-				gPlayerVars[playerid][mRepairingItemType] = 1;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ wymiane ¿arówki.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_HOOK_ADD_CONFIRM:
-		{
-			if(response)
-			{
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = 10;
-				gPlayerVars[playerid][mRepairingItemType] = 1;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ monta¿ haka.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_TUNING_ADD_CONFIRM:
-		{
-			if(response)
-			{
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = ShowSlotItem(playerid, gSelectedSlot[playerid]);
-				gPlayerVars[playerid][mRepairingItemType] = 8;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ monta¿ haka.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_STOCK_ADD_CONFIRM:
-		{
-			if(response)
-			{
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = ShowSlotItem(playerid, gSelectedSlot[playerid]);
-				gPlayerVars[playerid][mRepairingItemType] = 9;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-				return 1;
-			}
-			else
-			{
-			}
-		}
-		case DIALOG_LPG_ADD_CONFIRM:
-		{
-			if(response)
-			{
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = 177;
-				gPlayerVars[playerid][mRepairingItemType] = 1;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ monta¿ gazu.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_SELECT_BIZ_INT:
-		{
-			if(response)
-			{
-				listitem = strval(inputtext)-1;
-				Businesses[gPlayerVars[playerid][mBizIdIntEdit]][BInterior] = listitem+1;
-				SaveBizData(gPlayerVars[playerid][mBizIdIntEdit], "Interior");
-				if(listitem+1 == 1)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -794.806396;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 489.284973;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1376.195;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Marcos Bistro.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 2)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1212.265625;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -25.877540;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1001.089966;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 3;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 181.8332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Big Spread Ranch Strip Club.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 3)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 362.909484;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -75.193481;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1001.507812;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 10;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 311.5311;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Burger Shot.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 4)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 365.672974;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -10.713200;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1001.869995;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 9;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Cluckin Bell.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 5)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 372.579650;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -133.515899;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1001.449951;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 5;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 3.834877;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Well Stacked Pizza.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 6)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 377.098999;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -192.439987;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1000.643982;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 17;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Rusty Brown Dohnuts.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 7)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 460.099976;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -88.428497;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 999.621948;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 4;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Jays Diner.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 8)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 681.474976;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -451.150970;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = -25.616798;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Pump Truck Stop Diner DZIURA W PODLODZE.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 9)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 493.484588;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -24.906007;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1000.671875;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 17;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 356.2913;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Alhambra.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 10)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 502.039733;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -67.637390;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 998.834961;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 11;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 191.93478;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Mistys.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 11)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -229.289276;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 1401.314331;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 27.769798;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 18;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 270.3904;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Lil' Probe Inn.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 12)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 204.608230;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -168.851776;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1000.578979;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 14;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 6.87463;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: EXcLusive.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 13)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 207.801361;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -111.258720;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1005.269958;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 15;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 358.414;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Binco.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 14)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 207.054993;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -138.804993;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1003.519958;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 3;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: ProLaps.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 15)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 203.568298;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -50.662452;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1001.799988;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 356.82446;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: SubUrban.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 16)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 227.542633;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -8.100092;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1002.259949;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 5;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 88.921981;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Victim.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 17)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 161.205780;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -97.102127;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1001.804687;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 18;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 356.4877;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Zip.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 18)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1133.523559;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -15.807713;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1000.750000;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 12;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.22441;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Small Casino in Redsands West.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 19)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 834.660888;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 7.240708;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1004.179993;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 3;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 92.031906;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Off Track Betting.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 20)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -100.083061;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -25.029542;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1000.741943;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 3;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.224439;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Sex Shop.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 21)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -2240.955322;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 128.451400;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1035.419922;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 6;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 268.416;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Zero's RC Shop.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 22)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 285.404602;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -41.745178;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1001.569946;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] =357.69436;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Ammunation 1.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 23)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 285.780487;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -86.71318;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1001.539978;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 4;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 351.74093;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Ammunation 2.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 24)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 296.711975;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -112.048240;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1001.569946;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 6;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 358.6343;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Ammunation 3.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 25)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 316.569549;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -170.279464;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 999.661987;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 6;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 2.081076;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Ammunation 4.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 26)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 304.572479;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -142.094192;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1004.062500;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 7;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 94.17852;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Ammunation Shooting Range.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 27)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -2636.974121;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 1402.319213;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 906.457947;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 3;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 8.61428;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Jizzys.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 28)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -25.819719;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -188.238037;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1003.549988;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 17;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 1.72090;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: 24-7 1.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 29)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 5.933865;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -31.750873;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1003.549988;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 10;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 359.527526;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: 24-7 2.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 30)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -30.683946;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -92.002952;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1003.549988;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 18;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 2.660877;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: 24-7 3.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 31)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -25.878168;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -141.549636;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1003.549988;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 16;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 352.320;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: 24-7 4.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 32)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -27.321363;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -31.754938;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1003.549988;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 4;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 356.70745;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: 24-7 5.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 33)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -27.389696;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -58.260951;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1003.549988;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 6;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 358.27413;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][BizPrice] = 4000000;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: 24-7 6.", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 35)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -2213.684814;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 1143.244140;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 173.895568;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 0;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.0;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Kibelek", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 36)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -461.70;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -2016.68;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 24.97;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.0;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Wiejskie Disco", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 37)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1285.54;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -1652.21;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 13.74;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 0;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Disco", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 38)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1003.77;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 52.20;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 55.42;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 3;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Sklep Elektrolux", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 39)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1513.09;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -1576.66;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 24.55;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 0;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Restauracja", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 40)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 370.46;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -1720.76;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 17.1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 0;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.458332;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Restauracja", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD,string);
-				}
-				else if(listitem+1 == 41)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 2247.9302;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 1595.4698;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1018.8124;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 10;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 0.0;
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Sklep komputerowy", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 42)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1521.21;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 1561.55;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1010.85;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 178.34;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Apteka", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 43)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1473.91;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 1291.64;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1010.82;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 272.94;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Moto Shop", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 44)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1247.83;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -659.72;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1194.20;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 176.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Bar", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 45)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1690.93;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -1451.53;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 13.57;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 178.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Restauracja/Bar", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 46)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = -397.14;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 256.82;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 489.96;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 360.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Restauracja", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 47)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1646.58;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -1452.09;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 13.67;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 128.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: 24/7", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 48)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 307.07;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 1824.99;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1598.0;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 277.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Sklep meblowy", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 49)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 973.38;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -1546.3;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 22.18;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 178.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Biznes", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 50)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 1793.43;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -1162.42;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 23.97;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 253.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Office", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 51)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 2512.9;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -1793.54;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 1010.24;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 89.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Bar na eventy", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 52)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 2059.9;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = -1874.94;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = 14.70;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 93.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Bar", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				else if(listitem+1 == 53)
-				{
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitX] = 2900.32;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitY] = 2470.12;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitZ] = -43.91;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitInterior] = 1;
-					Businesses[gPlayerVars[playerid][mBizIdIntEdit]][ExitAngle] = 13.0;				
-					format(string, sizeof string, "Business gPlayerVars[playerid][mBizIdIntEdit]: %d - Description: Club", gPlayerVars[playerid][mBizIdIntEdit]);
-					SendClientMessage(playerid, COLOR_ADMINCMD, string);
-				}
-				SaveBizData(gPlayerVars[playerid][mBizIdIntEdit], "ExitX");
-				SaveBizData(gPlayerVars[playerid][mBizIdIntEdit], "ExitY");
-				SaveBizData(gPlayerVars[playerid][mBizIdIntEdit], "ExitZ");
-				SaveBizData(gPlayerVars[playerid][mBizIdIntEdit], "ExitInterior");
-				SaveBizData(gPlayerVars[playerid][mBizIdIntEdit], "ExitAngle");
-				SaveBizData(gPlayerVars[playerid][mBizIdIntEdit], "BizPrice");
-				return 1;
-			}
-			
-		}
-		case DIALOG_BUY_BUILDING:
-		{
-			if(response)
-			{				
-				if(listitem == 0)
-				{
-					if(gPlayerData[playerid][pFaction] == 255)
-					{
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie jesteœ liderem ¿adnej frakcji.", "Zamknij", "");
-						return 1;
-					}
-					ResetBuildingData(gPlayerVars[playerid][mBuildingBuyId]);
-					
-					Building[gPlayerVars[playerid][mBuildingBuyId]][FactionOwnerId] = gPlayerData[playerid][pFaction];
-					SaveBData(gPlayerVars[playerid][mBuildingBuyId], "FactionOwnerId");
-				}
-				else if(listitem == 1)
-				{
-					if(gPlayerData[playerid][pFaction2] == 255)
-					{
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie jesteœ w³aœcicielem ¿adnej firmy.", "Zamknij", "");
-						return 1;
-					}
-					ResetBuildingData(gPlayerVars[playerid][mBuildingBuyId]);
-					
-					Building[gPlayerVars[playerid][mBuildingBuyId]][FactionOwnerId] = gPlayerData[playerid][pFaction2];
-					SaveBData(gPlayerVars[playerid][mBuildingBuyId], "FactionOwnerId");
-				}
-	
-				gPlayerData[playerid][pBank] -= Building[gPlayerVars[playerid][mBuildingBuyId]][Price];
-				SavePlayerData(playerid, "Bank");
-				
-				RefreshBuildingDescription(gPlayerVars[playerid][mBuildingBuyId]);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Kupi³eœ budynek", "Zamknij", "");
-				
-				return 1;
-			}
-		}
-		case DIALOG_POLICELIGHT_ADD_CONFIRM:
-		{
-			if(response)
-			{
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ w toku...", "Zamknij", "");
-				
-				PlayerActionMessage(playerid, 15.0, "montuje œwiat³a policyjne w pojeŸdzie");
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ monta¿ gazu.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_TAXILIGHT1_ADD_CONFIRM:
-		{
-			if(response)
-			{
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = 154;
-				gPlayerVars[playerid][mRepairingItemType] = 1;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-				
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ monta¿ gazu.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_TAXILIGHT2_ADD_CONFIRM:
-		{
-			if(response)
-			{
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = 155;
-				gPlayerVars[playerid][mRepairingItemType] = 1;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-				
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ monta¿ gazu.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_TAXILIGHT3_ADD_CONFIRM:
-		{
-			if(response)
-			{
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = 156;
-				gPlayerVars[playerid][mRepairingItemType] = 1;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-				
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ monta¿ gazu.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_TAXILIGHT4_ADD_CONFIRM:
-		{
-			if(response)
-			{
-				RemovePlayerItemExUsed(playerid, gSelectedSlot[playerid]);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Monta¿ w toku...", "Zamknij", "");
-				
-				gPlayerVars[playerid][mRepairProgress] = 15;
-				gPlayerVars[playerid][mRepairingItemId] = 157;
-				gPlayerVars[playerid][mRepairingItemType] = 1;
-				
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.1, 1, 0, 0, 1, 0, 1);
-				
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, "Informacja", "Anulowa³eœ monta¿ gazu.", "Wróæ", "");
-				return 1;
-			}
-		}
-		case DIALOG_EVENT_SELECT:
-		{
-			if(response)
-			{
-				// Area51 game
-				if(listitem == 0)
-				{
-					if(gEvent1isRunning)
-					{
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Ten event jest ju¿ uruchomiony.", "Zamknij", "");
-						return 1;
-					}
-					
-					gSelectedSlot[playerid] = 1;
-					
-					ShowPlayerDialog(playerid, DIALOG_EVENT_SELECT_TIME, DIALOG_STYLE_INPUT, "Czas do rozpoczêcia eventu", "Podaj czas jaki gracze bêdê mieli na do¹³¹czenie do eventu (w minutach).", "Dalej", "Zamknij");
-				}
-				// lowrider
-				if(listitem == 1)
-				{
-					if(gEvent2isRunning)
-					{
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Ten event jest ju¿ uruchomiony.", "Zamknij", "");
-						return 1;
-					}
-					
-					gSelectedSlot[playerid] = 2;
-					
-					ShowPlayerDialog(playerid, DIALOG_EVENT_SELECT_TIME, DIALOG_STYLE_INPUT, "Czas do rozpoczêcia eventu", "Podaj czas jaki gracze bêdê mieli na do¹³¹czenie do eventu (w minutach).", "Dalej", "Zamknij");
-				}
-			}
-		}
-		case DIALOG_EVENT_SELECT_TIME:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_EVENT_SELECT_TIME, DIALOG_STYLE_INPUT, "Czas do rozpoczêcia eventu", "Poda³eœ nieprawid³ow¹ wartoœæ.\nSpróbuj ponownie.", "Dalej", "Zamknij");
-					return 1;
-				}
-				
-				switch(gSelectedSlot[playerid])
-				{
-					case 1:
-					{
-						if(strval(inputtext) > 0)
-						{
-							gEvent1timeToJoin = floatround(strval(inputtext))*60;
-							
-							ShowPlayerDialog(playerid, DIALOG_EVENT_SELECT_PRIZE, DIALOG_STYLE_INPUT, "Nagroda", "Podaj wysokoœæ nagrody.", "Dalej", "Zamknij");
-							
-							return 1;
-						}
-					}
-					case 2:
-					{
-						if(strval(inputtext) > 0)
-						{
-							gEvent2timeToJoin = floatround(strval(inputtext))*60;
-							
-							ShowPlayerDialog(playerid, DIALOG_EVENT_SELECT_PRIZE, DIALOG_STYLE_INPUT, "Nagroda", "Podaj wysokoœæ nagrody.", "Dalej", "Zamknij");
-							
-							return 1;
-						}
-					}
-				}
-			}
-		}
-		case DIALOG_EVENT_SELECT_PRIZE:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_EVENT_SELECT_PRIZE, DIALOG_STYLE_INPUT, "Nagroda", "Poda³eœ nieprawid³ow¹ wartoœæ.\nSpróbuj ponownie.", "Dalej", "Zamknij");
-					return 1;
-				}
-				
-				switch(gSelectedSlot[playerid])
-				{
-					case 1:
-					{
-						if(strval(inputtext) > 0)
-						{
-							gEvent1prize = strval(inputtext);
-							PrepareEvent(1);
-							
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Event przygotowany.", "Zamknij", "");
-							return 1;
-						}
-					}
-					case 2:
-					{
-						if(strval(inputtext) > 0)
-						{
-							gEvent2prize = strval(inputtext);
-							PrepareEvent(2);
-							
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Event przygotowany.", "Zamknij", "");
-							return 1;
-						}
-					}
-				}
-			}
-		}
-		case DIALOG_EVENT_JOIN:
-		{
-			if(response)
-			{
-				switch(gActiveEventList[playerid][listitem])
-				{
-					case 1:
-					{
-						if(gEvent1timeToJoin <= 0)
-						{
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Niestety ten event ju¿ siê rozpocz¹³.", "Zamknij", "");
-							return 1;
-						}
-
-						for(new i = 0; i < sizeof(gEvent1players); i++)
-						{
-							if(gEvent1players[i] == -1)
-							{
-								gEvent1players[i] = playerid;
-								
-								ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Zapisa³eœ siê na event !\nGdy siê on rozpocznie zostaniesz przeniesiony na miejsce.", "Zamknij", "");
-								return 1;
-							}
-						}
-					}
-					case 2:
-					{
-						if(gEvent2timeToJoin <= 0)
-						{
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Niestety ten event ju¿ siê rozpocz¹³.", "Zamknij", "");
-							return 1;
-						}
-
-						for(new i = 0; i < sizeof(gEvent2players); i++)
-						{
-							if(gEvent2players[i] == -1)
-							{
-								gEvent2players[i] = playerid;
-								
-								ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Zapisa³eœ siê na event !\nGdy siê on rozpocznie zostaniesz przeniesiony na miejsce.", "Zamknij", "");
-								
-								return 1;
-							}
-						}
-					}
-				}
-			}
-		}
-		case DIALOG_EVENT_STOP:
-		{
-			if(response)
-			{
-				switch(gActiveEventList[playerid][listitem])
-				{
-					case 1:
-					{
-						if(!gEvent1isRunning)
-						{
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Niestety ten event ju¿ siê zakoñczy³.", "Zamknij", "");
-							return 1;
-						}
-
-						EndEvent(1);
-					}
-					case 2:
-					{
-						if(!gEvent2isRunning)
-						{
-							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Niestety ten event ju¿ siê zakoñczy³.", "Zamknij", "");
-							return 1;
-						}
-
-						EndEvent(2);
-					}
-				}
-			}
-		}
-		case DIALOG_FACTORY_BUILD:
-		{
-			if(response)
-			{
-				gPlayerData[playerid][pBank] -= WFACTORY_COST;
-				
-				new Float:px, Float:py, Float:pz;
-				GetPlayerPos(playerid, px, py, pz);
-				
-				DynamicFactions[gPlayerData[playerid][pFaction]][WFactoryJustBought] = 1;
-				DynamicFactions[gPlayerData[playerid][pFaction]][WFactoryCentrePosX] = px;
-				DynamicFactions[gPlayerData[playerid][pFaction]][WFactoryCentrePosY] = py;
-				DynamicFactions[gPlayerData[playerid][pFaction]][WFactoryCentrePosZ] = pz;
-				
-				
-				SaveFData(gPlayerData[playerid][pFaction], "WFactoryCentrePosX");
-				SaveFData(gPlayerData[playerid][pFaction], "WFactoryCentrePosY");
-				SaveFData(gPlayerData[playerid][pFaction], "WFactoryCentrePosZ");
-				SaveFData(gPlayerData[playerid][pFaction], "WFactoryJustBought");
-				
-				SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Zakupi³eœ fabryke broni. Zostanie ona postawiona nastêpnego dnia.");
-				return 1;
-			}
-		}
-		case DIALOG_REPORTS:
-		{
-			new localId = 0;
-			for(new i = 0; i < sizeof(gPlayersReports); i++)
-			{
-				if(!gPlayersReports[i][mReportUsed])
-				{
-					continue;
-				}
-				
-				if(localId == listitem)
-				{
-					format(string, sizeof(string), "Reporter: %s, time left: %d(min)\n\nReported: %s\nContent\n%s", gPlayersReports[localId][mReporter], floatround(gPlayersReports[localId][mReportTimeLeft]/60), gPlayersReports[localId][mReported], gPlayersReports[localId][mReportContent]);
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Raport", string, "Zamknij", "");
-					return 1;
-				}
-				
-				localId++;
-			}
-		}
-		case DIALOG_MAP_LOCATIONS:
-		{
-			if(response)
-			{
-				gListItem[playerid] = listitem;
-				ShowPlayerDialog(playerid, DIALOG_MAP_LOCATIONS_SET, DIALOG_STYLE_LIST, "Mapa", "Poka¿ obszar", "Wybierz", "Anuluj");
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Informacja", ""#COLOR_DEFAULT"Anulowa³eœ operacje", "Wróæ", "Zamknij");
-				return 1;
-			}
-		}
-		case DIALOG_MAP_LOCATIONS_SET:
-		{
-			if(response)
-			{
-				TogglePlayerControllable(playerid, 0);
-				
-				defer UnfreezePlayer[3500](playerid);
-				
-				SetPlayerCameraPos(playerid, gLsLocations[gListItem[playerid]][mLocationPosCamX], gLsLocations[gListItem[playerid]][mLocationPosCamY], gLsLocations[gListItem[playerid]][mLocationPosCamZ]);
-				SetPlayerCameraLookAt(playerid, gLsLocations[gListItem[playerid]][mLocationPosCamLookX], gLsLocations[gListItem[playerid]][mLocationPosCamLookY], gLsLocations[gListItem[playerid]][mLocationPosCamLookZ]);
-				
-				defer SetCameraBehindPlayerEx[3500](playerid);
-				
-				defer ReturnPlayerFromTempPos[3500](playerid);
-				
-				if(IsPlayerInAnyVehicle(playerid))
-				{
-					gPlayerVars[playerid][tempVehId] = GetPlayerVehicleID(playerid);
-					gPlayerVars[playerid][tempVehSeat] = GetPlayerVehicleSeat(playerid);
-				}
-				
-				GetPlayerPos(playerid, gPlayerVars[playerid][tempPosX], gPlayerVars[playerid][tempPosY], gPlayerVars[playerid][tempPosZ]);
-				gPlayerVars[playerid][tempInterior] = GetPlayerInterior(playerid);
-				gPlayerVars[playerid][tempWorld] = GetPlayerInterior(playerid);
-				
-				gPlayerData[playerid][pCrashX] = gLsLocations[gListItem[playerid]][mLocationPosCamX];
-				gPlayerData[playerid][pCrashY] = gLsLocations[gListItem[playerid]][mLocationPosCamY];
-				gPlayerData[playerid][pCrashZ] = gLsLocations[gListItem[playerid]][mLocationPosCamZ]-1.0;
-				gPlayerData[playerid][pCrashW] = 0;
-				gPlayerData[playerid][pCrashInt] = 0;
-				
-				SetPlayerToPos(playerid, gPlayerData[playerid][pCrashX], gPlayerData[playerid][pCrashY], gPlayerData[playerid][pCrashZ]);
-				SetPlayerVirtualWorld(playerid, 0);
-				SetPlayerInterior(playerid, 0);
-			}
-		}
-		case DIALOG_GPS_LOCATIONS:
-		{
-			if(response)
-			{
-				gListItem[playerid] = listitem;
-				ShowPlayerDialog(playerid, DIALOG_GPS_LOCATIONS_SET, DIALOG_STYLE_LIST, "Mapa", "Poka¿ obszar\nPoka¿ punkt na mapie", "Wybierz", "Anuluj");
-			}
-			else
-			{
-				ShowPlayerDialog(playerid, DIALOG_ITEM_3, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Informacja", ""#COLOR_DEFAULT"Anulowa³eœ operacje", "Wróæ", "Zamknij");
-				return 1;
-			}
-		}
-		case DIALOG_GPS_LOCATIONS_SET:
-		{
-			if(response)
-			{
-				if(listitem == 0)
-				{
-					TogglePlayerControllable(playerid, 0);
-					
-					defer UnfreezePlayer[3500](playerid);
-					
-					SetPlayerCameraPos(playerid, gLsLocations[gListItem[playerid]][mLocationPosCamX], gLsLocations[gListItem[playerid]][mLocationPosCamY], gLsLocations[gListItem[playerid]][mLocationPosCamZ]);
-					SetPlayerCameraLookAt(playerid, gLsLocations[gListItem[playerid]][mLocationPosCamLookX], gLsLocations[gListItem[playerid]][mLocationPosCamLookY], gLsLocations[gListItem[playerid]][mLocationPosCamLookZ]);
-					
-					defer SetCameraBehindPlayerEx[3500](playerid);
-					
-					defer ReturnPlayerFromTempPos[3500](playerid);
-					
-					if(IsPlayerInAnyVehicle(playerid))
-					{
-						gPlayerVars[playerid][tempVehId] = GetPlayerVehicleID(playerid);
-						gPlayerVars[playerid][tempVehSeat] = GetPlayerVehicleSeat(playerid);
-					}
-					
-					GetPlayerPos(playerid, gPlayerVars[playerid][tempPosX], gPlayerVars[playerid][tempPosY], gPlayerVars[playerid][tempPosZ]);
-					gPlayerVars[playerid][tempInterior] = GetPlayerInterior(playerid);
-					gPlayerVars[playerid][tempWorld] = GetPlayerInterior(playerid);
-					
-					gPlayerData[playerid][pCrashX] = gLsLocations[gListItem[playerid]][mLocationPosCamX];
-					gPlayerData[playerid][pCrashY] = gLsLocations[gListItem[playerid]][mLocationPosCamY];
-					gPlayerData[playerid][pCrashZ] = gLsLocations[gListItem[playerid]][mLocationPosCamZ]-1.0;
-					gPlayerData[playerid][pCrashW] = 0;
-					gPlayerData[playerid][pCrashInt] = 0;
-					
-					SetPlayerToPos(playerid, gPlayerData[playerid][pCrashX], gPlayerData[playerid][pCrashY], gPlayerData[playerid][pCrashZ]);
-					SetPlayerVirtualWorld(playerid, 0);
-					SetPlayerInterior(playerid, 0);
-				}
-				else
-				{
-					TogglePlayerDynamicCP(playerid, gLsLocations[gListItem[playerid]][mLocationPosCp], 1);
-					defer HideDynamicCheckpointEx[30000](playerid, gLsLocations[gListItem[playerid]][mLocationPosCp]);
-				}
-			}
-		}
-		case DIALOG_RENT_VEH:
-		{
-			if(response)
-			{
-				new vehId = GetPlayerVehicleID(playerid);
-				
-				if(vehId == 0)
-				{
-					return 1;
-				}
-				
-				if(gVehData[vehId-1][mRentPrice] > gPlayerData[playerid][pCash])
-				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Wynajem pojazdu", ""#COLOR_DEFAULT"Nie masz wystarczaj¹cej iloœci pieniêdzy", "Zamknij", "");
-					return 1;
-				}
-				
-				if(PlayerFreeSlotCount(playerid) < 2)
-				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Wynajem pojazdu", ""#COLOR_DEFAULT"Musisz mieæ wolne przynajmniej 2 sloty na przedmioty", "Zamknij", "");
-					return 1;
-				}
-				
-				GivePlayerCash(playerid, -gVehData[vehId-1][mRentPrice]);
-				
-				InsertPlayerItemEx(playerid, 2, gVehData[vehId-1][CarSerial], 0, 0, 0, 0, "Puste", 1);
-				InsertPlayerItemEx(playerid, 3, 25, gVehData[vehId-1][CarSerial], 0, 0, 0, gPlayerData[playerid][pName], 1);
-				
-				format(gVehData[vehId-1][mRenter], MAX_PLAYER_NAME, gPlayerData[playerid][pName]);
-				SaveVehData(vehId-1, "Renter");
-				
-				RefreshVehicleDescription(vehId);
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Wynajem pojazdu", ""#COLOR_DEFAULT"Wynaj¹³eœ pojazd !\nAby go zwróciæ musisz wróciæ pod salon, z którego zosta³ wynajêty pojazd i wpisaæ komende:\n/zwrocpojazd", "Zamknij", "");
-			}
-			else
-			{
-			}
-		}
-		case DIALOG_TELEPORT_TAXI:
-		{
-			if(response)
-			{
-				gPlayerVars[playerid][mIsInTaxiTeleportId] = listitem;
-				gPlayerVars[playerid][mTaxiTeleportTimeLeft] = 15;
-				
-				SetPlayerVirtualWorld(playerid, 999);
-				
-				new vehId = GetPlayerVehicleID(playerid);
-				
-				switch(vehId)
-				{
-					case 1990:
-					{
-						PutPlayerInVehicle(playerid, 1991, 3);
-						SetPlayerCameraPos(playerid, gTaxiLocations[6][mPosCamX], gTaxiLocations[6][mPosCamY], gTaxiLocations[6][mPosCamZ]);
-						SetPlayerCameraLookAt(playerid, gTaxiLocations[6][mPosCamLookX], gTaxiLocations[6][mPosCamLookY], gTaxiLocations[6][mPosCamLookZ]);
-					}
-					case 1989:
-					{
-						PutPlayerInVehicle(playerid, 1992, 3);
-						SetPlayerCameraPos(playerid, gTaxiLocations[3][mPosCamX], gTaxiLocations[3][mPosCamY], gTaxiLocations[3][mPosCamZ]);
-						SetPlayerCameraLookAt(playerid, gTaxiLocations[3][mPosCamLookX], gTaxiLocations[3][mPosCamLookY], gTaxiLocations[3][mPosCamLookZ]);
-					}
-					case 1988:
-					{
-						PutPlayerInVehicle(playerid, 1993, 3);
-						SetPlayerCameraPos(playerid, gTaxiLocations[4][mPosCamX], gTaxiLocations[4][mPosCamY], gTaxiLocations[4][mPosCamZ]);
-						SetPlayerCameraLookAt(playerid, gTaxiLocations[4][mPosCamLookX], gTaxiLocations[4][mPosCamLookY], gTaxiLocations[4][mPosCamLookZ]);
-					}
-					case 1987:
-					{
-						PutPlayerInVehicle(playerid, 1994, 3);
-						SetPlayerCameraPos(playerid, gTaxiLocations[5][mPosCamX], gTaxiLocations[5][mPosCamY], gTaxiLocations[5][mPosCamZ]);
-						SetPlayerCameraLookAt(playerid, gTaxiLocations[5][mPosCamLookX], gTaxiLocations[5][mPosCamLookY], gTaxiLocations[5][mPosCamLookZ]);
-					}
-					case 1986:
-					{
-						PutPlayerInVehicle(playerid, 1995, 3);
-						SetPlayerCameraPos(playerid, gTaxiLocations[1][mPosCamX], gTaxiLocations[1][mPosCamY], gTaxiLocations[1][mPosCamZ]);
-						SetPlayerCameraLookAt(playerid, gTaxiLocations[1][mPosCamLookX], gTaxiLocations[1][mPosCamLookY], gTaxiLocations[1][mPosCamLookZ]);
-					}
-					case 1985:
-					{
-						PutPlayerInVehicle(playerid, 1996, 3);
-						SetPlayerCameraPos(playerid, gTaxiLocations[0][mPosCamX], gTaxiLocations[0][mPosCamY], gTaxiLocations[0][mPosCamZ]);
-						SetPlayerCameraLookAt(playerid, gTaxiLocations[0][mPosCamLookX], gTaxiLocations[0][mPosCamLookY], gTaxiLocations[0][mPosCamLookZ]);
-					}
-					case 1984:
-					{
-						PutPlayerInVehicle(playerid, 1997, 3);
-						SetPlayerCameraPos(playerid, gTaxiLocations[2][mPosCamX], gTaxiLocations[2][mPosCamY], gTaxiLocations[2][mPosCamZ]);
-						SetPlayerCameraLookAt(playerid, gTaxiLocations[2][mPosCamLookX], gTaxiLocations[2][mPosCamLookY], gTaxiLocations[2][mPosCamLookZ]);
-					}
-				}
-			}
-		}
-		case DIALOG_NEW_NEWS:
-		{
-			if(response)
-			{
-				for(new i = 0; i < sizeof(gSanNewsMsgs); i++)
-				{
-					if(gSanNewsMsgs[i][mUsed])
-					{
-						continue;
-					}
-					
-					gSanNewsMsgs[i][mUsed] = 1;
-					format(gSanNewsMsgs[i][mContent], 255, inputtext);
-					SaveNews(i, "Used");
-					SaveNews(i, "Content");
-					
-					gListItem[playerid] = i;
-					
-					ShowPlayerDialog(playerid, DIALOG_NEW_NEWS2, DIALOG_STYLE_INPUT, #COLOR_TITLE"News panel", #COLOR_DEFAULT"Wpisz liczbe dni przez jak¹ news bêdzie wyœwietlany:", "Dalej", "Anuluj");
-					
-					return 1;
-				}
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Informacja", #COLOR_DEFAULT"Brak wolnych slotów na now¹ wiadomoœæ !", "Zamknij", "");
-			}
-		}
-		case DIALOG_NEW_NEWS2:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_NEW_NEWS, DIALOG_STYLE_INPUT, #COLOR_TITLE"News panel", #COLOR_DEFAULT"Poda³eœ niepoprawn¹ wartoœæ - spróbuj ponownie:", "Dalej", "Anuluj");
-				}
-				
-				gSanNewsMsgs[gListItem[playerid]][mTimeLeft] = strval(inputtext);
-				SaveNews(gListItem[playerid], "TimeLeft");
-				
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Informacja", #COLOR_DEFAULT"News zosta³ zapisany", "Zamknij", "");
-			}
-		}
-		case DIALOG_HOUSE:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					// Sejf
-					case 0:
-					{
-						GOTO_HOUSE_MONEY:
-						format(string, sizeof(string), #COLOR_DEFAULT"Suma pieniêdzy w sejfie: $%d\nZabierz\nW³ó¿", Houses[gPlayerVars[playerid][mAtHouseID]][Money]);
-						ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY, DIALOG_STYLE_LIST, #COLOR_TITLE"Panel domu", string, "Wybierz", "Zamknij");
-					}
-					// Przedmioty
-					case 1:
-					{
-						ShowPlayerDialog(playerid, DIALOG_HOUSE_ITEMS, DIALOG_STYLE_LIST, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"W³ó¿ przedmioty do schowka\nZabierz przedmioty ze schowka", "Wybierz", "Zamknij");
-					}
-					// Wynajem
-					case 2:
-					{
-						GOTO_HOUSE_RENT:
-						if(Houses[gPlayerVars[playerid][mAtHouseID]][Rentable])
-						{
-							format(string, sizeof(string), #COLOR_DEFAULT"Zrezygnuj z wynajmu\n");
-						}
-						else
-						{
-							format(string, sizeof(string),	#COLOR_DEFAULT"Wynajmij\n");
-						}
-						
-						format(string, sizeof(string), "%sKoszt wynajmu: %d", string, Houses[gPlayerVars[playerid][mAtHouseID]][RentCost]);
-						
-						ShowPlayerDialog(playerid, DIALOG_HOUSE_RENT, DIALOG_STYLE_LIST, #COLOR_TITLE"Panel domu", string, "Wybierz", "Zamknij");
-					}
-				}
-			}
-		}
-		case DIALOG_HOUSE_MONEY:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					// Suma pieniêdzy w sejfie
-					case 0:
-					{
-						goto GOTO_HOUSE_MONEY;
-					}
-					// Zabierz
-					case 1:
-					{
-						ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_TAKE, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Wpisz sume pieniêdzy któr¹ chcesz zabraæ z sejfu:", "Dalej", "Wróæ");
-					}
-					// W³ó¿
-					case 2:
-					{
-						ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_PUT, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Wpisz sume pieniêdzy któr¹ chcesz w³o¿yæ do sejfu:", "Dalej", "Wróæ");
-					}
-				}
-			}
-		}
-		case DIALOG_HOUSE_MONEY_TAKE:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_TAKE, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Poda³eœ niepoprawne dane.\nWpisz ponownie sumê pieniêdzy któr¹ chcesz zabraæ z sejfu:", "Dalej", "Wróæ");
-				}
-				
-				if(strval(inputtext) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_TAKE, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Poda³eœ niepoprawne dane.\nWpisz ponownie sumê pieniêdzy któr¹ chcesz zabraæ z sejfu:", "Dalej", "Wróæ");
-				}
-				
-				if(strval(inputtext) > Houses[gPlayerVars[playerid][mAtHouseID]][Money])
-				{
-					ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_TAKE, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Niestety nie posiadasz takiej kwoty.\nWpisz ponownie sumê pieniêdzy któr¹ chcesz zabraæ z sejfu:", "Dalej", "Wróæ");
-				}
-				
-				Houses[gPlayerVars[playerid][mAtHouseID]][Money] -= strval(inputtext);
-				SaveHouseData(gPlayerVars[playerid][mAtHouseID], "Money");
-				
-				GivePlayerCash(playerid, strval(inputtext));
-				
-				format(string, sizeof(string), #COLOR_DEFAULT"Wyp³aci³eœ z sejfu $%d", strval(inputtext));
-				
-				ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_MSG, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Panel domu", string, "Wróæ", "Zamknij");
-			}
-			else
-			{
-				goto GOTO_HOUSE_MONEY;
-			}
-		}
-		case DIALOG_HOUSE_MONEY_PUT:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_PUT, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Poda³eœ niepoprawne dane.\nWpisz ponownie sumê pieniêdzy któr¹ chcesz w³o¿yæ do sejfu:", "Dalej", "Wróæ");
-				}
-				
-				if(strval(inputtext) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_PUT, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Poda³eœ niepoprawne dane.\nWpisz ponownie sumê pieniêdzy któr¹ chcesz w³o¿yæ do sejfu:", "Dalej", "Wróæ");
-				}
-				
-				if(gPlayerData[playerid][pCash] < strval(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_PUT, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Niestety nie posiadasz takiej kwoty.\nWpisz ponownie sumê pieniêdzy któr¹ chcesz w³o¿yæ do sejfu:", "Dalej", "Wróæ");
-				}
-				
-				Houses[gPlayerVars[playerid][mAtHouseID]][Money] += strval(inputtext);
-				SaveHouseData(gPlayerVars[playerid][mAtHouseID], "Money");
-				
-				GivePlayerCash(playerid, -strval(inputtext));
-				
-				format(string, sizeof(string), #COLOR_DEFAULT"Wp³aci³eœ do sejfu $%d", strval(inputtext));
-				
-				ShowPlayerDialog(playerid, DIALOG_HOUSE_MONEY_MSG, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Panel domu", string, "Wróæ", "Zamknij");
-			}
-			else
-			{
-				goto GOTO_HOUSE_MONEY;
-			}
-		}
-		case DIALOG_HOUSE_MONEY_MSG:
-		{
-			if(response)
-			{
-				goto GOTO_HOUSE_MONEY;
-			}
-		}
-		case DIALOG_HOUSE_RENT:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					// On/off wynajem
-					case 0:
-					{
-						if(Houses[gPlayerVars[playerid][mAtHouseID]][Rentable])
-						{
-							Houses[gPlayerVars[playerid][mAtHouseID]][Rentable] = 0;
-							SaveHouseData(gPlayerVars[playerid][mAtHouseID], "Rentable");
-							
-							ShowPlayerDialog(playerid, DIALOG_HOUSE_RENT_MSG, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Zrezygnowa³eœ z wynajmu domu.", "Wróæ", "Zamknij");
-						}
-						else
-						{
-							Houses[gPlayerVars[playerid][mAtHouseID]][Rentable] = 1;
-							SaveHouseData(gPlayerVars[playerid][mAtHouseID], "Rentable");
-							
-							ShowPlayerDialog(playerid, DIALOG_HOUSE_RENT_MSG, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Umo¿liwi³eœ wynajem domu.", "Wróæ", "Zamknij");
-						}
-					}
-					// Koszt wynajmu
-					case 1:
-					{
-						ShowPlayerDialog(playerid, DIALOG_HOUSE_RENT_PRICE, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Wpisz kwote za jak¹ chcesz wynajmowaæ dom.", "PotwierdŸ", "Wróæ");
-					}
-				}
-			}
-			else
-			{
-				
-			}
-		}
-		case DIALOG_HOUSE_RENT_PRICE:
-		{
-			if(response)
-			{
-				if(!IsNumeric(inputtext))
-				{
-					ShowPlayerDialog(playerid, DIALOG_HOUSE_RENT_PRICE, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Poda³eœ nieporawn¹ wartoœæ.\nWpisz kwote za jak¹ chcesz wynajmowaæ dom.", "PotwierdŸ", "Wróæ");
-				}
-				
-				if(strval(inputtext) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_HOUSE_RENT_PRICE, DIALOG_STYLE_INPUT, #COLOR_TITLE"Panel domu", #COLOR_DEFAULT"Poda³eœ nieporawn¹ wartoœæ.\nWpisz kwote za jak¹ chcesz wynajmowaæ dom.", "PotwierdŸ", "Wróæ");
-				}
-				
-				Houses[gPlayerVars[playerid][mAtHouseID]][RentCost] = strval(inputtext);
-				SaveHouseData(gPlayerVars[playerid][mAtHouseID], "RentCost");
-				
-				format(string, sizeof(string), #COLOR_DEFAULT"Zmieni³eœ kwote wynajmu na $%d", strval(inputtext));
-				
-				ShowPlayerDialog(playerid, DIALOG_HOUSE_RENT_MSG, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Panel domu", string, "Wróæ", "Zamknij");
-			}
-			else
-			{
-				
-			}
-		}
-		case DIALOG_HOUSE_RENT_MSG:
-		{
-			if(response)
-			{
-				goto GOTO_HOUSE_RENT;
-			}
-		}
-		case DIALOG_HOUSE_ITEMS:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					// W³ó¿ itemy
-					case 0:
-					{
-						gDSelectedHItemHouse[playerid] = gPlayerVars[playerid][mAtHouseID];
-						
-						ShowPItemsHIns(playerid);
-					}
-					// Wyjmij itemy
-					case 1:
-					{
-						gDSelectedHItemHouse[playerid] = gPlayerVars[playerid][mAtHouseID];
-						format(string, sizeof(string), "1. %s [iloœæ: %d] [waga: %d]\n2. %s [iloœæ: %d] [waga: %d]\n3. %s [iloœæ: %d] [waga: %d]\n4. %s [iloœæ: %d] [waga: %d]\n5. %s [iloœæ: %d] [waga: %d]",
-						ItemName(Houses[gPlayerVars[playerid][mAtHouseID]][HItem1type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem1]),HSlotParam6(gPlayerVars[playerid][mAtHouseID], 1), ItemWeight(Houses[gPlayerVars[playerid][mAtHouseID]][HItem1type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem1]),
-						ItemName(Houses[gPlayerVars[playerid][mAtHouseID]][HItem2type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem2]),HSlotParam6(gPlayerVars[playerid][mAtHouseID], 2), ItemWeight(Houses[gPlayerVars[playerid][mAtHouseID]][HItem2type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem2]),
-						ItemName(Houses[gPlayerVars[playerid][mAtHouseID]][HItem3type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem3]),HSlotParam6(gPlayerVars[playerid][mAtHouseID], 3), ItemWeight(Houses[gPlayerVars[playerid][mAtHouseID]][HItem3type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem3]),
-						ItemName(Houses[gPlayerVars[playerid][mAtHouseID]][HItem4type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem4]),HSlotParam6(gPlayerVars[playerid][mAtHouseID], 4), ItemWeight(Houses[gPlayerVars[playerid][mAtHouseID]][HItem4type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem4]),
-						ItemName(Houses[gPlayerVars[playerid][mAtHouseID]][HItem5type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem5]),HSlotParam6(gPlayerVars[playerid][mAtHouseID], 5), ItemWeight(Houses[gPlayerVars[playerid][mAtHouseID]][HItem5type], Houses[gPlayerVars[playerid][mAtHouseID]][HItem5]) );
-						format(string2, sizeof(string2), "Moje itemy w domu - waga ca³kowita %d", HItemWeight(gPlayerVars[playerid][mAtHouseID]));
-						ShowPlayerDialog(playerid,DIALOG_HITEM_1,DIALOG_STYLE_LIST,string2,string,"Wybierz","Anuluj");
-						return 1;
-					}
-				}
 			}
 		}
 	}

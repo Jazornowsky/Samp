@@ -24,7 +24,7 @@ enum Zones
 	mHouseStealTimeLeft,
 	mHouseBreakTimeLeft,
 }
-new DynamicZones[114][Zones];
+new DynamicZones[13][Zones];
 
 enum SAZONE_MAIN {
 		SAZONE_NAME[28],

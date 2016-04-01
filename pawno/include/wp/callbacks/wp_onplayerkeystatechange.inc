@@ -14,122 +14,6 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	//format(tmpstring, sizeof(tmpstring), "Klawisz: %d", key);
 	//SendClientMessage(playerid, 0xFFFFFFFF, tmpstring);
 	static string[256];
-	
-	
-	// AFK status update
-	format(string, sizeof(string), "{33CCFF}");
-	
-	UpdateDynamic3DTextLabelText(playerAFK[playerid], COLOR_BLACK, string);
-	// end fo AFK status update
-	
-	if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == 2)
-	{
-	   	if(!IsAPlane(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
-	   	{
-	      	new vid = GetPlayerVehicleID(playerid);
-	  	 	if(newkeys & ( KEY_LOOK_LEFT ) && newkeys & ( KEY_LOOK_RIGHT ))
-			{
-		    	if(Indicators_xqz[vid][2] /*|| Indicators_xqz[vid][5]*/) DestroyObject(Indicators_xqz[vid][5]),DestroyObject(Indicators_xqz[vid][2]), DestroyObject(Indicators_xqz[vid][3]),Indicators_xqz[vid][2]=0;
-            	else if(Indicators_xqz[vid][0] /*|| Indicators_xqz[vid][4]*/) DestroyObject(Indicators_xqz[vid][4]),DestroyObject(Indicators_xqz[vid][0]), DestroyObject(Indicators_xqz[vid][1]),Indicators_xqz[vid][0]=0;
-				else
-				SetVehicleIndicator(vid,1,1);
-				return 1;
-			}
-			if(newkeys & KEY_LOOK_RIGHT)
-			{
-	  		  	if(Indicators_xqz[vid][0] /*|| Indicators_xqz[vid][4]*/) DestroyObject(Indicators_xqz[vid][4]), DestroyObject(Indicators_xqz[vid][0]), DestroyObject(Indicators_xqz[vid][1]),Indicators_xqz[vid][0]=0;
-      	      	else if(Indicators_xqz[vid][2]/*|| Indicators_xqz[vid][5]*/) DestroyObject(Indicators_xqz[vid][5]), DestroyObject(Indicators_xqz[vid][2]), DestroyObject(Indicators_xqz[vid][3]),Indicators_xqz[vid][2]=0;
-				else
-				SetVehicleIndicator(vid,0,1);
-			}
-			if(newkeys & KEY_LOOK_LEFT)
-			{
-			    if(Indicators_xqz[vid][2]/*|| Indicators_xqz[vid][5]*/) DestroyObject(Indicators_xqz[vid][5]),DestroyObject(Indicators_xqz[vid][2]), DestroyObject(Indicators_xqz[vid][3]),Indicators_xqz[vid][2]=0;
-      	      	else if(Indicators_xqz[vid][0] /*|| Indicators_xqz[vid][4]*/) DestroyObject(Indicators_xqz[vid][4]),DestroyObject(Indicators_xqz[vid][0]), DestroyObject(Indicators_xqz[vid][1]),Indicators_xqz[vid][0]=0;
-				else
-				SetVehicleIndicator(vid,1,0);
-			}
-		}
-	}
-	
-	if(gEvent2timeToEnd)
-	{
-		new inGameId = -1;
-		
-		for(new i = 0; i < sizeof(gEvent2players); i++)
-		{
-			if(gEvent2players[i] == playerid)
-			{
-				inGameId = i;
-				break;
-			}
-		}
-		
-		if(inGameId != -1)
-		{
-			if(newkeys & KEY_ANALOG_UP)
-			{
-				if(gEvent2currentNote != 0 || gEvent2noteProgress != gEvent2noteProgressStar)
-				{
-					gEvent2playersPoints[inGameId] -= 2;
-					GameTextForPlayer(gEvent2players[inGameId], "~r~ZLE!", 2500, 6);
-				}
-				else
-				{
-					gEvent2playersPoints[inGameId] += 1;
-					GameTextForPlayer(gEvent2players[inGameId], "~g~DOBRZE!", 2500, 6);
-				}
-			}
-			if(newkeys & KEY_ANALOG_DOWN)
-			{
-				if(gEvent2currentNote != 1 || gEvent2noteProgress != gEvent2noteProgressStar)
-				{
-					gEvent2playersPoints[inGameId] -= 2;
-					GameTextForPlayer(gEvent2players[inGameId], "~r~ZLE!", 2500, 6);
-				}
-				else
-				{
-					gEvent2playersPoints[inGameId] += 1;
-					GameTextForPlayer(gEvent2players[inGameId], "~g~DOBRZE!", 2500, 6);
-				}
-			}
-			if(newkeys & KEY_ANALOG_RIGHT)
-			{
-				if(gEvent2currentNote != 2 || gEvent2noteProgress != gEvent2noteProgressStar)
-				{
-					gEvent2playersPoints[inGameId] -= 2;
-					GameTextForPlayer(gEvent2players[inGameId], "~r~ZLE!", 2500, 6);
-				}
-				else
-				{
-					gEvent2playersPoints[inGameId] += 1;
-					GameTextForPlayer(gEvent2players[inGameId], "~g~DOBRZE!", 2500, 6);
-				}
-			}
-			if(newkeys & KEY_ANALOG_LEFT)
-			{
-				if(gEvent2currentNote != 3 || gEvent2noteProgress != gEvent2noteProgressStar)
-				{
-					gEvent2playersPoints[inGameId] -= 2;
-					GameTextForPlayer(gEvent2players[inGameId], "~r~ZLE!", 2500, 6);
-				}
-				else
-				{
-					gEvent2playersPoints[inGameId] += 1;
-					GameTextForPlayer(gEvent2players[inGameId], "~g~DOBRZE!", 2500, 6);
-				}
-			}
-			
-			if(gEvent2playersPoints[inGameId] < 0)
-			{
-				gEvent2playersPoints[inGameId] = 0;
-			}
-			
-			format(string, sizeof(string), "Punkty: %d", gEvent2playersPoints[inGameId]);
-			PlayerTextDrawSetString(playerid, gEvent2noteText2[playerid], string);
-		}
-	}
-	
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		if(PRESSED(LIGHT_KEY))
@@ -150,35 +34,20 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					switch(gVehData[carid-1][LightsOn])
 					{
-						case -1:
-						{
-							SetVehicleParamsEx(carid, enginedyn, 0, alarm, doors, bonnet, boot, objective);
-							
+						case -1:{
+							SetVehicleParamsEx(carid,enginedyn,0,alarm,doors,bonnet,boot,objective);
 							gVehData[carid-1][LightsOn] = 0;
-							if(gVehData[carid-1][mVehType] == 0)
-							{
-								SaveVehData(carid-1, "LightsOn");
-							}
+							SaveVehData(carid-1, "LightsOn");
 						}
-						case 0:
-						{
-							SetVehicleParamsEx(carid, enginedyn, 1, alarm, doors, bonnet, boot, objective);
-							
+						case 0:{
+							SetVehicleParamsEx(carid,enginedyn,1,alarm,doors,bonnet,boot,objective);
 							gVehData[carid-1][LightsOn] = 1;
-							if(gVehData[carid-1][mVehType] == 0)
-							{
-								SaveVehData(carid-1, "LightsOn");
-							}
+							SaveVehData(carid-1, "LightsOn");
 						}
-						case 1:
-						{
-							SetVehicleParamsEx(carid,enginedyn,0, alarm, doors, bonnet, boot, objective);
-							
+						case 1:{
+							SetVehicleParamsEx(carid,enginedyn,0,alarm,doors,bonnet,boot,objective);
 							gVehData[carid-1][LightsOn] = 0;
-							if(gVehData[carid-1][mVehType] == 0)
-							{
-								SaveVehData(carid-1, "LightsOn");
-							}
+							SaveVehData(carid-1, "LightsOn");
 						}
 					}
 				}
@@ -209,7 +78,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
-	else if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
+	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 	{
 		if((newkeys & KEY_FIRE || newkeys & KEY_JUMP) && gPlayerData[playerid][pDrunk] > 40.0)
 			ApplyAnimation(playerid,"PAULNMAC","PnM_Argue1_A",4.1,0,1,1,0,4100);
@@ -271,51 +140,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				}
 			}
 		}
-		if (!(newkeys & KEY_SPRINT) && oldkeys & KEY_SPRINT)
-		{
-			if(gPlayerVars[playerid][mAtClotheStore])
-			{
-				new slot = BizHaveItem(gPlayerVars[playerid][mAtBizID], 3, 24);
-				new itemPrice = BizItemSlotPrice(gPlayerVars[playerid][mAtBizID], slot);
-				
-				if(BizItemSlotCount(gPlayerVars[playerid][mAtBizID], slot) <= 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Niestety wszystkie ubrania zosta³y wykupione.", "Zamknij", "");
-					return 1;
-				}
-				
-				if(GetPlayerCash(playerid) < itemPrice)
-				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie masz wystarczaj¹cej iloœci pieniêdzy.", "Zamknij", "");
-					return 1;
-				}
-				
-				new param1;
-				
-				if(gPlayerData[playerid][pSex] == 1)
-				{
-					param1 = MaleSkins[gPlayerVars[playerid][mClotheShopSkinId]];
-				}
-				else
-				{
-					param1 = FemaleSkins[gPlayerVars[playerid][mClotheShopSkinId]];
-				}
-				
-				new pSlot = InsertPlayerItemEx(playerid, 3, 24, param1, 0, 0, 0, "Puste", 1);
-				
-				if(pSlot == 0)
-				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie masz miejsca na ubranie !", "Zamknij", "");
-					return 1;
-				}
-				
-				SetBizItemSlotCount(gPlayerVars[playerid][mAtBizID], slot, BizItemSlotCount(gPlayerVars[playerid][mAtBizID], slot)-1);
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Kupi³eœ ubranie.\nZosta³o ono przeniesione do twojego baga¿u.", "Zamknij", "");
-			}
-		}
 		if(newkeys & KEY_SPRINT)
 		{
-			if(!gPlayerVars[playerid][mAtClotheStore] && gPlayerData[playerid][pAdmin] == 0)
+			if(gPlayerData[playerid][pAdmin] == 0)
 			{
 				if(gPlayerVars[playerid][mSprinting] == 0)
 				{
@@ -383,7 +210,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			for(new i = 0; i < sizeof(Houses); i++)
 			{
-				if(PlayerToPoint(0.7, playerid, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]))
+				if(PlayerToPoint(1.0, playerid, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == Houses[i][EnterWorld])
 					{
@@ -451,7 +278,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						}
 					}
 				}
-				if(PlayerToPoint(0.7, playerid,Houses[i][ExitX], Houses[i][ExitY], Houses[i][ExitZ]))
+				if(PlayerToPoint(3.0, playerid,Houses[i][ExitX], Houses[i][ExitY], Houses[i][ExitZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == i)
 					{
@@ -497,7 +324,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 			for(new i = 0; i < sizeof(Building); i++)
 			{
-				if(PlayerToPoint(0.7, playerid,Building[i][EnterX], Building[i][EnterY], Building[i][EnterZ]))
+				if(PlayerToPoint(1.0, playerid,Building[i][EnterX], Building[i][EnterY], Building[i][EnterZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == Building[i][EnterWorld])
 					{
@@ -515,7 +342,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 									PlayerActionMessage(playerid,15.0,"naciska klamke i wchodzi do budynku");
 									Audio_Play(playerid, AUDIO_DOOR_OPEN, false, false, false);
 
-									gPlayerVars[playerid][mAtBuildingId] = i;
+									gPlayerVars[playerid][mAtBuildingID] = i;
 									
 									SetPlayerInterior(playerid,Building[i][ExitInterior]);
 									SetPlayerVirtualWorld(playerid,i);
@@ -564,7 +391,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						}
 					}
 				}
-				if(PlayerToPoint(0.7, playerid,Building[i][ExitX], Building[i][ExitY], Building[i][ExitZ]))
+				if(PlayerToPoint(3, playerid,Building[i][ExitX], Building[i][ExitY], Building[i][ExitZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == i)
 					{
@@ -578,7 +405,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							PlayerActionMessage(playerid,15.0,"naciska klamke i wychodzi z budynku");
 							Audio_Play(playerid, AUDIO_DOOR_OPEN, false, false, false);
 
-							gPlayerVars[playerid][mAtBuildingId] = -1;
+							gPlayerVars[playerid][mAtBuildingID] = -1;
 							
 							SetPlayerInterior(playerid,Building[i][EnterInterior]);
 							SetPlayerVirtualWorld(playerid,Building[i][EnterWorld]);
@@ -607,7 +434,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 			for(new i = 0; i < sizeof(Businesses); i++)
 			{
-				if(PlayerToPoint(0.7, playerid,Businesses[i][EnterX], Businesses[i][EnterY], Businesses[i][EnterZ]) && GetPlayerVirtualWorld(playerid) == Businesses[i][EnterWorld])
+				if(PlayerToPoint(1.0, playerid,Businesses[i][EnterX], Businesses[i][EnterY], Businesses[i][EnterZ]) && GetPlayerVirtualWorld(playerid) == Businesses[i][EnterWorld])
 				{
 					if(Businesses[i][Locked] && !AdminDuty[playerid])
 					{
@@ -643,13 +470,14 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						SaveBizData(i, "IncomeEntranceToday");
 						SaveBizData(i, "IncomeTotal");
 						
-						format(string, sizeof(string), "[INFO:] Pobrano op³ate w wysokoœci $%d za wejœcie do %s.", Businesses[i][EntranceCost],Businesses[i][BusinessName]);
+						format(string, sizeof(string), "[INFO:] Pobrano op³ate w wysokoœci %d$ za wejœcie do %s.", Businesses[i][EntranceCost],Businesses[i][BusinessName]);
 						SendClientMessage(playerid,COLOR_LIGHTYELLOW2,string);
 					}
 					if(gPlayerData[playerid][pJob] == 19)
 					{
 						if(Businesses[i][Till] <= 0)
 							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie mo¿esz pracowaæ tutaj jako sprzedawca - brak pieniêdzy w kasie biznesu");
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Aby rozpocz¹æ prace wpisz /rp - za ka¿de 5 minut spêdzone w pracy dostajesz 12$");
 					}															
 					// Businesses[i][Products]--;
 					// SaveBizData(i, "Products");
@@ -659,18 +487,23 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					PlayerActionMessage(playerid,15.0,"naciska klamke i wchodzi do budynku");
 					Audio_Play(playerid, AUDIO_DOOR_OPEN, false, false, false);
 
-					SetPlayerToBiz(playerid, i);
+					SetPlayerInterior(playerid,Businesses[i][ExitInterior]);
+					SetPlayerToPos(playerid,Businesses[i][ExitX],Businesses[i][ExitY],Businesses[i][ExitZ]);
+					SetPlayerVirtualWorld(playerid,i);
+					SetPlayerFacingAngle(playerid,Businesses[i][ExitAngle]);
 
 					if( Businesses[i][BRadio1On] && Businesses[i][BRadio1Bought] )
 						ResumeBizRadioStation( playerid, i );
 					
-					gPlayerData[playerid][pCrashX] = Businesses[i][EnterX];
-					gPlayerData[playerid][pCrashY] = Businesses[i][EnterY];
-					gPlayerData[playerid][pCrashZ] = Businesses[i][EnterZ];
+					gPlayerData[playerid][pCrashX] = Businesses[i][ExitX];
+					gPlayerData[playerid][pCrashY] = Businesses[i][ExitY];
+					gPlayerData[playerid][pCrashZ] = Businesses[i][ExitZ];
 					gPlayerData[playerid][pCrashW] = i;
 					gPlayerData[playerid][pCrashAngle] = Businesses[i][ExitAngle];
 					gPlayerData[playerid][pCrashInt] = Businesses[i][ExitInterior];
-
+					
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer(playerid);
 					return 1;
 				}
 				if (PlayerToPoint(3, playerid,Businesses[i][ExitX], Businesses[i][ExitY], Businesses[i][ExitZ]))
@@ -714,7 +547,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					}
 				}
 			}
-			if(PlayerToPoint(1.0, playerid, gDrivingTestArea[posEntranceX], gDrivingTestArea[posEntranceY], gDrivingTestArea[posEntranceZ]))
+			if(PlayerToPoint(2.0, playerid, gDrivingTestArea[posEntranceX], gDrivingTestArea[posEntranceY], gDrivingTestArea[posEntranceZ]))
 			{
 				if(gPlayerData[playerid][pTestAreaTimeLeft] == 0 && !TakingDrivingTestA[playerid] && !TakingDrivingTestB[playerid] && !TakingDrivingTestCE[playerid] && PHaveItemParam5Ex(playerid, 3, 18, gPlayerData[playerid][pName]) == -1)
 				{
@@ -729,7 +562,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				SetPlayerVirtualWorld(playerid, gDrivingTestArea[posExitWorld]);
 				return 1;
 			}
-			if(PlayerToPoint(1.0, playerid, gDrivingTestArea[posExitX], gDrivingTestArea[posExitY], gDrivingTestArea[posExitZ]))
+			if(PlayerToPoint(2.0, playerid, gDrivingTestArea[posExitX], gDrivingTestArea[posExitY], gDrivingTestArea[posExitZ]))
 			{
 				SetPlayerToPos(playerid, gDrivingTestArea[posEntranceX], gDrivingTestArea[posEntranceY], gDrivingTestArea[posEntranceZ]);
 				SetPlayerFacingAngle(playerid, gDrivingTestArea[posEntranceAngle]);
@@ -739,6 +572,5 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
-	
 	return 1;
 } // end of OnPlayerKeyStateChange

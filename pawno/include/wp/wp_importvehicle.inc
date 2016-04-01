@@ -85,8 +85,6 @@ ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth)
 							gVehData[carID-1][Alarm] = 0;
 							gVehData[carID-1][GasStep] = 0;
 							
-							RefreshVehicleDescription(carID-1);
-							
 							SaveVehData(carID-1, "VehModel");
 							SaveVehData(carID-1, "VehPos");
 							SaveVehData(carID-1, "VehColor1");
@@ -141,7 +139,7 @@ ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth)
 					}
 					format(message, sizeof(message), "Twoj pojazd nie mogl zostac sprowadzony (model %d). Powod: limit slotow fabryki.", modelID);
 					format(string, sizeof(string), "INSERT INTO `samp_messages` ( `PlayerName` , `Content` , `Date` ) VALUES ( '%s' , '%s' , CURDATE() )", PlayerName, message);
-					wp_mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
+					mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
 					return 1;
 				}
 				if(IsAPlaneModel(modelID) || IsAHelicopterModel(modelID))
@@ -205,8 +203,6 @@ ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth)
 							gVehData[carID-1][Alarm] = 0;
 							gVehData[carID-1][GasStep] = 0;
 							
-							RefreshVehicleDescription(carID-1);
-							
 							SaveVehData(carID-1, "VehModel");
 							SaveVehData(carID-1, "VehPos");
 							SaveVehData(carID-1, "VehColor1");
@@ -261,7 +257,7 @@ ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth)
 					}
 					format(message, sizeof(message), "Twoj pojazd nie mogl zostac sprowadzony (model %d). Powod: limit slotow fabryki.", modelID);
 					format(string, sizeof(string), "INSERT INTO `samp_messages` ( `PlayerName` , `Content` , `Date` ) VALUES ( '%s' , '%s' , CURDATE() )", PlayerName, message);
-					wp_mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
+					mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
 					return 1;
 				}
 				else
@@ -325,8 +321,6 @@ ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth)
 							gVehData[carID-1][Alarm] = 0;
 							gVehData[carID-1][GasStep] = 0;
 							
-							RefreshVehicleDescription(carID-1);
-							
 							SaveVehData(carID-1, "VehModel");
 							SaveVehData(carID-1, "VehPos");
 							SaveVehData(carID-1, "VehColor1");
@@ -381,7 +375,7 @@ ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth)
 					}
 					format(message, sizeof(message), "Twoj pojazd nie mogl zostac sprowadzony (model %d). Powod: limit slotow fabryki.", modelID);
 					format(string, sizeof(string), "INSERT INTO `samp_messages` ( `PlayerName` , `Content` , `Date` ) VALUES ( '%s' , '%s' , CURDATE() )", PlayerName, message);
-					wp_mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
+					mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
 					return 1;
 				}
 			}
@@ -389,7 +383,7 @@ ImportVeh(BizKey, modelID, PlayerName[], fueltype, Float:maxHealth)
 		format(message, sizeof(message), "Twoj pojazd nie mogl zostac sprowadzony (model %d). Powod: limit pojazdow gry.", modelID);
 		
 		format(string, sizeof(string), "INSERT INTO `samp_messages` ( `PlayerName` , `Content` , `Date` ) VALUES ( '%s' , '%s' , CURDATE() )", PlayerName, message);
-		wp_mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
+		mysql_query(string, SAVE3, INVALID_PLAYER_ID, db_con4);
 		return 1;
 	}
 	else

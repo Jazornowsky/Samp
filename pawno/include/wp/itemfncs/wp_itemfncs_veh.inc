@@ -71,12 +71,6 @@ stock ItemsOnVehicleSlot(itemtype, itemid)
 			case 151: return 10;
 			case 152: return 10;
 			case 153: return 20;
-			case 173: return 400;
-			case 174: return 5;
-			case 175: return 10;
-			case 176: return 8;
-			case 177: return 4;
-			case 178: return 8;
 			default: return 100;
 		}
 	}
@@ -1206,21 +1200,21 @@ stock VSlotParam1(vehid, slot)
 {
 	switch(slot)
 	{
-		case 1: return gVehData[vehid-1][VItem1param];
-		case 2: return gVehData[vehid-1][VItem2param];
-		case 3: return gVehData[vehid-1][VItem3param];
-		case 4: return gVehData[vehid-1][VItem4param];
-		case 5: return gVehData[vehid-1][VItem5param];
-		case 6: return gVehData[vehid-1][VItem6param];
-		case 7: return gVehData[vehid-1][VItem7param];
-		case 8: return gVehData[vehid-1][VItem8param];
-		case 9: return gVehData[vehid-1][VItem9param];
-		case 10: return gVehData[vehid-1][VItem10param];
-		case 11: return gVehData[vehid-1][VItem11param];
-		case 12: return gVehData[vehid-1][VItem12param];
-		case 13: return gVehData[vehid-1][VItem13param];
-		case 14: return gVehData[vehid-1][VItem14param];
-		case 15: return gVehData[vehid-1][VItem15param];
+		case 1: return gVehData[vehid-1][VItem1param1];
+		case 2: return gVehData[vehid-1][VItem2param1];
+		case 3: return gVehData[vehid-1][VItem3param1];
+		case 4: return gVehData[vehid-1][VItem4param1];
+		case 5: return gVehData[vehid-1][VItem5param1];
+		case 6: return gVehData[vehid-1][VItem6param1];
+		case 7: return gVehData[vehid-1][VItem7param1];
+		case 8: return gVehData[vehid-1][VItem8param1];
+		case 9: return gVehData[vehid-1][VItem9param1];
+		case 10: return gVehData[vehid-1][VItem10param1];
+		case 11: return gVehData[vehid-1][VItem11param1];
+		case 12: return gVehData[vehid-1][VItem12param1];
+		case 13: return gVehData[vehid-1][VItem13param1];
+		case 14: return gVehData[vehid-1][VItem14param1];
+		case 15: return gVehData[vehid-1][VItem15param1];
 	}
 	return 0;
 }
@@ -1292,34 +1286,6 @@ stock VSlotParam4(vehid, slot)
 		case 15: return gVehData[vehid-1][VItem15param4];
 	}
 	return 0;
-}
-
-stock VSlotParam5(vehid, slot)
-{
-	switch(slot)
-	{
-		case 1:
-		{
-			format(gVSelectedItemP5[vehid], 64, gVehData[vehid][VItem1param5]);
-		}
-		case 2:
-		{
-			format(gVSelectedItemP5[vehid], 64, gVehData[vehid][VItem2param5]);
-		}
-		case 3:
-		{
-			format(gVSelectedItemP5[vehid], 64, gVehData[vehid][VItem3param5]);
-		}
-		case 4:
-		{
-			format(gVSelectedItemP5[vehid], 64, gVehData[vehid][VItem4param5]);
-		}
-		case 5:
-		{
-			format(gVSelectedItemP5[vehid], 64, gVehData[vehid][VItem5param5]);
-		}
-	}
-	format(gVSelectedItemP5[vehid], 64, "");
 }
 
 stock VSlotParam6(vehid, slot)

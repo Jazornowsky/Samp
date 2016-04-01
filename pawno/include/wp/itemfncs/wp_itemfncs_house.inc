@@ -301,11 +301,11 @@ stock HSlotParam1(hid, slot)
 {
 	switch(slot)
 	{
-		case 1: return Houses[hid][HItem1param];
-		case 2: return Houses[hid][HItem2param];
-		case 3: return Houses[hid][HItem3param];
-		case 4: return Houses[hid][HItem4param];
-		case 5: return Houses[hid][HItem5param];
+		case 1: return Houses[hid][HItem1param1];
+		case 2: return Houses[hid][HItem2param1];
+		case 3: return Houses[hid][HItem3param1];
+		case 4: return Houses[hid][HItem4param1];
+		case 5: return Houses[hid][HItem5param1];
 	}
 	return 0;
 }
@@ -347,34 +347,6 @@ stock HSlotParam4(hid, slot)
 		case 5: return Houses[hid][HItem5param4];
 	}
 	return 0;
-}
-
-stock HSlotParam5(hid, slot)
-{
-	switch(slot)
-	{
-		case 1:
-		{
-			format(gHSelectedItemP5[hid], 64, Houses[hid][HItem1param5]);
-		}
-		case 2:
-		{
-			format(gHSelectedItemP5[hid], 64, Houses[hid][HItem2param5]);
-		}
-		case 3:
-		{
-			format(gHSelectedItemP5[hid], 64, Houses[hid][HItem3param5]);
-		}
-		case 4:
-		{
-			format(gHSelectedItemP5[hid], 64, Houses[hid][HItem4param5]);
-		}
-		case 5:
-		{
-			format(gHSelectedItemP5[hid], 64, Houses[hid][HItem5param5]);
-		}
-	}
-	format(gHSelectedItemP5[hid], 64, "");
 }
 
 stock HSlotParam6(hid, slot)

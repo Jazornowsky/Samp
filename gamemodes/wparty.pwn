@@ -27,7 +27,6 @@
 #include <mweather>
 // #include <paused>
 #include <foreach>
-#include <keypad>
 // #include <YSI/y_iterate>
 #include <YSI\y_timers>
 #include <spikestrip>
@@ -56,7 +55,6 @@
 #include <wp\wp_utility>
 #include <wp\wp_engine>
 #include <wp\wp_player>
-#include <wp\wp_tips>
 #include <wp\callbacks\wp_ongamemodestock>
 #include <wp\callbacks\wp_onplayerstock>
 #include <wp\callbacks\wp_onvehiclestock>
@@ -65,8 +63,6 @@
 #include <wp\callbacks\wp_onplayercommandtext>
 #include <wp\callbacks\wp_onplayerkeystatechange>
 #include <wp\callbacks\wp_onplayereditobject>
-#include <wp\callbacks\wp_onplayerkeypadinput>
-#include <wp\callbacks\wp_ondynamicobjectmoved>
 #include <wp\wp_dcmds>
 #include <wp\wp_samsites>
 #include <wp\wfactory\wp_wfactory>
@@ -98,6 +94,11 @@ public main()
 timer SpawnedInWorld[4000](playerid)
 {
 	Spawned[playerid] = 1;
+	return 1;
+}
+
+public OnDynamicObjectMoved(objectid)
+{
 	return 1;
 }
 

@@ -304,7 +304,7 @@ stock AddPlayerAmmoF(playerid, gunID, gunAmmo)
 		}
 		case 24: // des eagle
 		{
-			if( DynamicFactions[fID][WFactory50AEAmmo] < gunAmmo )
+			if( DynamicFactions[fID][WFactory50AEAmmo] <= 0 )
 				return 0;
 			else
 			{
@@ -317,7 +317,7 @@ stock AddPlayerAmmoF(playerid, gunID, gunAmmo)
 		}
 		case 25: // shotgun
 		{
-			if( DynamicFactions[fID][WFactoryBuckshot] < gunAmmo )
+			if( DynamicFactions[fID][WFactoryBuckshot] <= 0 )
 				return 0;
 			else
 			{
@@ -330,7 +330,7 @@ stock AddPlayerAmmoF(playerid, gunID, gunAmmo)
 		}
 		case 30, 31, 33: // AK47
 		{
-			if( DynamicFactions[fID][WFactory762MMAmmo] < gunAmmo )
+			if( DynamicFactions[fID][WFactory762MMAmmo] <= 0 )
 				return 0;
 			else
 			{
@@ -343,7 +343,7 @@ stock AddPlayerAmmoF(playerid, gunID, gunAmmo)
 		}
 		case 34: // srifle
 		{
-			if( DynamicFactions[fID][WFactory127MMAmmo] < gunAmmo )
+			if( DynamicFactions[fID][WFactory127MMAmmo] <= 0 )
 				return 0;
 			else
 			{
@@ -364,339 +364,185 @@ stock AddPlayerAmmoF(playerid, gunID, gunAmmo)
 stock ReturnPlayerAmmoF(playerid, gunID, gunAmmo)
 {
 	new fID = gPlayerData[playerid][pFaction];
-	new weaponInSlot, ammoInSlot, slot[MAX_PLAYER_ITEM_SLOT];
-	switch(gunID)
+	switch( gunID )
 	{
-		case 1: // kastet
-		{
-			if(PHaveItem(playerid, 1, 147))
-			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 147));
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-				}
-			}
-		}
-		case 3: // pa³ka
-		{
-			if(PHaveItem(playerid, 1, 145))
-			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 145));
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-				}
-			}
-		}
-		case 4: // nó¿
-		{
-			if(PHaveItem(playerid, 1, 148))
-			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 148));
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-				}
-			}
-		}
-		case 5: // baseball
-		{
-			GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-			if(weaponInSlot == gunID)
-			{
-				RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-			}
-		}
 		case 22: // 9mm
 		{
-			if(PHaveItem(playerid, 1, 16))
+			if( PHaveItem( playerid, 1, 16 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 16));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 16 ) );
 				DynamicFactions[fID][WFactory9MM]++;
-				SaveFData(fID, "WFactory9MM");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactory9MM]++;
-					SaveFData(fID, "WFactory9MM");
-				}
+				SaveFData( fID, "WFactory9MM" );
 			}
 		}
 		case 23: // 9mm sil
 		{
-			if(PHaveItem(playerid, 1, 17))
+			if( PHaveItem( playerid, 1, 17 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 17));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 17 ) );
 				DynamicFactions[fID][WFactory9MMSil]++;
-				SaveFData(fID, "WFactory9MMSil");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactory9MMSil]++;
-					SaveFData(fID, "WFactory9MMSil");
-				}
+				SaveFData( fID, "WFactory9MMSil" );
 			}
 		}
 		case 24: // des eagle
 		{
-			if(PHaveItem(playerid, 1, 18))
+			if( PHaveItem( playerid, 1, 18 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 18));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 18 ) );
 				DynamicFactions[fID][WFactoryDesEagle]++;
-				SaveFData(fID, "WFactoryDesEagle");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactoryDesEagle]++;
-					SaveFData(fID, "WFactoryDesEagle");
-				}
+				SaveFData( fID, "WFactoryDesEagle" );
 			}
 		}
 		case 25: // shotgun
 		{
-			if(PHaveItem(playerid, 1, 19))
+			if( PHaveItem( playerid, 1, 19 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 19));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 19 ) );
 				DynamicFactions[fID][WFactoryShotgun]++;
-				SaveFData(fID, "WFactoryShotgun");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactoryShotgun]++;
-					SaveFData(fID, "WFactoryShotgun");
-				}
+				SaveFData( fID, "WFactoryShotgun" );
 			}
 		}
 		case 28: // msmg
 		{
-			if(PHaveItem(playerid, 1, 22))
+			if( PHaveItem( playerid, 1, 22 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 22));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 22 ) );
 				DynamicFactions[fID][WFactoryMicroSMG]++;
-				SaveFData(fID, "WFactoryMicroSMG");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactoryMicroSMG]++;
-					SaveFData(fID, "WFactoryMicroSMG");
-				}
+				SaveFData( fID, "WFactoryMicroSMG" );
 			}
 		}
 		case 29: // mp5
 		{
-			if(PHaveItem(playerid, 1, 23))
+			if( PHaveItem( playerid, 1, 23 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 23));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 23 ) );
 				DynamicFactions[fID][WFactoryMP5]++;
-				SaveFData(fID, "WFactoryMP5");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactoryMP5]++;
-					SaveFData(fID, "WFactoryMP5");
-				}
+				SaveFData( fID, "WFactoryMP5" );
 			}
 		}
 		case 30: // AK47
 		{
-			if(PHaveItem(playerid, 1, 24))
+			if( PHaveItem( playerid, 1, 24 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 24));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 24 ) );
 				DynamicFactions[fID][WFactoryAK47]++;
-				SaveFData(fID, "WFactoryAK47");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactoryAK47]++;
-					SaveFData(fID, "WFactoryAK47");
-				}
+				SaveFData( fID, "WFactoryAK47" );
 			}
 		}
 		case 31: // m4
 		{
-			if(PHaveItem(playerid, 1, 25))
+			if( PHaveItem( playerid, 1, 25 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 25));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 25 ) );
 				DynamicFactions[fID][WFactoryM4]++;
-				SaveFData(fID, "WFactoryM4");
+				SaveFData( fID, "WFactoryM4" );
 			}
 		}
 		case 32: // tec9
 		{
-			if(PHaveItem(playerid, 1, 26))
+			if( PHaveItem( playerid, 1, 26 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 26));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 26 ) );
 				DynamicFactions[fID][WFactoryTec9]++;
-				SaveFData(fID, "WFactoryTec9");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactoryTec9]++;
-					SaveFData(fID, "WFactoryTec9");
-				}
+				SaveFData( fID, "WFactoryTec9" );
 			}
 		}
 		case 33: // rifle
 		{
-			if(PHaveItem(playerid, 1, 27))
+			if( PHaveItem( playerid, 1, 27 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 27));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 27 ) );
 				DynamicFactions[fID][WFactoryRifle]++;
-				SaveFData(fID, "WFactoryRifle");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactoryRifle]++;
-					SaveFData(fID, "WFactoryRifle");
-				}
+				SaveFData( fID, "WFactoryRifle" );
 			}
 		}
 		case 34: // srifle
 		{
-			if(PHaveItem(playerid, 1, 28))
+			if( PHaveItem( playerid, 1, 28 ) )
 			{
-				RemovePlayerItemExUsed(playerid, PHaveItem(playerid, 1, 28));
+				RemovePlayerItemExUsed( playerid, PHaveItem( playerid, 1, 28 ) );
 				DynamicFactions[fID][WFactorySRifle]++;
-				SaveFData(fID, "WFactorySRifle");
-			}
-			else
-			{
-				GetPlayerWeaponData(playerid, WeaponIdToSlot(gunID), weaponInSlot, ammoInSlot);
-				if(weaponInSlot == gunID)
-				{
-					RemoveWeaponFromSlot(playerid, WeaponIdToSlot(gunID));
-					DynamicFactions[fID][WFactorySRifle]++;
-					SaveFData(fID, "WFactorySRifle");
-				}
+				SaveFData( fID, "WFactorySRifle" );
 			}
 		}
 	}
-	
-	switch(gunID)
+	new rValue;
+	switch( gunID )
 	{
 		case 22, 23, 28, 29, 32: // 9mm ammo
 		{
-			PHaveItemEx(playerid, 1, 36, slot);
-			
-			for(new k = 1; k <= MAX_PLAYER_ITEM_SLOT; k++)
+			rValue = SlotParam6( playerid, PHaveItem( playerid, 1, 36 ) ) - gunAmmo;
+			if( rValue >= 0 )
 			{
-				if(slot[k-1])
-				{
-					DynamicFactions[fID][WFactory9MMAmmo] += SlotParam6(playerid, slot[k-1]);
-					RemovePlayerItemUsed(playerid, k);
-				}
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 36 ), gunAmmo);
+				DynamicFactions[fID][WFactory9MMAmmo] += gunAmmo;
 			}
-			
-			SaveFData(fID, "WFactory9MMAmmo");
+			else if( rValue < 0 )
+			{
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 36 ), SlotParam6( playerid, PHaveItem( playerid, 1, 36 ) ) );
+				DynamicFactions[fID][WFactory9MMAmmo] += gunAmmo;
+			}
+			SaveFData( fID, "WFactory9MMAmmo" );
 		}
 		case 24: // des eagle
 		{
-			PHaveItemEx(playerid, 1, 37, slot);
-			
-			for(new k = 1; k <= MAX_PLAYER_ITEM_SLOT; k++)
+			rValue = SlotParam6( playerid, PHaveItem( playerid, 1, 37 ) ) - gunAmmo;
+			if( rValue >= 0 )
 			{
-				if(slot[k-1])
-				{
-					DynamicFactions[fID][WFactory50AEAmmo] += SlotParam6(playerid, slot[k-1]);
-					RemovePlayerItemUsed(playerid, k);
-				}
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 37 ), gunAmmo);
+				DynamicFactions[fID][WFactory50AEAmmo] += gunAmmo;
 			}
-			
-			SaveFData(fID, "WFactory50AEAmmo");
+			else if( rValue < 0 )
+			{
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 37 ), SlotParam6( playerid, PHaveItem( playerid, 1, 36 ) ) );
+				DynamicFactions[fID][WFactory50AEAmmo] += gunAmmo;
+			}
+			SaveFData( fID, "WFactory50AEAmmo" );
 		}
 		case 25: // shotgun
 		{
-			PHaveItemEx(playerid, 1, 38, slot);
-			
-			for(new k = 1; k <= MAX_PLAYER_ITEM_SLOT; k++)
+			rValue = SlotParam6( playerid, PHaveItem( playerid, 1, 38 ) ) - gunAmmo;
+			if( rValue >= 0 )
 			{
-				if(slot[k-1])
-				{
-					DynamicFactions[fID][WFactoryBuckshot] += SlotParam6(playerid, slot[k-1]);
-					RemovePlayerItemUsed(playerid, k);
-				}
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 38 ), gunAmmo);
+				DynamicFactions[fID][WFactoryBuckshot] += gunAmmo;
 			}
-			
-			SaveFData(fID, "WFactoryBuckshot");
+			else if( rValue < 0 )
+			{
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 38 ), SlotParam6( playerid, PHaveItem( playerid, 1, 36 ) ) );
+				DynamicFactions[fID][WFactoryBuckshot] += gunAmmo;
+			}
+			SaveFData( fID, "WFactoryBuckshot" );
 		}
 		case 30, 31, 33: // AK47
 		{
-			PHaveItemEx(playerid, 1, 39, slot);
-			
-			for(new k = 1; k <= MAX_PLAYER_ITEM_SLOT; k++)
+			rValue = SlotParam6( playerid, PHaveItem( playerid, 1, 39 ) ) - gunAmmo;
+			if( rValue >= 0 )
 			{
-				if(slot[k-1])
-				{
-					DynamicFactions[fID][WFactory762MMAmmo] += SlotParam6(playerid, slot[k-1]);
-					RemovePlayerItemUsed(playerid, k);
-				}
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 39 ), gunAmmo);
+				DynamicFactions[fID][WFactory762MMAmmo] += gunAmmo;
 			}
-		
-			SaveFData(fID, "WFactory762MMAmmo");
+			else if( rValue < 0 )
+			{
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 39 ), SlotParam6( playerid, PHaveItem( playerid, 1, 36 ) ) );
+				DynamicFactions[fID][WFactory762MMAmmo] += gunAmmo;
+			}
+			SaveFData( fID, "WFactory762MMAmmo" );
 		}
 		case 34: // srifle
 		{
-			PHaveItemEx(playerid, 1, 40, slot);
-			
-			for(new k = 1; k <= MAX_PLAYER_ITEM_SLOT; k++)
+			rValue = SlotParam6( playerid, PHaveItem( playerid, 1, 40 ) ) - gunAmmo;
+			if( rValue >= 0 )
 			{
-				if(slot[k-1])
-				{
-					DynamicFactions[fID][WFactory127MMAmmo] += SlotParam6(playerid, slot[k-1]);
-					RemovePlayerItemUsed(playerid, k);
-				}
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 40 ), gunAmmo);
+				DynamicFactions[fID][WFactory127MMAmmo] += gunAmmo;
 			}
-		
-			SaveFData(fID, "WFactory127MMAmmo");
+			else if( rValue < 0 )
+			{
+				RemovePlayerItemExUsed(playerid, PHaveItem( playerid, 1, 40 ), SlotParam6( playerid, PHaveItem( playerid, 1, 36 ) ) );
+				DynamicFactions[fID][WFactory127MMAmmo] += gunAmmo;
+			}
+			SaveFData( fID, "WFactory127MMAmmo" );
 		}
 	}
 	return 0;

@@ -15,7 +15,9 @@ public OnPlayerConnect(playerid)
 	/* Reset player variables */
 	ResetStats(playerid);
 	
-	if(!IsPlayerNPC(playerid))
+	if(IsPlayerNPC(playerid))
+		gPlayerData[playerid][pIsNPC] = 1;
+	else
 	{
 		/* Check player name for RP rule */
 		static plname[MAX_PLAYER_NAME];
@@ -31,35 +33,22 @@ public OnPlayerConnect(playerid)
 		SetPlayerColor(playerid, COLOR_BLACK);
 	}
 	
-	// Player status 2
-	PlayerStatus[playerid] = CreatePlayerTextDraw(playerid, 0.0, 442.0, " ");
-	PlayerTextDrawUseBox(playerid, PlayerStatus[playerid], 1);
-	PlayerTextDrawBoxColor(playerid, PlayerStatus[playerid], 0x000000AA);
-	PlayerTextDrawAlignment(playerid, PlayerStatus[playerid], 0);
-	PlayerTextDrawBackgroundColor(playerid, PlayerStatus[playerid], 0x000000ff);
-	PlayerTextDrawFont(playerid, PlayerStatus[playerid], 1);
-	PlayerTextDrawLetterSize(playerid, PlayerStatus[playerid], 0.15, 0.525);
-	PlayerTextDrawColor(playerid, PlayerStatus[playerid], 0xffffffff);
-	PlayerTextDrawSetOutline(playerid, PlayerStatus[playerid], 1);
-	PlayerTextDrawSetProportional(playerid, PlayerStatus[playerid], 1);
-	PlayerTextDrawSetShadow(playerid, PlayerStatus[playerid], 1);
-	
-	// event 2 status
-	gEvent2noteText2[playerid] = CreatePlayerTextDraw(playerid, 230.000000, 329.000000, "_");
-	PlayerTextDrawAlignment(playerid, gEvent2noteText2[playerid], 0);
-	PlayerTextDrawBackgroundColor(playerid, gEvent2noteText2[playerid], 0x000000ff);
-	PlayerTextDrawFont(playerid, gEvent2noteText2[playerid], 2);
-	PlayerTextDrawLetterSize(playerid, gEvent2noteText2[playerid], 0.899999, 2.599999);
-	PlayerTextDrawColor(playerid, gEvent2noteText2[playerid], 0xffff00ff);
-	PlayerTextDrawSetOutline(playerid, gEvent2noteText2[playerid], 1);
-	PlayerTextDrawSetProportional(playerid, gEvent2noteText2[playerid], 1);
-	PlayerTextDrawSetShadow(playerid, gEvent2noteText2[playerid], 1);
-	
-	// wardrobe exit cmd
-	gPlayerVars[playerid][mWardrobeExitText] = CreatePlayerTextDraw(playerid, 15.0, 245.0, "Wybor ubrania: strzalki~n~Kupno ubrania: spacja~n~Wyjscie: /opuscprzymierzalnie");
-	PlayerTextDrawLetterSize(playerid, gPlayerVars[playerid][mWardrobeExitText], 0.20, 0.7);
-	PlayerTextDrawTextSize(playerid, gPlayerVars[playerid][mWardrobeExitText], 132.0, 100.0);
-	PlayerTextDrawUseBox(playerid, gPlayerVars[playerid][mWardrobeExitText], 1);
+	/* Some UAC shit */
+	// for(new s = 0; s < BadNameCount; s++)
+	// {
+		// if(!strcmp(BadNames[s],GetName(playerid),true))
+		// {
+			// SendClientMessage(playerid, COLOR_RED, "[ANTI-CHEAT:] Zosta³eœ wyrzucony poniewa¿ masz niedozwolony nick !");
+			// format(string, sizeof(string), "[ANTI-CHEAT:] %s (id:%d) zosta³ wyrzucony z serwera ze wzglêdu na zabroniony nick !", GetName(playerid), playerid);
+			// SendClientMessageToAll(COLOR_LIGHTGREEN, string);
+			// Kick(playerid);
+			// return 1;
+		// }
+	// }
+
+	/* Dancing login animation */
+	// gPlayerData[playerid][SpawnDance] = true;
+    // ApplyAnimation(playerid,"DANCING","DNCE_M_B",4.0,1,0,0,0,-1); //preventing a bug for the animation not being applied the first time
 	
 	return 1;
 }
@@ -69,58 +58,43 @@ public OnPlayerDisconnect(playerid, reason)
 	#if defined DEBUG
 		printf("[DEBUG:] OnPlayerDisconnect by player id %d", playerid);
 	#endif
+	// KillTimer( gPlayerData[playerid][SpawnTimer] );
 
-	static plname[MAX_PLAYER_NAME], string[256];
-	static Float:x, Float:y, Float:z;
-	
+	//===================================[GET PLAYER DATA]=====================================
+	new plname[128], string[256], string2[256];
 	GetPlayerName(playerid, plname, sizeof(plname));
-	GetPlayerPos(playerid, x, y, z);
+	new Float:x,Float:y,Float:z;
+	GetPlayerPos(playerid,x,y,z);
 
     if(gPlayerLogged[playerid] && strcmp(plname, gPlayerData[playerid][pName], false) == 0)
 	{
-		// Remove player from events
-		RemovePlayerFormEvents(playerid);
-		
-		// Stop player job (buses etc, resets vehicles and more)
-		StopJob(playerid);
-	
-		SavePlayerData(playerid, "Energy");
-		SavePlayerData(playerid, "Hunger");
-		SavePlayerData(playerid, "Thirst");
-		SavePlayerData(playerid, "Poison");
-		SavePlayerData(playerid, "Fat");
-		SavePlayerData(playerid, "Stomach");
-		SavePlayerData(playerid, "Vitamins");
-		SavePlayerData(playerid, "Drunk");
-	
-		gPlayerData[playerid][pIsLogged] = 0;
-		// SavePlayerData(playerid, "IsLogged");
-		
-		GetPlayerIp(playerid, string, sizeof(string));
-		format(string, sizeof(string), "%s sign out with $%d in character cash and $%d in bank cash, IP is %s", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank], string);
+		GetPlayerIp(playerid, string2, sizeof(string2));
+		format(string, sizeof(string), "%s sign out with %d$ in character cash and %d$ in bank cash, IP is %s", gPlayerData[playerid][pName], gPlayerData[playerid][pCash], gPlayerData[playerid][pBank], string2);
 		LogginDataLog(string);
 		
-		// Custom object descriptions
 		HideObjectsDescriptions(playerid);
 		
-		// Destroy player hunger status
+		
+		/**
+		* Destroy player hunger status
+		*/
 		DestroyProgressBar(gPlayerData[playerid][pEnergyProgressBarID]);
 		DestroyProgressBar(gPlayerData[playerid][pHungerProgressBarID]);
 		DestroyProgressBar(gPlayerData[playerid][pThirstProgressBarID]);
-		// DestroyProgressBar(gPlayerData[playerid][pPoisonProgressBarID]);
-		// DestroyProgressBar(gPlayerData[playerid][pFatProgressBarID]);
-		// DestroyProgressBar(gPlayerData[playerid][pStomachProgressBarID]);
-		// DestroyProgressBar(gPlayerData[playerid][pVitaminsProgressBarID]);
-		// DestroyProgressBar(gPlayerData[playerid][pDrunkProgressBarID]);
-		// DestroyProgressBar(gPlayerData[playerid][pNarcoticProgressBarID]);
+		DestroyProgressBar(gPlayerData[playerid][pPoisonProgressBarID]);
+		DestroyProgressBar(gPlayerData[playerid][pFatProgressBarID]);
+		DestroyProgressBar(gPlayerData[playerid][pStomachProgressBarID]);
+		DestroyProgressBar(gPlayerData[playerid][pVitaminsProgressBarID]);
+		DestroyProgressBar(gPlayerData[playerid][pDrunkProgressBarID]);
+		DestroyProgressBar(gPlayerData[playerid][pNarcoticProgressBarID]);
 		DestroyProgressBar(JobProgress[playerid]);
-
-		// player descriptions
-		Update3DTextLabelText(gPlayerData[playerid][pCharDescriptionID], COLOR_BLACK, " ");
-		Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_BLACK, " ");
-		Update3DTextLabelText(playerAFK[playerid], COLOR_BLACK, " ");
+		Update3DTextLabelText(gPlayerData[playerid][pCharDescriptionID], COLOR_WHITE, " ");
+		Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_WHITE, " ");
 	
-		// Save player weapons
+	
+		/**
+		* Save player weapons
+		*/
 		GetPlayerWeaponData(playerid, 0, gPlayerData[playerid][pWSlot0], gPlayerData[playerid][pWSlot0Ammo]);
 		GetPlayerWeaponData(playerid, 1, gPlayerData[playerid][pWSlot1], gPlayerData[playerid][pWSlot1Ammo]);
 		GetPlayerWeaponData(playerid, 2, gPlayerData[playerid][pWSlot2], gPlayerData[playerid][pWSlot2Ammo]);
@@ -128,29 +102,21 @@ public OnPlayerDisconnect(playerid, reason)
 		GetPlayerWeaponData(playerid, 4, gPlayerData[playerid][pWSlot4], gPlayerData[playerid][pWSlot4Ammo]);
 		GetPlayerWeaponData(playerid, 5, gPlayerData[playerid][pWSlot5], gPlayerData[playerid][pWSlot5Ammo]);
 		GetPlayerWeaponData(playerid, 6, gPlayerData[playerid][pWSlot6], gPlayerData[playerid][pWSlot6Ammo]);
-		GetPlayerWeaponData(playerid, 7, gPlayerData[playerid][pWSlot7], gPlayerData[playerid][pWSlot7Ammo]);
-		GetPlayerWeaponData(playerid, 8, gPlayerData[playerid][pWSlot8], gPlayerData[playerid][pWSlot8Ammo]);
-		GetPlayerWeaponData(playerid, 9, gPlayerData[playerid][pWSlot9], gPlayerData[playerid][pWSlot9Ammo]);
-		GetPlayerWeaponData(playerid, 10, gPlayerData[playerid][pWSlot10], gPlayerData[playerid][pWSlot10Ammo]);
-		GetPlayerWeaponData(playerid, 11, gPlayerData[playerid][pWSlot11], gPlayerData[playerid][pWSlot11Ammo]);
-		GetPlayerWeaponData(playerid, 12, gPlayerData[playerid][pWSlot12], gPlayerData[playerid][pWSlot12Ammo]);
 		SavePlayerData(playerid, "WSlot");
 		
-		// Check player race state
+		/**
+		* Check player race state
+		*/
 		RemovePlayerFromRace(playerid);
 		
 		if(DisconnectPhone(playerid))
-		{
 			SendClientMessage(Mobile[playerid], COLOR_LIGHTYELLOW2, "[INFO:] Roz³¹czy³ siê");
-		}
 
 		// Stop new sms text timer
 		gPhoneTextReceived[playerid] = 0;
 			
 		if(x == 0.0 || y == 0.0)
-		{
 			printf("[WARINING:] OnPlayerDisconnect X: %f, Y: %f, Z: %f, player name: %s", x, y, z, GetPlayerNameEx(playerid));
-		}
 	 
 		if(reason == 0)
 	    {
@@ -158,9 +124,7 @@ public OnPlayerDisconnect(playerid, reason)
 			foreach(Player, i)
 			{
 				if(gPlayerLogged[i] && i != playerid && gPlayerData[i][pLeaveInfoStatus])
-				{
 					SendClientMessage(i, 0xFFFFFFAA, string);
-				}
 			}
 	    }
 		else
@@ -169,12 +133,11 @@ public OnPlayerDisconnect(playerid, reason)
 			foreach(Player, i)
 			{
 				if(gPlayerLogged[i] && i != playerid && gPlayerData[i][pLeaveInfoStatus])
-				{
 					SendClientMessage(i, 0xFFFFFFAA, string);
-				}
 			}
 		}
 
+		//=================================[SAVE PLAYER POS DATA]==================================
 		gPlayerData[playerid][pCrashX] = x;
 		gPlayerData[playerid][pCrashY] = y;
 		gPlayerData[playerid][pCrashZ] = z;
@@ -189,9 +152,7 @@ public OnPlayerDisconnect(playerid, reason)
 		for(new n = 0; n < CUSTOM_MAX_PLAYERS; n++)
 		{
 			if(gSpectateID[n] == playerid)
-			{
 				gSpectateID[n] = INVALID_PLAYER_ID;
-			}
 		}
 	}
 	return 1;
@@ -202,49 +163,51 @@ public OnPlayerRequestClass(playerid, classid)
 	#if defined DEBUG
 		printf("[DEBUG:] OnPlayerRequestClass by player id %d", playerid);
 	#endif
-	static string[512];
+	static string[1024];
 	
 	strdel(string, 0, sizeof(string));
 	
-	// UAC
+	//printf("[CALLBACK:] Player [%d] request class", playerid);
 	Alive[playerid] = 0;
 
 	if(IsPlayerNPC(playerid))
     {
+		SendClientMessageToAll(0x00000000,"A new NPC connected!");
 		return 1;
     }
-		
-	SetPlayerTime(playerid, gHour, gMin);
-	
-	if(gPlayerLogged[playerid])
-	{
-		SetPlayerPos(playerid, 0.0, 0.0, 0.0);
-		SetPlayerSpawn(playerid);
-		SpawnPlayer(playerid);
-		
-		return 0;
-	}
 	else
 	{
-		// SetPlayerFacingAngle(playerid, player_angle);
-		SetPlayerPos(playerid, 1479.46, -1816.91, 61.0);
-		SetPlayerCameraPos(playerid, 1479.46, -1816.91, 69.21);
-		SetPlayerCameraLookAt(playerid, 1481.23, -1652.90, 15.93);
-		// PlayerPlaySound(playerid, 1097,-119.9460,23.1096,12.2238);
-		PlayAudioStreamForPlayer(playerid, "http://www.miastomuzyki.pl/n/rmfclassic.pls");
+		SetPlayerTime(playerid, gHour, gMin);
+		if(gPlayerLogged[playerid])
+		{
+			SetPlayerPos(playerid, 0.0, 0.0, 0.0);
+			SetPlayerSpawn(playerid);
+			SpawnPlayer(playerid);
+			return 0;
+		}
+		else
+		{
+			// SetPlayerPos(playerid, player_x,player_y,player_z-5);
+			// SetPlayerFacingAngle(playerid, player_angle);
+			SetPlayerCameraPos(playerid, camera_x,camera_y,camera_z);
+			SetPlayerCameraLookAt(playerid, player_x,player_y,player_z);
+			// ApplyAnimation(playerid,"DANCING","DNCE_M_B",4.0,1,0,0,0,-1); //smooth dancing. It's most fitting to the music
+			PlayerPlaySound(playerid, 1097,-119.9460,23.1096,12.2238); //music, duh
+			//making sure the timer gets executed only once, so the camera doesn't go to fast
 
-		// if (gPlayerData[playerid][SpawnDance]) gPlayerData[playerid][SpawnTimer] = SetTimerEx("MoveCamera", moving_speed, true, "i", playerid);
-		// gPlayerData[playerid][SpawnDance] = false; //preventing the timer to execute again
-		// ClearScreen(playerid);//Clearing the users screen from SA-MP messages.
+			// if (gPlayerData[playerid][SpawnDance]) gPlayerData[playerid][SpawnTimer] = SetTimerEx("MoveCamera", moving_speed, true, "i", playerid);
+			// gPlayerData[playerid][SpawnDance] = false; //preventing the timer to execute again
+			// ClearScreen(playerid);//Clearing the users screen from SA-MP messages.
+		
+			strcat( string, "{FFFFFF}Witaj na serwerze WParty !\n\n" );
+			strcat( string, "Aby siê zalogowaæ wpisz swoje has³o do postaci.\n\n\n" );
+			strcat( string, "{F52222}Jeœli nie posiadasz jeszcze postaci musisz wpierw zarejestrowaæ swoje konto\nna forum WParty.pl a nastêpnei utworzyæ postaæ\npostêpuj¹æ wed³ug podanych tam wskazówek.\n\n" );
+			strcat( string, "{FAEC25}Jeœli zapomnia³eœ has³a do postaci mo¿esz je zmieniæ loguj¹c siê na forum\na nastêpnie przechodz¹c do panelu zarz¹dzania postaciami.\n\n\n" );
+			strcat( string, "{FFFFFF}Wpisz has³o:" );
+			ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Logowanie", string, "Zaloguj", "");
 	
-		strcat(string, "{FFFFFF}Witaj na serwerze WParty !\n\n");
-		strcat(string, "Aby siê zalogowaæ wpisz swoje has³o do postaci.\n\n\n");
-		strcat(string, "{F52222}Jeœli nie posiadasz jeszcze postaci musisz wpierw zarejestrowaæ swoje konto\nna forum WParty.eu a nastêpnie utworzyæ postaæ\npostêpuj¹æ wed³ug podanych tam wskazówek.\n\n");
-		strcat(string, "{FAEC25}Jeœli zapomnia³eœ has³a do postaci mo¿esz je zmieniæ loguj¹c siê na forum\na nastêpnie przechodz¹c do panelu zarz¹dzania postaciami.\n\n\n");
-		strcat(string, "{FFFFFF}Wpisz has³o:");
-		ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, ""#COLOR_TITLE"Logowanie", string, "Zaloguj", "");
-
-		return 0;
+			return 0;
+		}
 	}
 }
 
@@ -285,9 +248,7 @@ public OnPlayerSpawn(playerid)
 	if(IsPlayerNPC(playerid)) return 1;
 	defer SetPlayerSpawn2(playerid);
 	RunActivatedPlayerItems(playerid);
-
-	HideLocationsCp(playerid);
-	
+    // SetCameraBehindPlayer(playerid); //to prevent some bug	
 	Alive[playerid] = 1;
 	Spawned[playerid] = 1;
 	CheckDelay[playerid] = 3;
@@ -324,7 +285,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 	gPlayerData[playerid][pDeathCount]++;
 	SavePlayerData(playerid, "DeathCount");	
 	
-	
 	BW(playerid);
 	
 	foreach(Player, i)
@@ -343,7 +303,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 			defer ClearCheckpointsForPlayer(playerid);
 
-			format(string, sizeof(string),"(( [RADIO:] Otrzymaliœmy anonimowe zg³oszenie o potrzebuj¹cej osobie ! Wolna jednostka potrzebna na miejscu ! ))");
+			format(string, sizeof(string),"(( [Radio:] Otrzymaliœmy anonimowe zg³oszenie o potrzebuj¹cej osobie ! Wolna jednostka potrzebna na miejscu ! ))");
 			SendFactionMessage(2,COLOR_FACTIONCHAT,string);
 		}
 	}
@@ -360,67 +320,42 @@ public OnPlayerDeath(playerid, killerid, reason)
 					else if(gPlayerData[playerid][pFaction] == gGangWar[FactionStarted] && gPlayerData[killerid][pFaction] == DynamicZones[ gGangWar[AreaID] ][mFaction])
 						gGangWar[FactionAttackedKills]++;
 				}
-				
 				if(AdminDuty[playerid] && !AdminDuty[killerid])
 				{
 					KickPlayer(killerid,"System","Zabicie administratora na s³u¿bie.");
 					format(string, sizeof(string), "[INFO:] Gracz %s zosta³ wyrzucony z serwera za u¿ywanie cheatów.", PlayerName(killerid));
 					KickLog(string);
 				}
-				
 				if(AdminDuty[killerid])
 				{
 					gPlayerData[playerid][pDeathCount]--;
 					SavePlayerData(playerid, "DeathCount");
 				}
-				
-				if(gPlayerData[killerid][pFaction] != 255)
+				if(gPlayerData[killerid][pFaction] == 0)
 				{
-					if(DynamicFactions[gPlayerData[killerid][pFaction]][fType] == FACTIONT_POLICE)
+					if(gPlayerData[killerid][pDuty] == 1)
 					{
-						if(gPlayerData[killerid][pDuty])
+						if(gPlayerData[playerid][pWantedLvl] == 0)
 						{
-							if(gPlayerData[playerid][pWantedLvl] == 0)
-							{
-								format(string, sizeof(string), "[INFO:] Zabi³eœ niewinnego cz³owieka !");
-								SendClientMessage(killerid, COLOR_RED, string);
-								for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++ )
-								{
-									if(gPlayerData[i][pFaction] < sizeof(DynamicFactions))
-									{
-										if(DynamicFactions[gPlayerData[i][pFaction]][fType] == 1)
-											PlayCrimeReportForPlayer(i, killerid, 6); //uzycie broni
-									}
-								}
-							}
-						}
-						else if(!gPlayerData[killerid][pDuty])
-						{
-							// format(string, sizeof(string), "[SFPD:] Podejrzany %s zabi³ %s.", PlayerName(killerid), PlayerName(playerid));
-							// SendFactionTypeMessage(1,COLOR_LSPD,string);
-							// format(string, sizeof(string), "[INFO:] Zabi³eœ niewinnego cz³owieka ! Jesteœ poszukiwany !");
 							format(string, sizeof(string), "[INFO:] Zabi³eœ niewinnego cz³owieka !");
-							SendClientMessage(playerid, COLOR_RED, string);
+							SendClientMessage(killerid, COLOR_RED, string);
 							for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++ )
 							{
 								if(gPlayerData[i][pFaction] < sizeof(DynamicFactions))
 								{
 									if(DynamicFactions[gPlayerData[i][pFaction]][fType] == 1)
-									{
-										PlayCrimeReportForPlayer(i, killerid, 3); //inne
-									}
+										PlayCrimeReportForPlayer(i, killerid, 6); //uzycie broni
 								}
 							}
 						}
 					}
-					else
+					else if(gPlayerData[killerid][pDuty] == 0)
 					{
 						// format(string, sizeof(string), "[SFPD:] Podejrzany %s zabi³ %s.", PlayerName(killerid), PlayerName(playerid));
 						// SendFactionTypeMessage(1,COLOR_LSPD,string);
-						format(string, sizeof(string), "[INFO:] Zabi³eœ niewinnego %s !", PlayerName(playerid));
-						SendClientMessage(killerid, COLOR_RED, string);
-						// gPlayerData[killerid][pWantedLvl]++;
-						// SavePlayerData(killerid, "WantedLvl");
+						// format(string, sizeof(string), "[INFO:] Zabi³eœ niewinnego cz³owieka ! Jesteœ poszukiwany !");
+						format(string, sizeof(string), "[INFO:] Zabi³eœ niewinnego cz³owieka !");
+						SendClientMessage(playerid, COLOR_RED, string);
 						for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++ )
 						{
 							if(gPlayerData[i][pFaction] < sizeof(DynamicFactions))
@@ -429,6 +364,25 @@ public OnPlayerDeath(playerid, killerid, reason)
 								{
 									PlayCrimeReportForPlayer(i, killerid, 3); //inne
 								}
+							}
+						}
+					}
+				}
+				else if(gPlayerData[killerid][pFaction] != 0 && gPlayerData[killerid][pFaction] != 6)
+				{
+					// format(string, sizeof(string), "[SFPD:] Podejrzany %s zabi³ %s.", PlayerName(killerid), PlayerName(playerid));
+					// SendFactionTypeMessage(1,COLOR_LSPD,string);
+					format(string, sizeof(string), "[INFO:] Zabi³eœ niewinnego %s !", PlayerName(playerid));
+					SendClientMessage(killerid, COLOR_RED, string);
+					// gPlayerData[killerid][pWantedLvl]++;
+					// SavePlayerData(killerid, "WantedLvl");
+					for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++ )
+					{
+						if(gPlayerData[i][pFaction] < sizeof(DynamicFactions))
+						{
+							if(DynamicFactions[gPlayerData[i][pFaction]][fType] == 1)
+							{
+								PlayCrimeReportForPlayer(i, killerid, 3); //inne
 							}
 						}
 					}
@@ -560,11 +514,10 @@ public OnPlayerInteriorChange(playerid, newinteriorid, oldinteriorid)
 public OnPlayerText(playerid, text[])
 {
 	static wrong;
-	if(!gPlayerLogged[playerid] || gPlayerData[playerid][pMuted])
-	{
+	if(!gPlayerLogged[playerid])
 		return 0;
-	}
-	
+	if(gPlayerData[playerid][pMuted])
+		return 0;
 	if(!gPlayerData[playerid][pQuiz])
 	{
 		wrong = gPlayerVars[playerid][mQuizWrongAnsweres];
@@ -714,33 +667,16 @@ public OnPlayerText(playerid, text[])
 		if(gPlayerVars[playerid][mQuizQuestionNo] == 26)
 		{
 			SendClientMessage(playerid, COLOR_GREEN, "{DF013A}[WParty SERVER:]{FFFFFF} Odpowiedzia³eœ poprawnie na wszystkie pytania !");
-			SendClientMessage(playerid, COLOR_GREEN, "{DF013A}[WParty SERVER:]{FFFFFF} Aby dowiedzieæ siê wiêcej na temat rozgrywki u¿yj komendy {DF013A}/pomoc" );
-			SendClientMessage(playerid, COLOR_GREEN, "{DF013A}[WParty SERVER:]{FFFFFF} Proponujemy te¿ na pocz¹tek zapoznanie siê z {DF013A}/komendy" );
-			SendClientMessage(playerid, COLOR_GREEN, "{DF013A}[WParty SERVER:]{FFFFFF} W razie jakichkolwiek pytañ pisz na /n. ¯yczymy mi³ej gry ! - {DF013A}Zespó³ WParty" );
-			
-			// Fill first logged player with default data
-			if( gPlayerData[playerid][pRegistered] == 0 )
-			{
-				gPlayerData[playerid][pCrashX] = gStartSpawnX;
-				gPlayerData[playerid][pCrashY] = gStartSpawnY;
-				gPlayerData[playerid][pCrashZ] = gStartSpawnZ;
-				gPlayerData[playerid][pCash] = gStartMoney;
-				gPlayerData[playerid][pBank] = gStartBank;
-				gPlayerData[playerid][pRegistered] = 1;
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= gStartBank;
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= gStartMoney;				
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-
-				gSavePlayerReady[playerid] = 1; // umo¿liwia zapis w wp_saveplayerdata.inc
-
-				SavePlayerData(playerid, "Registered");
-				SetPlayerCash(playerid,gPlayerData[playerid][pCash]);
-				gFirstTime[playerid] = 1;
-			}
-			
+			SendClientMessage( playerid, COLOR_GREEN, "{DF013A}[WParty SERVER:]{FFFFFF} Aby dowiedzieæ siê wiêcej na temat rozgrywki u¿yj komendy {DF013A}/pomoc" );
+			SendClientMessage( playerid, COLOR_GREEN, "{DF013A}[WParty SERVER:]{FFFFFF} Proponujemy te¿ na pocz¹tek zapoznanie siê z {DF013A}/komendy" );
+			SendClientMessage( playerid, COLOR_GREEN, "{DF013A}[WParty SERVER:]{FFFFFF} W razie jakichkolwiek pytañ pisz na /n. ¯yczymy mi³ej gry ! - {DF013A}Zespó³ WParty" );
 			gPlayerData[playerid][pQuiz] = 1;
 			SavePlayerData(playerid, "Quiz");
-			SpawnPlayerEx(playerid);
+			SetPlayerSpawn(playerid);							
+			SpawnPlayer(playerid);						
+			defer UnfreezePlayer(playerid);
+			Alive[playerid] = 1;
+			CheckDelay[playerid] = 2;
 		}
 		else
 		{
@@ -749,13 +685,10 @@ public OnPlayerText(playerid, text[])
 		}
 		return 0;
 	}
-	
 	static string[256], part1[128], part2[128], plName[32];
 	format(plName, sizeof(plName), "%s", GetPlayerNameEx(playerid ));
 	PlayerWrittingAnything[playerid] = 1;
-	
-	UpdateDynamic3DTextLabelText(playerAFK[playerid], COLOR_BLACK, " ");
-	
+	// UpdateDynamic3DTextLabelText(playerAFK[playerid], COLOR_LIGHTBLUE, " ");
 	if(Mobile[playerid] == 997)
 	{
 		if( strlen(text) > 56 )
@@ -1144,19 +1077,10 @@ public OnPlayerText(playerid, text[])
 		format(string, sizeof(string), "* %s zaczal sie smiac na podlodze", sendername);
 		ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 	}
-	
-	if(!IsPlayerInAnyVehicle(playerid))
-	{
-		ApplyAnimation(playerid, "PED", "IDLE_CHAT", 4.1, 0, 1, 1, 1, 1, 1);
-		
-		if(!gPlayerVars[playerid][mIsIdleAnimationTimerActive])
-		{
-			gPlayerVars[playerid][mIdleAnimationTimer] = defer SetPlayerIdleAnimation(playerid);
-			gPlayerVars[playerid][mIsIdleAnimationTimerActive] = true;
-		}
-	}
-	
-	return 0;
+	//	LoopingAnim(playerid, "PED","FLOOR_hit_f", 4.0, 1, 0, 0, 0, 0);
+	else
+		return 0;
+	return 1;
 } // end of OnPlayerText
 
 public OnPlayerClickPlayer(playerid, clickedplayerid, source)
@@ -1167,8 +1091,6 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 public OnPlayerUpdate(playerid)
 {
 	static panels, doors, lights, tires, carid, i;
-
-	
 	for(i = 0; i < sizeof(SpikeInfo); i++)
 	{
 		if(IsPlayerInRangeOfPoint(playerid, 3.0, SpikeInfo[i][sX], SpikeInfo[i][sY], SpikeInfo[i][sZ]))
@@ -1183,7 +1105,6 @@ public OnPlayerUpdate(playerid)
 			}
 		}
 	}
-	
 	gTGunAmmo = GetPlayerAmmo(playerid);
 	if(gTGunAmmo == 1)
 	{
@@ -1298,26 +1219,15 @@ public OnPlayerUpdate(playerid)
 
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	static string[128], Float:posX, Float:posY, Float:posZ;
-	
-	if(gVehData[vehicleid-1][mVehType] == 999 && !ispassenger && !AdminDuty[playerid])
-	{
-		GetPlayerPos(playerid, posX, posY, posZ);
-		SetPlayerToPos(playerid, posX, posY, posZ);
-		return 1;
-	}
-	
-	gPlayerVars[playerid][mJustEnteredVehicle] = 5;
-	
+	new string[128];
 	if(gVehData[vehicleid-1][CarRepairTimeLeft] > 0)
 	{
 		format(string, sizeof(string), "[INFO:] Do koñca naprawy pozosta³o %d minut", gVehData[vehicleid-1][CarRepairTimeLeft]*10);
 		SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 	}
-	
 	GetVehicleHealth(vehicleid, gVehHealthOnPlayerEnter[playerid]);
 	IngVehData[playerid] = 1; // UAC
-	
+
 	// samochod zamkniety
 	/*if(gVehData[vehicleid-1][Closed])
 	{
@@ -1332,7 +1242,6 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			}
 		}
 	}*/
-	
 	// Samochod nalezacy do szkoly jazdy
 	if(gVehData[vehicleid-1][mVehType] == 1)
 	{
@@ -1374,7 +1283,6 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			}
 		}
 	}
-	
 	// motorowka nalezy do tego no
 	if(gVehData[vehicleid-1][mVehType] == 6)
 	{
@@ -1397,7 +1305,18 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			}
 		}
 	}
-	
+	// autobus
+	if(gVehData[vehicleid-1][mVehType] == 2)
+	{
+		if(ispassenger == 0)
+		{
+			gBusDriverIsPassenger[playerid] = 0;
+		}
+		else if(ispassenger != 0)
+		{
+			gBusDriverIsPassenger[playerid] = 1;
+		}
+	}
 	// taksowka
 	if(gVehData[vehicleid-1][mVehFaction] == 4)
 	{
@@ -1425,25 +1344,22 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			IsPlayerTaxiPassenger[playerid] = 1;
 		}
 	}
-	
-	//bus driver
 	if(gVehData[vehicleid-1][mVehType] == 2)
 	{
 		if(ispassenger == 0)
 		{
-			if(gPlayerData[playerid][pJob] != JOB_BUSDRIVER)
+			if(gPlayerData[playerid][pJob] != 13)
 			{
-				gBusDriverIsPassenger[playerid] = 0;
-			
 				new Float:playerposx, Float:playerposy, Float:playerposz;
-				
 				GetPlayerPos(playerid, playerposx, playerposy, playerposz);
-				
-				if(gPlayerData[playerid][pAdmin] == 0 && gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT && !AdminDuty[playerid])
+				if(gPlayerData[playerid][pAdmin] == 0 && gPlayerData[playerid][pFaction] != 9)
 				{
 					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
 				}
-				
+				else if(AdminDuty[playerid] == 0 && gPlayerData[playerid][pFaction] != 9)
+				{
+					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
+				}
 				SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Nie jesteœ kierowc¹ autobusu !");
 			}
 		}
@@ -1452,7 +1368,6 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			gBusDriverIsPassenger[playerid] = 1;
 		}
 	}
-	
 	//smieciarka
 	if(gVehData[vehicleid-1][mVehType] == 4)
 	{
@@ -1461,16 +1376,16 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			if(gPlayerData[playerid][pJob] != 14)
 			{
 				gTrashDriverIsPassenger[playerid] = 0;
-				
 				new Float:playerposx, Float:playerposy, Float:playerposz;
-				
 				GetPlayerPos(playerid, playerposx, playerposy, playerposz);
-				
-				if(gPlayerData[playerid][pAdmin] == 0 && !AdminDuty[playerid])
+				if(gPlayerData[playerid][pAdmin] == 0)
 				{
 					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
 				}
-				
+				else if(AdminDuty[playerid] == 0)
+				{
+					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
+				}
 				SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Nie pracujesz w MZGK !");
 			}
 		}
@@ -1479,25 +1394,25 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			gTrashDriverIsPassenger[playerid] = 1;
 		}
 	}
-	
 	//sweeper
 	if(gVehData[vehicleid-1][mVehType] == 5)
 	{
 		if(ispassenger == 0)
 		{
-			if(gPlayerData[playerid][pJob] != JOB_SWEEPER)
+			EnteredVehicleID[playerid] = vehicleid;
+			if(gPlayerData[playerid][pJob] != 15)
 			{
 				gSweeperDriverIsPassenger[playerid] = 0;
-				
 				new Float:playerposx, Float:playerposy, Float:playerposz;
-				
 				GetPlayerPos(playerid, playerposx, playerposy, playerposz);
-				
-				if(gPlayerData[playerid][pAdmin] == 0 && !AdminDuty[playerid])
+				if(gPlayerData[playerid][pAdmin] == 0)
 				{
 					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
 				}
-				
+				else if(AdminDuty[playerid] == 0)
+				{
+					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
+				}
 				SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Nie pracujesz w MZGK !");
 			}
 		}
@@ -1506,26 +1421,48 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			gSweeperDriverIsPassenger[playerid] = 1;
 		}
 	}
-	
+	//mechanik
+	if(gVehData[vehicleid-1][mVehType] == 10)
+	{
+		if(ispassenger == 0)
+		{
+			EnteredVehicleID[playerid] = vehicleid;
+			if(gPlayerData[playerid][pJob] != 17)
+			{
+				new Float:playerposx, Float:playerposy, Float:playerposz;
+				GetPlayerPos(playerid, playerposx, playerposy, playerposz);
+				if(gPlayerData[playerid][pAdmin] == 0)
+				{
+					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
+				}
+				else if(AdminDuty[playerid] == 0)
+				{
+					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
+				}
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] nie jesteœ mechanikiem !");
+			}
+		}
+	}
 	// farmer
 	if(gVehData[vehicleid-1][mVehType] == 11)
 	{
 		if(ispassenger == 0)
 		{
-			if(gPlayerData[playerid][pJob] != JOB_FARMER)
+			EnteredVehicleID[playerid] = vehicleid;
+			if(gPlayerData[playerid][pJob] != 18)
 			{
 				gFarmerDriverIsPassenger[playerid] = 0;
-				
 				new Float:playerposx, Float:playerposy, Float:playerposz;
-				
 				GetPlayerPos(playerid, playerposx, playerposy, playerposz);
-				
-				if(gPlayerData[playerid][pAdmin] == 0 && !AdminDuty[playerid])
+				if(gPlayerData[playerid][pAdmin] == 0)
 				{
 					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
 				}
-				
-				SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] Nie jesteœ rolnikiem !");
+				else if(AdminDuty[playerid] == 0)
+				{
+					SetPlayerToPos(playerid,playerposx, playerposy, playerposz);
+				}
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2,"[INFO:] nie jesteœ farmerem !");
 			}
 		}
 		else
@@ -1533,13 +1470,14 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			gFarmerDriverIsPassenger[playerid] = 1;
 		}
 	}
-	
 	return 1;
 } // end of OnPlayerEnterVehicle
 
 public OnPlayerExitVehicle(playerid, vehicleid)
 {
 	new string[128];
+	format(string, sizeof(string), "pe³en dumy wysiada z %s", GetVehicleName(vehicleid)); //
+	PlayerActionMessage(playerid, 15.0, string); //text
 
 	if(gVehData[vehicleid-1][mVehType] == 0)
 	{
@@ -1548,16 +1486,18 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 		GetVehicleHealth(vehicleid, gVehData[vehicleid-1][CarHealth]);
 	}
 
+	// SaveVehData(vehicleid-1, "VehPos");
+	// SaveVehData(vehicleid-1, "CarHealth");
+	// SaveVehData(vehicleid-1, "CarFuel");
+
 	if(gPlayerData[playerid][pSeatBelt] == 1)
 	{
 		gPlayerData[playerid][pSeatBelt] = 0;
 
 		format(string, sizeof(string), "*** %s rozpina bardzo szybko swoje pasy.", GetPlayerNameEx(playerid));
 		ProxDetector(20.0, playerid, string, 0xC2A2DAAA,0xC2A2DAAA,0xC2A2DAAA,0xC2A2DAAA,0xC2A2DAAA);
-		
 		return 1;
 	}
-	
 	if(gVehData[vehicleid-1][mVehType] == 0 && gVehData[vehicleid-1][mVehFaction] != 255 && IsPlayerTaxiPassenger[playerid] == 1)
 	{
 		if(DynamicFactions[gVehData[vehicleid-1][mVehFaction]][fType] == 6)
@@ -1579,10 +1519,10 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 							SaveFData(gPlayerData[i][pFaction], "Bank");
 							GivePlayerCash(playerid,-(floatround(gTaxiPassengerDistance[playerid]/1000, floatround_round) * DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiKMCost] + DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiEnterCost] ));
 							
-							format(string, sizeof(string), "Przewóz: $%d", ( floatround(gTaxiPassengerDistance[playerid]/1000, floatround_round) * DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiKMCost] + DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiEnterCost] ) );
+							format(string, sizeof(string), "Przewóz: %d$", ( floatround(gTaxiPassengerDistance[playerid]/1000, floatround_round) * DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiKMCost] + DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiEnterCost] ) );
 							SendClientMessage(i, COLOR_LIGHTYELLOW2, string);
 
-							format(string, sizeof(string), "Zap³aci³eœ $%d za przewóz", ( floatround(gTaxiPassengerDistance[playerid]/1000, floatround_round) * DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiKMCost] + DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiEnterCost] ) );
+							format(string, sizeof(string), "Zap³aci³eœ %d$ za przewóz", ( floatround(gTaxiPassengerDistance[playerid]/1000, floatround_round) * DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiKMCost] + DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiEnterCost] ) );
 							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 							
 							SaveStatsData("taxi-przejazd", gPlayerData[playerid][pName], floatround(gTaxiPassengerDistance[playerid]/1000, floatround_round) * DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiKMCost] + DynamicFactions[ gPlayerData[i][pFaction] ][fTaxiEnterCost], -1, -1);
@@ -1593,7 +1533,6 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 			gTaxiPassengerDistance[playerid] = 0;
 		}
 	}
-	
 	return 1;
 } // end of OnPlayerExitVehicle
 
@@ -1604,7 +1543,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	getdate(Year, Month, Day);
 	new Hour, Minute, Second;
 	gettime(Hour, Minute, Second);
-	static string[2048];
+	new string[256];
 
 	if(IsPlayerNPC(playerid))
 		return 1;
@@ -1617,7 +1556,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		Kick(playerid);
 		printf("[ANTI-CHEAT:] %s has been kicked for using Spectate", GetName(playerid));
  	}
-	
 	if(newstate == PLAYER_STATE_DRIVER && IngVehData[playerid] == 0 && !(IsPlayerAdmin(playerid) || gPlayerData[playerid][pAdmin] || gPlayerData[playerid][pModerator]) && !IsPlayerNPC(playerid))
 	{
 	    Kick(playerid);
@@ -1626,75 +1564,26 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 
 	if(newstate == PLAYER_STATE_PASSENGER)
-	{
+	{			
 		new vehicleid = GetPlayerVehicleID(playerid);
 		ResumeCarRadioStation(playerid, gVehData[vehicleid-1][RadioOn]);
 		
 		if(gVehData[vehicleid-1][mVehType] == 2)
 		{
-			// TODO: Uwzglêdniæ sytuacje gdy gracz wszed³ do autobusu ale nie by³o kierowcy a potem kierowca jedzie
-			// pewnie ³atwo bêdzie poprostu wywaliæ wszystkich w momencie wejœcia kierowcy
-			if(vehicleid == 1998 || vehicleid == 1999)
+			gBusDriverIsPassenger[playerid] = 1;
+			if(IsPlayerVip(playerid))
 			{
-				gBusDriverIsPassenger[playerid] = 1;
-				if(IsPlayerVip(playerid))
-				{
-					if(vehicleid == 1999)
-					{
-						format(string, sizeof(string), "Cena biletu: $%d\nCena biletu ze zni¿k¹: %d", gBusTrackTicketCost[0], floatround(gBusTrackTicketCost[0]*BUS_TICKET_VIP_DISCOUNT));
-					}
-					else
-					{
-						format(string, sizeof(string), "Cena biletu: $%d\nCena biletu ze zni¿k¹: %d", 20, floatround(20*BUS_TICKET_VIP_DISCOUNT));
-					}
-					ShowPlayerDialog(playerid, DIALOG_BUY_BUS_TICKET, DIALOG_STYLE_MSGBOX, "Kupno biletu", string, "Kup", "WyjdŸ");
-					
-				}
-				else
-				{
-					if(vehicleid == 1999)
-					{
-						format(string, sizeof(string), "Cena biletu: $%d", gBusTrackTicketCost[0]);
-					}
-					else
-					{
-						format(string, sizeof(string), "Cena biletu: $%d", 20);
-					}
-					ShowPlayerDialog(playerid, DIALOG_BUY_BUS_TICKET, DIALOG_STYLE_MSGBOX, "Kupno biletu", string, "Kup", "WyjdŸ");
-				}
+				GivePlayerCash(playerid, -2);
+				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 2;
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Zap³aci³eœ 2$ za bilet");
 			}
 			else
 			{
-				new driverId;
-				driverId = GetPlayerInVehicleSeat(vehicleid, 0);
-				if(driverId != -1)
-				{
-					if(gBusDriverOnDuty[driverId])
-					{
-						gBusDriverIsPassenger[playerid] = 1;
-						if(IsPlayerVip(playerid))
-						{
-							format(string, sizeof(string), "Cena biletu: $%d\nCena biletu ze zni¿k¹: %d", gBusTrackTicketCost[gBusDriverSelectedLine[driverId]], floatround(gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]*BUS_TICKET_VIP_DISCOUNT));
-							ShowPlayerDialog(playerid, DIALOG_BUY_BUS_TICKET, DIALOG_STYLE_MSGBOX, "Kupno biletu", string, "Kup", "WyjdŸ");
-							
-						}
-						else
-						{
-							format(string, sizeof(string), "Cena biletu: $%d", gBusTrackTicketCost[gBusDriverSelectedLine[driverId]]);
-							ShowPlayerDialog(playerid, DIALOG_BUY_BUS_TICKET, DIALOG_STYLE_MSGBOX, "Kupno biletu", string, "Kup", "WyjdŸ");
-						}
-					}
-				}
+				GivePlayerCash(playerid, -5);
+				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 5;
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Zap³aci³eœ 5$ za bilet");
 			}
-		}
-		else if(gVehData[vehicleid-1][mVehType] == VEHICLET_TAXI_TP)
-		{
-			format(string, sizeof(string), "");
-			for(new i = 0; i < sizeof(gTaxiLocations); i++)
-			{
-				format(string, sizeof(string), ""#COLOR_DEFAULT"%s%s\n", string, gTaxiLocations[i][mLocationDescription]);
-			}
-			ShowPlayerDialog(playerid, DIALOG_TELEPORT_TAXI, DIALOG_STYLE_LIST, ""#COLOR_TITLE"Lista miejsc", string, "Wybierz", "Zamknij");
+			SaveFData(FACTIONID_GOVERNMENT, "Bank");
 		}
 	}
 	else if(newstate == PLAYER_STATE_DRIVER)
@@ -1714,8 +1603,11 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		format(string, sizeof(string), "[VEHICLE:] Player Name: %s, Vehicle ID: %d, Model ID: %d, Type: %d, Player Job: %d, Veh X: %f, Veh Y: %f, Veh Z: %f, Veh Angle: %f",
 			gPlayerData[playerid][pName], vehicleid, vehiclemodel, gVehData[vehicleid-1][mVehType], gPlayerData[playerid][pJob], vehX, vehY, vehZ, vehA);
 		StateChangeLog(string);
+			
+		// format(string, sizeof(string), "z pe³n¹ gracja wsiada do %s", GetVehicleName(vehicleid)); //zamiast Siedzisz w : mo¿na napisaæ inna rzecz
+		// PlayerActionMessage(playerid,15.0, string);
 		
-
+		
 		/*
 		* Player spectating - change spectate to vehicle
 		*/
@@ -1735,14 +1627,13 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		/*
 		* Admin vehicle protect
 		*/
-		if(vehicleid == 255 && strcmp("Andy_Brazil", gPlayerData[playerid][pName], false) != 0)
+		if(vehicleid == 255 && strcmp( "Andy_Brazil", gPlayerData[playerid][pName], false ) != 0)
 		{
 			RemovePlayerFromVehicle(playerid);
 			SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nale¿y do adminsitratora Xtreme. Nie mo¿esz go prowadziæ !");
 			return 1;
 		}
-		
-		if(vehicleid == 256 && strcmp("Soin_Noiskin", gPlayerData[playerid][pName], false) != 0)
+		if(vehicleid == 256 && strcmp( "BlAcK_XaMxE", gPlayerData[playerid][pName], false ) != 0)
 		{
 			RemovePlayerFromVehicle(playerid);
 			SendClientMessage( playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nale¿y do adminsitratora Xamxe. Nie mo¿esz go prowadziæ !");
@@ -1765,13 +1656,8 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		*/
 		if(gVehData[vehicleidd][ReadyToSell] == 1)
 		{
-			format(string, sizeof(string), ""#COLOR_DEFAULT"Pojazd jest na sprzeda¿ ! Cena: $%d /kuppojazd", gVehData[vehicleidd][Price]);
-			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Informacja", string, "Zamknij", "");
-		}
-		else if(gVehData[vehicleidd][mVehOwned] == 0 && gVehData[vehicleidd][mVehType] == 0 && gVehData[vehicleidd][mVehFaction] == 255)
-		{
-			format(string, sizeof(string), ""#COLOR_DEFAULT"Pojazd jest na sprzeda¿ ! Cena: $%d + %d%% VAT /kuppojazd", gVehData[vehicleidd][Price], floatround(DynamicTaxes[VatTaxMax]*100.0));
-			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Informacja", string, "Zamknij", "");
+			format(string, sizeof(string), "[INFO:] Pojazd jest na sprzeda¿ ! Cena: %d$ /kuppojazd", gVehData[vehicleidd][Price]);
+			SendClientMessage(playerid, COLOR_WHITE, string);
 		}
 		
 		
@@ -1782,7 +1668,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		{
 			for(new i = 0; i < 20; i++)
 			{
-				if(SpawnPlacePlanes[i][VehicleID] == vehicleid && strcmp(gPlayerData[playerid][pName], Businesses[gVehData[vehicleid-1][BusinessID]][Owner], false) == 0 && vehicleid != 255)
+				if(SpawnPlacePlanes[i][VehicleID] == vehicleid && strcmp(gPlayerData[playerid][pName], Businesses[gVehData[vehicleid-1][BusinessID]][Owner], false) == 0)
 				{
 					SpawnPlacePlanes[i][VehicleID] = 255;
 					SpawnPlacePlanes[i][SlotUsed] = 0;
@@ -1792,12 +1678,11 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				}
 			}
 		}
-		
 		if(IsABoat(vehicleid))
 		{
 			for(new i = 0; i < 20; i++)
 			{
-				if(SpawnPlaceBoats[i][VehicleID] == vehicleid && strcmp(gPlayerData[playerid][pName], Businesses[gVehData[vehicleid-1][BusinessID]][Owner], false) == 0 && vehicleid != 255)
+				if(SpawnPlaceBoats[i][VehicleID] == vehicleid && strcmp(gPlayerData[playerid][pName], Businesses[gVehData[vehicleid-1][BusinessID]][Owner], false) == 0)
 				{
 					SpawnPlaceBoats[i][VehicleID] = 255;
 					SpawnPlaceBoats[i][SlotUsed] = 0;
@@ -1807,12 +1692,11 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				}
 			}
 		}
-		
 		if(!IsABoat(vehicleid) && !IsAPlane(vehicleid) && !IsAHelicopter(vehicleid))
 		{
 			for(new i = 0; i < 20; i++)
 			{
-				if(SpawnPlaceCars[i][VehicleID] == vehicleid && strcmp(gPlayerData[playerid][pName], Businesses[gVehData[vehicleid-1][BusinessID]][Owner], false) == 0 && vehicleid != 255)
+				if(SpawnPlaceCars[i][VehicleID] == vehicleid && strcmp(gPlayerData[playerid][pName], Businesses[gVehData[vehicleid-1][BusinessID]][Owner], false) == 0)
 				{
 					SpawnPlaceCars[i][VehicleID] = 255;
 					SpawnPlaceCars[i][SlotUsed] = 0;
@@ -1823,59 +1707,63 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			}
 		}	
 		
+		
 		/*
 		* Set engien status, check if is a bike and if it is launch it without commands.
 		* Olso show info about vehicle price if not owned.
 		*/
 		if(gVehData[vehicleidd][mVehType] == 0)
-		{		
-			if(!IsABike(vehicleid))
-			{
-				if(!gVehData[vehicleidd][EngineOn])
+		{
+			if(gVehData[vehicleidd][mVehOwned])
+			{			
+				if(!IsABike(vehicleid))
 				{
-					SetVehicleParamsEx(vehicleid,0,lights,alarm,doors,bonnet,boot,objective);
+					if(!gVehData[vehicleidd][EngineOn])
+						SetVehicleParamsEx(vehicleid,0,lights,alarm,doors,bonnet,boot,objective);
+					else
+						SetVehicleParamsEx(vehicleid,1,lights,alarm,doors,bonnet,boot,objective);
 				}
 				else
 				{
-					SetVehicleParamsEx(vehicleid,1,lights,alarm,doors,bonnet,boot,objective);
+					if(!gVehData[vehicleidd][Closed] || AdminDuty[playerid])
+					{
+						SetVehicleParamsEx(vehicleid,1,lights,alarm,doors,bonnet,boot,objective);
+						gVehData[vehicleid-1][EngineOn] = 1;
+					}
+					else
+					{
+						SetVehicleParamsEx(vehicleid,0,lights,alarm,doors,bonnet,boot,objective);
+						gVehData[vehicleid-1][EngineOn] = 0;
+						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Rower jest spiêty zapiêciem, nie mo¿esz nim jechaæ");
+					}
+					SaveVehData(vehicleid-1, "EngineOn");
 				}
 			}
-			else
+			else if(!gVehData[vehicleidd][mVehOwned] && gVehData[vehicleidd][mVehFaction] == 255)
 			{
-				if(!gVehData[vehicleidd][Closed] || AdminDuty[playerid])
-				{
-					SetVehicleParamsEx(vehicleid,1,lights,alarm,doors,bonnet,boot,objective);
-					gVehData[vehicleid-1][EngineOn] = 1;
-				}
+				if(IsAHelicopter(vehicleid))
+					format(string, sizeof(string), "[INFO:] Helikopter jest na sprzeda¿ ! Cena: %d$ /kuppojazd",  gVehData[vehicleidd][Price] + floatround(float(gVehData[vehicleidd][Price]) * DynamicTaxes[VatTaxMax],floatround_round));
+				else if(IsAPlane(vehicleid))
+					format(string, sizeof(string), "[INFO:] Samolot jest na sprzeda¿ ! Cena: %d$ /kuppojazd", gVehData[vehicleidd][Price] + floatround(float(gVehData[vehicleidd][Price]) * DynamicTaxes[VatTaxMax],floatround_round));
+				else if(IsAMotorBike(vehicleid))
+					format(string, sizeof(string), "[INFO:] Motor jest na sprzeda¿ ! Cena: %d$ /kuppojazd", gVehData[vehicleidd][Price] + floatround(float(gVehData[vehicleidd][Price]) * DynamicTaxes[VatTaxMax],floatround_round));
+				else if(IsABike(vehicleid))
+					format(string, sizeof(string), "[INFO:] Rower jest na sprzeda¿ ! Cena: %d$ /kuppojazd", gVehData[vehicleidd][Price] + floatround(float(gVehData[vehicleidd][Price]) * DynamicTaxes[VatTaxMax],floatround_round));
 				else
-				{
-					SetVehicleParamsEx(vehicleid,0,lights,alarm,doors,bonnet,boot,objective);
-					gVehData[vehicleid-1][EngineOn] = 0;
-					
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Rower jest spiêty zapiêciem, nie mo¿esz nim jechaæ");
-				}
-				SaveVehData(vehicleid-1, "EngineOn");
+					format(string, sizeof(string), "[INFO:] Pojazd jest na sprzeda¿ ! Cena: %d$ /kuppojazd", gVehData[vehicleidd][Price] + floatround(float(gVehData[vehicleidd][Price]) * DynamicTaxes[VatTaxMax],floatround_round));
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 			}
 		}
-		
 		/*
 		* Special interior vehicles to be filled with gas, fixed and running
 		*/
 		else if(gVehData[vehicleidd][mVehType] != 0)
 		{
-			RepairVehicle(vehicleid);
-			
-			SetVehicleHealth(vehicleid, 2000.0);
-			
-			SetVehicleParamsEx(vehicleid, 1, 1, alarm, doors, bonnet, boot, objective);
-			
-			gVehData[vehicleid-1][BatteryCapacity] = 25.0;
-			gVehData[vehicleid-1][BatteryMaxCapacity] = 25.0;
+			SetVehicleParamsEx(vehicleid,1,lights,alarm,doors,bonnet,boot,objective);
 			gVehData[vehicleid-1][EngineOn] = 1;
-			gVehData[vehicleid-1][LightsOn] = 1;
+			RepairVehicle(vehicleid);
 			gVehData[vehicleid-1][CarFuel] = float(VehFTank(vehicleid));
-			
-			GetVehicleHealth(vehicleid, gVehData[vehicleid-1][CarHealth]);
+			SetVehicleHealth(vehicleid, 2000.0);
 		}
 		
 		/*
@@ -1896,17 +1784,13 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					licCE = 1;
 			}
 		}			
-		
 		if(IsAVehCatAModel(gVehData[vehicleid-1][mVehModel]) && !TakingDrivingTestA[playerid] && !licA)
 			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Prawo jazdy kat. A jest wymagane aby legalnie prowadziæ ten pojazd !");
-		
 		else if(IsAVehCatBModel(gVehData[vehicleid-1][mVehModel]) && !TakingDrivingTestB[playerid] && !licB)
 			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Prawo jazdy kat. B jest wymagane aby legalnie prowadziæ ten pojazd !");
-		
 		else if(IsAVehCatCEModel(gVehData[vehicleid-1][mVehModel]) && !TakingDrivingTestCE[playerid] && !licCE)
 			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Prawo jazdy kat. C+E jest wymagane aby legalnie prowadziæ ten pojazd !");			
-		
-		else if(((IsAPlane(vehicleid) && !gPlayerData[playerid][pPlaneLic]) || (IsAHelicopter(vehicleid) && !gPlayerData[playerid][pHeliLic])) && !AdminDuty[playerid])
+		else if((IsAPlane(vehicleid) && !gPlayerData[playerid][pPlaneLic]) || (IsAHelicopter(vehicleid) && !gPlayerData[playerid][pHeliLic]) && !AdminDuty[playerid])
 		{
 			RemovePlayerFromVehicle(playerid);
 			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz licencji pilota !");
@@ -1929,473 +1813,237 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			SaveVehData(vehicleidd, "CarDamaged");
 			SaveVehData(vehicleidd, "CarRepairTimeLeft");
 		}
-		
 		// Bus vehicle
 		else if(gVehData[vehicleidd][mVehType] == 2)
 		{
 			if(gBusDriverIsPassenger[playerid] == 0)
 			{
-				if(gBusDriverOnDuty[playerid] == 0 && gPlayerData[playerid][pJob] == JOB_BUSDRIVER)
+				if(gBusDriverOnDuty[playerid] == 0 && gPlayerData[playerid][pJob] == 13)
 				{
 					if(gVehData[vehicleidd][CarFuel] < 5.0)
 					{
 						gVehData[vehicleidd][CarFuel] = 5.0;
 						SaveVehData( vehicleidd, "CarFuel" );
 					}
-					
 					SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pBusJobPoints]);
 					UpdateProgressBar(JobProgress[playerid], playerid);
-					
+					ShowProgressBarForPlayer(playerid, JobProgress[playerid]);
 					EnteredVehicleID[playerid] = vehicleid;
-					
 					gBusDriverIsPassenger[playerid] = 0;
-					
 					GetVehicleHealth(vehicleid, vhealth);
-					
 					if(vhealth <= 700.0)
-					{
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Autobus jest uszkodzony, udaj siê do mechanika");
-					}
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Autobus jest uszkodzony, udaj siê do mechanika lub zadzwon pod 555");
 					else
 					{
 						if(gVehData[vehicleidd][CarFuel] < 20.0)
-						{
 							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Autobus ma ma³o paliwa, udaj siê na jedn¹ ze stacji benzynowych i zatankuj go");
-						}
 						else
 						{
-							if(IsPlayerInDynamicArea(playerid, gASanFierro))
+							if( IsPlayerInDynamicArea(playerid, gASanFierro) )
 							{
 								new rand = random(50);
 								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 0)
+								while( !gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 0 )
 								{
 									rand = random(50);
 									tries++;
-									if(tries == 100)
+									if( tries == 100 )
 										break;
 								}
-								
-								if(tries == 100)
+								if( tries == 100 )
 								{
 									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
 									return 1;
 								}
-								
 								gBusDriverOnDuty[playerid] = 1;
 								gBusDriverSelectedLine[playerid] = rand;
 								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+								printf("trasa 0, %f, %f, %f", gBusTrackCpX[rand][0], gBusTrackCpY[rand][0], gBusTrackCpZ[rand][0]);
+								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 							}
-							else if(IsPlayerInDynamicArea(playerid, gAAngelPine))
+							else if( IsPlayerInDynamicArea(playerid, gAAngelPine) )
 							{
 								new rand = random(50);
 								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 3)
+								while( !gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 3 )
 								{
 									rand = random(50);
 									tries++;
-									if(tries == 100)
+									if( tries == 100 )
 										break;
 								}
-								
-								if(tries == 100)
+								if( tries == 100 )
 								{
 									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
 									return 1;
 								}
-								
 								gBusDriverOnDuty[playerid] = 1;
 								gBusDriverSelectedLine[playerid] = rand;
 								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos1))
+							else if( IsPlayerInDynamicArea(playerid, gALosSantos1) )
 							{
 								new rand = random(50);
 								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 1)
+								while( !gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 1 )
 								{
 									rand = random(50);
 									tries++;
-									if(tries == 100)
+									if( tries == 100 )
 										break;
 								}
-								
-								if(tries == 100)
+								if( tries == 100 )
 								{
 									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
 									return 1;
 								}
-								
 								gBusDriverOnDuty[playerid] = 1;
 								gBusDriverSelectedLine[playerid] = rand;
 								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos2))
+							else if( IsPlayerInDynamicArea(playerid, gALosSantos2) )
 							{
 								new rand = random(50);
 								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 2)
+								while( !gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 2 )
 								{
 									rand = random(50);
 									tries++;
-									if(tries == 100)
+									if( tries == 100 )
 										break;
 								}
-								
-								if(tries == 100)
+								if( tries == 100 )
 								{
 									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
 									return 1;
 								}
-								
 								gBusDriverOnDuty[playerid] = 1;
 								gBusDriverSelectedLine[playerid] = rand;
 								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 							}
-							else if(IsPlayerInDynamicArea(playerid, gAMontgomery))
+							else if( IsPlayerInDynamicArea(playerid, gAMontgomery) )
 							{
 								new rand = random(50);
 								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 4)
+								while( !gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 4 )
 								{
 									rand = random(50);
 									tries++;
-									if(tries == 100)
+									if( tries == 100 )
 										break;
 								}
-								
-								if(tries == 100)
+								if( tries == 100 )
 								{
 									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
 									return 1;
 								}
-								
 								gBusDriverOnDuty[playerid] = 1;
 								gBusDriverSelectedLine[playerid] = rand;
 								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 							}
-							else if(IsPlayerInDynamicArea(playerid, gAPalominoCreek))
+							else if( IsPlayerInDynamicArea(playerid, gAPalominoCreek) )
 							{
 								new rand = random(50);
 								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 5)
+								while( !gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 5 )
 								{
 									rand = random(50);
 									tries++;
-									if(tries == 100)
+									if( tries == 100 )
 										break;
 								}
-								
-								if(tries == 100)
+								if( tries == 100 )
 								{
 									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
 									return 1;
 								}
-								
 								gBusDriverOnDuty[playerid] = 1;
 								gBusDriverSelectedLine[playerid] = rand;
 								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 							}
-							else if(IsPlayerInDynamicArea(playerid, gABountyBay))
+							else if( IsPlayerInDynamicArea(playerid, gABountyBay) )
 							{
 								new rand = random(50);
 								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 6)
+								while( !gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 6 )
 								{
 									rand = random(50);
 									tries++;
-									if(tries == 100)
+									if( tries == 100 )
 										break;
 								}
-								
-								if(tries == 100)
+								if( tries == 100 )
 								{
 									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
 									return 1;
 								}
-								
 								gBusDriverOnDuty[playerid] = 1;
 								gBusDriverSelectedLine[playerid] = rand;
 								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 							}
-							else if(IsPlayerInDynamicArea(playerid, gADilimore))
+							else if( IsPlayerInDynamicArea(playerid, gADilimore) )
 							{
 								new rand = random(50);
 								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 7)
+								while( !gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 7 )
 								{
 									rand = random(50);
 									tries++;
-									if(tries == 100)
+									if( tries == 100 )
 										break;
 								}
-								
-								if(tries == 100)
+								if( tries == 100 )
 								{
 									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
 									return 1;
 								}
-								
 								gBusDriverOnDuty[playerid] = 1;
 								gBusDriverSelectedLine[playerid] = rand;
 								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 							}
-							else if(IsPlayerInDynamicArea(playerid, gAFortCarson))
+							else if( IsPlayerInDynamicArea(playerid, gAFortCarson) )
 							{
 								new rand = random(50);
 								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 8)
+								while( !gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 8 )
 								{
 									rand = random(50);
 									tries++;
-									if(tries == 100)
+									if( tries == 100 )
 										break;
 								}
-								
-								if(tries == 100)
+								if( tries == 100 )
 								{
 									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
 									return 1;
 								}
-								
 								gBusDriverOnDuty[playerid] = 1;
 								gBusDriverSelectedLine[playerid] = rand;
 								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos3))
-							{
-								new rand = random(50);
-								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 9)
-								{
-									rand = random(50);
-									tries++;
-									if(tries == 100)
-										break;
-								}
-								
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								
-								gBusDriverOnDuty[playerid] = 1;
-								gBusDriverSelectedLine[playerid] = rand;
-								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos4))
-							{
-								new rand = random(50);
-								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 10)
-								{
-									rand = random(50);
-									tries++;
-									if(tries == 100)
-										break;
-								}
-								
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								
-								gBusDriverOnDuty[playerid] = 1;
-								gBusDriverSelectedLine[playerid] = rand;
-								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos5))
-							{
-								new rand = random(50);
-								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 11)
-								{
-									rand = random(50);
-									tries++;
-									if(tries == 100)
-										break;
-								}
-								
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								
-								gBusDriverOnDuty[playerid] = 1;
-								gBusDriverSelectedLine[playerid] = rand;
-								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos6))
-							{
-								new rand = random(50);
-								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 12)
-								{
-									rand = random(50);
-									tries++;
-									if(tries == 100)
-										break;
-								}
-								
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								
-								gBusDriverOnDuty[playerid] = 1;
-								gBusDriverSelectedLine[playerid] = rand;
-								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos7))
-							{
-								new rand = random(50);
-								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 13)
-								{
-									rand = random(50);
-									tries++;
-									if(tries == 100)
-										break;
-								}
-								
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								
-								gBusDriverOnDuty[playerid] = 1;
-								gBusDriverSelectedLine[playerid] = rand;
-								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos8))
-							{
-								new rand = random(50);
-								new tries = 0;
-								
-								while(!gBusTrackEnabled[rand] || gBusTrackStartArea[rand] != 15)
-								{
-									rand = random(50);
-									tries++;
-									if(tries == 100)
-										break;
-								}
-								
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								
-								gBusDriverOnDuty[playerid] = 1;
-								gBusDriverSelectedLine[playerid] = rand;
-								gBusDriverJustStarted[playerid] = 1;
-								
-								UpdateDynamic3DTextLabelText(BusRoute[vehicleid-1], COLOR_LIGHTYELLOW, gBusTrackDesc[rand]);
-								
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 							}
@@ -2407,1132 +2055,796 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 						}
 					}
 				}
-				else if(gBusDriverOnDuty[playerid] && gPlayerData[playerid][pJob] == JOB_BUSDRIVER)
+				if(gPlayerData[playerid][pJob] == 13 && gBusDriverOnDuty[playerid])
 				{
-					if(EnteredVehicleID[playerid] != GetPlayerVehicleID(playerid))
-					{
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Wróæ do pojazdu, w którym zacz¹³eœ prace aby j¹ kontynuuowaæ.", "Zamknij", "");
-					}
-					else
-					{
-						gBusDriverResetTime[playerid] = 0;
-					
-						SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pBusJobPoints]);
-						UpdateProgressBar(JobProgress[playerid], playerid);
-						
-						SetPlayerCheckpoint(playerid, gBusTrackCpX[ gBusDriverSelectedLine[playerid] ][ gBusDriverCurrentCheckPoint[playerid] ], gBusTrackCpY[ gBusDriverSelectedLine[playerid] ][ gBusDriverCurrentCheckPoint[playerid] ], gBusTrackCpZ[ gBusDriverSelectedLine[playerid] ][ gBusDriverCurrentCheckPoint[playerid] ], 5.0);
-					}
+					SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pBusJobPoints]);
+					UpdateProgressBar(JobProgress[playerid], playerid);
+					ShowProgressBarForPlayer(playerid, JobProgress[playerid]);
+					SetPlayerCheckpoint(playerid, gBusTrackCpX[ gBusDriverSelectedLine[playerid] ][ gBusDriverCurrentCheckPoint[playerid] ], gBusTrackCpY[ gBusDriverSelectedLine[playerid] ][ gBusDriverCurrentCheckPoint[playerid] ], gBusTrackCpZ[ gBusDriverSelectedLine[playerid] ][ gBusDriverCurrentCheckPoint[playerid] ], 5.0);
 				}
 			}
 			else
 			{
 				gBusDriverIsPassenger[playerid] = 1;
-				
-				GivePlayerCash(playerid, -5);
-				
+				GivePlayerCash(playerid,-5);
 				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 5;
 				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Zap³aci³eœ 5$ za bilet");	
 			}
 		}
-		
 		// Trash vehicle
 		else if(gVehData[vehicleidd][mVehType] == 4)
 		{
-			if(gTrashDriverIsPassenger[playerid] == 0 && gPlayerData[playerid][pJob] == JOB_TRASHDRIVER)
+			if(gVehData[vehicleidd][CarFuel] < 5.0)
 			{
-				if(gTrashDriverOnDuty[playerid] == 0)
-				{
-					if(gVehData[vehicleidd][CarFuel] < 5.0)
-					{
-						gVehData[vehicleidd][CarFuel] = 5.0;
-						SaveVehData( vehicleidd, "CarFuel" );
-					}
-					
-					SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pMzgkJobPoints]);
-					UpdateProgressBar(JobProgress[playerid], playerid);
-					
-					EnteredVehicleID[playerid] = vehicleid;
-					
-					GetVehicleHealth(vehicleid, vhealth);
-					
-					if(vhealth <= 700.0)
-					{
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Œmierciarka jest uszkodzona, udaj siê do mechanika lub zadzwon pod 555");
-					}
-					else
-					{
-						if(gVehData[vehicleidd][CarFuel] < 20.0)
-						{
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Œmierciarka ma ma³o paliwa, udaj siê na jedn¹ ze stacji benzynowych i zatankuj j¹");
-						}
-						else
-						{
-							if(IsPlayerInDynamicArea(playerid, gASanFierro))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 0)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								printf("trasa 0, %f, %f, %f", gTrashTrackCpX[rand][0], gTrashTrackCpY[rand][0], gTrashTrackCpZ[rand][0]);
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego punktu zaznaczonego na mapce");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAAngelPine))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 3)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos1))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 1)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos2))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 2)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAMontgomery))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 4 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAPalominoCreek))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 5 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gABountyBay))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 6)
-								{
-									rand = random(50);
-									tries++;
-									if(tries == 100)
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if( IsPlayerInDynamicArea(playerid, gADilimore) )
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 7 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAFortCarson))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 8 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos3))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 9)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos4))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 10)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos5))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 11)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos6))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 12)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos7))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 13)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos8))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 15)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gTrashDriverOnDuty[playerid] = 1;
-								gTrashDriverSelectedLine[playerid] = rand;
-								gTrashDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else
-							{
-								SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] W tym rejonie nie ma dostêpnej ¿adnej trasy");
-								return 1;
-							}
-						}
-					}
-				}
+				gVehData[vehicleidd][CarFuel] = 5.0;
+				SaveVehData( vehicleidd, "CarFuel" );
+			}
+			SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pMzgkJobPoints]);
+			UpdateProgressBar(JobProgress[playerid], playerid);
+			ShowProgressBarForPlayer(playerid, JobProgress[playerid]);
+			EnteredVehicleID[playerid] = vehicleid;
+			GetVehicleHealth(vehicleid, vhealth);
+			if(vhealth <= 700.0)
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Œmierciarka jest uszkodzona, udaj siê do mechanika lub zadzwon pod 555");
+			else
+			{
+				if(gVehData[vehicleidd][CarFuel] < 20.0)
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Œmierciarka ma ma³o paliwa, udaj siê na jedn¹ ze stacji benzynowych i zatankuj j¹");
 				else
 				{
-					if(EnteredVehicleID[playerid] != GetPlayerVehicleID(playerid))
+					if(IsPlayerInDynamicArea(playerid, gASanFierro))
 					{
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Wróæ do pojazdu, w którym zacz¹³eœ prace aby j¹ kontynuuowaæ.", "Zamknij", "");
+						new rand = random(50);
+						new tries = 0;
+						while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 0)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gTrashDriverOnDuty[playerid] = 1;
+						gTrashDriverSelectedLine[playerid] = rand;
+						gTrashDriverJustStarted[playerid] = 1;
+						printf("trasa 0, %f, %f, %f", gTrashTrackCpX[rand][0], gTrashTrackCpY[rand][0], gTrashTrackCpZ[rand][0]);
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego punktu zaznaczonego na mapce");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAAngelPine))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 3)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gTrashDriverOnDuty[playerid] = 1;
+						gTrashDriverSelectedLine[playerid] = rand;
+						gTrashDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gALosSantos1))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 1)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gTrashDriverOnDuty[playerid] = 1;
+						gTrashDriverSelectedLine[playerid] = rand;
+						gTrashDriverJustStarted[playerid] = 1;
+						format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gALosSantos2))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 2)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gTrashDriverOnDuty[playerid] = 1;
+						gTrashDriverSelectedLine[playerid] = rand;
+						gTrashDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAMontgomery))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 4 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gTrashDriverOnDuty[playerid] = 1;
+						gTrashDriverSelectedLine[playerid] = rand;
+						gTrashDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAPalominoCreek))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 5 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gTrashDriverOnDuty[playerid] = 1;
+						gTrashDriverSelectedLine[playerid] = rand;
+						gTrashDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gABountyBay))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 6)
+						{
+							rand = random(50);
+							tries++;
+							if(tries == 100)
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gTrashDriverOnDuty[playerid] = 1;
+						gTrashDriverSelectedLine[playerid] = rand;
+						gTrashDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if( IsPlayerInDynamicArea(playerid, gADilimore) )
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 7 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gTrashDriverOnDuty[playerid] = 1;
+						gTrashDriverSelectedLine[playerid] = rand;
+						gTrashDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAFortCarson))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gTrashTrackEnabled[rand] || gTrashTrackStartArea[rand] != 8 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gTrashDriverOnDuty[playerid] = 1;
+						gTrashDriverSelectedLine[playerid] = rand;
+						gTrashDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 					}
 					else
 					{
-						gTrashDriverResetTime[playerid] = 0;
-						
-						SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pMzgkJobPoints]);
-						UpdateProgressBar(JobProgress[playerid], playerid);
-						
-						SetPlayerCheckpoint(playerid, gTrashTrackCpX[gTrashDriverSelectedLine[playerid]][gTrashDriverCurrentCheckPoint[playerid]], gTrashTrackCpY[gTrashDriverSelectedLine[playerid]][gTrashDriverCurrentCheckPoint[playerid]], gTrashTrackCpZ[gTrashDriverSelectedLine[playerid]][gTrashDriverCurrentCheckPoint[playerid]], 5.0);
+						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] W tym rejonie nie ma dostêpnej ¿adnej trasy");
+						return 1;
 					}
 				}
 			}
+			/* Old Trash script */
+			// if(gPlayerData[playerid][pJob] == 14)
+			// {
+				// UpdateProgressBar(JobProgress[playerid], playerid);
+				// ShowProgressBarForPlayer(playerid, JobProgress[playerid]);
+				// EnteredVehicleID[playerid] = vehicleid;
+				// gTrashDriverIsPassenger[playerid] = 0;
+				// gTrashDriverOnDuty[playerid] = 1;
+				// if(gTrashDriverLastSelectedLine == 0)
+				// {
+					// gTrashDriverSelectedLine[playerid] = 1;
+					// gTrashDriverCheckpointCount[playerid] = 0;
+					// gTrashDriverLastSelectedLine = 1;
+				// }
+				// else if(gTrashDriverLastSelectedLine == 1)
+				// {
+					// gTrashDriverSelectedLine[playerid] = 0;
+					// gTrashDriverCheckpointCount[playerid] = 0;
+					// gTrashDriverLastSelectedLine = 0;
+				// }
+			// }
 		}
-		
 		// Sweeper vehicle
 		else if(gVehData[vehicleidd][mVehType] == 5)
 		{
-			if(gSweeperDriverIsPassenger[playerid] == 0 && gPlayerData[playerid][pJob] == JOB_SWEEPER)
+			if(gVehData[vehicleidd][CarFuel] < 5.0)
 			{
-				if(gSweeperDriverOnDuty[playerid] == 0)
-				{
-					if(gVehData[vehicleidd][CarFuel] < 5.0)
-					{
-						gVehData[vehicleidd][CarFuel] = 5.0;
-						SaveVehData( vehicleidd, "CarFuel" );
-					}
-					
-					SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pSweeperJobPoints]);
-					UpdateProgressBar(JobProgress[playerid], playerid);
-					
-					EnteredVehicleID[playerid] = vehicleid;
-					
-					GetVehicleHealth(vehicleid, vhealth);
-					
-					if(vhealth <= 700.0)
-					{
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Pojazd jest uszkodzony, udaj siê do mechanika lub zadzwon pod 555");
-					}
-					else
-					{
-						if(gVehData[vehicleidd][CarFuel] < 20.0)
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Pojazd ma ma³o paliwa, udaj siê na jedn¹ ze stacji benzynowych i zatankuj go");
-						else
-						{
-							if(IsPlayerInDynamicArea(playerid, gASanFierro))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 0)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego punktu zaznaczonego na mapce");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAAngelPine))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 3)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos1))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 1)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos2))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 2)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAMontgomery))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 4 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAPalominoCreek))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 5 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gABountyBay))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 6)
-								{
-									rand = random(50);
-									tries++;
-									if(tries == 100)
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if( IsPlayerInDynamicArea(playerid, gADilimore) )
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 7 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAFortCarson))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 8 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos3))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 9)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos4))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 10)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos5))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 11)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos6))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 12)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos7))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 13)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos8))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 15)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gSweeperDriverOnDuty[playerid] = 1;
-								gSweeperDriverSelectedLine[playerid] = rand;
-								gSweeperDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else
-							{
-								SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] W tym rejonie nie ma dostêpnej ¿adnej trasy");
-								return 1;
-							}
-						}
-					}
-				}
+				gVehData[vehicleidd][CarFuel] = 5.0;
+				SaveVehData( vehicleidd, "CarFuel" );
+			}
+			SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pSweeperJobPoints]);
+			UpdateProgressBar(JobProgress[playerid], playerid);
+			ShowProgressBarForPlayer(playerid, JobProgress[playerid]);
+			EnteredVehicleID[playerid] = vehicleid;
+			GetVehicleHealth(vehicleid, vhealth);
+			if(vhealth <= 700.0)
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Pojazd jest uszkodzony, udaj siê do mechanika lub zadzwon pod 555");
+			else
+			{
+				if(gVehData[vehicleidd][CarFuel] < 20.0)
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Pojazd ma ma³o paliwa, udaj siê na jedn¹ ze stacji benzynowych i zatankuj go");
 				else
 				{
-					if(EnteredVehicleID[playerid] != GetPlayerVehicleID(playerid))
+					if(IsPlayerInDynamicArea(playerid, gASanFierro))
 					{
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Wróæ do pojazdu, w którym zacz¹³eœ prace aby j¹ kontynuuowaæ.", "Zamknij", "");
+						new rand = random(50);
+						new tries = 0;
+						while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 0)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gSweeperDriverOnDuty[playerid] = 1;
+						gSweeperDriverSelectedLine[playerid] = rand;
+						gSweeperDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego punktu zaznaczonego na mapce");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAAngelPine))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 3)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gSweeperDriverOnDuty[playerid] = 1;
+						gSweeperDriverSelectedLine[playerid] = rand;
+						gSweeperDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gALosSantos1))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 1)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gSweeperDriverOnDuty[playerid] = 1;
+						gSweeperDriverSelectedLine[playerid] = rand;
+						gSweeperDriverJustStarted[playerid] = 1;
+						format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gALosSantos2))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 2)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gSweeperDriverOnDuty[playerid] = 1;
+						gSweeperDriverSelectedLine[playerid] = rand;
+						gSweeperDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAMontgomery))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 4 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gSweeperDriverOnDuty[playerid] = 1;
+						gSweeperDriverSelectedLine[playerid] = rand;
+						gSweeperDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAPalominoCreek))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 5 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gSweeperDriverOnDuty[playerid] = 1;
+						gSweeperDriverSelectedLine[playerid] = rand;
+						gSweeperDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gABountyBay))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 6)
+						{
+							rand = random(50);
+							tries++;
+							if(tries == 100)
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gSweeperDriverOnDuty[playerid] = 1;
+						gSweeperDriverSelectedLine[playerid] = rand;
+						gSweeperDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if( IsPlayerInDynamicArea(playerid, gADilimore) )
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 7 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gSweeperDriverOnDuty[playerid] = 1;
+						gSweeperDriverSelectedLine[playerid] = rand;
+						gSweeperDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAFortCarson))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gSweeperTrackEnabled[rand] || gSweeperTrackStartArea[rand] != 8 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gSweeperDriverOnDuty[playerid] = 1;
+						gSweeperDriverSelectedLine[playerid] = rand;
+						gSweeperDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 					}
 					else
 					{
-						gSweeperDriverResetTime[playerid] = 0;
-						
-						SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pSweeperJobPoints]);
-						UpdateProgressBar(JobProgress[playerid], playerid);
-						
-						SetPlayerCheckpoint(playerid, gSweeperTrackCpX[gSweeperDriverSelectedLine[playerid]][gSweeperDriverCurrentCheckPoint[playerid]], gSweeperTrackCpY[gSweeperDriverSelectedLine[playerid]][gSweeperDriverCurrentCheckPoint[playerid]], gSweeperTrackCpZ[gSweeperDriverSelectedLine[playerid]][gSweeperDriverCurrentCheckPoint[playerid]], 5.0);
+						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] W tym rejonie nie ma dostêpnej ¿adnej trasy");
+						return 1;
 					}
 				}
 			}
 		}		
-		
 		// Farmer vehicle
 		else if(gVehData[vehicleidd][mVehType] == 11)
 		{
-			if(gFarmerDriverIsPassenger[playerid] == 0 && gPlayerData[playerid][pJob] == JOB_FARMER)
+			if(gVehData[vehicleidd][CarFuel] < 5.0)
 			{
-				if(gFarmerDriverOnDuty[playerid] == 0)
-				{
-					if(gVehData[vehicleidd][CarFuel] < 5.0)
-					{
-						gVehData[vehicleidd][CarFuel] = 5.0;
-						SaveVehData( vehicleidd, "CarFuel" );
-					}
-					
-					SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pFarmerJobPoints]);
-					UpdateProgressBar(JobProgress[playerid], playerid);
-					
-					EnteredVehicleID[playerid] = vehicleid;
-					
-					GetVehicleHealth(vehicleid, vhealth);
-					
-					if(vhealth <= 700.0)
-					{
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Pojazd jest uszkodzony, udaj siê do mechanika lub zadzwon pod 555");
-					}
-					else
-					{
-						if(gVehData[vehicleidd][CarFuel] < 20.0)
-						{
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Pojazd ma ma³o paliwa, udaj siê na jedn¹ ze stacji benzynowych i zatankuj go");
-						}
-						else
-						{
-							if(IsPlayerInDynamicArea(playerid, gASanFierro))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 0)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego punktu zaznaczonego na mapce");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAAngelPine))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 3)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos1))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 1)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gALosSantos2))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 2)
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAMontgomery))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 4 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAPalominoCreek))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 5 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gABountyBay))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 6)
-								{
-									rand = random(50);
-									tries++;
-									if(tries == 100)
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if( IsPlayerInDynamicArea(playerid, gADilimore) )
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 7 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if( tries == 100 )
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gAFortCarson))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 8 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else if(IsPlayerInDynamicArea(playerid, gABlueBerryFarm))
-							{
-								new rand = random(50);
-								new tries = 0;
-								while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 14 )
-								{
-									rand = random(50);
-									tries++;
-									if( tries == 100 )
-										break;
-								}
-								if(tries == 100)
-								{
-									SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
-									return 1;
-								}
-								gFarmerDriverOnDuty[playerid] = 1;
-								gFarmerDriverSelectedLine[playerid] = rand;
-								gFarmerDriverJustStarted[playerid] = 1;
-								format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
-							}
-							else
-							{
-								SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] W tym rejonie nie ma dostêpnej ¿adnej trasy");
-								return 1;
-							}
-						}
-					}
-				}
+				gVehData[vehicleidd][CarFuel] = 5.0;
+				SaveVehData( vehicleidd, "CarFuel" );
+			}
+			SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pFarmerJobPoints]);
+			UpdateProgressBar(JobProgress[playerid], playerid);
+			ShowProgressBarForPlayer(playerid, JobProgress[playerid]);
+			EnteredVehicleID[playerid] = vehicleid;
+			GetVehicleHealth(vehicleid, vhealth);
+			if(vhealth <= 700.0)
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Pojazd jest uszkodzony, udaj siê do mechanika lub zadzwon pod 555");
+			else
+			{
+				if(gVehData[vehicleidd][CarFuel] < 20.0)
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Pojazd ma ma³o paliwa, udaj siê na jedn¹ ze stacji benzynowych i zatankuj go");
 				else
 				{
-					if(EnteredVehicleID[playerid] != GetPlayerVehicleID(playerid))
+					if(IsPlayerInDynamicArea(playerid, gASanFierro))
 					{
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Wróæ do pojazdu, w którym zacz¹³eœ prace aby j¹ kontynuuowaæ.", "Zamknij", "");
+						new rand = random(50);
+						new tries = 0;
+						while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 0)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego punktu zaznaczonego na mapce");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAAngelPine))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 3)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gALosSantos1))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 1)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format(string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gALosSantos2))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 2)
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAMontgomery))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 4 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAPalominoCreek))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 5 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gABountyBay))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while(!gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 6)
+						{
+							rand = random(50);
+							tries++;
+							if(tries == 100)
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if( IsPlayerInDynamicArea(playerid, gADilimore) )
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 7 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if( tries == 100 )
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gAFortCarson))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 8 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
+					}
+					else if(IsPlayerInDynamicArea(playerid, gABlueBerryFarm))
+					{
+						new rand = random(50);
+						new tries = 0;
+						while( !gFarmerTrackEnabled[rand] || gFarmerTrackStartArea[rand] != 9 )
+						{
+							rand = random(50);
+							tries++;
+							if( tries == 100 )
+								break;
+						}
+						if(tries == 100)
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Centrala jest obecnie obci¹¿ona - nie uda³o siê wybraæ trasy !");
+							return 1;
+						}
+						gFarmerDriverOnDuty[playerid] = 1;
+						gFarmerDriverSelectedLine[playerid] = rand;
+						gFarmerDriverJustStarted[playerid] = 1;
+						format( string, sizeof(string), "[INFO:] Jedziesz tras¹ nr %d", rand );
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Udaj siê do pierwszego przystanku zaznaczonego na mapce.");
 					}
 					else
 					{
-						gFarmerDriverResetTime[playerid] = 0;
-						
-						SetProgressBarValue(JobProgress[playerid], gPlayerData[playerid][pFarmerJobPoints]);
-						UpdateProgressBar(JobProgress[playerid], playerid);
-						
-						SetPlayerCheckpoint(playerid, gFarmerTrackCpX[gFarmerDriverSelectedLine[playerid]][gFarmerDriverCurrentCheckPoint[playerid]], gFarmerTrackCpY[gFarmerDriverSelectedLine[playerid]][gFarmerDriverCurrentCheckPoint[playerid]], gFarmerTrackCpZ[gFarmerDriverSelectedLine[playerid]][gFarmerDriverCurrentCheckPoint[playerid]], 5.0);
+						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] W tym rejonie nie ma dostêpnej ¿adnej trasy");
+						return 1;
 					}
 				}
 			}
+			/* Old Farmer script */
+			// if(gPlayerData[playerid][pJob] == 15)
+			// {
+				// UpdateProgressBar(JobProgress[playerid], playerid);
+				// ShowProgressBarForPlayer(playerid, JobProgress[playerid]);
+				// gFarmerDriverIsPassenger[playerid] = 0;
+				// gFarmerDriverOnDuty[playerid] = 1;
+				// if(gFarmerDriverLastSelectedLine == 0)
+				// {
+					// gFarmerDriverSelectedLine[playerid] = 1;
+					// gFarmerDriverCheckpointCount[playerid] = 0;
+					// gFarmerDriverLastSelectedLine = 1;
+				// }
+				// else if(gFarmerDriverLastSelectedLine == 1)
+				// {
+					// gFarmerDriverSelectedLine[playerid] = 0;
+					// gFarmerDriverCheckpointCount[playerid] = 0;
+					// gFarmerDriverLastSelectedLine = 0;
+				// }
+			// }
 		}
-		
 		// Boat
 		else if(gVehData[vehicleidd][mVehType] == 6)
 		{
@@ -3542,8 +2854,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				if(BoatTestStep[playerid] == 0)
 				{
 					gVehData[GetPlayerVehicleID(playerid)-1][CarFuel] = float(VehFTank(GetPlayerVehicleID(playerid)));
-			 		// SetPlayerCheckpoint(playerid, -3022.5170898438, 643.09497070313, 0.17990136146545, 5.0);
-			 		SetPlayerCheckpoint(playerid, 2946.493, -2026.393, -0.338, 5.0);
+			 		SetPlayerCheckpoint(playerid, -3022.5170898438, 643.09497070313, 0.17990136146545, 5.0);
 					BoatTestStep[playerid] = 1;
 				}
 	   		}
@@ -3596,63 +2907,53 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		if(gBusDriverOnDuty[playerid])
 		{
 			if(gBusDriverIsPassenger[playerid] == 0)
-			{
 				DisablePlayerCheckpoint(playerid);
-				
-				gBusDriverResetTime[playerid] = 2*60;
-			}
 			else
-			{
 				gBusDriverIsPassenger[playerid] = 0;
-			}
 		}
-		
 		// Trash vehicle
 		else if(gTrashDriverOnDuty[playerid])
 		{
-			if(gTrashDriverIsPassenger[playerid] == 0)
-			{
-				DisablePlayerCheckpoint(playerid);
-			
-				gTrashDriverResetTime[playerid] = 2*60;
-			}
-			else
-			{
-				gTrashDriverIsPassenger[playerid] = 0;
-			}
+			HideProgressBarForPlayer(playerid, JobProgress[playerid]);
+			format(string, sizeof(string), "[INFO:] Zarobi³eœ %d$", floatround(gJobProfit[playerid], floatround_round));
+			gJobProfit[playerid] = 0.0;
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+			gTrashDriverOnDuty[playerid] = 0;
+			gTrashDriverJustStarted[playerid] = 0;
+			DisablePlayerCheckpoint(playerid);
+			gTrashDriverCurrentCheckPoint[playerid] = 0;
+			SetVehicleToRespawnEx(EnteredVehicleID[playerid]);
+			gVehData[EnteredVehicleID[playerid]-1][CarFuel] = float(VehFTank(EnteredVehicleID[playerid]));
 		}
-		
 		// Sweeper vehicle
 		else if(gSweeperDriverOnDuty[playerid])
 		{
-			if(gSweeperDriverIsPassenger[playerid] == 0)
-			{
-				DisablePlayerCheckpoint(playerid);
-			
-				gSweeperDriverResetTime[playerid] = 2*60;
-			}
-			else
-			{
-				gSweeperDriverIsPassenger[playerid] = 0;
-			}
+			HideProgressBarForPlayer(playerid, JobProgress[playerid]);
+			format(string, sizeof(string), "[INFO:] Zarobi³eœ %d$", floatround(gJobProfit[playerid], floatround_round));
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+			gJobProfit[playerid] = 0;
+			gSweeperDriverOnDuty[playerid] = 0;
+			gSweeperDriverJustStarted[playerid] = 0;
+			DisablePlayerCheckpoint(playerid);
+			gSweeperDriverCurrentCheckPoint[playerid] = 0;
+			SetVehicleToRespawnEx(EnteredVehicleID[playerid]);
+			gVehData[EnteredVehicleID[playerid]-1][CarFuel] = float(VehFTank(EnteredVehicleID[playerid]));
 		}
-		
 		// Combine vehicle
 		else if(gFarmerDriverOnDuty[playerid])
 		{
-			if(gFarmerDriverIsPassenger[playerid] == 0)
-			{
-				DisablePlayerCheckpoint(playerid);
-			
-				gFarmerDriverResetTime[playerid] = 2*60;
-			}
-			else
-			{
-				gFarmerDriverIsPassenger[playerid] = 0;
-			}
+			HideProgressBarForPlayer(playerid, JobProgress[playerid]);
+			format(string, sizeof(string), "[INFO:] Zarobi³eœ %d$", floatround(gJobProfit[playerid], floatround_round));
+			gJobProfit[playerid] = 0.0;
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+			gFarmerDriverOnDuty[playerid] = 0;
+			gFarmerDriverJustStarted[playerid] = 0;
+			DisablePlayerCheckpoint(playerid);
+			gFarmerDriverCurrentCheckPoint[playerid] = 0;
+			SetVehicleToRespawnEx(EnteredVehicleID[playerid]);
+			gVehData[EnteredVehicleID[playerid]-1][CarFuel] = float(VehFTank(EnteredVehicleID[playerid]));
 		}
 	}
-	
 	return 1;
 } // end of OnPlayerStateChange
 
@@ -3668,254 +2969,137 @@ public OnPlayerEnterCheckpoint(playerid)
 		{
 			if(TakingBoatTest[playerid] == 1)
 			{
-				// if(PlayerToPoint(5.0,playerid,-3022.5170898438, 643.09497070313, -1.07990136146545) && BoatTestStep[playerid] == 1)
-				// {
-					// BoatTestStep[playerid] = 2;
-					// SetPlayerCheckpoint(playerid, -2876.5407714844, 1279.0272216797, 0.60156440734863, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-2876.5407714844, 1279.0272216797, 0.60156440734863) && BoatTestStep[playerid] == 2)
-				// {
-					// BoatTestStep[playerid] = 3;
-					// SetPlayerCheckpoint(playerid, -2026.0700683594, 1354.3315429688, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-2026.0700683594, 1354.3315429688, 1) && BoatTestStep[playerid] == 3)
-				// {
-					// BoatTestStep[playerid] = 4;
-					// SetPlayerCheckpoint(playerid, -1706.5493164063, 1423.0377197266, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1706.5493164063, 1423.0377197266, 1) && BoatTestStep[playerid] == 4)
-				// {
-					// BoatTestStep[playerid] = 5;
-					// SetPlayerCheckpoint(playerid, -1575.3315429688, 1252.4403076172, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1575.3315429688, 1252.4403076172, 1) && BoatTestStep[playerid] == 5)
-				// {
-					// BoatTestStep[playerid] = 6;
-					// SetPlayerCheckpoint(playerid, -1491.6618652344, 1046.6130371094, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1491.6618652344, 1046.6130371094, 1) && BoatTestStep[playerid] == 6)
-				// {
-					// BoatTestStep[playerid] = 7;
-					// SetPlayerCheckpoint(playerid, -999.33776855469, 945.65710449219, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-999.33776855469, 945.65710449219, 1) && BoatTestStep[playerid] == 7)
-				// {
-					// BoatTestStep[playerid] = 8;
-					// SetPlayerCheckpoint(playerid, -1068.4488525391, 907.58959960938, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1068.4488525391, 907.58959960938, 1) && BoatTestStep[playerid] == 8)
-				// {
-					// BoatTestStep[playerid] = 9;
-					// SetPlayerCheckpoint(playerid, -1250.6879882813, 777.51892089844, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1250.6879882813, 777.51892089844, 1) && BoatTestStep[playerid] == 9)
-				// {
-					// BoatTestStep[playerid] = 10;
-					// SetPlayerCheckpoint(playerid, -1476.3942871094, 614.28118896484, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1476.3942871094, 614.28118896484, 1) && BoatTestStep[playerid] == 10)
-				// {
-					// BoatTestStep[playerid] = 11;
-					// SetPlayerCheckpoint(playerid, -1513.0865478516, 579.57153320313, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1513.0865478516, 579.57153320313, 1) && BoatTestStep[playerid] == 11)
-				// {
-					// BoatTestStep[playerid] = 12;
-					// SetPlayerCheckpoint(playerid, -978.84680175781, 494.06463623047, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-978.84680175781, 494.06463623047, 1) && BoatTestStep[playerid] == 12)
-				// {
-					// BoatTestStep[playerid] = 13;
-					// SetPlayerCheckpoint(playerid, -987.51208496094, -295.291015625, 0.094693756104, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-987.51208496094, -295.291015625, 0.094693756104) && BoatTestStep[playerid] == 13)
-				// {
-					// BoatTestStep[playerid] = 14;
-					// SetPlayerCheckpoint(playerid, -78.485473632813, -909.97521972656, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-78.485473632813, -909.97521972656, 1) && BoatTestStep[playerid] == 14)
-				// {
-					// BoatTestStep[playerid] = 15;
-					// SetPlayerCheckpoint(playerid, 44.898357391357, -1420.24609375, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,44.898357391357, -1420.24609375, 1) && BoatTestStep[playerid] == 15)
-				// {
-					// BoatTestStep[playerid] = 16;
-					// SetPlayerCheckpoint(playerid, -166.63638305664, -1683.7888183594, 1, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-166.63638305664, -1683.7888183594, 1) && BoatTestStep[playerid] == 16)
-				// {
-					// BoatTestStep[playerid] = 17;
-					// SetPlayerCheckpoint(playerid, -189.36061096191, -2026.7855224609, 0.36227989196777, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-189.36061096191, -2026.7855224609, 0.36227989196777) && BoatTestStep[playerid] == 17)
-				// {
-					// BoatTestStep[playerid] = 18;
-					// SetPlayerCheckpoint(playerid, 82.837532043457, -2733.0791015625, 4.6377983093262, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,82.837532043457, -2733.0791015625, 4.6377983093262) && BoatTestStep[playerid] == 18)
-				// {
-					// BoatTestStep[playerid] = 19;
-					// SetPlayerCheckpoint(playerid, -590.40893554688, -2863.7443847656, 3.3844101428986, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-590.40893554688, -2863.7443847656, 3.3844101428986) && BoatTestStep[playerid] == 19)
-				// {
-					// BoatTestStep[playerid] = 20;
-					// SetPlayerCheckpoint(playerid, -1077.9144287109, -2852.6623535156, 0.72500026226044, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1077.9144287109, -2852.6623535156, 0.72500026226044) && BoatTestStep[playerid] == 20)
-				// {
-					// BoatTestStep[playerid] = 21;
-					// SetPlayerCheckpoint(playerid, -1240.7104492188, -2498.2866210938, 0.87499970197678, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1240.7104492188, -2498.2866210938, 0.87499970197678) && BoatTestStep[playerid] == 21)
-				// {
-					// BoatTestStep[playerid] = 22;
-					// SetPlayerCheckpoint(playerid, -1266.3760986328, -1886.3358154297, 0.91077101230621, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-1266.3760986328, -1886.3358154297, 0.91077101230621) && BoatTestStep[playerid] == 22)
-				// {
-					// BoatTestStep[playerid] = 23;
-					// SetPlayerCheckpoint(playerid, -2264.5275878906, -1003.3751831055, 0.85000014305115, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-2264.5275878906, -1003.3751831055, 0.85000014305115) && BoatTestStep[playerid] == 23)
-				// {
-					// BoatTestStep[playerid] = 24;
-					// SetPlayerCheckpoint(playerid, -2870.236328125, -943.46826171875, 0.72499996423721, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-2870.236328125, -943.46826171875, 0.72499996423721) && BoatTestStep[playerid] == 24)
-				// {
-					// BoatTestStep[playerid] = 25;
-					// SetPlayerCheckpoint(playerid, -2959.7275390625, 44.119316101074, 0.75000017881393, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-2959.7275390625, 44.119316101074, 0.75000017881393) && BoatTestStep[playerid] == 25)
-				// {
-					// BoatTestStep[playerid] = 26;
-					// SetPlayerCheckpoint(playerid, -2999.0258789063, 425.25250244141, 0.47500047087669, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-2999.0258789063, 425.25250244141, 0.47500047087669) && BoatTestStep[playerid] == 26)
-				// {
-					// BoatTestStep[playerid] = 27;
-					// SetPlayerCheckpoint(playerid, -2999.8190917969, 538.39569091797, 0.70000034570694, 5.0);
-				// }
-				// else if(PlayerToPoint(5.0,playerid,-2999.8190917969, 538.39569091797, 0.70000034570694) && BoatTestStep[playerid] == 27)
-				// {
-					// veh = GetPlayerVehicleID(playerid);
-					// GetVehicleHealth(veh, health);
-					// if(health >= 800.0)
-					// {
-						// SendClientMessage(playerid,COLOR_GREEN,"[INFO:] Utrzyma³eœ 80 procent sprawnoœci ³odzi ! Wynik pozytywny !");
-						// gPlayerData[playerid][pBoatLic] = 1;
-						// SavePlayerData(playerid, "BoatLic");
-						// SetVehicleToRespawnEx(veh);
-						// TakingBoatTest[playerid] = 0;
-						// DisablePlayerCheckpoint(playerid);
-					// }
-					// else
-					// {
-						// SendClientMessage(playerid,COLOR_RED,"[INFO:] Obla³eœ test, mo¿e nastêpnym razem pójdzie Ci lepiej.");
-						// SetVehicleToRespawnEx(veh);
-						// TakingBoatTest[playerid] = 0;
-						// DisablePlayerCheckpoint(playerid);
-					// }
-					// BoatTestStep[playerid] = 0;
-				// }
-				if(PlayerToPoint(10.0,playerid, 2946.493, -2026.393, -0.338) && BoatTestStep[playerid] == 1)
+				if(PlayerToPoint(5.0,playerid,-3022.5170898438, 643.09497070313, -1.07990136146545) && BoatTestStep[playerid] == 1)
 				{
 					BoatTestStep[playerid] = 2;
-					SetPlayerCheckpoint(playerid, 2976.889, -1901.246, -1.061, 10.0);
+					SetPlayerCheckpoint(playerid, -2876.5407714844, 1279.0272216797, 0.60156440734863, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 2976.889, -1901.246, -1.061) && BoatTestStep[playerid] == 2)
+				else if(PlayerToPoint(5.0,playerid,-2876.5407714844, 1279.0272216797, 0.60156440734863) && BoatTestStep[playerid] == 2)
 				{
 					BoatTestStep[playerid] = 3;
-					SetPlayerCheckpoint(playerid, 2975.374, -1735.205, -0.757, 10.0);
+					SetPlayerCheckpoint(playerid, -2026.0700683594, 1354.3315429688, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 2975.374, -1735.205, -0.757) && BoatTestStep[playerid] == 3)
+				else if(PlayerToPoint(5.0,playerid,-2026.0700683594, 1354.3315429688, 1) && BoatTestStep[playerid] == 3)
 				{
 					BoatTestStep[playerid] = 4;
-					SetPlayerCheckpoint(playerid, 3012.247, -1665.405, -1.254, 10.0);
+					SetPlayerCheckpoint(playerid, -1706.5493164063, 1423.0377197266, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3012.247, -1665.405, -1.254) && BoatTestStep[playerid] == 4)
+				else if(PlayerToPoint(5.0,playerid,-1706.5493164063, 1423.0377197266, 1) && BoatTestStep[playerid] == 4)
 				{
 					BoatTestStep[playerid] = 5;
-					SetPlayerCheckpoint(playerid, 3048.541, -1598.687, 0.133, 10.0);
+					SetPlayerCheckpoint(playerid, -1575.3315429688, 1252.4403076172, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid,3048.541, -1598.687, 0.133) && BoatTestStep[playerid] == 5)
+				else if(PlayerToPoint(5.0,playerid,-1575.3315429688, 1252.4403076172, 1) && BoatTestStep[playerid] == 5)
 				{
 					BoatTestStep[playerid] = 6;
-					SetPlayerCheckpoint(playerid, 3002.354, -1602.506, -0.380, 10.0);
+					SetPlayerCheckpoint(playerid, -1491.6618652344, 1046.6130371094, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3002.354, -1602.506, -0.380) && BoatTestStep[playerid] == 6)
+				else if(PlayerToPoint(5.0,playerid,-1491.6618652344, 1046.6130371094, 1) && BoatTestStep[playerid] == 6)
 				{
 					BoatTestStep[playerid] = 7;
-					SetPlayerCheckpoint(playerid, 3106.025, -1637.901, -1.090, 10.0);
+					SetPlayerCheckpoint(playerid, -999.33776855469, 945.65710449219, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3106.025, -1637.901, -1.090) && BoatTestStep[playerid] == 7)
+				else if(PlayerToPoint(5.0,playerid,-999.33776855469, 945.65710449219, 1) && BoatTestStep[playerid] == 7)
 				{
 					BoatTestStep[playerid] = 8;
-					SetPlayerCheckpoint(playerid, 3148.258, -1698.809, 0.219, 10.0);
+					SetPlayerCheckpoint(playerid, -1068.4488525391, 907.58959960938, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3148.258, -1698.809, 0.219) && BoatTestStep[playerid] == 8)
+				else if(PlayerToPoint(5.0,playerid,-1068.4488525391, 907.58959960938, 1) && BoatTestStep[playerid] == 8)
 				{
 					BoatTestStep[playerid] = 9;
-					SetPlayerCheckpoint(playerid, 3135.347, -1776.297, -0.649, 10.0);
+					SetPlayerCheckpoint(playerid, -1250.6879882813, 777.51892089844, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3135.347, -1776.297, -0.649) && BoatTestStep[playerid] == 9)
+				else if(PlayerToPoint(5.0,playerid,-1250.6879882813, 777.51892089844, 1) && BoatTestStep[playerid] == 9)
 				{
 					BoatTestStep[playerid] = 10;
-					SetPlayerCheckpoint(playerid, 3203.814, -1846.580, 0.059, 10.0);
+					SetPlayerCheckpoint(playerid, -1476.3942871094, 614.28118896484, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3203.814, -1846.580, 0.059) && BoatTestStep[playerid] == 10)
+				else if(PlayerToPoint(5.0,playerid,-1476.3942871094, 614.28118896484, 1) && BoatTestStep[playerid] == 10)
 				{
 					BoatTestStep[playerid] = 11;
-					SetPlayerCheckpoint(playerid, 3232.814, -1955.911, -0.148, 10.0);
+					SetPlayerCheckpoint(playerid, -1513.0865478516, 579.57153320313, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3232.814, -1955.911, -0.148) && BoatTestStep[playerid] == 11)
+				else if(PlayerToPoint(5.0,playerid,-1513.0865478516, 579.57153320313, 1) && BoatTestStep[playerid] == 11)
 				{
 					BoatTestStep[playerid] = 12;
-					SetPlayerCheckpoint(playerid, 3205.520, -2070.724, -1.092, 10.0);
+					SetPlayerCheckpoint(playerid, -978.84680175781, 494.06463623047, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3205.520, -2070.724, -1.092) && BoatTestStep[playerid] == 12)
+				else if(PlayerToPoint(5.0,playerid,-978.84680175781, 494.06463623047, 1) && BoatTestStep[playerid] == 12)
 				{
 					BoatTestStep[playerid] = 13;
-					SetPlayerCheckpoint(playerid, 3184.654, -2132.924, -0.528, 10.0);
+					SetPlayerCheckpoint(playerid, -987.51208496094, -295.291015625, 0.094693756104, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3184.654, -2132.924, -0.528) && BoatTestStep[playerid] == 13)
+				else if(PlayerToPoint(5.0,playerid,-987.51208496094, -295.291015625, 0.094693756104) && BoatTestStep[playerid] == 13)
 				{
 					BoatTestStep[playerid] = 14;
-					SetPlayerCheckpoint(playerid, 3082.592, -2228.752, -0.765, 10.0);
+					SetPlayerCheckpoint(playerid, -78.485473632813, -909.97521972656, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3082.592, -2228.752, -0.765) && BoatTestStep[playerid] == 14)
+				else if(PlayerToPoint(5.0,playerid,-78.485473632813, -909.97521972656, 1) && BoatTestStep[playerid] == 14)
 				{
 					BoatTestStep[playerid] = 15;
-					SetPlayerCheckpoint(playerid, 3070.606, -2324.769, -0.313, 10.0);
+					SetPlayerCheckpoint(playerid, 44.898357391357, -1420.24609375, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3070.606, -2324.769, -0.313) && BoatTestStep[playerid] == 15)
+				else if(PlayerToPoint(5.0,playerid,44.898357391357, -1420.24609375, 1) && BoatTestStep[playerid] == 15)
 				{
 					BoatTestStep[playerid] = 16;
-					SetPlayerCheckpoint(playerid, 3016.331, -2389.639, -0.507, 10.0);
+					SetPlayerCheckpoint(playerid, -166.63638305664, -1683.7888183594, 1, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 3016.331, -2389.639, -0.507) && BoatTestStep[playerid] == 16)
+				else if(PlayerToPoint(5.0,playerid,-166.63638305664, -1683.7888183594, 1) && BoatTestStep[playerid] == 16)
 				{
 					BoatTestStep[playerid] = 17;
-					SetPlayerCheckpoint(playerid, 2975.303, -2341.244, 0.009, 10.0);
+					SetPlayerCheckpoint(playerid, -189.36061096191, -2026.7855224609, 0.36227989196777, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 2975.303, -2341.244, 0.009) && BoatTestStep[playerid] == 17)
+				else if(PlayerToPoint(5.0,playerid,-189.36061096191, -2026.7855224609, 0.36227989196777) && BoatTestStep[playerid] == 17)
 				{
 					BoatTestStep[playerid] = 18;
-					SetPlayerCheckpoint(playerid, 2965.416, -2272.544, -0.865, 10.0);
+					SetPlayerCheckpoint(playerid, 82.837532043457, -2733.0791015625, 4.6377983093262, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 2965.416, -2272.544, -0.865) && BoatTestStep[playerid] == 18)
+				else if(PlayerToPoint(5.0,playerid,82.837532043457, -2733.0791015625, 4.6377983093262) && BoatTestStep[playerid] == 18)
 				{
 					BoatTestStep[playerid] = 19;
-					SetPlayerCheckpoint(playerid, 2954.386, -2194.223, -0.711, 10.0);
+					SetPlayerCheckpoint(playerid, -590.40893554688, -2863.7443847656, 3.3844101428986, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 2954.386, -2194.223, -0.711) && BoatTestStep[playerid] == 19)
+				else if(PlayerToPoint(5.0,playerid,-590.40893554688, -2863.7443847656, 3.3844101428986) && BoatTestStep[playerid] == 19)
 				{
 					BoatTestStep[playerid] = 20;
-					SetPlayerCheckpoint(playerid, 2946.975, -2053.573, -1.011, 10.0);
+					SetPlayerCheckpoint(playerid, -1077.9144287109, -2852.6623535156, 0.72500026226044, 5.0);
 				}
-				else if(PlayerToPoint(10.0,playerid, 2946.975, -2053.573, -1.011) && BoatTestStep[playerid] == 20)
+				else if(PlayerToPoint(5.0,playerid,-1077.9144287109, -2852.6623535156, 0.72500026226044) && BoatTestStep[playerid] == 20)
+				{
+					BoatTestStep[playerid] = 21;
+					SetPlayerCheckpoint(playerid, -1240.7104492188, -2498.2866210938, 0.87499970197678, 5.0);
+				}
+				else if(PlayerToPoint(5.0,playerid,-1240.7104492188, -2498.2866210938, 0.87499970197678) && BoatTestStep[playerid] == 21)
+				{
+					BoatTestStep[playerid] = 22;
+					SetPlayerCheckpoint(playerid, -1266.3760986328, -1886.3358154297, 0.91077101230621, 5.0);
+				}
+				else if(PlayerToPoint(5.0,playerid,-1266.3760986328, -1886.3358154297, 0.91077101230621) && BoatTestStep[playerid] == 22)
+				{
+					BoatTestStep[playerid] = 23;
+					SetPlayerCheckpoint(playerid, -2264.5275878906, -1003.3751831055, 0.85000014305115, 5.0);
+				}
+				else if(PlayerToPoint(5.0,playerid,-2264.5275878906, -1003.3751831055, 0.85000014305115) && BoatTestStep[playerid] == 23)
+				{
+					BoatTestStep[playerid] = 24;
+					SetPlayerCheckpoint(playerid, -2870.236328125, -943.46826171875, 0.72499996423721, 5.0);
+				}
+				else if(PlayerToPoint(5.0,playerid,-2870.236328125, -943.46826171875, 0.72499996423721) && BoatTestStep[playerid] == 24)
+				{
+					BoatTestStep[playerid] = 25;
+					SetPlayerCheckpoint(playerid, -2959.7275390625, 44.119316101074, 0.75000017881393, 5.0);
+				}
+				else if(PlayerToPoint(5.0,playerid,-2959.7275390625, 44.119316101074, 0.75000017881393) && BoatTestStep[playerid] == 25)
+				{
+					BoatTestStep[playerid] = 26;
+					SetPlayerCheckpoint(playerid, -2999.0258789063, 425.25250244141, 0.47500047087669, 5.0);
+				}
+				else if(PlayerToPoint(5.0,playerid,-2999.0258789063, 425.25250244141, 0.47500047087669) && BoatTestStep[playerid] == 26)
+				{
+					BoatTestStep[playerid] = 27;
+					SetPlayerCheckpoint(playerid, -2999.8190917969, 538.39569091797, 0.70000034570694, 5.0);
+				}
+				else if(PlayerToPoint(5.0,playerid,-2999.8190917969, 538.39569091797, 0.70000034570694) && BoatTestStep[playerid] == 27)
 				{
 					veh = GetPlayerVehicleID(playerid);
 					GetVehicleHealth(veh, health);
@@ -3957,225 +3141,237 @@ public OnPlayerEnterCheckpoint(playerid)
 public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 {
 	static string[1024];
-
 	/* Prison yard exit description */
-	if(pickupid == gP_PrisonYard)
-	{
-		GameTextForPlayer(playerid, "WIEZIENIE", 3500, 3);
-	}
-	
+	if( pickupid == gP_PrisonYard )
+		GameTextForPlayer( playerid, "WIEZIENIE", 3500, 3 );
 	/* Swimming pool jump enter */
-	else if(pickupid == gP_SwimingPool)
+	else if( pickupid == gP_SwimingPool )
+		GameTextForPlayer( playerid, "/wejdznaskocznie", 1000, GAME_TEXT_STYLE_4 );
+	else if( pickupid == gP_Lottery )
+		GameTextForPlayer( playerid, "/ostatnielosowanie - /wypelnijkupon - /kumulacja", 1500, GAME_TEXT_STYLE_4 );
+	else if(pickupid == BankPosition[PickupID] || pickupid == BankPosition2[PickupID] || pickupid == BankPosition3[PickupID] || pickupid == BankPosition4[PickupID] || pickupid == BankPosition5[PickupID]
+		|| pickupid == BankPosition6[PickupID] || pickupid == BankPosition7[PickupID] || pickupid == BankPosition8[PickupID] || pickupid == BankPosition9[PickupID] || pickupid == BankPosition10[PickupID]
+		|| pickupid == BankPosition11[PickupID])
 	{
-		GameTextForPlayer(playerid, "/wejdznaskocznie", 1500, GAME_TEXT_STYLE_4);
+		GameTextForPlayer(playerid, "/komendybanku", 3000, GAME_TEXT_STYLE_4);
+		return 1;
 	}
-	else if(pickupid == gP_Lottery)
+	else if( pickupid == MechanicJob1[RepairPointPickupID] || pickupid == MechanicJob1[RepairPointPickupID2])
 	{
-		GameTextForPlayer(playerid, "/ostatnielosowanie - /wypelnijkupon - /kumulacja", 1500, GAME_TEXT_STYLE_4);
-	}		
-	// Nauka
+		GameTextForPlayer(playerid, "Punkt naprawy pojazdow", 1000, GAME_TEXT_STYLE_4 );
+		return 1;
+	}
 	else if(pickupid == SkillPosition[PickupIDPis])
 	{
-		GameTextForPlayer(playerid, "~n~~r~pistolet~n~cena: ~g~$1500~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Pistolet~n~Cena: ~g~$1000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDSil])
 	{
-		GameTextForPlayer(playerid, "~n~~r~pistolet z tlumikiem~n~cena: ~g~$1500~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Pistolet z Tlumnikiem~n~Cena: ~g~$1000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDDes])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Desert Eagle~n~cena: ~g~$2000~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Desert Eagle~n~Cena: ~g~$2000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDSho])
 	{
-		GameTextForPlayer(playerid, "~n~~r~shotgun~n~cena: ~g~$2000~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Shotgun~n~Cena: ~g~$2000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDSha])
 	{
-		GameTextForPlayer(playerid, "~n~~r~ogryzek~n~cena: ~g~$2000~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Ogryzek~n~Cena: ~g~$2000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDSpa])
 	{
-		GameTextForPlayer(playerid, "~n~~r~shotgun bojowy~n~cena: ~g~$3000~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Shotgun Bojowy~n~Cena: ~g~$3000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDMic])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Uzi~n~cena: ~g~$2000~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Uzi~n~Cena: ~g~$2000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDMp5])
 	{
-		GameTextForPlayer(playerid, "~n~~r~MP5~n~cena: ~g~$4000~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Mp5~n~Cena: ~g~$4000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDAk])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Kalashnikov~n~cena: ~g~$5000~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Kalasznikow~n~Cena: ~g~$5000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDM4])
 	{
-		GameTextForPlayer(playerid, "~n~~r~M4~n~cena: ~g~$5000~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~M4~n~Cena: ~g~$5000~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDSni])
 	{
-		GameTextForPlayer(playerid, "~n~~r~snajperka~n~cena: ~g~$6000~n~~w~/podnieslev", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Snajperka~n~Cena: ~g~$6000~n~~w~/podnieslev", 1000, 3);
 	}
-	else if(pickupid == SkillPosition[PickupIDTech])
+	else if(pickupid == SkillPosition[PickupIDAng])
 	{
-		format(string, sizeof(string), "~n~~r~nauki techniczne~n~cena: ~g~$%d~n~~w~/podnieslev", SCHOOL_COST);
-		GameTextForPlayer(playerid, string, 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Angielski~n~Cena: ~g~$400~n~~w~/podnieslev", 1000, 3);
 	}
-	else if(pickupid == SkillPosition[PickupIDLaw])
+	else if(pickupid == SkillPosition[PickupIDWf])
 	{
-		format(string, sizeof(string), "~n~~r~nauki prawnicze~n~cena: ~g~$%d~n~~w~/podnieslev", SCHOOL_COST);
-		GameTextForPlayer(playerid, string, 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~WF~n~Cena: ~g~$500~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDMat])
 	{
-		format(string, sizeof(string), "~n~~r~nauki matematyczne~n~cena: ~g~$%d~n~~w~/podnieslev", SCHOOL_COST);
-		GameTextForPlayer(playerid, string, 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Matematyka~n~Cena: ~g~$500~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDPol])
 	{
-		format(string, sizeof(string), "~n~~r~nauki humanistyczne~n~cena: ~g~$%d~n~~w~/podnieslev", SCHOOL_COST);
-		GameTextForPlayer(playerid, string, 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Polski~n~Cena: ~g~$500~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDHis])
 	{
-		// TODO: Change to something
-		//format(string, sizeof(string), "~n~~r~Historia~n~cena: ~g~$%d~n~~w~/podnieslev", SCHOOL_COST);
-		//GameTextForPlayer(playerid, string, 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Historia~n~Cena: ~g~$500~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDFiz])
 	{
-		format(string, sizeof(string), "~n~~r~nauki fizyczne~n~cena: ~g~$%d~n~~w~/podnieslev", SCHOOL_COST);
-		GameTextForPlayer(playerid, string, 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Fizyka~n~Cena: ~g~$500~n~~w~/podnieslev", 1000, 3);
 	}
 	else if(pickupid == SkillPosition[PickupIDBio])
 	{
-		format(string, sizeof(string), "~n~~r~nauki biologiczne~n~cena: ~g~$%d~n~~w~/podnieslev", SCHOOL_COST);
-		GameTextForPlayer(playerid, string, 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Biologia~n~Cena: ~g~$500~n~~w~/podnieslev", 1000, 3);
 	}
-	else if(pickupid == SkillPosition[PickupIDHighSchool])
-	{
-		format(string, sizeof(string), "~n~~r~srednie wykszta³cenie~n~cena: ~g~$%d~n~~w~/podnieslev", HIGH_SCHOOL_COST);
-		GameTextForPlayer(playerid, string, 1500, 3);
-	}
-	
-	// Prace
 	else if(pickupid == WFWorkerJob[TakeJobPickupID] || pickupid == WFWorkerJob[TakeJobPickupID2] || pickupid == WFWorkerJob[TakeJobPickupID3] || pickupid == WFWorkerJob[TakeJobPickupID4]
 		|| pickupid == WFWorkerJob[TakeJobPickupID5] || pickupid == WFWorkerJob[TakeJobPickupID6] || pickupid == WFWorkerJob[TakeJobPickupID7])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Pracownik fabryki broni~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Pracownik fabryki broni~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == NewsBoyJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Roznosiciel gazet~n~~w~/wezprace - /pobierzgazety", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Roznosiciel gazet~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == MechanicJob2[BuyProductsPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Czesci samochodowe~n~~w~/kupczesci", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Czesci samochodowe~n~~w~/kupczesci", 1000, 3);
 	}
 	else if(pickupid == FarmerJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Rolnik~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Farmer~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == SellerJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Sprzedawca/kasjer~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Sprzedawca/kasjer~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == AccountantJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Ksiegowy~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Ksiegowy~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == MzgkJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Kierowca smieciarki~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Kierowca Smieciarki~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == SweeperJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Kierowca myjki drogowej~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Kierowca Myjki drogowej~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == TaxiJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Taksowkarz~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Taksowkarz~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == MechanicJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Mechanik~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Mechanik~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == BodyJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Ochroniarz ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Ochroniarz ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == DirJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Rezyser~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Rezyser~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == ProductsSellerJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Sprzedawca produktow ~n~~w~/produkty kup", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Sprzedawca produktow ~n~~w~/produkty kup", 1000, 3);
 	}
 	else if(pickupid == BusJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Kierowca autobusu~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Kierowca Autobusu~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == StuntJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Praca kaskadera ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Praca kaskadera ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == CarjackJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Praca zlodzieja wozow ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Praca zlodzieja wozow ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == RapistJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Gwalciciel ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Gwalciciel ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == BoxerJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Boxer ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Boxer ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == LawyerJobPosition[PickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Prawnik ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Prawnik ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == DetectiveJobPosition[PickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Detektyw ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Detektyw ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == ProductsSellerJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Sprzedawca produktow ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Sprzedawca produktow ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == WhoreJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Praca dziwki ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Praca dziwki ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == GunJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Diler broni ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Diler broni ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == GunJob[BuyPackagesPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Diler broni ~n~~w~/materialy kup", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Diler broni ~n~~w~/materialy kup", 1000, 3);
 	}
 	else if(pickupid == GunJob[DeliverPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Diler broni ~n~~w~/materialy zrzuc", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Diler broni ~n~~w~/materialy zrzuc", 1000, 3);
 	}
 	else if(pickupid == DrugJob[TakeJobPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Diler narkotykow ~n~~w~/wezprace", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Diler narkotykow ~n~~w~/wezprace", 1000, 3);
 	}
 	else if(pickupid == DrugJob[BuyDrugsPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Diler narkotykow ~n~~w~/narkotyki kup", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Diler narkotykow ~n~~w~/narkotyki kup", 1000, 3);
 	}
 	else if(pickupid == DrugJob[DeliverPickupID])
 	{
-		GameTextForPlayer(playerid, "~n~~r~Diler narkotykow ~n~~w~/narkotyki zrzuc", 1500, 3);
+		GameTextForPlayer(playerid, "~n~~r~Diler narkotykow ~n~~w~/narkotyki zrzuc", 1000, 3);
 	}
-	
-	// Pozosta³e licencje
+	else if(pickupid == BankPosition[PickupID])
+	{
+		GameTextForPlayer(playerid, "~w~Bank", 1000, 3);
+	}
+	else if(pickupid == FactionMaterialsStorage[PickupID])
+	{
+		if(gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
+		{
+			GameTextForPlayer(playerid, "~w~Magazyn materialow", 1000, 3);
+		}
+		else
+		{
+			GameTextForPlayer(playerid, "~r~Nieznane", 1000, 3);
+		}
+	}
+	else if(pickupid == FactionDrugsStorage[PickupID])
+	{
+		if(gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
+		{
+			GameTextForPlayer(playerid, "~w~Magazyn narkotykow", 1000, 3);
+		}
+		else
+		{
+			GameTextForPlayer(playerid, "~r~Nieznane", 1000, 3);
+		}
+	}
 	else if(pickupid == WeaponLicensePosition[PickupID])
 	{
 		GameTextForPlayer(playerid, "~w~Licencja na bron ~n~Cena: ~g~$50000~n~~w~Wpisz /kuplicencjenabron !", 1000, 3);
@@ -4188,53 +3384,45 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 	{
 		GameTextForPlayer(playerid, "~w~Licencja pilota~n~Cena: ~g~$20000~n~~w~Wpisz /kuplicencjepilota !", 1000, 3);
 	}
-	
-	// Test na prawko A
 	else if(pickupid == gDrivingTestPosition[PickupIDA])
 	{
 		if(!gPlayerData[playerid][pFirstATest])
 		{
 			format(string, sizeof(string), "~w~Test na prawko kat. A ~n~Cena: ~g~%d ~n~~w~Wpisz /kuptest !", gDrivingTestPosition[mPriceA]);
-			GameTextForPlayer(playerid, string, 1500, 3);
+			GameTextForPlayer(playerid, string, 1000, 3);
 		}
 		else
 		{
 			format(string, sizeof(string), "~w~Test na prawko kat. A ~n~Cena: ~g~%d ~n~~w~Wpisz /kuptest !", gDrivingTestPosition[mPriceLowA]);
-			GameTextForPlayer(playerid, string, 1500, 3);
+			GameTextForPlayer(playerid, string, 1000, 3);
 		}
 	}
-	
-	// Test na prawko B
 	else if(pickupid == gDrivingTestPosition[PickupIDB])
 	{
 		if(!gPlayerData[playerid][pFirstBTest])
 		{
 			format(string, sizeof(string), "~w~Test na prawko kat. B ~n~Cena: ~g~%d ~n~~w~Wpisz /kuptest !", gDrivingTestPosition[mPriceB]);
-			GameTextForPlayer(playerid, string, 1500, 3);
+			GameTextForPlayer(playerid, string, 1000, 3);
 		}
 		else
 		{
 			format(string, sizeof(string), "~w~Test na prawko kat. B ~n~Cena: ~g~%d ~n~~w~Wpisz /kuptest !", gDrivingTestPosition[mPriceLowB]);
-			GameTextForPlayer(playerid, string, 1500, 3);
+			GameTextForPlayer(playerid, string, 1000, 3);
 		}
 	}
-	
-	// Test na prawko C+E
 	else if(pickupid == gDrivingTestPosition[PickupIDCE])
 	{
 		if(!gPlayerData[playerid][pFirstCETest])
 		{
 			format(string, sizeof(string), "~w~Test na prawko kat. C+E ~n~Cena: ~g~%d ~n~~w~Wpisz /kuptest !", gDrivingTestPosition[mPriceCE]);
-			GameTextForPlayer(playerid, string, 1500, 3);
+			GameTextForPlayer(playerid, string, 1000, 3);
 		}
 		else
 		{
 			format(string, sizeof(string), "~w~Test na prawko kat. C+E ~n~Cena: ~g~%d ~n~~w~Wpisz /kuptest !", gDrivingTestPosition[mPriceLowCE]);
-			GameTextForPlayer(playerid, string, 1500, 3);
+			GameTextForPlayer(playerid, string, 1000, 3);
 		}
 	}
-	
-	// Lista urzednikow
 	else if(pickupid == gOfficialPickup)
 	{
 		strdel(string, 0, 256);
@@ -4243,7 +3431,7 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 		{
 			if(IsPlayerConnected(i) && gPlayerLogged[i])
 			{
-				if(gPlayerData[i][pFaction] == FACTIONID_GOVERNMENT)
+				if(gPlayerData[i][pFaction] == 9)
 				{
 					strins(string, gPlayerData[i][pName], pointer);
 					pointer += strlen(gPlayerData[i][pName]);
@@ -4258,47 +3446,29 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 		}
 		ShowPlayerDialog(playerid, 6, DIALOG_STYLE_LIST, "Lista urzêdników aktualnie bêd¹cych w pracy", string, "", "Zamknij");
 	}
-	
 	else if(pickupid == gDrivingTestAreaBuy[pickupID])
 	{
 		format(string, sizeof(string), "/wykupdostepdoplacu    l. minut: %d, cena: %d", gDrivingTestAreaBuy[mTime], gDrivingTestAreaBuy[mPrice]);
-		GameTextForPlayer(playerid, string, 1500, GAME_TEXT_STYLE_4);
+		GameTextForPlayer(playerid, string, 1000, GAME_TEXT_STYLE_4);
 	}
-	
 	else if(pickupid == gPickupEventPrizeReceive)
 	{
-		GameTextForPlayer(playerid, "~r~Punkt odbioru nagrod~n~/odbierznagrode", 1500, 3);
+		GameTextForPlayer(playerid, "~r~Punkt odbioru nagród~n~/odbierznagrode", 1000, 3);
 	}
-	
-	for(new i = 0; i < sizeof(BankPosition); i++)
+	if(pickupid == gWheelChangePos[pickup1] || pickupid == gWheelChangePos[pickup2] || pickupid == gWheelChangePos[pickup3] || pickupid == gWheelChangePos[pickup4] ||
+		pickupid == gWheelChangePos[pickup5] || pickupid == gWheelChangePos[pickup6] || pickupid == gWheelChangePos[pickup7] || pickupid == gWheelChangePos[pickup8])
 	{
-		if(pickupid == BankPosition[i][mPickupId])
-		{
-			GameTextForPlayer(playerid, "/komendybanku", 1500, GAME_TEXT_STYLE_4);
-			return 1;
-		}
+		GameTextForPlayer(playerid, "Punkt wymiany opon", 1000, GAME_TEXT_STYLE_4 );
+		return 1;
 	}
-	
-	for(new i = 0; i < sizeof(gPickupInfos); i++)
-	{
-		if(pickupid == gPickupInfos[i][mPickupId] )
-		{
-			if(gPickupInfos[i][mInfoTextType] == 1)
-			{
-				GameTextForPlayer(playerid, gPickupInfos[i][mInfoTextLine1], 5000, 3);
-			}
-		}
-	}
-	
 	for(new i = 0; i < sizeof(DynamicFactions); i++)
 	{
 		if(DynamicFactions[i][fCP] == pickupid || DynamicFactions[i][fCP2] == pickupid)
 		{
-			GameTextForPlayer(playerid, "~r~/sluzba~n~/przebierzsie~n~/gbron", 1000, GAME_TEXT_STYLE_4);
+			GameTextForPlayer(playerid, "~r~/sluzba~n~ /przebierzsie", 1000, GAME_TEXT_STYLE_4);
 			return 1;
 		}
 	}	
-	
 	for(new i = 0; i < sizeof(gAdmissionChambers); i++)
 	{
 		if(pickupid == gAdmissionChambers[i][mPickupID])
@@ -4307,10 +3477,45 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 			return 1;
 		}
 	}
-	
+	for(new h = 0; h < sizeof(Building); h++)
+	{
+		if(Building[h][PickupID] == pickupid)
+		{
+			if(GetPlayerCash(playerid) >= Building[h][EntranceFee])
+			{
+				if(Building[h][EntranceFee] > 1)
+				{
+					format(string, sizeof(string), "%s~n~~w~Wejsciowka: ~g~%d$",Building[h][BuildingName], Building[h][EntranceFee]);
+					GameTextForPlayer(playerid, string, 1500, 3);
+					return 1;
+				}
+				else
+				{
+					format(string, sizeof(string), "%s",Building[h][BuildingName]);
+					GameTextForPlayer(playerid, string, 1500, 3);
+					return 1;
+				}
+			}
+			else
+			{
+				if(Building[h][EntranceFee] > 1)
+				{
+					format(string, sizeof(string), "%s~n~~w~Wejsciowka: ~r~%d$",Building[h][BuildingName], Building[h][EntranceFee]);
+					GameTextForPlayer(playerid, string, 1500, 3);
+					return 1;
+				}
+				else
+				{
+					format(string, sizeof(string), "%s",Building[h][BuildingName]);
+					GameTextForPlayer(playerid, string, 1500, 3);
+					return 1;
+				}
+			}
+		}
+	}
 	for(new i = 0; i < sizeof(gPickupItem); i++)
 	{
-		if(pickupid == gPickupItem[i][pickupID])
+		if( pickupid == gPickupItem[i][pickupID] )
 		{
 			if(gJustDropped[playerid] > 0)
 				return 1;
@@ -4328,16 +3533,14 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 			return 1;
 		}
 	}
-	
 	for(new i = 0; i < 10; i++)
 	{
 		if(pickupid == MechanicJob1[RepairPointPickupID3][i])
 		{
-			GameTextForPlayer(playerid, "Punkt naprawy pojazdow", 1000, GAME_TEXT_STYLE_4);
+			GameTextForPlayer(playerid, "Punkt naprawy pojazdow", 1000, GAME_TEXT_STYLE_4 );
 			return 1;
 		}
 	}
-	
 	for(new i = 0; i < gPickupEventCount; i++)
 	{
 		if(gPlayerVars[playerid][mPickupEventPickups][i] == pickupid && !gPlayerData[playerid][mPickupEventPickupStatus][i])
@@ -4371,133 +3574,78 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 			return 1;
 		}
 	}
-	
 	for(new i = 0; i < MAX_RACES; i++)
 	{
 		if(pickupid == gRaceTrackInfoPickupId[i])
 		{
-			GameTextForPlayer(playerid, "~y~WYSCIG~n~/menuwyscigu", 1500, 3);
+			GameTextForPlayer(playerid, "~y~WYSCIG~n~/menuwyscigu", 5000, 3);
 			return 1;
 		}
 	}
-	
-	// Event 1 - Area51
-	if(gEvent1codePickups[0] == pickupid)
-	{
-		format(string, sizeof(string), "Znalaz³eœ sekretny kod ! Zapamiêtaj go ! Kod: %d", gEvent1code[0]);
-		SendClientMessage(playerid, COLOR_GREEN, string);
-	}
-	else if(gEvent1codePickups[1] == pickupid)
-	{
-		format(string, sizeof(string), "Znalaz³eœ sekretny kod ! Zapamiêtaj go ! Kod: %d", gEvent1code[1]);
-		SendClientMessage(playerid, COLOR_GREEN, string);
-	}
-	else if(gEvent1codePickups[2] == pickupid)
-	{
-		format(string, sizeof(string), "Znalaz³eœ sekretny kod ! Zapamiêtaj go ! Kod: %d", gEvent1code[2]);
-		SendClientMessage(playerid, COLOR_GREEN, string);
-	}
-	else if(gEvent1pickup == pickupid)
-	{
-		format(string, sizeof(string), "%s dotar³ do wnêtrza strefy 51 i otrzymuje nagrode w wysokoœci $%d !", GetPlayerNameEx(playerid), gEvent1prize);
-		SendMessageToEvent(1, COLOR_LIGHTYELLOW2, string);
-		
-		GivePlayerCash(playerid, gEvent1prize);
-		DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= gEvent1prize;
-		SaveFData(FACTIONID_GOVERNMENT, "Bank");
-		
-		EndEvent(1);
-	}
-	
 	return 1;
 }
 
 public OnPlayerEnterDynamicCP(playerid, checkpointid)
 {
 	static string[1024], string2[256];
-	
 	if(checkpointid == gRafinery[RafResourceCP])
 	{
-		if(gPlayerData[playerid][pFaction] != FACTIONID_RAFINERY)
+		if( gPlayerData[playerid][pFaction] != FACTIONID_RAFINERY )
 		{
 			SendClientMessage(playerid, COLOR_ORANGE, RAF_RSC_CP_INV_PLFAC);
 			return 1;
 		}
-		
 		new vehID = GetPlayerVehicleID(playerid);
-		
-		if(vehID == 0)
+		if( vehID == 0 )
 		{
 			SendClientMessage(playerid, COLOR_ORANGE, RAF_RSC_CP_INV_VEHID);
 			return 1;
 		}
-		
 		new trailID = GetVehicleTrailer(vehID);
-		
-		if(trailID == 0)
+		if( trailID == 0 )
 		{
 			SendClientMessage(playerid, COLOR_ORANGE, RAF_RSC_CP_INV_TLID);
 			return 1;
 		}
-		
 		if(IsPlayerInAnyVehicle(playerid))
 		{
-			if(gVehData[vehID-1][mVehFaction] != FACTIONID_RAFINERY)
+			if( gVehData[vehID-1][mVehFaction] != FACTIONID_RAFINERY )
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, RAF_RSC_CP_INV_VEH_FACTION);
 				return 1;
 			}
-			
-			if(gVehData[trailID-1][mVehFaction] != FACTIONID_RAFINERY)
+			if( gVehData[trailID-1][mVehFaction] != FACTIONID_RAFINERY )
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, RAF_RSC_CP_INV_TL_FACTION);
 				return 1;
 			}
-			
-			switch(gVehData[trailID-1][TankerResourceType])
+			switch( gVehData[trailID-1][TankerResourceType] )
 			{
 				case TANKER_TYPE_PETROL:
-				{
 					format(string, sizeof(string), "[INFO:] Cysterna jest nape³niona %dl beznyny", gVehData[trailID-1][TankerResourceValue]);
-				}
 				case TANKER_TYPE_OIL:
-				{
 					format(string, sizeof(string), "[INFO:] Cysterna jest nape³niona %dl ropy", gVehData[trailID-1][TankerResourceValue]);
-				}
 				case TANKER_TYPE_GAS:
-				{
 					format(string, sizeof(string), "[INFO:] Cysterna jest nape³niona %dl ropy", gVehData[trailID-1][TankerResourceValue]);
-				}
-				case TANKER_TYPE_FLY:
-				{
-					format(string, sizeof(string), "[INFO:] Cysterna jest nape³niona %dl paliwa lotniczego", gVehData[trailID-1][TankerResourceValue]);
-				}
 				default:
-				{
 					format(string, sizeof(string), "[INFO:] Cysterna jest pusta");
-				}
-			}
-			
+			}			
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-			
-			ShowPlayerDialog(playerid, DIALOG_RAF_RSC_CP_MAIN, DIALOG_STYLE_LIST, RAF_RSC_CP_MENU_HEADER, RAF_RSC_CP_MENU_OPTIONS_MAIN, RAF_RSC_CP_MENU_SELECT, RAF_RSC_CP_MENU_EXIT);
-			
+			ShowPlayerDialog(playerid, 
+											DIALOG_RAF_RSC_CP_MAIN, 
+											DIALOG_STYLE_LIST, 
+											RAF_RSC_CP_MENU_HEADER, 
+											RAF_RSC_CP_MENU_OPTIONS_MAIN, 
+											RAF_RSC_CP_MENU_SELECT, 
+											RAF_RSC_CP_MENU_EXIT);
 			return 1;
 		}
 	}
-	
 	if(checkpointid == gGovCheckpoint)
 	{
-		ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_1,DIALOG_STYLE_LIST,""#COLOR_TITLE"Co chcesz zrobiæ ?",DIALOG_GOVERNMENT_1_TXT,"Wybierz","Zamknij");
+		ShowPlayerDialog(playerid,DIALOG_GOVERNMENT_1,DIALOG_STYLE_LIST,"Co chcesz zrobiæ ?",DIALOG_GOVERNMENT_1_TXT,"Wybierz","Zamknij");
 		return 1;
 	}
-	
-	if(checkpointid == gGovCheckpoint2)
-	{
-		ShowPlayerDialog(playerid, DIALOG_GOVERNMENT2_1, DIALOG_STYLE_LIST, ""#COLOR_TITLE"Co chcesz zrobiæ ?", DIALOG_GOVERNMENT2_1_TXT, "Wybierz", "Zamknij");
-		return 1;
-	}
-	
 	if(gPlayerData[playerid][pFaction] != 255)
 	{
 		if( DynamicFactions[gPlayerData[playerid][pFaction]][fType] == 3 &&
@@ -4518,14 +3666,8 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 				GameTextForPlayer( playerid, WFACTORY_TAKE_BUY_CP, GAME_TEXT_DEFAULT_TIME, GAME_TEXT_STYLE_6 );
 				return 1;
 			}
-			else if( checkpointid == DynamicFactions[gPlayerData[playerid][pFaction]][WFactoryCPSafeID] )
-			{
-				GameTextForPlayer( playerid, "Sejf /swplac - /swyplac - /sstan", GAME_TEXT_DEFAULT_TIME, GAME_TEXT_STYLE_6 );
-				return 1;
-			}
 		}
-	}
-	
+	}	
 	if(checkpointid == WFactoryLegal[WFactoryCPPartSetup1ID] || checkpointid == WFactoryLegal[WFactoryCPPartSetup2ID] || 
 		checkpointid == WFactoryLegal[WFactoryCPPartSetup3ID] || checkpointid == WFactoryLegal[WFactoryCPPartSetup4ID] || 
 		checkpointid == WFactoryLegal[WFactoryCPPartSetup5ID] || checkpointid == WFactoryLegal[WFactoryCPPartSetup6ID])
@@ -4555,49 +3697,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 	{
 		GameTextForPlayer(playerid, "/komendybuchmacherskie", 3000, GAME_TEXT_STYLE_6);
 		return 1;
-	}	
-	else if(gEvent1cp[0] == checkpointid)
-	{
-		new Code0[30];
-		valstr(Code0, gEvent1code[0]);
-		ShowPlayerKeypad(playerid, KEYPAD_DOOR_1, Code0);
 	}
-	else if(gEvent1cp[1] == checkpointid)
-	{
-		new Code1[30];
-		valstr(Code1, gEvent1code[1]);
-		ShowPlayerKeypad(playerid, KEYPAD_DOOR_2, Code1);
-	}
-	else if(gEvent1cp[2] == checkpointid)
-	{
-		new Code2[30];
-		valstr(Code2, gEvent1code[2]);
-		ShowPlayerKeypad(playerid, KEYPAD_DOOR_3, Code2);
-	}
-	else if(gMainPrisonCp == checkpointid)
-	{
-		GameTextForPlayer(playerid, "/aresztuj", 3000, GAME_TEXT_STYLE_6);
-		return 1;
-	}
-	
-	for(new i = 0; i < sizeof(gPrisonCellsCp); i++)
-	{
-		if(gPrisonCellsCp[i] == checkpointid)
-		{
-			GameTextForPlayer(playerid, "/aresztuj", 3000, GAME_TEXT_STYLE_6);
-			return 1;
-		}
-	}
-	
-	for(new i = 0; i < sizeof(gAtmCp); i++)
-	{
-		if(gAtmCp[i] == checkpointid)
-		{
-			GameTextForPlayer(playerid, "/komendybanku", 3000, GAME_TEXT_STYLE_6);
-			return 1;
-		}
-	}
-	
 	for(new i = 0; i < sizeof(gShopCP); i++)
 	{
 		if(checkpointid != gShopCP[i])
@@ -4606,37 +3706,6 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 		ShowShopMenu(playerid);
 		return 1;
 	}
-	
-	for(new i = 0; i < sizeof(gClotheShopCP); i++)
-	{
-		if(checkpointid != gClotheShopCP[i])
-			continue;
-		gBuyBusinessID[playerid] = GetPlayerVirtualWorld(playerid);
-		new slot = BizHaveItem(gBuyBusinessID[playerid], 3, 24);
-		if(slot != 0)
-		{
-			if(BizItemSlotCount(gBuyBusinessID[playerid], slot) > 0)
-			{
-				PlayerToClotheStore(playerid);
-				SetPlayerClotheStoreSkin(playerid);
-				return 1;
-			}
-		}
-		ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "W³aœciciel sklepu nie posiada na sprzeda¿ ¿adnej odzie¿y.", "Zamknij", "");
-		return 1;
-	}
-	
-	for(new i = 0; i < sizeof(gMedicCheckpoints); i++)
-	{
-		if(gMedicCheckpoints[i] != checkpointid)
-		{
-			continue;
-		}
-		
-		ShowPlayerDialog(playerid, DIALOG_MEDIC_1, DIALOG_STYLE_LIST, ""#COLOR_TITLE"Co chcesz zrobiæ ?", "1. Ulecz", "Dalej", "Zamknij");
-		return 1;
-	}	
-	
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		gBuyItemFactoryVehID[playerid] = GetPlayerVehicleID(playerid);
@@ -4683,7 +3752,6 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 			}
 		}
 	}
-	
 	return 1;
 }
 
@@ -4758,15 +3826,12 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant1Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant1Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1000](playerid);
-						CalculateRacerTime(i, 1);
-						GameTextForRacerFinish(i, 1);
-						SaveRacerStats(i, 1);
-					}
+					gRaceStatus[i][mRaceEntrant1Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1000](playerid);
+					CalculateRacerTime(i, 1);
+					GameTextForRacerFinish(i, 1);
+					SaveRacerStats(i, 1);
 				}
 				else if(gRaceStatus[i][mRaceEntrant1NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -4792,14 +3857,11 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant2Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant2Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1000](playerid);
-						CalculateRacerTime(i, 2);
-						GameTextForRacerFinish(i, 2);
-					}
+					gRaceStatus[i][mRaceEntrant2Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1000](playerid);
+					CalculateRacerTime(i, 2);
+					GameTextForRacerFinish(i, 2);
 				}
 				else if(gRaceStatus[i][mRaceEntrant2NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -4825,14 +3887,11 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant3Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant3Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1500](playerid);
-						CalculateRacerTime(i, 3);
-						GameTextForRacerFinish(i, 3);
-					}
+					gRaceStatus[i][mRaceEntrant3Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1500](playerid);
+					CalculateRacerTime(i, 3);
+					GameTextForRacerFinish(i, 3);
 				}
 				else if(gRaceStatus[i][mRaceEntrant3NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -4858,14 +3917,11 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant4Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant4Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1000](playerid);
-						CalculateRacerTime(i, 4);
-						GameTextForRacerFinish(i, 4);
-					}
+					gRaceStatus[i][mRaceEntrant4Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1000](playerid);
+					CalculateRacerTime(i, 4);
+					GameTextForRacerFinish(i, 4);
 				}
 				else if(gRaceStatus[i][mRaceEntrant4NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -4891,14 +3947,11 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant5Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant5Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1000](playerid);
-						CalculateRacerTime(i, 5);
-						GameTextForRacerFinish(i, 5);
-					}
+					gRaceStatus[i][mRaceEntrant5Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1000](playerid);
+					CalculateRacerTime(i, 5);
+					GameTextForRacerFinish(i, 5);
 				}
 				else if(gRaceStatus[i][mRaceEntrant5NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -4924,14 +3977,11 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant6Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant6Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1000](playerid);
-						CalculateRacerTime(i, 6);
-						GameTextForRacerFinish(i, 6);
-					}
+					gRaceStatus[i][mRaceEntrant6Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1000](playerid);
+					CalculateRacerTime(i, 6);
+					GameTextForRacerFinish(i, 6);
 				}
 				else if(gRaceStatus[i][mRaceEntrant6NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -4957,14 +4007,11 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant7Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant7Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1000](playerid);
-						CalculateRacerTime(i, 7);
-						GameTextForRacerFinish(i, 7);
-					}
+					gRaceStatus[i][mRaceEntrant7Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1000](playerid);
+					CalculateRacerTime(i, 7);
+					GameTextForRacerFinish(i, 7);
 				}
 				else if(gRaceStatus[i][mRaceEntrant7NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -4990,14 +4037,11 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant8Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant8Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1000](playerid);
-						CalculateRacerTime(i, 8);
-						GameTextForRacerFinish(i, 8);
-					}
+					gRaceStatus[i][mRaceEntrant8Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1000](playerid);
+					CalculateRacerTime(i, 8);
+					GameTextForRacerFinish(i, 8);
 				}
 				else if(gRaceStatus[i][mRaceEntrant8NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -5023,14 +4067,11 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant9Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant9Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1000](playerid);
-						CalculateRacerTime(i, 9);
-						GameTextForRacerFinish(i, 9);
-					}
+					gRaceStatus[i][mRaceEntrant9Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1000](playerid);
+					CalculateRacerTime(i, 9);
+					GameTextForRacerFinish(i, 9);
 				}
 				if(gRaceStatus[i][mRaceEntrant9NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -5056,14 +4097,11 @@ public OnPlayerEnterDynamicRaceCP(playerid, checkpointid)
 							continue;
 						}
 					}
-					if(gRaceStatus[i][mRaceEntrant10Status] != PLAYER_RACE_STATE_FINISHED)
-					{
-						gRaceStatus[i][mRaceEntrant10Status] = PLAYER_RACE_STATE_FINISHED;
-						TogglePlayerControllable(playerid, 0);
-						defer UnfreezePlayer[1000](playerid);
-						CalculateRacerTime(i, 10);
-						GameTextForRacerFinish(i, 10);
-					}
+					gRaceStatus[i][mRaceEntrant10Status] = PLAYER_RACE_STATE_FINISHED;
+					TogglePlayerControllable(playerid, 0);
+					defer UnfreezePlayer[1000](playerid);
+					CalculateRacerTime(i, 10);
+					GameTextForRacerFinish(i, 10);
 				}
 				else if(gRaceStatus[i][mRaceEntrant10NextCpId]+1 <= MAX_RACES_CP-1)
 				{
@@ -5229,7 +4267,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 {
 	if(!gPlayerLogged[playerid])
 		return 1;
-	new Float:damage, damageType;
+	new Float:damage;
 	static string[128];
 	strdel(string, 0, sizeof(string));
 	
@@ -5257,17 +4295,6 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 			case 35: damage = 250;
 			case 38: damage = 0;
 		}
-		switch(GetPlayerWeapon(issuerid))
-		{
-			case 0..18:
-			{
-				damageType = 0;
-			}
-			default:
-			{
-				damageType = 1;
-			}
-		}
 		if(gPlayerVars[playerid][mBulletProof])
 			damage -= floatround(damage*0.25);
 	}
@@ -5275,22 +4302,15 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 		damage = amount;
 		
 	if(gPlayerData[playerid][pDrunk] > 20.0 && gPlayerData[playerid][pDrunk] < 40.0)
-		damage -= floatround(damage * 0.2);
-	
+		damage = floatround(damage * 0.2);
+		
 	gPlayerData[playerid][pArmour]  -= damage;
 	if(gPlayerData[playerid][pArmour] < 0.0)
 	{
 		RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS-5);
 		gPlayerData[playerid][pHP] += gPlayerData[playerid][pArmour];
 		if(gPlayerData[playerid][pHP] <= 0.0)
-		{
 			gPlayerData[playerid][pHP] = 0.0;
-		}
-		else if(gPlayerData[playerid][pHP] < 60.0 && damageType == 1)
-		{
-			ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.1, 1, 0, 0, 1, 0, 1);
-			defer InjuryEndAnimation(playerid);
-		}
 		gPlayerData[playerid][pArmour] = 0.0;
 	}
 	SetPlayerHealth(playerid, gPlayerData[playerid][pHP]);

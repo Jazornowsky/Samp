@@ -27,16 +27,16 @@ stock SetPlayerArmourEx(playerid, Float:armour)
 {
 	if(armour > 0.0)
 	{
-		if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS-5))
+		if(!IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS-5))
 		{
-			RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS-5);
-		}
-		new model, skin;
-		
-		if(gPlayerData[playerid][pFaction] == 255)
-		{
-			model = 373;
-			
+			new model;
+			if((gPlayerData[playerid][pSkin] >= 265 && gPlayerData[playerid][pSkin] <= 267) ||
+				(gPlayerData[playerid][pSkin] >= 280 && gPlayerData[playerid][pSkin] <= 288))
+			{
+				model = 19142;
+			}
+			else
+				model = 373;
 			SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS-5, model, 1,
 				ArmourOffSet[GetPlayerSkin(playerid)][0],
 				ArmourOffSet[GetPlayerSkin(playerid)][1],
@@ -49,99 +49,10 @@ stock SetPlayerArmourEx(playerid, Float:armour)
 				ArmourOffSet[GetPlayerSkin(playerid)][8]
 			);
 		}
-		else
-		{
-			skin = GetPlayerSkin(playerid);
-			
-			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_POLICE &&
-				(skin == 265 || skin == 266 || skin == 267 || skin == 280 || skin == 281 || skin == 282 ||
-				skin == 283 || skin == 284 || skin == 285 || skin == 286 || skin == 287))
-			{
-				model = 19142;
-				
-				switch(skin)
-				{
-					case 265:
-					{
-						skin = 0;
-					}
-					case 266:
-					{
-						skin = 0;
-					}
-					case 267:
-					{
-						skin = 0;
-					}
-					case 280:
-					{
-						skin = 0;
-					}
-					case 281:
-					{
-						skin = 0;
-					}
-					case 282:
-					{
-						skin = 0;
-					}
-					case 283:
-					{
-						skin = 0;
-					}
-					case 284:
-					{
-						skin = 0;
-					}
-					case 285:
-					{
-						skin = 0;
-					}
-					case 286:
-					{
-						skin = 0;
-					}
-					case 287:
-					{
-						skin = 0;
-					}
-				}
-				
-				SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS-5, model, 1,
-					HArmourOffSet[skin][0],
-					HArmourOffSet[skin][1],
-					HArmourOffSet[skin][2],
-					HArmourOffSet[skin][3],
-					HArmourOffSet[skin][4],
-					HArmourOffSet[skin][5],
-					HArmourOffSet[skin][6],
-					HArmourOffSet[skin][7],
-					HArmourOffSet[skin][8]
-				);
-			}
-			else
-			{
-				model = 373;
-				
-				SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS-5, model, 1,
-					ArmourOffSet[GetPlayerSkin(playerid)][0],
-					ArmourOffSet[GetPlayerSkin(playerid)][1],
-					ArmourOffSet[GetPlayerSkin(playerid)][2],
-					ArmourOffSet[GetPlayerSkin(playerid)][3],
-					ArmourOffSet[GetPlayerSkin(playerid)][4],
-					ArmourOffSet[GetPlayerSkin(playerid)][5],
-					ArmourOffSet[GetPlayerSkin(playerid)][6],
-					ArmourOffSet[GetPlayerSkin(playerid)][7],
-					ArmourOffSet[GetPlayerSkin(playerid)][8]
-				);
-			}
-		}
 	}
 	else
 		RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS-5);
-	
 	SetPlayerArmour(playerid, armour);
-	
 	gPlayerData[playerid][pArmour] = armour;
 	SavePlayerData(playerid, "Armour");
 }
@@ -264,30 +175,6 @@ timer SetPlayerSpawn2[100](playerid)
 	#endif
 	static string[128];
 	
-	// Fill first logged player with default data
-	if(!gPlayerData[playerid][pRegistered])
-	{
-		gPlayerData[playerid][pCrashX] = gStartSpawnX;
-		gPlayerData[playerid][pCrashY] = gStartSpawnY;
-		gPlayerData[playerid][pCrashZ] = gStartSpawnZ;
-		gPlayerData[playerid][pCash] = gStartMoney;
-		gPlayerData[playerid][pBank] = gStartBank;
-		gPlayerData[playerid][pRegistered] = 1;
-
-		gSavePlayerReady[playerid] = 1; // umo¿liwia zapis w wp_saveplayerdata.inc
-
-		SavePlayerData(playerid, "Registered");
-		SetPlayerCash(playerid, gPlayerData[playerid][pCash]);
-		
-		DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= gStartBank;
-		DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= gStartMoney;		
-		SaveFData(FACTIONID_GOVERNMENT, "Bank");
-		
-		SetPlayerToPos(playerid, gPlayerData[playerid][pCrashX], gPlayerData[playerid][pCrashY], gPlayerData[playerid][pCrashZ]);
-		
-		gFirstTime[playerid] = 1;
-	}
-	
 	SetPlayerVirtualWorld(playerid, gPlayerData[playerid][pCrashW]);
 	SetPlayerInterior(playerid, gPlayerData[playerid][pCrashInt]);
 	SetPlayerFacingAngle(playerid, gPlayerData[playerid][pCrashAngle]);
@@ -302,12 +189,19 @@ timer SetPlayerSpawn2[100](playerid)
 	TogglePlayerDynamicCP(playerid, gVehExport[mCpId7], 0);
 	
 	TextDrawShowForPlayer(playerid, gTextTime);
-	
+
 	// Load pickup event data
 	CreatePickupEventPickups(playerid);
 	
 	if(gPlayerData[playerid][pFaction] != 255)
 	{
+		if(gPlayerData[playerid][pDuty])
+		{
+			if(DynamicFactions[gPlayerData[playerid][pFaction]][fUseSkins])
+				SetPlayerToFactionSkin(playerid);
+			else
+				SetPlayerSkin(playerid,gPlayerData[playerid][pSkin]);
+		}
 		if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == 3)
 		{
 			for(new idx = 0; idx < sizeof(DynamicZones); idx++)
@@ -320,16 +214,22 @@ timer SetPlayerSpawn2[100](playerid)
 			if(gGangWar[Enabled])
 				GangZoneFlashForPlayer(playerid, gGangWar[AreaID], DynamicFactions[DynamicZones[gGangWar[AreaID]][mFaction]][fColor]);
 		}
-	}	
+	}
+	else if(gPlayerData[playerid][pJailed] > 0)
+		SetPlayerSkin(playerid,96);
+	else
+		SetPlayerSkin(playerid,gPlayerData[playerid][pSkin]);		
 		
 	if(gPlayerData[playerid][pHP] <= 0.0)
 	{
 		format(string, sizeof(string), "[WARNING:] Player HP below 0 !");
 		ErrorLog(string);
-		SetPlayerHealth(playerid, 30.0);
+		SetPlayerHealth(playerid,30.0);
 	}
 	else
 		SetPlayerHealth(playerid,gPlayerData[playerid][pHP]);
+	
+	SetPlayerArmourEx(playerid, gPlayerData[playerid][pArmour]);
 	
 	if(PHaveExpandItem(playerid))
 	{
@@ -354,14 +254,6 @@ timer SetPlayerSpawn2[100](playerid)
 	GivePlayerGun(playerid, gPlayerData[playerid][pWSlot4], gPlayerData[playerid][pWSlot4Ammo]);
 	GivePlayerGun(playerid, gPlayerData[playerid][pWSlot5], gPlayerData[playerid][pWSlot5Ammo]);
 	GivePlayerGun(playerid, gPlayerData[playerid][pWSlot6], gPlayerData[playerid][pWSlot6Ammo]);
-	GivePlayerGun(playerid, gPlayerData[playerid][pWSlot7], gPlayerData[playerid][pWSlot7Ammo]);
-	GivePlayerGun(playerid, gPlayerData[playerid][pWSlot8], gPlayerData[playerid][pWSlot8Ammo]);
-	GivePlayerGun(playerid, gPlayerData[playerid][pWSlot9], gPlayerData[playerid][pWSlot9Ammo]);
-	GivePlayerGun(playerid, gPlayerData[playerid][pWSlot10], gPlayerData[playerid][pWSlot10Ammo]);
-	GivePlayerGun(playerid, gPlayerData[playerid][pWSlot11], gPlayerData[playerid][pWSlot11Ammo]);
-	GivePlayerGun(playerid, gPlayerData[playerid][pWSlot12], gPlayerData[playerid][pWSlot12Ammo]);
-	
-	SetPlayerSkinEx(playerid, gPlayerData[playerid][pSkin]);
 	
 	if(AdminDuty[playerid])
 	{
@@ -392,10 +284,7 @@ timer SetPlayerSpawn2[100](playerid)
 	}
 	else
 	{
-		//PlayerPlaySound(playerid, 1186, 0.0, 0.0, 0.0); // blank sound
-		
-		StopAudioStreamForPlayer(playerid);
-		
+		PlayerPlaySound(playerid, 1186, 0.0, 0.0, 0.0); // blank sound
 		if(gPlayerData[playerid][pJailed] == 1)
 		{			
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ jeszcze wolny !");
@@ -414,9 +303,6 @@ timer SetPlayerSpawn2[100](playerid)
 			}
 		}
 	}
-	
-	
-	
 }
 
 stock SetPlayerSpawn(playerid)
@@ -429,14 +315,9 @@ stock SetPlayerSpawn(playerid)
 	if(JustDied[playerid])
 	{		
 		if(gPlayerData[playerid][pCrashX] == 0.0 || gPlayerData[playerid][pCrashY] == 0.0 || gPlayerData[playerid][pCrashY] == 0.0)
-		{
-			SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], CivilianSpawn[X], CivilianSpawn[Y], CivilianSpawn[Z], 0, 0, 0, 0, 0, 0, 0);
-		}
+			SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], CivilianSpawn[X],CivilianSpawn[Y],CivilianSpawn[Z],0,0,0,0,0,0,0);
 		else
-		{
 			SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], gPlayerData[playerid][pCrashX], gPlayerData[playerid][pCrashY], gPlayerData[playerid][pCrashZ], gPlayerData[playerid][pCrashAngle],0,0,0,0,0,0);			
-		}
-		
 		return 1;
 	}
 	else
@@ -444,27 +325,57 @@ stock SetPlayerSpawn(playerid)
 		if(AdminDuty[playerid])
 		{
 			if(gPlayerData[playerid][pCrashX] == 0.0 || gPlayerData[playerid][pCrashY] == 0.0 || gPlayerData[playerid][pCrashY] == 0.0)
-			{
-				SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], CivilianSpawn[Y], CivilianSpawn[Y], CivilianSpawn[Z], 0, 0, 0, 0, 0, 0, 0);
-			}
+				SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], CivilianSpawn[Y],CivilianSpawn[Y],CivilianSpawn[Z],0,0,0,0,0,0,0);
 			else
-			{
 				SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], gPlayerData[playerid][pCrashX], gPlayerData[playerid][pCrashY], gPlayerData[playerid][pCrashZ], gPlayerData[playerid][pCrashAngle],0,0,0,0,0,0);
-			}
 		}
 		else
 		{
-			if(gPlayerData[playerid][pCrashX] == 0.0 || gPlayerData[playerid][pCrashY] == 0.0 || gPlayerData[playerid][pCrashY] == 0.0)
-			{
-				format(string, sizeof(string), "[WARNING:] Player %s pos is null", gPlayerData[playerid][pName]);
-				ErrorLog(string);
-				
-				SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], gStartSpawnX, gStartSpawnY, gStartSpawnZ,0,0,0,0,0,0,0);
-			}
-			else
-			{
-				SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], gPlayerData[playerid][pCrashX], gPlayerData[playerid][pCrashY], gPlayerData[playerid][pCrashZ], gPlayerData[playerid][pCrashAngle],0,0,0,0,0,0);
-			}
+			// if(gPlayerData[playerid][pJailed] == 1 &&
+				// (floatabs(gPlayerData[playerid][pCrashX] - 268.0) > 10.0 || floatabs(gPlayerData[playerid][pCrashY]) > 10.0 || floatabs(gPlayerData[playerid][pCrashZ]) > 10.0))
+			// {
+				// DBVariables[2][varDValue]++;
+				// switch(DBVariables[2][varDValue])
+				// {
+					// case 0: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1778.6060791016,-1581.3503417969,1738.7172851563,0,0,0,0,0,0,0);
+					// case 1: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1778.60546875,-1581.349609375,1734.9417724609,0,0,0,0,0,0,0);
+					// case 2: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1774.3107910156,-1580.8834228516,1734.9429931641,0,0,0,0,0,0,0);
+					// case 3: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1770.0396728516,-1580.9715576172,1734.9429931641,0,0,0,0,0,0,0);
+					// case 4: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1765.6442871094,-1581.0885009766,1734.9429931641,0,0,0,0,0,0,0);
+					// case 5: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1761.5192871094,-1580.9661865234,1734.9429931641,0,0,0,0,0,0,0);
+					// case 6: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1757.1713867188,-1581.1558837891,1734.9429931641,0,0,0,0,0,0,0);
+					// case 7: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1757.3331298828,-1565.4664306641,1734.9429931641,0,0,0,0,0,0,0);
+					// case 8: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1761.7298583984,-1565.6207275391,1734.9429931641,0,0,0,0,0,0,0);
+					// case 9: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1765.9074707031,-1565.1364746094,1734.9429931641,0,0,0,0,0,0,0);
+					// case 10: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1770.2448730469,-1565.3743896484,1734.9429931641,0,0,0,0,0,0,0);
+					// case 11: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1774.5153808594,-1565.1875,1734.9429931641,0,0,0,0,0,0,0);
+					// case 12: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1778.6448974609,-1565.0377197266,1734.9429931641,0,0,0,0,0,0,0);
+					// case 13: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1774.236328125,-1580.9116210938,1738.7172851563,0,0,0,0,0,0,0);
+					// case 14: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1770.1110839844,-1580.9205322266,1738.7172851563,0,0,0,0,0,0,0);
+					// case 15: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1765.7939453125,-1581.2406005859,1738.7172851563,0,0,0,0,0,0,0);
+					// case 16: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1761.4822998047,-1581.0185546875,1738.7172851563,0,0,0,0,0,0,0);
+					// case 17: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1757.3651123047,-1581.0830078125,1738.7172851563,0,0,0,0,0,0,0);
+					// case 18: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1757.3023681641,-1565.8057861328,1738.6934814453,0,0,0,0,0,0,0);
+					// case 19: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1761.7540283203,-1565.4591064453,1738.6934814453,0,0,0,0,0,0,0);
+					// case 20: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1765.8216552734,-1565.5594482422,1738.6934814453,0,0,0,0,0,0,0);
+					// case 21: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1770.0919189453,-1565.4733886719,1738.6934814453,0,0,0,0,0,0,0);
+					// case 22: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1774.4881591797,-1565.1726074219,1738.6934814453,0,0,0,0,0,0,0);
+					// case 23: SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], 1778.5562744141,-1565.2510986328,1738.6937255859,0,0,0,0,0,0,0);
+				// }
+				// if(DBVariables[2][varDValue] == 23)
+					// DBVariables[2][varDValue] = 0;
+			// }
+			// else
+			// {
+				if(gPlayerData[playerid][pCrashX] == 0.0 || gPlayerData[playerid][pCrashY] == 0.0 || gPlayerData[playerid][pCrashY] == 0.0)
+				{
+					format(string, sizeof(string), "[WARNING:] Player %s pos is null", gPlayerData[playerid][pName]);
+					ErrorLog(string);
+					SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], gStartSpawnX, gStartSpawnY, gStartSpawnZ,0,0,0,0,0,0,0);
+				}
+				else
+					SetSpawnInfo(playerid, 0, gPlayerData[playerid][pSkin], gPlayerData[playerid][pCrashX], gPlayerData[playerid][pCrashY], gPlayerData[playerid][pCrashZ], gPlayerData[playerid][pCrashAngle],0,0,0,0,0,0);
+			// }
 		}
 	}
 	return 1;
@@ -1087,1054 +998,3 @@ stock ShowPlayerQuiz(playerid)
 		}
 	}
 }
-
-stock PostSpawn(playerid)
-{
-	#if defined DEBUG
-		printf("[DEBUG:] PostSpawn(playerid)");
-	#endif
-	
-	new string[128];
-	
-	TogglePlayerControllable(playerid, 0);
-	defer UnfreezePlayer[5000](playerid);
-	
-	Alive[playerid] = 1;
-	CheckDelay[playerid] = 2;
-	
-	format(string, sizeof(string), "{DF013A}[WParty SERVER:]{FFFFFF} Witaj ponownie %s", gPlayerData[playerid][pOOCName]);
-	SendClientMessage( playerid, COLOR_GREEN, string);
-	
-	// Show gang war status
-	TextDrawShowForPlayer(playerid, GangWar[playerid]);
-	TextDrawShowForPlayer(playerid, GangWarTime[playerid]);
-
-	// Set player nick color depends on nick
-	if(IsPlayerVip(playerid))
-	{
-		SetPlayerColor(playerid, COLOR_PURPLE);
-	}
-	else
-	{
-		SetPlayerColor(playerid, COLOR_CIVILIAN);
-	}
-	
-	// Show player map icons if have map
-	if(PHaveItem(playerid, 1, 105))
-	{
-		ShowPlayerMapIcons( playerid, 0);
-	}
-
-	// Show player GPS data
-	new slot[MAX_PLAYER_ITEM_SLOT];
-	PHaveItemEx(playerid, 3, 12, slot);
-	for(new i = 0; i < MAX_PLAYER_ITEM_SLOT; i++)
-	{
-		if(slot[i] && SlotParam1(playerid, i+1))
-		{
-			ShowPlayerMapIcons(playerid, 1);
-			break;
-		}
-	}
-	
-	// Set player gui cash
-	SetPlayerCash(playerid,gPlayerData[playerid][pCash]);
-
-	// Set player score
-	SetPlayerScore(playerid, gPlayerData[playerid][pPlayingHours]);
-
-	// Set player weapon skills
-	SetPlayerSkillLevel(playerid, 0, gPlayerData[playerid][pSkillLevPis] * 100);
-	SetPlayerSkillLevel(playerid, 1, gPlayerData[playerid][pSkillLevSil] * 100);
-	SetPlayerSkillLevel(playerid, 2, gPlayerData[playerid][pSkillLevDes] * 100);
-	SetPlayerSkillLevel(playerid, 3, gPlayerData[playerid][pSkillLevSha] * 100);
-	SetPlayerSkillLevel(playerid, 4, gPlayerData[playerid][pSkillLevSho] * 100);
-	SetPlayerSkillLevel(playerid, 5, gPlayerData[playerid][pSkillLevSpa] * 100);
-	SetPlayerSkillLevel(playerid, 6, gPlayerData[playerid][pSkillLevMic] * 100);
-	SetPlayerSkillLevel(playerid, 7, gPlayerData[playerid][pSkillLevMp5] * 100);
-	SetPlayerSkillLevel(playerid, 8, gPlayerData[playerid][pSkillLevAk] * 100);
-	SetPlayerSkillLevel(playerid, 9, gPlayerData[playerid][pSkillLevM4] * 100);
-	SetPlayerSkillLevel(playerid, 10, gPlayerData[playerid][pSkillLevSni] * 100);
-
-	// Set PayDay Message
-	if(gPlayerData[playerid][pPayDayMessage])
-		TextDrawShowForPlayer(playerid, gPayDayText);
-	
-	// Set Hunger Bar
-	if(IsPlayerVip(playerid))
-	{
-		gPlayerData[playerid][pEnergyProgressBarID] = CreateProgressBar(545.0, 110.5, 60.0, 4.0, COLOR_YELLOW, MAX_ENERGY_VIP);
-		gPlayerData[playerid][pHungerProgressBarID] = CreateProgressBar(545.0, 115.5, 60.0, 4.0, COLOR_LIGHTRED, MAX_HUNGER_VIP);
-		gPlayerData[playerid][pThirstProgressBarID] = CreateProgressBar(545.0, 120.5, 60.0, 4.0, COLOR_LIGHTBLUE, MAX_THIRST_VIP);
-		/*gPlayerData[playerid][pPoisonProgressBarID] = CreateProgressBar(545.0, 125.5, 60.0, 4.0, COLOR_GREEN, MAX_POISON_VIP);
-		gPlayerData[playerid][pFatProgressBarID] = CreateProgressBar(545.0, 130.5, 60.0, 4.0, COLOR_LIGHTYELLOW2, MAX_FAT_VIP);
-		gPlayerData[playerid][pStomachProgressBarID] = CreateProgressBar(545.0, 135.5, 60.0, 4.0, COLOR_PURPLE, MAX_STOMACH_VIP);
-		gPlayerData[playerid][pVitaminsProgressBarID] = CreateProgressBar(545.0, 140.5, 60.0, 4.0, COLOR_ORANGE, MAX_VITAMINS_VIP);
-		gPlayerData[playerid][pDrunkProgressBarID] = CreateProgressBar(545.0, 145.5, 60.0, 4.0, COLOR_LIGHTORANGE, MAX_DRUNK);
-		gPlayerData[playerid][pNarcoticProgressBarID] = CreateProgressBar(545.0, 150.5, 60.0, 4.0, COLOR_WHITE, MAX_NARCOTIC);*/
-	}
-	else
-	{
-		gPlayerData[playerid][pEnergyProgressBarID] = CreateProgressBar(550.0, 110.5, 55.5, 4.0, COLOR_YELLOW, MAX_ENERGY);
-		gPlayerData[playerid][pHungerProgressBarID] = CreateProgressBar(550.0, 115.5, 55.5, 4.0, COLOR_LIGHTRED, MAX_HUNGER);
-		gPlayerData[playerid][pThirstProgressBarID] = CreateProgressBar(550.0, 120.5, 55.5, 4.0, COLOR_LIGHTBLUE, MAX_THIRST);
-		/*gPlayerData[playerid][pPoisonProgressBarID] = CreateProgressBar(550.0, 125.5, 55.5, 4.0, COLOR_GREEN, MAX_POISON);
-		gPlayerData[playerid][pFatProgressBarID] = CreateProgressBar(550.0, 130.5, 55.5, 4.0, COLOR_LIGHTYELLOW2, MAX_FAT);
-		gPlayerData[playerid][pStomachProgressBarID] = CreateProgressBar(550.0, 135.5, 55.5, 4.0, COLOR_PURPLE, MAX_STOMACH);
-		gPlayerData[playerid][pVitaminsProgressBarID] = CreateProgressBar(550.0, 140.5, 55.5, 4.0, COLOR_ORANGE, MAX_VITAMINS);
-		gPlayerData[playerid][pDrunkProgressBarID] = CreateProgressBar(550.0, 145.5, 55.5, 4.0, COLOR_LIGHTORANGE, MAX_DRUNK);
-		gPlayerData[playerid][pNarcoticProgressBarID] = CreateProgressBar(550.0, 150.5, 55.5, 4.0, COLOR_WHITE, MAX_NARCOTIC);*/
-	}
-	SetProgressBarValue(gPlayerData[playerid][pEnergyProgressBarID], gPlayerData[playerid][pEnergy]);
-	UpdateProgressBar(gPlayerData[playerid][pEnergyProgressBarID], playerid);
-	SetProgressBarValue(gPlayerData[playerid][pHungerProgressBarID], gPlayerData[playerid][pHunger]);
-	UpdateProgressBar(gPlayerData[playerid][pHungerProgressBarID], playerid);
-	SetProgressBarValue(gPlayerData[playerid][pThirstProgressBarID], gPlayerData[playerid][pThirst]);
-	UpdateProgressBar(gPlayerData[playerid][pThirstProgressBarID], playerid);
-	// SetProgressBarValue(gPlayerData[playerid][pPoisonProgressBarID], gPlayerData[playerid][pPoison]);
-	// UpdateProgressBar(gPlayerData[playerid][pPoisonProgressBarID], playerid);
-	// SetProgressBarValue(gPlayerData[playerid][pFatProgressBarID], gPlayerData[playerid][pFat]);
-	// UpdateProgressBar(gPlayerData[playerid][pFatProgressBarID], playerid);
-	// SetProgressBarValue(gPlayerData[playerid][pStomachProgressBarID], gPlayerData[playerid][pStomach]);
-	// UpdateProgressBar(gPlayerData[playerid][pStomachProgressBarID], playerid);
-	// SetProgressBarValue(gPlayerData[playerid][pVitaminsProgressBarID], gPlayerData[playerid][pVitamins]);
-	// UpdateProgressBar(gPlayerData[playerid][pVitaminsProgressBarID], playerid);
-	// SetProgressBarValue(gPlayerData[playerid][pDrunkProgressBarID], gPlayerData[playerid][pDrunk]);
-	// UpdateProgressBar(gPlayerData[playerid][pDrunkProgressBarID], playerid);
-	// SetProgressBarValue(gPlayerData[playerid][pNarcoticProgressBarID], gPlayerData[playerid][pNarcotic]);
-	// UpdateProgressBar(gPlayerData[playerid][pNarcoticProgressBarID], playerid);
-	
-	if(!gPlayerData[playerid][pShowHealthBars])
-	{
-		HideProgressBarForPlayer(playerid, gPlayerData[playerid][pEnergyProgressBarID]);
-		HideProgressBarForPlayer(playerid, gPlayerData[playerid][pHungerProgressBarID]);
-		HideProgressBarForPlayer(playerid, gPlayerData[playerid][pThirstProgressBarID]);
-		/*HideProgressBarForPlayer(playerid, gPlayerData[playerid][pPoisonProgressBarID]);
-		HideProgressBarForPlayer(playerid, gPlayerData[playerid][pFatProgressBarID]);
-		HideProgressBarForPlayer(playerid, gPlayerData[playerid][pStomachProgressBarID]);
-		HideProgressBarForPlayer(playerid, gPlayerData[playerid][pVitaminsProgressBarID]);
-		HideProgressBarForPlayer(playerid, gPlayerData[playerid][pDrunkProgressBarID]);
-		HideProgressBarForPlayer(playerid, gPlayerData[playerid][pNarcoticProgressBarID]);*/
-	}
-	else
-	{
-		TextDrawShowForPlayer(playerid, gHealthTextEnergy);
-	}
-	
-	// Show infos
-	// ClearScreen(playerid);
-	format(string, sizeof(string), "{DF013A}[WParty SERVER:]{FFFFFF}[ID: %d][IC: %s] %s do³¹czy³ do gry !", playerid, GetPlayerNameEx(playerid), gPlayerData[playerid][pOOCName]);
-	foreach(Player, i)
-	{
-		if(gPlayerLogged[i] && i != playerid && gPlayerData[i][pJoinInfoStatus])
-		{
-			SendClientMessage(i, 0xFFFFFFAA, string);
-		}
-	}
-
-	// Show character AFK status
-	Attach3DTextLabelToPlayer(playerAFK[playerid], playerid, 0.0, 0.0, 0.8);
-	Update3DTextLabelText(playerAFK[playerid], COLOR_BLACK, " ");
-	
-	// Show character description
-	Attach3DTextLabelToPlayer(gPlayerData[playerid][pCharDescriptionID], playerid, 0.0, 0.0, 0.5);
-	UpdateCharDescription(playerid);
-
-	// Show character name
-	Attach3DTextLabelToPlayer(gPlayerData[playerid][pCharNameID], playerid, 0.0, 0.0, 0.2);
-	
-	if(IsPlayerVip(playerid))
-	{
-		format(string, sizeof(string), "{C2A2DA}%s [%d]", GetPlayerNameEx(playerid), playerid);
-	}
-	else
-	{
-		format(string, sizeof(string), "{FFFFFF}%s [%d]", GetPlayerNameEx(playerid), playerid);
-	}
-	
-	Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_BLACK, string);
-	
-	// Check if player have active bandana
-	PHaveItemEx(playerid, 3, 14, slot);
-	for(new i = 0; i < MAX_PLAYER_ITEM_SLOT; i++)
-	{
-		if(slot[i] && SlotParam1(playerid, i+1))
-		{
-			if(IsPlayerVip(playerid))
-			{
-				format(string, sizeof(string), "{C2A2DA}Twarz za chust¹ [%d]", playerid);
-			}
-			else
-			{
-				format(string, sizeof(string), "{FFFFFF}Twarz za chust¹ [%d]", playerid);
-			}
-			
-			Update3DTextLabelText(gPlayerData[playerid][pCharNameID], COLOR_BLACK, string);
-			
-			break;
-		}
-	}
-	
-	// Set player dynamic weather
-	if(IsPlayerInDynamicArea(playerid, gArea_MW_SanFierro))
-	{
-		SetPlayerRealWeatherEx(playerid, gMW_sanfrancisco);
-	}
-	else if(IsPlayerInDynamicArea(playerid, gArea_MW_LasVenturas))
-	{
-		SetPlayerRealWeatherEx(playerid, gMW_lasvegas);
-	}
-	else if(IsPlayerInDynamicArea(playerid, gArea_MW_LosSantos))
-	{
-		SetPlayerRealWeatherEx(playerid, gMW_losangeles);
-	}
-	else
-	{
-		SetPlayerRealWeatherEx(playerid, gMW_warszawa);
-	}
-
-	// Set player status box
-	format(string, sizeof(string), " ");
-	PlayerTextDrawSetString(playerid, PlayerStatus[playerid], string);
-	PlayerTextDrawShow(playerid, PlayerStatus[playerid]);
-	//TextDrawShowForPlayer(playerid, gPlayerVars[playerid][mSanNewsTextDrawId]);
-
-	// Set login status and enable save
-	gPlayerData[playerid][pLoading] = 0;
-	gSavePlayerReady[playerid] = 1;
-
-	// New version changes
-	// if(!gPlayerData[playerid][pNewVersion])
-	// {
-		// strcat(string, "Otrzymujesz t¹ wiadomoœæ poniewa¿ od Twojego ostatniego logowania na serwer zosta³a wgrana nowa wersja skryptu.\n");
-		// strcat(string, "\nZmiany w wersji - 1.15.0 - 1.15.1\n");
-		// strcat(string, "- Stawianie/edycja biznesów/domów zosta³o zablokowane dla urzêdu. (1.15.1)\n");
-		// strcat(string, "- Wezwania na policje/pogotwie wewn¹trz interiorów tworz¹ punkcie wejœcia do interioru. (1.15.1)\n");
-		// strcat(string, "- Gracz mo¿e przejrzeæ ostatnie 5 wezwañ (dot. pogotowia oraz policji) poprzez komende /wezwania. Umo¿liwia to ponowne wyœwietlenie punktu w którym znajduje siê gracz który wykona³ po³¹czenie. (1.15.1)\n");
-		// strcat(string, "- Rozwi¹zano problemy z zapisem w pomniejszych elementach gamemodu. (1.15.1)\n");
-		// strcat(string, "- Ujednolicono zapis pozycji postaci (rozwi¹zuje problem ze spawnem w interiorach). (1.15.1)\n");
-		// strcat(string, "- Wprowadzono mo¿liwoœæ posiadania wielu biznesów. (1.15.0)\n");
-		// strcat(string, "- Dodano statystyki biznesu. (1.15.0)\n");
-		// strcat(string, "- Ulepszono wynajmowanie domów. (1.15.0)\n");
-		// strcat(string, "- Dodano item umo¿liwiaj¹cy zrobienie kopii klucza. (1.15.0)\n");
-		// strcat(string, "- Wprowadzono mo¿liwoœæ zmiany zamka w domach oraz biznesach. (1.15.0)\n");
-		// strcat(string, "- Dodano puste interiory do zaaran¿owania przez gracza. (1.15.0)\n");
-		// strcat(string, "- Poprawiono problemy z BW. (1.15.0)\n");
-		// ShowPlayerDialog(playerid, DIALOG_NEW_VERSION, DIALOG_STYLE_MSGBOX, "Nowa aktualizacja !", string, "Zamknij", "");
-	// }
-	
-	if(gPlayerData[playerid][pVipItem] > 0 && gPlayerData[playerid][pVipItem] <= 5)
-	{
-		if(gPlayerData[playerid][pVipItem] == 1)
-			format(string, sizeof(string), "Do koñca us³ugi premium VIP Item pozosta³ ju¿ tylko 1 dzieñ !");
-		else
-			format(string, sizeof(string), "Do koñca us³ugi premium VIP Item pozosta³o ju¿ tylko %d dni !", gPlayerData[playerid][pVipItem]);
-		ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-	}
-	else if(gPlayerData[playerid][pVipExpT] > 0 && gPlayerData[playerid][pVipExpT] <= 5)
-	{
-		if(gPlayerData[playerid][pVipExpT] == 1)
-			format(string, sizeof(string), "Do koñca us³ugi premium VIP pozosta³o ju¿ tylko 1 dzieñ !");
-		else
-			format(string, sizeof(string), "Do koñca us³ugi premium VIP pozosta³o ju¿ tylko %d dni !", gPlayerData[playerid][pVipExpT]);
-		ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-	}
-
-	gPlayerData[playerid][pLastLogged] = 0;
-	SavePlayerData(playerid, "LastLogged");
-}
-
-stock PreSpawn(playerid)
-{
-	#if defined DEBUG
-		printf("[DEBUG:] PreSpawn(playerid)");
-	#endif
-	
-	// Set login status and enable save
-	gPlayerLogged[playerid] = 1;
-	
-	if(!gPlayerData[playerid][pQuiz])
-	{
-		gPlayerVars[playerid][mQuizQuestionNo] = 0;
-		gPlayerVars[playerid][mQuizWrongAnsweres] = 0;
-		ShowPlayerQuiz(playerid);
-	}
-	else
-	{
-		SpawnPlayerEx(playerid);
-	}
-}
-
-stock SpawnPlayerEx(playerid)
-{
-	#if defined DEBUG
-		printf("[DEBUG:] SpawnPlayerEx(playerid)");
-	#endif
-	SetPlayerSpawn(playerid);							
-	SpawnPlayer(playerid);
-	PostSpawn(playerid);
-}
-
-stock GetPlayerInVehicleSeat(vehId, seatId)
-{
-	foreach(Player, i)
-	{
-		if(IsPlayerInVehicle(i, vehId))
-		{
-			if(GetPlayerVehicleSeat(i) == seatId)
-			{
-				return i;
-			}
-		}
-	}
-	return -1;
-}
-
-// TODO: Cleanup all unused TEXT: OnPlayerDisconnect
-
-stock UpdateClotheStoreDescription(playerid)
-{
-	/*
-	new string[128];
-	new totalSkins;
-	new slot = BizHaveItem(gBuyBusinessID[playerid], 3, 24);
-	new itemPrice = BizItemSlotPrice(gBuyBusinessID[playerid], slot);
-	if(gPlayerData[playerid][pSex] == 1)
-	{
-		totalSkins = sizeof(MaleSkins);
-		SetPlayerSkinEx(playerid, MaleSkins[0]);
-	}
-	else
-	{
-		totalSkins = sizeof(FemaleSkins);
-		SetPlayerSkinEx(playerid, FemaleSkins[0]);
-	}
-	format(string, sizeof(string), "~y~Wciœnij ~r~~k~~SPACJE~ ~y~aby kupiæ ubranie~n~Cena: ~r~$%d~n~~n~~y~(%d/%d)", itemPrice, gPlayerVars[playerid][mClotheShopSkinId]+1, totalSkins);
-	*/
-}
-
-stock PlayerToClotheStore(playerid)
-{
-	gPlayerVars[playerid][mAtClotheStore] = true;
-	gPlayerVars[playerid][mClotheShopSkinId] = 0;
-	
-	SetPlayerVirtualWorld(playerid, playerid+1);
-	SetPlayerInterior(playerid, 18);
-	SetPlayerToPos(playerid, 181.7410,-87.4888,1002.0234);
-	SetPlayerFacingAngle(playerid, 128.0);
-	SetPlayerCameraPos(playerid, 178.2804,-89.5319,1003.0234);
-	SetPlayerCameraLookAt(playerid, 181.7410,-87.4888,1002.0234);
-	TogglePlayerControllable(playerid, 0);
-	
-	PlayerTextDrawShow(playerid, gPlayerVars[playerid][mWardrobeExitText]);
-	
-	defer ClotheStoreKeyTimer(playerid);
-	
-	ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "U¿yj strza³ek aby przegl¹daæ dostêpne ubrania.\nWpisz /opuscprzymierzalnie aby wyjœæ.\nWciœnij spacje aby kupiæ ubranie.", "Zamknij", "");
-}
-
-stock SetPlayerClotheStoreSkin(playerid)
-{
-	if(gPlayerData[playerid][pSex] == 1)
-	{
-		SetPlayerSkinEx(playerid, MaleSkins[gPlayerVars[playerid][mClotheShopSkinId]]);
-	}
-	else
-	{
-		SetPlayerSkinEx(playerid, FemaleSkins[gPlayerVars[playerid][mClotheShopSkinId]]);
-	}
-}
-
-stock SetNextPlayerClotheStoreSkin(playerid)
-{
-	if(gPlayerData[playerid][pSex] == 1)
-	{
-		if(gPlayerVars[playerid][mClotheShopSkinId]+1 >= sizeof(MaleSkins))
-		{
-			gPlayerVars[playerid][mClotheShopSkinId] = 0;
-		}
-		else
-		{
-			gPlayerVars[playerid][mClotheShopSkinId]++;
-		}
-		SetPlayerSkinEx(playerid, MaleSkins[gPlayerVars[playerid][mClotheShopSkinId]]);
-	}
-	else
-	{
-		if(gPlayerVars[playerid][mClotheShopSkinId]+1 >= sizeof(FemaleSkins))
-		{
-			gPlayerVars[playerid][mClotheShopSkinId] = 0;
-		}
-		else
-		{
-			gPlayerVars[playerid][mClotheShopSkinId]++;
-		}
-		SetPlayerSkinEx(playerid, FemaleSkins[gPlayerVars[playerid][mClotheShopSkinId]]);
-	}
-}
-
-stock SetPrevPlayerClotheStoreSkin(playerid)
-{
-	if(gPlayerData[playerid][pSex] == 1)
-	{
-		if(gPlayerVars[playerid][mClotheShopSkinId]-1 <= 0)
-		{
-			gPlayerVars[playerid][mClotheShopSkinId] = sizeof(MaleSkins)-1;
-		}
-		else
-		{
-			gPlayerVars[playerid][mClotheShopSkinId]--;
-		}
-		SetPlayerSkinEx(playerid, MaleSkins[gPlayerVars[playerid][mClotheShopSkinId]]);
-	}
-	else
-	{
-		if(gPlayerVars[playerid][mClotheShopSkinId]-1 <= 0)
-		{
-			gPlayerVars[playerid][mClotheShopSkinId] = sizeof(FemaleSkins)-1;
-		}
-		else
-		{
-			gPlayerVars[playerid][mClotheShopSkinId]--;
-		}
-		SetPlayerSkinEx(playerid, FemaleSkins[gPlayerVars[playerid][mClotheShopSkinId]]);
-	}
-}
-
-timer ClotheStoreKeyTimer[90](playerid)
-{
-	new keys, updown, leftright;
-	GetPlayerKeys(playerid, keys, updown, leftright);
-	if(leftright == KEY_RIGHT)
-	{
-		SetNextPlayerClotheStoreSkin(playerid);
-	}
-	if(leftright == KEY_LEFT)
-	{
-		SetPrevPlayerClotheStoreSkin(playerid);
-	}
-	if(gPlayerVars[playerid][mAtClotheStore])
-	{
-		defer ClotheStoreKeyTimer(playerid);
-	}
-}
-
-stock SetPlayerToBiz(playerid, bizId)
-{
-	SetPlayerInterior(playerid, Businesses[bizId][ExitInterior]);
-	SetPlayerToPos(playerid, Businesses[bizId][ExitX], Businesses[bizId][ExitY], Businesses[bizId][ExitZ]);
-	SetPlayerVirtualWorld(playerid, bizId);
-	SetPlayerFacingAngle(playerid, Businesses[bizId][ExitAngle]);
-	TogglePlayerControllable(playerid, 0);
-	defer UnfreezePlayer(playerid);
-}
-
-stock IsPlayerBizOwner(playerid, bizId)
-{
-	if(strcmp(gPlayerData[playerid][pName], Businesses[bizId][Owner], false) != 0 && (!Businesses[bizId][BGov] || gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT))
-	{
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
-}
-
-stock ShowBizInfo(playerid)
-{
-	new string[128];
-	if(gPlayerVars[playerid][mAtBizID] == -1)
-	{
-		ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Nie jesteœ w ¿adnym biznesie.", "Zamknij", "");
-		return;
-	}
-	if(!IsPlayerBizOwner(playerid, gPlayerVars[playerid][mAtBizID]) && !IsPlayerAdmin(playerid))
-	{
-		ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Biznes", "Nie jesteœ w³aœcicielem tego biznesu.", "Zamknij", "");
-		return;
-	}
-	format(string, sizeof(string), "Nazwa biznesu: %s\nPieni¹dze w kasie: $%d\nWejœciówka: $%d\nWycena biznesu: $%d\n", Businesses[gPlayerVars[playerid][mAtBizID]][BusinessName], Businesses[gPlayerVars[playerid][mAtBizID]][Till], Businesses[gPlayerVars[playerid][mAtBizID]][EntranceCost], Businesses[gPlayerVars[playerid][mAtBizID]][BizPrice]);
-	if(Businesses[gPlayerVars[playerid][mAtBizID]][BizType] == BIZT_VEHICLES)
-	{
-		format(string, sizeof(string), "%sPosiadanych pojazdów: %d/%d\nLiczba zamówieñ: %d\nPojazdy oczekuj¹ce(0/1): %d\n", string, Businesses[gPlayerVars[playerid][mAtBizID]][VehicleCount], Businesses[gPlayerVars[playerid][mAtBizID]][MaxVehicles], Businesses[gPlayerVars[playerid][mAtBizID]][VehicleOrderCount], Businesses[gPlayerVars[playerid][mAtBizID]][VehicleSpawned]);
-	}
-
-	ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Biznes", string, "Zamknij", "");
-	PlayerActionMessage(playerid, 15.0, "przegl¹da dokumentacje biznesu");
-	return;
-}
-
-stock SetPlayerSkinEx(playerid, skinId)
-{
-	if(gPlayerVars[playerid][mAtClotheStore])
-	{
-		SetPlayerSkin(playerid, skinId);
-		SetPlayerArmourEx(playerid, 0);
-	}
-	else if(gPlayerData[playerid][pJailed] > 0)
-	{
-		SetPlayerSkin(playerid, 96);
-		SetPlayerArmourEx(playerid, 0);
-	}
-	else if(gPlayerData[playerid][pFaction] != 255)
-	{
-		if(gPlayerData[playerid][pDuty] && DynamicFactions[gPlayerData[playerid][pFaction]][fUseSkins])
-		{
-			SetPlayerToFactionSkin(playerid);
-		}
-		else
-		{
-			SetPlayerSkin(playerid, skinId);
-		}
-		SetPlayerArmourEx(playerid, gPlayerData[playerid][pArmour]);
-	}
-	else
-	{
-		SetPlayerSkin(playerid, skinId);
-		SetPlayerArmourEx(playerid, gPlayerData[playerid][pArmour]);
-	}
-}
-
-stock IsAtAtm(playerid)
-{
-	for(new i = 0; i < sizeof(gATM); i++)
-	{
-		if(!PlayerToPoint(1.0, playerid, gATM[i][0], gATM[i][1], gATM[i][2]))
-		{
-			continue;
-		}
-		
-		return 1;
-	}
-	
-	return 0;
-}
-
-stock ReturnGradeName(gradeId)
-{
-	new string[11];
-	format(string, sizeof(string), "");
-	switch(gradeId)
-	{
-		case 0:
-		{
-			format(string, sizeof(string), "podstawowe");
-		}
-		case 1:
-		{
-			format(string, sizeof(string), "œrednie");
-		}
-		case 2:
-		{
-			format(string, sizeof(string), "licencjat");
-		}
-		case 3:
-		{
-			format(string, sizeof(string), "magister");
-		}
-		case 4:
-		{
-			format(string, sizeof(string), "doktorat");
-		}
-	}
-	return string;
-}
-
-stock RemoveWeaponFromSlot(playerid, slot)
-{
-	new weaponInSlot, ammoInSlot;
-	GetPlayerWeaponData(playerid, slot, weaponInSlot, ammoInSlot);
-	
-	switch(weaponInSlot)
-	{
-		case 1:
-		{
-			GivePlayerWeapon(playerid, 0, 0);
-		}
-		case 2:
-		{
-			GivePlayerWeapon(playerid, 3, 0);
-		}
-		case 3:
-		{
-			GivePlayerWeapon(playerid, 2, 0);
-		}
-		case 4:
-		{
-			GivePlayerWeapon(playerid, 2, 0);
-		}
-		case 5:
-		{
-			GivePlayerWeapon(playerid, 2, 0);
-		}
-		case 6:
-		{
-			GivePlayerWeapon(playerid, 2, 0);
-		}
-		case 7:
-		{
-			GivePlayerWeapon(playerid, 2, 0);
-		}
-		case 8:
-		{
-			GivePlayerWeapon(playerid, 2, 0);
-		}
-		case 9:
-		{
-			GivePlayerWeapon(playerid, 2, 0);
-		}
-		case 10:
-		{
-			GivePlayerWeapon(playerid, 11, 0);
-		}
-		case 11:
-		{
-			GivePlayerWeapon(playerid, 10, 0);
-		}
-		case 12:
-		{
-			GivePlayerWeapon(playerid, 10, 0);
-		}
-		case 13:
-		{
-			GivePlayerWeapon(playerid, 10, 0);
-		}
-		case 14:
-		{
-			GivePlayerWeapon(playerid, 10, 0);
-		}
-		case 15:
-		{
-			GivePlayerWeapon(playerid, 10, 0);
-		}
-		case 16:
-		{
-			GivePlayerWeapon(playerid, 17, 0);
-		}
-		case 17:
-		{
-			GivePlayerWeapon(playerid, 16, 0);
-		}
-		case 18:
-		{
-			GivePlayerWeapon(playerid, 16, 0);
-		}
-		case 22:
-		{
-			GivePlayerWeapon(playerid, 23, 0);
-		}
-		case 23:
-		{
-			GivePlayerWeapon(playerid, 22, 0);
-		}
-		case 24:
-		{
-			GivePlayerWeapon(playerid, 22, 0);
-		}
-		case 25:
-		{
-			GivePlayerWeapon(playerid, 26, 0);
-		}
-		case 26:
-		{
-			GivePlayerWeapon(playerid, 25, 0);
-		}
-		case 27:
-		{
-			GivePlayerWeapon(playerid, 25, 0);
-		}
-		case 28:
-		{
-			GivePlayerWeapon(playerid, 29, 0);
-		}
-		case 29:
-		{
-			GivePlayerWeapon(playerid, 28, 0);
-		}
-		case 30:
-		{
-			GivePlayerWeapon(playerid, 31, 0);
-		}
-		case 31:
-		{
-			GivePlayerWeapon(playerid, 30, 0);
-		}
-		case 32:
-		{
-			GivePlayerWeapon(playerid, 28, 0);
-		}
-		case 33:
-		{
-			GivePlayerWeapon(playerid, 34, 0);
-		}
-		case 34:
-		{
-			GivePlayerWeapon(playerid, 33, 0);
-		}
-		case 35:
-		{
-			GivePlayerWeapon(playerid, 36, 0);
-		}
-		case 36:
-		{
-			GivePlayerWeapon(playerid, 35, 0);
-		}
-		case 37:
-		{
-			GivePlayerWeapon(playerid, 35, 0);
-		}
-		case 38:
-		{
-			GivePlayerWeapon(playerid, 35, 0);
-		}		
-	}
-}
-
-stock IsInFrontOfHood(playerid, vehId)
-{
-	if(IsABike(vehId) || IsAMotorBike(vehId) || IsABoat(vehId) || IsAHelicopter(vehId) || IsAPlaneModel(vehId))
-	{
-		return 1;
-	}
-	
-	new Float:vehPosX, Float:vehPosY, Float:vehPosZ, Float:vehPosA, Float:inFrontOfPlayerPosX, Float:inFrontOfPlayerPosY, Float:playerPosA;
-	
-	GetVehiclePos(vehId, vehPosX, vehPosY, vehPosZ);
-	GetVehicleZAngle(vehId, vehPosA);
-	
-	GetPlayerFacingAngle(playerid, playerPosA);
-	
-	for(new i = 0; i < sizeof(CarsLenghts); i++)
-	{
-		if(CarsLenghts[i][lenghtModel] != gVehData[vehId-1][mVehModel])
-		{
-			continue;
-		}
-		
-		GetXYInFrontOfPlayer(playerid, inFrontOfPlayerPosX, inFrontOfPlayerPosY, CarsLenghts[i][hoodDistance]);
-		
-		if(CarsLenghts[i][hoodAngle] == 1)
-		{
-			if(playerPosA-180.0 < 0.0)
-			{
-				playerPosA += 180.0;
-			}
-			else
-			{
-				playerPosA -= 180.0;
-			}
-		}
-		
-		if((floatabs(inFrontOfPlayerPosX - vehPosX) > 0.9 || floatabs(inFrontOfPlayerPosY - vehPosY) > 0.9) || floatabs(vehPosA - playerPosA) > 28.0)
-		{
-			return 0;
-		}
-		else
-		{
-			return 1;
-		}
-	}
-	return 0;
-}
-
-stock IsHoodOpened(playerid, vehId)
-{
-	if(IsABike(vehId) || IsAMotorBike(vehId) || IsABoat(vehId) || IsAHelicopter(vehId) || IsAPlaneModel(vehId))
-	{
-		return 1;
-	}
-
-	new Float:vehPosX, Float:vehPosY, Float:vehPosZ, Float:vehPosA, Float:inFrontOfPlayerPosX, Float:inFrontOfPlayerPosY, Float:playerPosA;
-	
-	GetVehiclePos(vehId, vehPosX, vehPosY, vehPosZ);
-	GetVehicleZAngle(vehId, vehPosA);
-	
-	GetPlayerFacingAngle(playerid, playerPosA);
-	
-	new objective;
-	
-	for(new i = 0; i < sizeof(CarsLenghts); i++)
-	{
-		if(CarsLenghts[i][lenghtModel] != gVehData[vehId-1][mVehModel])
-		{
-			continue;
-		}
-		
-		GetXYInFrontOfPlayer(playerid, inFrontOfPlayerPosX, inFrontOfPlayerPosY, CarsLenghts[i][hoodDistance]);
-		
-		if(CarsLenghts[i][hoodAngle] == 1)
-		{
-			if(playerPosA-180.0 < 0.0)
-			{
-				playerPosA += 180.0;
-			}
-			else
-			{
-				playerPosA -= 180.0;
-			}
-		}
-		
-		if((floatabs(inFrontOfPlayerPosX - vehPosX) > 0.9 || floatabs(inFrontOfPlayerPosY - vehPosY) > 0.9) || floatabs(vehPosA - playerPosA) > 28.0)
-		{
-			return 0;
-		}
-		else
-		{
-			GetVehicleParamsEx(vehId, gVehData[vehId-1][EngineOn], gVehData[vehId-1][LightsOn], gVehData[vehId-1][Alarm], gVehData[vehId-1][CarDoors], gVehData[vehId-1][BonnetUp], gVehData[vehId-1][BootUp], objective);
-			if(CarsLenghts[i][trunkAngle] == 1)
-			{
-				if(!gVehData[vehId-1][BootUp])
-				{
-					return 0;
-				}
-				else
-				{
-					return 1;							
-				}
-			}
-			else
-			{
-				if(!gVehData[vehId-1][BonnetUp])
-				{
-					return 0;
-				}
-				else
-				{
-					return 1;							
-				}
-			}
-		}
-	}
-	return 0;
-}
-
-timer ClearAnimationsEx[2000](playerid)
-{
-	ClearAnimations(playerid);
-}
-
-timer InjuryEndAnimation[3000](playerid)
-{
-	ApplyAnimation(playerid, "PED", "getup_front", 4.1, 1, 0, 0, 1, 0, 1);
-	defer ClearAnimationsEx[800](playerid);
-}
-
-stock ShowPlayerPhoneCompany(playerid)
-{
-	new string[2048], fID = gPlayerData[playerid][pFaction2];
-	
-	format(string, sizeof(string), "1. Koszt aktywacji - $%d\n2. Abonament dzienny - $%d\n3. Darmowe minuty w abonamencie - %d\n4. Darmowe SMSy w abonamencie - %d\n5. Koszt minuty w abonamencie - $%d\n6. Koszt SMSa w abonamencie - $%d\n",
-		DynamicFactions[fID][mSimActivationCost], DynamicFactions[fID][mSimDailyFee], DynamicFactions[fID][mSimFreeMins], DynamicFactions[fID][mSimFreeSms], DynamicFactions[fID][mCallCostFee], DynamicFactions[fID][mSmsCostFee]);
-	format(string, sizeof(string), "%s7. Koszt minuty w ofercie na karte - $%d\n8. Koszt SMSa w ofercie na karte - $%d\n9. Wa¿noœæ karty po aktywacji - %d dni\n10. Kwota do³adowania I - $%d\n11. Okres przed³u¿enia do³adowania I - %d dni\n", string,
-		DynamicFactions[fID][mCallCostCard], DynamicFactions[fID][mSmsCostCard], DynamicFactions[fID][mCardValidity], DynamicFactions[fID][mCardRenewCost1], DynamicFactions[fID][mCardRenewTime1]);
-	format(string, sizeof(string), "%s12. Kwota do³adowania II - $%d\n13. Okres przed³u¿enia do³adowania II - %d dni\n14. Kwota do³adowania III - $%d\n15. Okres przed³u¿enia do³adowania III - %d dni\n16. Kwota do³adowania IV - $%d\n", string,
-		DynamicFactions[fID][mCardRenewCost2], DynamicFactions[fID][mCardRenewTime2], DynamicFactions[fID][mCardRenewCost3], DynamicFactions[fID][mCardRenewTime3], DynamicFactions[fID][mCardRenewCost4]);
-	format(string, sizeof(string), "%s17. Okres przed³u¿enia do³adowania IV - %d dni\n18. Procentowy zysk biznesów z po³¹czeñ - %.2f%%\n19. Procentowy zysk biznesu ze sprzeda¿y ofert - %.2f%%\n20. Zysk biznesu za podpisanie umowy z firm¹ - $%d\n", string,
-		DynamicFactions[fID][mCardRenewTime4], DynamicFactions[fID][mBizConIncome], DynamicFactions[fID][mBizOfferIncome], DynamicFactions[fID][mBizJoinCash]);
-	format(string, sizeof(string), "%s21. Czas po jakim wygasa umowa z biznesem - %d dni\n22. Wartoœæ kary za przedwczesne zerwanie umowy - $%d\n23. Nazwa sieci - %s", string,
-		DynamicFactions[fID][mBizJoinTime], DynamicFactions[fID][mBizPenaltyValue], DynamicFactions[fID][mCompanyName]);
-	
-	ShowPlayerDialog(playerid, DIALOG_NETWORK_COMP_1, DIALOG_STYLE_LIST, "Zarz¹dzanie firm¹", string, "Wybierz", "Zamknij");
-}
-
-stock StopJob(playerid)
-{
-	new enginedyn, lights, alarm, bonnet, boot, objective, doors;
-	new Float:vehPosX, Float:vehPosY, Float:vehPosZ;
-	
-	switch(gPlayerData[playerid][pJob])
-	{
-		case JOB_BUSDRIVER:
-		{
-			if(!gBusDriverOnDuty[playerid])
-			{
-				return;
-			}
-			
-			gBusDriverOnDuty[playerid] = 0;
-			gBusDriverCurrentCheckPoint[playerid] = 0;
-			gBusDriverResetTime[playerid] = 0;
-			
-			DisablePlayerCheckpoint(playerid);	
-			
-			HideProgressBarForPlayer(playerid, JobProgress[playerid]);
-			
-			if(EnteredVehicleID[playerid] != 0)
-			{
-				if(EnteredVehicleID[playerid] == GetPlayerVehicleID(playerid))
-				{
-					GetVehiclePos(EnteredVehicleID[playerid], vehPosX, vehPosY, vehPosZ);
-					SetPlayerToPos(playerid, vehPosX+5.0, vehPosY, vehPosZ);
-				}
-				
-				UpdateDynamic3DTextLabelText(BusRoute[EnteredVehicleID[playerid]-1], COLOR_LIGHTYELLOW, " ");
-				
-				SetVehicleToPos(EnteredVehicleID[playerid], gVehData[EnteredVehicleID[playerid]-1][mVehX], gVehData[EnteredVehicleID[playerid]-1][mVehY], gVehData[EnteredVehicleID[playerid]-1][mVehZ]);
-				SetVehicleZAngle(EnteredVehicleID[playerid], gVehData[EnteredVehicleID[playerid]-1][mVehA]);
-				GetVehicleParamsEx(EnteredVehicleID[playerid], enginedyn, lights, alarm, doors, bonnet, boot, objective);
-				SetVehicleParamsEx(EnteredVehicleID[playerid], 0, 0, alarm, doors, bonnet, boot, objective);
-				
-				gVehData[EnteredVehicleID[playerid]-1][EngineOn] = 0;
-				gVehData[EnteredVehicleID[playerid]-1][LightsOn] = 0;
-				SaveVehData(EnteredVehicleID[playerid]-1, "EngineOn");
-				SaveVehData(EnteredVehicleID[playerid]-1, "LightsOn");
-				
-				EnteredVehicleID[playerid] = 0;
-			}
-		}
-		case JOB_TRASHDRIVER:
-		{
-			if(!gTrashDriverOnDuty[playerid])
-			{
-				return;
-			}
-			
-			gTrashDriverOnDuty[playerid] = 0;
-			gTrashDriverCurrentCheckPoint[playerid] = 0;
-			gTrashDriverResetTime[playerid] = 0;
-			
-			DisablePlayerCheckpoint(playerid);	
-			
-			HideProgressBarForPlayer(playerid, JobProgress[playerid]);
-			
-			if(EnteredVehicleID[playerid] != 0)
-			{
-				if(EnteredVehicleID[playerid] == GetPlayerVehicleID(playerid))
-				{
-					GetVehiclePos(EnteredVehicleID[playerid], vehPosX, vehPosY, vehPosZ);
-					SetPlayerToPos(playerid, vehPosX+5.0, vehPosY, vehPosZ);
-				}
-			
-				SetVehicleToPos(EnteredVehicleID[playerid], gVehData[EnteredVehicleID[playerid]-1][mVehX], gVehData[EnteredVehicleID[playerid]-1][mVehY], gVehData[EnteredVehicleID[playerid]-1][mVehZ]);
-				SetVehicleZAngle(EnteredVehicleID[playerid], gVehData[EnteredVehicleID[playerid]-1][mVehA]);
-				GetVehicleParamsEx(EnteredVehicleID[playerid], enginedyn, lights, alarm, doors, bonnet, boot, objective);
-				SetVehicleParamsEx(EnteredVehicleID[playerid], 0, 0, alarm, doors, bonnet, boot, objective);
-				
-				gVehData[EnteredVehicleID[playerid]-1][EngineOn] = 0;
-				gVehData[EnteredVehicleID[playerid]-1][LightsOn] = 0;
-				SaveVehData(EnteredVehicleID[playerid]-1, "EngineOn");
-				SaveVehData(EnteredVehicleID[playerid]-1, "LightsOn");
-				
-				EnteredVehicleID[playerid] = 0;
-			}
-		}
-		case JOB_SWEEPER:
-		{
-			if(!gSweeperDriverOnDuty[playerid])
-			{
-				return;
-			}
-			
-			gSweeperDriverOnDuty[playerid] = 0;
-			gSweeperDriverCurrentCheckPoint[playerid] = 0;
-			gSweeperDriverResetTime[playerid] = 0;
-			
-			DisablePlayerCheckpoint(playerid);	
-			
-			HideProgressBarForPlayer(playerid, JobProgress[playerid]);
-			
-			if(EnteredVehicleID[playerid] != 0)
-			{
-				if(EnteredVehicleID[playerid] == GetPlayerVehicleID(playerid))
-				{
-					GetVehiclePos(EnteredVehicleID[playerid], vehPosX, vehPosY, vehPosZ);
-					SetPlayerToPos(playerid, vehPosX, vehPosY, vehPosZ);
-				}
-			
-				SetVehicleToPos(EnteredVehicleID[playerid], gVehData[EnteredVehicleID[playerid]-1][mVehX], gVehData[EnteredVehicleID[playerid]-1][mVehY], gVehData[EnteredVehicleID[playerid]-1][mVehZ]);
-				SetVehicleZAngle(EnteredVehicleID[playerid], gVehData[EnteredVehicleID[playerid]-1][mVehA]);
-				GetVehicleParamsEx(EnteredVehicleID[playerid], enginedyn, lights, alarm, doors, bonnet, boot, objective);
-				SetVehicleParamsEx(EnteredVehicleID[playerid], 0, 0, alarm, doors, bonnet, boot, objective);
-				
-				gVehData[EnteredVehicleID[playerid]-1][EngineOn] = 0;
-				gVehData[EnteredVehicleID[playerid]-1][LightsOn] = 0;
-				SaveVehData(EnteredVehicleID[playerid]-1, "EngineOn");
-				SaveVehData(EnteredVehicleID[playerid]-1, "LightsOn");
-				
-				EnteredVehicleID[playerid] = 0;
-			}
-		}
-		case JOB_FARMER:
-		{
-			if(!gFarmerDriverOnDuty[playerid])
-			{
-				return;
-			}
-			
-			gFarmerDriverOnDuty[playerid] = 0;
-			gFarmerDriverCurrentCheckPoint[playerid] = 0;
-			gFarmerDriverResetTime[playerid] = 0;
-			
-			DisablePlayerCheckpoint(playerid);
-			
-			HideProgressBarForPlayer(playerid, JobProgress[playerid]);
-			
-			if(EnteredVehicleID[playerid] != 0)
-			{
-				if(EnteredVehicleID[playerid] == GetPlayerVehicleID(playerid))
-				{
-					GetVehiclePos(EnteredVehicleID[playerid], vehPosX, vehPosY, vehPosZ);
-					SetPlayerToPos(playerid, vehPosX, vehPosY, vehPosZ);
-				}
-			
-				SetVehicleToPos(EnteredVehicleID[playerid], gVehData[EnteredVehicleID[playerid]-1][mVehX], gVehData[EnteredVehicleID[playerid]-1][mVehY], gVehData[EnteredVehicleID[playerid]-1][mVehZ]);
-				SetVehicleZAngle(EnteredVehicleID[playerid], gVehData[EnteredVehicleID[playerid]-1][mVehA]);
-				GetVehicleParamsEx(EnteredVehicleID[playerid], enginedyn, lights, alarm, doors, bonnet, boot, objective);
-				SetVehicleParamsEx(EnteredVehicleID[playerid], 0, 0, alarm, doors, bonnet, boot, objective);
-				
-				gVehData[EnteredVehicleID[playerid]-1][EngineOn] = 0;
-				gVehData[EnteredVehicleID[playerid]-1][LightsOn] = 0;
-				SaveVehData(EnteredVehicleID[playerid]-1, "EngineOn");
-				SaveVehData(EnteredVehicleID[playerid]-1, "LightsOn");
-				
-				EnteredVehicleID[playerid] = 0;
-			}
-		}
-	}
-}
-
-stock UpdateCharDescription(playerid)
-{
-	new string[160];
-
-	if(strcmp(gPlayerData[playerid][pCharDescriptionColor], "white", true) == 0)
-	{
-		format(string, sizeof(string), "{FFFFFF} %s", gPlayerData[playerid][pCharDescription]);		
-	}
-	else if(strcmp(gPlayerData[playerid][pCharDescriptionColor], "yellow", true) == 0)
-	{
-		format(string, sizeof(string), "{FFFF00} %s", gPlayerData[playerid][pCharDescription]);		
-	}
-	else if(strcmp(gPlayerData[playerid][pCharDescriptionColor], "green", true) == 0)
-	{
-		format(string, sizeof(string), "{9ACD32} %s", gPlayerData[playerid][pCharDescription]);		
-	}
-	else if(strcmp(gPlayerData[playerid][pCharDescriptionColor], "red", true) == 0)
-	{
-		format(string, sizeof(string), "{A10000} %s", gPlayerData[playerid][pCharDescription]);		
-	}
-	
-	Update3DTextLabelText(gPlayerData[playerid][pCharDescriptionID], COLOR_BLACK, string);
-}
-
-timer SetCameraBehindPlayerEx[5000](playerid)
-{
-	SetCameraBehindPlayer(playerid);
-}
-
-timer TaxiTpPlayer[10000](playerid)
-{
-	SetCameraBehindPlayer(playerid);
-	SetPlayerVirtualWorld(playerid, 0);
-	SetPlayerToPos(playerid, gTaxiLocations[gPlayerVars[playerid][mIsInTaxiTeleportId]][mPosX], gTaxiLocations[gPlayerVars[playerid][mIsInTaxiTeleportId]][mPosY], gTaxiLocations[gPlayerVars[playerid][mIsInTaxiTeleportId]][mPosZ]);
-}
-
-timer SetPlayerIdleAnimation[6800](playerid)
-{
-	ApplyAnimation(playerid, "PED", "IDLE_stance", 4.1, 1, 1, 1, 1, 1);
-	gPlayerVars[playerid][mIsIdleAnimationTimerActive] = false;
-	//ClearAnimations(playerid);
-}
-
-// Thats all folks :-)

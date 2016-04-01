@@ -1991,14 +1991,14 @@ stock SaveRacerStats(raceId, racerNo)
 	new string[512];
 	if(racerNo == 1)
 	{
-		format(string, sizeof(string), "INSERT INTO `samp_races_tracks_hotlaps` (`Name` , `Time` , `RaceId`) VALUES ('%s' , MAKETIME(%d, %d, %d) , '%d') ON DUPLICATE KEY UPDATE `Time` = IF(`Time` > MAKETIME(%d, %d, %d) , MAKETIME(%d, %d, %d), `Time`)",
-			gRaceStatus[raceId][mRaceEntrant1], 
+		format(string, sizeof(string), "INSERT INTO `samp_races_tracks_hotlaps` (`Name` , `Time` , `RaceId`) VALUES ('%s' , IF(`Time` > MAKETIME(%d , %d , %d) OR `Time` = '00:00:00' , MAKETIME(%d, %d, %d), `Time`) , '%d') ON DUPLICATE KEY UPDATE `Time` = IF(`Time` > MAKETIME(%d, %d, %d) , MAKETIME(%d, %d, %d), `Time`)",
+			gRaceStatus[raceId][mRaceEntrant1], gRaceStatus[raceId][mRaceEntrant1Hour], gRaceStatus[raceId][mRaceEntrant1Min], gRaceStatus[raceId][mRaceEntrant1Sec],
 			gRaceStatus[raceId][mRaceEntrant1Hour], gRaceStatus[raceId][mRaceEntrant1Min], gRaceStatus[raceId][mRaceEntrant1Sec],
 			gRaceStatus[raceId][mRaceId], 
 			gRaceStatus[raceId][mRaceEntrant1Hour], gRaceStatus[raceId][mRaceEntrant1Min], gRaceStatus[raceId][mRaceEntrant1Sec],
 			gRaceStatus[raceId][mRaceEntrant1Hour], gRaceStatus[raceId][mRaceEntrant1Min], gRaceStatus[raceId][mRaceEntrant1Sec]
 		);
-		wp_mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
+		mysql_query(string, SAVE, INVALID_PLAYER_ID, db_con2);
 	}
 }
 

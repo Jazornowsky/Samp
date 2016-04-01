@@ -15,14 +15,14 @@ stock ShowShopMenu(playerid)
 	{
 		case BIZT_GAS:
 		{
-			format( string, sizeof( string ), "1. Produkty\n2. Zap≥aÊ za paliwo\n3. Informacje o biznesie" );
+			format( string, sizeof( string ), "1. Produkty\n2. Zap≥aÊ za paliwo" );
 			ShowPlayerDialog(playerid,DIALOG_BUY_1,DIALOG_STYLE_LIST,"Stacja paliw",
 			string,
 			"Kup","Wyjdü");
 		}
 		case BIZT_PHONE:
 		{
-			if(Businesses[gBuyBusinessID[playerid]][mFaction] == -1)
+			if(Businesses[gBuyBusinessID[playerid]][mFaction] == 255)
 			{
 				if(strcmp(gPlayerData[playerid][pName], Businesses[gBuyBusinessID[playerid]][Owner], false) != 0)
 				{				
@@ -95,16 +95,8 @@ stock ShowShopMenu(playerid)
 		}
 		default:
 		{
-			if(!IsPlayerBizOwner(playerid, gBuyBusinessID[playerid]))
-			{
-				format(string, sizeof( string ), "1. Produkty");
-				ShowPlayerDialog(playerid, DIALOG_BUY_1, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Kup", "Wyjdü");
-			}
-			else
-			{
-				format(string, sizeof(string), "1. Produkty\n2. Informacje o biznesie");
-				ShowPlayerDialog(playerid, DIALOG_BUY_1, DIALOG_STYLE_LIST, "Sklep 24/7", string, "Wybierz", "Wyjdü");
-			}
+			format(string, sizeof( string ), "1. Produkty");
+			ShowPlayerDialog(playerid,DIALOG_BUY_1,DIALOG_STYLE_LIST,"Sklep 24/7", string, "Kup","Wyjdü");
 		}
 	}
 }

@@ -28,10 +28,6 @@
 #include <wp\utils\wp_utils_biz>
 #include <wp\utils\wp_utils_horsebetting>
 #include <wp\utils\wp_utils_sn>
-#include <wp\utils\wp_utils_buildings>
-#include <wp\utils\wp_utils_houses>
-#include <wp\utils\wp_utils_public_ads>
-#include <wp\utils\wp_utils_events>
 
 stock Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance)
 {
@@ -106,7 +102,7 @@ timer GetPlayerSpeed[1000](playerid) //MPH
 				final_speed = ASpeed(i+1);
 				final_speed_int = floatround(final_speed,floatround_round);
 				format(string,sizeof(string),"%d KM/H", final_speed_int);
-				GameTextForPlayer(playerid, string, 1500, GAME_TEXT_STYLE_4 );						
+				GameTextForPlayer(playerid, string, 1000, GAME_TEXT_STYLE_4 );						
 			}
 		}
 	}
@@ -140,19 +136,8 @@ stock BinaryToDecimal(value[])
 			decimal += 1 * floatround(floatpower(2.0, float(7-i)), floatround_round);
 		}
 	}
+	printf("6 %d 5 %d 4 %d", strval(value[6]), strval(value[5]), strval(value[4]));
 	return decimal;
-}
-
-stock HexToInt(string[]) {
-  if (string[0]==0) return 0;
-  new i;
-  new cur=1;
-  new res=0;
-  for (i=strlen(string);i>0;i--) {
-    if (string[i-1]<58) res=res+cur*(string[i-1]-48); else res=res+cur*(string[i-1]-65+10);
-    cur=cur*16;
-  }
-  return res;
 }
 
 // AddExpPoint(playerid)
@@ -184,12 +169,12 @@ stock ProxDetectorS(Float:radi, playerid, targetid)
 		new Float:oldposx, Float:oldposy, Float:oldposz;
 		new Float:tempposx, Float:tempposy, Float:tempposz;
 		GetPlayerPos(playerid, oldposx, oldposy, oldposz);
-		
+		//radi = 2.0; //Trigger Radius
 		GetPlayerPos(targetid, posx, posy, posz);
 		tempposx = (oldposx -posx);
 		tempposy = (oldposy -posy);
 		tempposz = (oldposz -posz);
-		
+		//printf("DEBUG: X:%f Y:%f Z:%f",posx,posy,posz);
 		if (((tempposx < radi) && (tempposx > -radi)) && ((tempposy < radi) && (tempposy > -radi)) && ((tempposz < radi) && (tempposz > -radi)))
 		{
 		    if(GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(targetid))
@@ -219,7 +204,7 @@ stock ProxDetector(Float:radi, playerid, string[],col1,col2,col3,col4,col5)
 				tempposx = (oldposx -posx);
 				tempposy = (oldposy -posy);
 				tempposz = (oldposz -posz);
-
+				//printf("DEBUG: X:%f Y:%f Z:%f",posx,posy,posz);
 				if (((tempposx < radi/16) && (tempposx > -radi/16)) && ((tempposy < radi/16) && (tempposy > -radi/16)) && ((tempposz < radi/16) && (tempposz > -radi/16)))
 				{
 					if(GetPlayerVirtualWorld(i) == GetPlayerVirtualWorld(playerid))
@@ -287,8 +272,9 @@ stock GivePlayerCash(playerid, money)
 stock SetPlayerCash(playerid, money)
 {
 	gPlayerData[playerid][pCash] = money;
-	ResetMoneyBar(playerid);
-	UpdateMoneyBar(playerid,gPlayerData[playerid][pCash]);
+
+	ResetMoneyBar(playerid);//Resets the money in the original moneybar, Do not remove!
+	UpdateMoneyBar(playerid,gPlayerData[playerid][pCash]);//Sets the money in the moneybar to the serverside cash, Do not remove
 	return gPlayerData[playerid][pCash];
 }
 
@@ -306,270 +292,115 @@ stock GetPlayerCash(playerid)
 	return gPlayerData[playerid][pCash];
 }
 
-stock ShowStats(playerid, targetid)
+ShowStats(playerid,targetid)
 {
-    if(!gPlayerLogged[playerid] || !gPlayerLogged[targetid])
+    if(IsPlayerConnected(playerid)&&IsPlayerConnected(targetid))
 	{
-		return 0;
-	}
-	
-	new joblvl;
-	new jobpoints;
-	new jobpointsmax;
-	new wstring[1512];
-	new jobtext[32];
-	new ranktext[35];
-	new donatortext[4];
-	new Float:hp;
-	new playinghours = gPlayerData[targetid][pPlayingHours];
-	new warnings = gPlayerData[targetid][pWarnings];
-	new age = gPlayerData[targetid][pAge];
-	new viptext[32], vipitemtext[32];
-	
-	GetPlayerHealth(targetid, hp);
-	
-	if( gPlayerData[targetid][pVipExp] == 0 )
-	{
-		if( gPlayerData[targetid][pVipExpT] > 0 )
-			format(viptext, sizeof(viptext), "%d dni", gPlayerData[targetid][pVipExpT]);
-		else
-			format(viptext, sizeof(viptext), "nieaktywny");
-	}
-	else
-		format(viptext, sizeof(viptext), "aktywny");
-	if( gPlayerData[targetid][pVipItem] > 0 )
-		format(vipitemtext, sizeof(vipitemtext), "%d dni", gPlayerData[targetid][pVipItem]);
-	else
-		format(vipitemtext, sizeof(vipitemtext), "nieaktywny");
-	
-	switch(gPlayerData[targetid][pJob])
-	{
-		case 0: jobtext = "Brak";
-		case 1: jobtext = "Diler broni";
-		case 2: jobtext = "Diler narkotyków";
-		case 3: jobtext = "Detektyw";
-		case 4: jobtext = "Prawnik";
-		case 5: jobtext = "Sprzedawca produktów";
-		case 6: jobtext = "Prostytutka";
-		case 7: jobtext = "Boxer";
-		case 8: jobtext = "Gwa³ciciel";
-		case 9: jobtext = "Ochroniarz";
-		case 10: {jobtext = "Z³odziej samochodów"; jobpoints = gPlayerData[targetid][pCarJackerJobPoints]; jobpointsmax = 20 + (gPlayerData[targetid][pCarJackerJobLvl]*10); joblvl = gPlayerData[targetid][pCarJackerJobLvl]; }
-		case 11: jobtext = "Kaskader";
-		case 12: jobtext = "Scenarzysta";
-		case 13: {jobtext = "Kierowca autobusu"; jobpoints = gPlayerData[targetid][pBusJobPoints]; jobpointsmax = playerNextLvlBusPoints(targetid); joblvl = gPlayerData[targetid][pJobLvl]; }
-		case 14: {jobtext = "Kierowca œmieciarki"; jobpoints = gPlayerData[targetid][pMzgkJobPoints]; jobpointsmax = playerNextLvlTrashPoints(targetid); joblvl = gPlayerData[targetid][pMzgkJobLvl]; }
-		case 15: {jobtext = "Kierowca myjki drogowej"; jobpoints = gPlayerData[targetid][pSweeperJobPoints]; jobpointsmax = playerNextLvlSweeperPoints(targetid); joblvl = gPlayerData[targetid][pSweeperJobLvl]; }
-		case 16: jobtext = "Taksówkarz";
-		case 17: {jobtext = "Mechanik"; jobpoints = gPlayerData[targetid][pMechanicJobPoints]; jobpointsmax = 90 + (gPlayerData[targetid][pMechanicJobLvl]*10); joblvl = gPlayerData[targetid][pMechanicJobLvl];}
-		case 18: {jobtext = "Farmer"; jobpoints = gPlayerData[targetid][pFarmerJobPoints]; jobpointsmax = playerNextLvlFarmerPoints(targetid); joblvl = gPlayerData[targetid][pFarmerJobLvl]; }
-		case 19: {jobtext = "Sprzedawca"; }
-		case 20: {jobtext = "Ksiêgowy"; }
-		case 21: {jobtext = "Roznosiciel gazet"; }
-		case 22: {jobtext = "Pracownik fabryki bron"; }
-	}
+		if(gPlayerLogged[targetid])
+		{
+			SendClientMessage(playerid,COLOR_YELLOW,"____________________________________________________");
 
-	switch(gPlayerData[targetid][pDonator])
-	{
-		case 0: donatortext = "Nie";
-		case 1: donatortext = "Tak";
-	}
+			//==========================[VARIABLES]============================
+			new joblvl;
+			new jobpoints;
+			new jobpointsmax;
+			new wstring[128];
+			new jobtext[128];
+			new ranktext[256];
+			new donatortext[128];
+			new Float:hp;
+			GetPlayerHealth(targetid,hp);
+			new drugs = gPlayerData[targetid][pDrugs];
+		    new playinghours = gPlayerData[targetid][pPlayingHours];
+		    new warnings = gPlayerData[targetid][pWarnings];
+		    new age = gPlayerData[targetid][pAge];
 
-	format(wstring, sizeof(wstring), ""#COLOR_BEGIN2"Gracz: "#COLOR_DEFAULT"%s\n\n\n"#COLOR_BEGIN"VIP: "#COLOR_DEFAULT"%s, "#COLOR_BEGIN"VIP Item: "#COLOR_DEFAULT"%s\n\n"#COLOR_BEGIN"Liczba przegranych godzin: "#COLOR_DEFAULT"%d\n"#COLOR_BEGIN"Wiek: "#COLOR_DEFAULT"%d\n\n"#COLOR_BEGIN"",
-		GetPlayerNameEx(targetid), viptext, vipitemtext, playinghours, age);
+			//==============================[VIP]==============================
+			new viptext[32], vipitemtext[32];
+			if( gPlayerData[targetid][pVipExp] == 0 )
+			{
+				if( gPlayerData[targetid][pVipExpT] > 0 )
+					format(viptext, sizeof(viptext), "%d dni", gPlayerData[targetid][pVipExpT]);
+				else
+					format(viptext, sizeof(viptext), "niekatywny");
+			}
+			else
+				format(viptext, sizeof(viptext), "aktywny");
+			if( gPlayerData[targetid][pVipItem] > 0 )
+				format(vipitemtext, sizeof(vipitemtext), "%d dni", gPlayerData[targetid][pVipItem]);
+			else
+				format(vipitemtext, sizeof(vipitemtext), "nieaktywny");
+			//=============================[JOBS]==============================
+			switch(gPlayerData[targetid][pJob])
+			{
+			    case 0: jobtext = "Brak";
+			    case 1: jobtext = "Diler broni";
+			    case 2: jobtext = "Diler narkotyków";
+			    case 3: jobtext = "Detektyw";
+			    case 4: jobtext = "Prawnik";
+			    case 5: jobtext = "Sprzedawca produktów";
+				case 6: jobtext = "Prostytutka";
+				case 7: jobtext = "Boxer";
+				case 8: jobtext = "Gwa³ciciel";
+				case 9: jobtext = "Ochroniarz";
+				case 10: {jobtext = "Z³odziej samochodów"; jobpoints = gPlayerData[targetid][pCarJackerJobPoints]; jobpointsmax = 20 + (gPlayerData[targetid][pCarJackerJobLvl]*10); joblvl = gPlayerData[targetid][pCarJackerJobLvl]; }
+				case 11: jobtext = "Kaskader";
+				case 12: jobtext = "Scenarzysta";
+				case 13: {jobtext = "Kierowca autobusu"; jobpoints = gPlayerData[targetid][pBusJobPoints]; jobpointsmax = playerNextLvlBusPoints(targetid); joblvl = gPlayerData[targetid][pJobLvl]; }
+				case 14: {jobtext = "Kierowca œmieciarki"; jobpoints = gPlayerData[targetid][pMzgkJobPoints]; jobpointsmax = playerNextLvlTrashPoints(targetid); joblvl = gPlayerData[targetid][pMzgkJobLvl]; }
+				case 15: {jobtext = "Kierowca myjki drogowej"; jobpoints = gPlayerData[targetid][pSweeperJobPoints]; jobpointsmax = playerNextLvlSweeperPoints(targetid); joblvl = gPlayerData[targetid][pSweeperJobLvl]; }
+				case 16: jobtext = "Taksówkarz";
+				case 17: {jobtext = "Mechanik"; jobpoints = gPlayerData[targetid][pMechanicJobPoints]; jobpointsmax = 90 + (gPlayerData[targetid][pMechanicJobLvl]*10); joblvl = gPlayerData[targetid][pMechanicJobLvl];}
+				case 18: {jobtext = "Farmer"; jobpoints = gPlayerData[targetid][pFarmerJobPoints]; jobpointsmax = playerNextLvlFarmerPoints(targetid); joblvl = gPlayerData[targetid][pFarmerJobLvl]; }
+				case 19: {jobtext = "Sprzedawca"; }
+				case 20: {jobtext = "Ksiêgowy"; }
+				case 21: {jobtext = "Roznosiciel gazet"; }
+				case 22: {jobtext = "Pracownik fabryki bron"; }
+			}
 
-	format(wstring, sizeof(wstring), "%sPraca: "#COLOR_DEFAULT"%s\n"#COLOR_BEGIN"Pkt pracy: "#COLOR_DEFAULT"%d/%d\n"#COLOR_BEGIN"Lvl pracy: "#COLOR_DEFAULT"%d\n\n",
-		wstring, jobtext, jobpoints, jobpointsmax, joblvl);
-		
-	if(gPlayerData[targetid][pFaction] != 255)
-	{
-		switch(gPlayerData[targetid][pRank])
-		{
-			case 1: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank1]);
-			case 2: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank2]);
-			case 3: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank3]);
-			case 4: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank4]);
-			case 5: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank5]);
-			case 6: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank6]);
-			case 7: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank7]);
-			case 8: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank8]);
-			case 9: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank9]);
-			case 10: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank10]);
-		}
-		format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Frakcja: "#COLOR_DEFAULT"%s\n"#COLOR_BEGIN"Ranga: "#COLOR_DEFAULT"%s\n\n", wstring, DynamicFactions[gPlayerData[targetid][pFaction]][Name],ranktext);
-	}
-	else
-	{
-		format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Frakcja: "#COLOR_DEFAULT"brak\n\n", wstring);
-	}
-	
-	if(gPlayerData[targetid][pFaction2] != 255)
-	{
-		format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Firma: "#COLOR_DEFAULT"%s\n", wstring, DynamicFactions[gPlayerData[targetid][pFaction2]][Name]);
-		
-		if(gPlayerData[targetid][pRank2] == 1)
-		{
-			format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Status: "#COLOR_DEFAULT"za³o¿yciel\n\n", wstring);
-		}
-		else
-		{
-			format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Status: "#COLOR_DEFAULT"pracownik\n\n", wstring);
-		}
-	}
-	else
-	{
-		format(wstring, sizeof(wstring), "%s%sFirma: %sbrak\n\n", wstring, COLOR_BEGIN, COLOR_DEFAULT);
-	}
-	
-	format(wstring, sizeof(wstring), "%s%sLiczba ostrze¿eñ: %s%d\n\n", wstring, COLOR_BEGIN, COLOR_DEFAULT, warnings);
-	
-	new pkt[128];
-	if(gPlayerData[playerid][pHighSchool])
-	{
-		format(wstring, sizeof(wstring), "%s%sWykszta³cenie:%s œrednie\n", wstring, COLOR_BEGIN, COLOR_DEFAULT);
+			//=============================[OTHER]=============================
+			switch(gPlayerData[targetid][pDonator])
+			{
+			    case 0: donatortext = "Nie";
+			    case 1: donatortext = "Tak";
+			}
 
-		format(wstring, sizeof(wstring), "%s%sNauki biologiczne:%s ", wstring, COLOR_BEGIN, COLOR_DEFAULT);
-		strcat(wstring, ReturnGradeName(gPlayerData[playerid][pBio]));
-		
-		if(gPlayerData[playerid][pBio] == MAX_GRADE_LVL)
-		{
-			strcat(wstring, "\n");
-		}
-		else
-		{
-			format(pkt, sizeof(pkt), ""#COLOR_BEGIN"punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktBio]);
-			strcat(wstring, ", ");
-			strcat(wstring, pkt);
-		}
-		
-		format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Wymagana iloœæ punktów na wy¿szy tytu³: "#COLOR_DEFAULT"%d\n\n", 
-			wstring, HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pBio]*10));
-		
-		
-		format(wstring, sizeof(wstring), "%s%sNauki matematyczne:%s ", wstring, COLOR_BEGIN, COLOR_DEFAULT);
-		strcat(wstring, ReturnGradeName(gPlayerData[playerid][pMat]));
-		if(gPlayerData[playerid][pMat] == MAX_GRADE_LVL)
-		{
-			strcat(wstring, "\n");
-		}
-		else
-		{
-			format(pkt, sizeof(pkt), ""#COLOR_BEGIN"punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktMat]);
-			strcat(wstring, ", ");
-			strcat(wstring, pkt);
-		}
-		
-		format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Wymagana iloœæ punktów na wy¿szy tytu³: "#COLOR_DEFAULT"%d\n\n", 
-			wstring, HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pMat]*10));
-		
-		
-		format(wstring, sizeof(wstring), "%s%sNauki humanistyczne:%s ", wstring, COLOR_BEGIN, COLOR_DEFAULT);
-		strcat(wstring, ReturnGradeName(gPlayerData[playerid][pPol]));
-		if(gPlayerData[playerid][pPol] == MAX_GRADE_LVL)
-		{
-			strcat(wstring, "\n");
-		}
-		else
-		{
-			format(pkt, sizeof(pkt), ""#COLOR_BEGIN"punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktPol]);
-			strcat(wstring, ", ");
-			strcat(wstring, pkt);
-		}
-		
-		format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Wymagana iloœæ punktów na wy¿szy tytu³: "#COLOR_DEFAULT"%d\n\n", 
-			wstring, HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pPol]*10));
-		
-		
-		format(wstring, sizeof(wstring), "%s%sNauki fizyczne:%s ", wstring, COLOR_BEGIN, COLOR_DEFAULT);
-		strcat(wstring, ReturnGradeName(gPlayerData[playerid][pFiz]));
-		if(gPlayerData[playerid][pFiz] == MAX_GRADE_LVL)
-		{
-			strcat(wstring, "\n");
-		}
-		else
-		{
-			format(pkt, sizeof(pkt), ""#COLOR_BEGIN"punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktFiz]);
-			strcat(wstring, ", ");
-			strcat(wstring, pkt);
-		}
-		
-		format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Wymagana iloœæ punktów na wy¿szy tytu³: "#COLOR_DEFAULT"%d\n\n", 
-			wstring, HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pFiz]*10));
-		
-		
-		format(wstring, sizeof(wstring), "%s%sNauki techniczne:%s ", wstring, COLOR_BEGIN, COLOR_DEFAULT);
-		if(gPlayerData[playerid][pTech] < 2)
-		{
-			strcat(wstring, "brak");
-		}
-		else
-		{
-			strcat(wstring, ReturnGradeName(gPlayerData[playerid][pTech]));
-		}
-		if(gPlayerData[playerid][pTech] == MAX_GRADE_LVL)
-		{
-			strcat(wstring, "\n");
-		}
-		else
-		{
-			format(pkt, sizeof(pkt), ""#COLOR_BEGIN"punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktTech]);
-			strcat(wstring, ", ");
-			strcat(wstring, pkt);
-		}
-		
-		format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Wymagana iloœæ punktów na wy¿szy tytu³: "#COLOR_DEFAULT"%d\n\n", 
-			wstring, HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pTech]*10));
-		
-		
-		format(wstring, sizeof(wstring), "%s%sNauki prawnicze:%s ", wstring, COLOR_BEGIN, COLOR_DEFAULT);
-		if(gPlayerData[playerid][pLaw] < 2)
-		{
-			strcat(wstring, "brak");
-		}
-		else
-		{
-			strcat(wstring, ReturnGradeName(gPlayerData[playerid][pLaw]));
-		}
-		if(gPlayerData[playerid][pLaw] == MAX_GRADE_LVL)
-		{
-			strcat(wstring, "\n");
-		}
-		else
-		{
-			format(pkt, sizeof(pkt), ""#COLOR_BEGIN"punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktLaw]);
-			strcat(wstring, ", ");
-			strcat(wstring, pkt);
-		}
-		
-		format(wstring, sizeof(wstring), "%s"#COLOR_BEGIN"Wymagana iloœæ punktów na wy¿szy tytu³: "#COLOR_DEFAULT"%d\n\n", 
-			wstring, HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pLaw]*10));
-	}
-	else
-	{
-		format(wstring, sizeof(wstring), "%sWykszta³cenie podstawowe\n", wstring);
-		
-		format(pkt, sizeof(pkt), ""#COLOR_BEGIN"Nauki biologiczne punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktBio]);
-		strcat(wstring, pkt);
-		
-		format(pkt, sizeof(pkt), ""#COLOR_BEGIN"Nauki matematyczne punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktMat]);
-		strcat(wstring, pkt);
-		
-		format(pkt, sizeof(pkt), ""#COLOR_BEGIN"Nauki humanistyczne punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktPol]);
-		strcat(wstring, pkt);
-		
-		format(pkt, sizeof(pkt), ""#COLOR_BEGIN"Nauki fizyczne punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktFiz]);
-		strcat(wstring, pkt);
-		
-		format(pkt, sizeof(pkt), ""#COLOR_BEGIN"Nauki techniczne punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktTech]);
-		strcat(wstring, pkt);
-		
-		format(pkt, sizeof(pkt), ""#COLOR_BEGIN"Nauki prawnicze punktów: "#COLOR_DEFAULT"%d\n", gPlayerData[playerid][pPktLaw]);
-		strcat(wstring, pkt);
-	}
+			//============================[DISPLAY]============================
+   			format(wstring, sizeof(wstring), "[G£ÓWNE:] Gracz: %s - Pkt pracy: %d/%d - Lvl pracy: %d", GetPlayerNameEx(targetid), jobpoints, jobpointsmax, joblvl);
+		    SendClientMessage(playerid,COLOR_WHITE, wstring);
+			format(wstring, sizeof(wstring), "[G£ÓWNE:] Ostrze¿enia: %d - Narkotyki: %d - Praca: %s", warnings, drugs, jobtext);
+		    SendClientMessage(playerid,COLOR_WHITE, wstring);
+   			format(wstring, sizeof(wstring), "[G£ÓWNE:] Liczba przegranych godzin: %d - Wiek: %d - VIP: %s - VIP Item: %s", playinghours, age, viptext, vipitemtext);
+		    SendClientMessage(playerid,COLOR_WHITE, wstring);
+			//===========================[FACTIONS]============================
+		    if(gPlayerData[targetid][pFaction] != 255)
+			{
+	      		switch(gPlayerData[targetid][pRank])
+			    {
+			        case 1: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank1]);
+			        case 2: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank2]);
+			        case 3: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank3]);
+			        case 4: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank4]);
+			        case 5: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank5]);
+			        case 6: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank6]);
+			        case 7: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank7]);
+			        case 8: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank8]);
+			        case 9: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank9]);
+			        case 10: format(ranktext, sizeof(ranktext), "%s", DynamicFactions[gPlayerData[targetid][pFaction]][fRank10]);
+			    }
+		 		format(wstring, sizeof(wstring), "[FRAKCJA:] Frakcja: %s - Ranga: %s",DynamicFactions[gPlayerData[targetid][pFaction]][Name],ranktext);
+  				SendClientMessage(playerid,COLOR_WHITE, wstring);
+			}
+			else
+			{
+				SendClientMessage(playerid,COLOR_WHITE, "[FRAKCJA:] Frakcja: Brak - Ranga: Brak");
+			}
 
-	ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Statystyki", wstring, "Zamknij", "");
-	
-	return 1;
+			//============================[DISPLAY]============================
+
+			SendClientMessage(playerid,COLOR_YELLOW,"____________________________________________________");
+		}
+	}
 }
 
 stock split2(const strsrc[], strdest[][], delimiter)
@@ -647,6 +478,7 @@ stock GetRealName(name[])
     return str;
 }
 	
+
 stock GetObjectCount()
 {
 	new count;
@@ -758,7 +590,7 @@ KickPlayer(playerid,kickedby[MAX_PLAYER_NAME],reason[])
 	format(string,sizeof(string),"[INFO:] Zosta³eœ wyrzucony z serwera przez %s, Powód: %s ",kickedby,reason);
 	SendClientMessage(playerid,COLOR_RED,string);
 	KickLog(string);
-	Kick(playerid);
+	return Kick(playerid);
 }
 
 BanPlayerAccount(playerid,bannedby[MAX_PLAYER_NAME],reason[])
@@ -791,19 +623,11 @@ stock PlayerToPoint(Float:radi, playerid, Float:x, Float:y, Float:z)
 	{
 		new Float:oldposx, Float:oldposy, Float:oldposz;
 		new Float:tempposx, Float:tempposy, Float:tempposz;
-		new vehID = GetPlayerVehicleID(playerid);
-		if(vehID == 0)
-		{
-			GetPlayerPos(playerid, oldposx, oldposy, oldposz);
-		}
-		else
-		{
-			GetVehiclePos(vehID, oldposx, oldposy, oldposz);
-		}
+		GetPlayerPos(playerid, oldposx, oldposy, oldposz);
 		tempposx = (oldposx -x);
 		tempposy = (oldposy -y);
 		tempposz = (oldposz -z);
-
+		//printf("DEBUG: X:%f Y:%f Z:%f",posx,posy,posz);
 		if (((tempposx < radi) && (tempposx > -radi)) && ((tempposy < radi) && (tempposy > -radi)) && ((tempposz < radi) && (tempposz > -radi)))
 		{
 			return 1;
@@ -926,6 +750,18 @@ stock RemoveDriverFromVehicle(playerid) //This function will be used to avoid is
 	return 0;
 }
 
+stock HexToInt(string[]) {
+  if (string[0]==0) return 0;
+  new i;
+  new cur=1;
+  new res=0;
+  for (i=strlen(string);i>0;i--) {
+    if (string[i-1]<58) res=res+cur*(string[i-1]-48); else res=res+cur*(string[i-1]-65+10);
+    cur=cur*16;
+  }
+  return res;
+}
+
 timer HangupTimer[1000](playerid)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
@@ -1035,9 +871,10 @@ timer ResetVehicleData[5000](vehicleid, reason)
 				SaveFData(gVehData[vehicleid-1][mVehFaction], "CarsCount");
 			}
 		}
-		
-		RefreshVehicleDescription(vehicleid);
-		
+		if(gVehData[vehicleid-1][ReadyToSell] == 1)
+		{
+			DestroyDynamic3DTextLabel(gVehData[vehicleid-1][Veh3DSell]);
+		}
 		if(gVehData[vehicleid-1][Veh3DTaxiNfo])
 			DestroyDynamic3DTextLabel(gVehData[vehicleid-1][Veh3DTaxiNfo]);
 		if(gVehData[vehicleid-1][Veh3DTaxiNfo2])
@@ -1096,16 +933,12 @@ timer ResetVehicleData[5000](vehicleid, reason)
 			gVehData[vehicleid-1][mVehA] = 0.0;
 			gVehData[vehicleid-1][mVehColor1] = -1;
 			gVehData[vehicleid-1][mVehColor2] = -1;
-			gVehData[vehicleid-1][mVehPaintJob] = 0;
 			gVehData[vehicleid-1][mVehFaction] = 255;
 			gVehData[vehicleid-1][mVehVinNo] = 0;
 			gVehData[vehicleid-1][mVehType] = 0;
 			gVehData[vehicleid-1][mVehOwned] = 0;
-			format(gVehData[vehicleid-1][Owner], 128, "None");
+			strmid(gVehData[vehicleid-1][Owner], "None", 0, 4, 128);
 			gVehData[vehicleid-1][Price] = 0;
-			format(gVehData[vehicleid-1][mRenter], MAX_PLAYER_NAME, "");
-			gVehData[vehicleid-1][mRentPrice] = 0;
-			gVehData[vehicleid-1][mRentPenalty] = 0;
 			gVehData[vehicleid-1][Closed] = 0;
 			gVehData[vehicleid-1][CarResetT] = 0;
 			gVehData[vehicleid-1][CarDamaged] = 0;
@@ -1115,7 +948,6 @@ timer ResetVehicleData[5000](vehicleid, reason)
 			gVehData[vehicleid-1][CarHealth] = 1000.0;
 			gVehData[vehicleid-1][ReadyToSell] = 0;
 			gVehData[vehicleid-1][CarCounter] = 0;
-			gVehData[vehicleid-1][CarCounterPrev] = 0;
 			gVehData[vehicleid-1][Fuel] = 0;
 			gVehData[vehicleid-1][CarPanels] = 0;
 			gVehData[vehicleid-1][CarDoors] = 0;
@@ -1197,9 +1029,6 @@ timer ResetVehicleData[5000](vehicleid, reason)
 			SaveVehData(vehicleid-1, "VehOwned");
 			SaveVehData(vehicleid-1, "Owner");
 			SaveVehData(vehicleid-1, "Price");
-			SaveVehData(vehicleid-1, "Renter");
-			SaveVehData(vehicleid-1, "RentPrice");
-			SaveVehData(vehicleid-1, "RentPenalty");
 			SaveVehData(vehicleid-1, "Closed");
 			SaveVehData(vehicleid-1, "CarResetT");
 			SaveVehData(vehicleid-1, "CarDamaged");
@@ -1463,11 +1292,6 @@ stock TurnPlayerFaceToPos(playerid, Float:x, Float:y)
     SetPlayerFacingAngle(playerid, angle+misc);
 }
 
-timer HideDynamicCheckpointEx[5000](playerid, checkpointid)
-{
-	TogglePlayerDynamicCP(playerid, checkpointid, 0);
-}
-
 timer ClearCheckpointsForPlayer[60000](playerid)
 {
 	DisablePlayerCheckpoint(playerid);
@@ -1504,7 +1328,8 @@ stock IsValidName(playerid)
 
 task IdleKick[300000]()
 {
-	static string[128], Hour, Minute, Second;
+	new plname[64];
+	new string[128];
 	for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
 	{
 		if(IsPlayerConnected(i))
@@ -1530,19 +1355,15 @@ task IdleKick[300000]()
 				if(gPlayerData[i][pVipAFK] == 1 || gPlayerData[i][pVipAFKT] != 0)
 				{
 					GetPlayerPos(i, PlayerPos[i][0], PlayerPos[i][1], PlayerPos[i][2]);
-					if(PlayerPos[i][0] == PlayerPos[i][3] && PlayerPos[i][1] == PlayerPos[i][4] && PlayerPos[i][2] == PlayerPos[i][5] && VipAFKActive[i] == 0)
+					if(PlayerPos[i][0] == PlayerPos[i][3] && PlayerPos[i][1] == PlayerPos[i][4] && PlayerPos[i][2] == PlayerPos[i][5])
 					{
 						VipAFKActive[i] = 1;
-						
-						gettime(Hour, Minute, Second);
-						
-						format(string, sizeof(string), "{33CCFF}AFK od %d:%d", Hour, Minute);
-						UpdateDynamic3DTextLabelText(playerAFK[i], COLOR_LIGHTBLUE, "AFK");
+						// UpdateDynamic3DTextLabelText(playerAFK[i], COLOR_LIGHTBLUE, "AFK");
 					}
 					else
 					{
 						VipAFKActive[i] = 0;
-						UpdateDynamic3DTextLabelText(playerAFK[i], COLOR_LIGHTBLUE, " ");
+						// UpdateDynamic3DTextLabelText(playerAFK[i], COLOR_LIGHTBLUE, " ");
 					}
 					PlayerPos[i][3] = PlayerPos[i][0];
 					PlayerPos[i][4] = PlayerPos[i][1];
@@ -1937,6 +1758,555 @@ MoveCustomObject( objectID, Float:mx, Float:my, Float:mz )
 	}
 }*/
 
+ResetBizData(bID, type)
+{
+	// type 0 - reset all data
+	// type 1 - removes owner, etc, just prepare for next buyer
+	
+	DestroyDynamicPickup(Businesses[bID][PickupID]);
+	
+	strdel(Businesses[bID][Owner], 0, 128);
+	format(Businesses[bID][Owner], 128, "None");
+	strdel(Businesses[bID][BusinessName], 0, 128);
+	format(Businesses[bID][BusinessName], 128, "Biznes");
+	Businesses[bID][BUID] = random(99999);
+	Businesses[bID][mFaction] = 0;
+	Businesses[bID][mFactionTimeLeft] = 0; // how long to end of company contract
+	// Businesses[bID][EnterX] = 0;
+	// Businesses[bID][EnterY] = 0;
+	// Businesses[bID][EnterZ] = 0;
+	// Businesses[bID][EnterWorld] = 0;
+	// Businesses[bID][EnterInterior] = 0;
+	// Businesses[bID][EnterAngle] = 0;
+	// Businesses[bID][ExitX] = 0;
+	// Businesses[bID][ExitY] = 0;
+	// Businesses[bID][ExitZ] = 0;
+	// Businesses[bID][ExitInterior] = 0;
+	// Businesses[bID][ExitAngle] = 0;
+	Businesses[bID][Owned] = 0;
+	Businesses[bID][Enterable] = 0;
+	// Businesses[bID][BizPrice] = 0;
+	Businesses[bID][EntranceCost] = 0;
+	Businesses[bID][Till] = 0;
+	Businesses[bID][Locked] = 0;
+	// Businesses[bID][BizType] = 0;
+	Businesses[bID][Products] = 0;
+	Businesses[bID][VehicleSpawned] = 0;
+	Businesses[bID][VehicleCount] = 0;
+	Businesses[bID][MaxVehicles] = 6;
+	Businesses[bID][VehicleOrderCount] = 0;
+	Businesses[bID][SalesJob] = 0;
+	Businesses[bID][W9MM] = 0;
+	Businesses[bID][mW9MMIncomeTotal] = 0;
+	Businesses[bID][mW9MMIncomeToday] = 0;
+	Businesses[bID][W9MMSil] = 0;
+	Businesses[bID][mW9MMSilIncomeTotal] = 0;
+	Businesses[bID][mW9MMSilIncomeToday] = 0;
+	Businesses[bID][WDesEagle] = 0;
+	Businesses[bID][mWDesEagleIncomeTotal] = 0;
+	Businesses[bID][mWDesEagleIncomeToday] = 0;
+	Businesses[bID][WMicroSMG] = 0;
+	Businesses[bID][mWMicroSMGIncomeTotal] = 0;
+	Businesses[bID][mWMicroSMGIncomeToday] = 0;
+	Businesses[bID][WMP5] = 0;
+	Businesses[bID][mWMP5IncomeTotal] = 0;
+	Businesses[bID][mWMP5IncomeToday] = 0;
+	Businesses[bID][WTec9] = 0;
+	Businesses[bID][mWTec9IncomeTotal] = 0;
+	Businesses[bID][mWTec9IncomeToday] = 0;
+	Businesses[bID][WShotgun] = 0;
+	Businesses[bID][mWShotgunIncomeTotal] = 0;
+	Businesses[bID][mWShotgunIncomeToday] = 0;
+	Businesses[bID][WAK47] = 0;
+	Businesses[bID][mWAK47IncomeTotal] = 0;
+	Businesses[bID][mWAK47IncomeToday] = 0;
+	Businesses[bID][WM4] = 0;
+	Businesses[bID][mWM4IncomeTotal] = 0;
+	Businesses[bID][mWM4IncomeToday] = 0;
+	Businesses[bID][WRifle] = 0;
+	Businesses[bID][mWRifleIncomeTotal] = 0;
+	Businesses[bID][mWRifleIncomeToday] = 0;
+	Businesses[bID][WSRifle] = 0;
+	Businesses[bID][mWSRifleIncomeTotal] = 0;
+	Businesses[bID][mWSRifleIncomeToday] = 0;
+	Businesses[bID][W9MMAmmo] = 0;
+	Businesses[bID][mW9MMAmmoIncomeTotal] = 0;
+	Businesses[bID][mW9MMAmmoIncomeToday] = 0;
+	Businesses[bID][W50AEAmmo] = 0;
+	Businesses[bID][mW50AEAmmoIncomeTotal] = 0;
+	Businesses[bID][mW50AEAmmoIncomeToday] = 0;
+	Businesses[bID][WBuckshot] = 0;
+	Businesses[bID][mWBuckshotIncomeTotal] = 0;
+	Businesses[bID][mWBuckshotIncomeToday] = 0;
+	Businesses[bID][W762MMAmmo] = 0;
+	Businesses[bID][mW762MMAmmoIncomeTotal] = 0;
+	Businesses[bID][mW762MMAmmoIncomeToday] = 0;
+	Businesses[bID][W127MMAmmo] = 0;
+	Businesses[bID][mW127MMAmmoIncomeTotal] = 0;
+	Businesses[bID][mW127MMAmmoIncomeToday] = 0;
+	Businesses[bID][BRadio1Bought] = 0; // Is radio bought
+	Businesses[bID][BRadio1On] = 0; // Is radio ON
+	Businesses[bID][BRadio1Ch] = 0; // Radio channell
+	Businesses[bID][BRadio1Obj] = 0; // Radio object id
+	Businesses[bID][BRadio1Vol] = 0; // Volume of radio
+	Businesses[bID][BRadio1X] = 0; // radio x pos 
+	Businesses[bID][BRadio1Y] = 0; // radio y pos
+	Businesses[bID][BRadio1Z] = 0; // radio z pos
+	Businesses[bID][BRadio1Angle] = 0;
+	Businesses[bID][Product1] = 0;
+	Businesses[bID][Product1type] = 0;
+	Businesses[bID][Product1price] = 0;
+	Businesses[bID][Product1count] = 0;
+	Businesses[bID][Product1buy] = 0;
+	Businesses[bID][Product1incomeTotal] = 0;
+	Businesses[bID][Product1incomeToday] = 0;
+	Businesses[bID][Product2] = 0;
+	Businesses[bID][Product2type] = 0;
+	Businesses[bID][Product2price] = 0;
+	Businesses[bID][Product2count] = 0;
+	Businesses[bID][Product2buy] = 0;
+	Businesses[bID][Product2incomeTotal] = 0;
+	Businesses[bID][Product2incomeToday] = 0;
+	Businesses[bID][Product3] = 0;
+	Businesses[bID][Product3type] = 0;
+	Businesses[bID][Product3price] = 0;
+	Businesses[bID][Product3count] = 0;
+	Businesses[bID][Product3buy] = 0;
+	Businesses[bID][Product3incomeTotal] = 0;
+	Businesses[bID][Product3incomeToday] = 0;
+	Businesses[bID][Product4] = 0;
+	Businesses[bID][Product4type] = 0;
+	Businesses[bID][Product4price] = 0;
+	Businesses[bID][Product4count] = 0;
+	Businesses[bID][Product4buy] = 0;
+	Businesses[bID][Product4incomeTotal] = 0;
+	Businesses[bID][Product4incomeToday] = 0;
+	Businesses[bID][Product5] = 0;
+	Businesses[bID][Product5type] = 0;
+	Businesses[bID][Product5price] = 0;
+	Businesses[bID][Product5count] = 0;
+	Businesses[bID][Product5buy] = 0;
+	Businesses[bID][Product5incomeTotal] = 0;
+	Businesses[bID][Product5incomeToday] = 0;
+	Businesses[bID][Product6] = 0;
+	Businesses[bID][Product6type] = 0;
+	Businesses[bID][Product6price] = 0;
+	Businesses[bID][Product6count] = 0;
+	Businesses[bID][Product6buy] = 0;
+	Businesses[bID][Product6incomeTotal] = 0;
+	Businesses[bID][Product6incomeToday] = 0;
+	Businesses[bID][Product7] = 0;
+	Businesses[bID][Product7type] = 0;
+	Businesses[bID][Product7price] = 0;
+	Businesses[bID][Product7count] = 0;
+	Businesses[bID][Product7buy] = 0;
+	Businesses[bID][Product7incomeTotal] = 0;
+	Businesses[bID][Product7incomeToday] = 0;
+	Businesses[bID][Product8] = 0;
+	Businesses[bID][Product8type] = 0;
+	Businesses[bID][Product8price] = 0;
+	Businesses[bID][Product8count] = 0;
+	Businesses[bID][Product8buy] = 0;
+	Businesses[bID][Product8incomeTotal] = 0;
+	Businesses[bID][Product8incomeToday] = 0;
+	Businesses[bID][Product9] = 0;
+	Businesses[bID][Product9type] = 0;
+	Businesses[bID][Product9price] = 0;
+	Businesses[bID][Product9count] = 0;
+	Businesses[bID][Product9buy] = 0;
+	Businesses[bID][Product9incomeTotal] = 0;
+	Businesses[bID][Product9incomeToday] = 0;
+	Businesses[bID][Product10] = 0;
+	Businesses[bID][Product10type] = 0;
+	Businesses[bID][Product10price] = 0;
+	Businesses[bID][Product10count] = 0;
+	Businesses[bID][Product10buy] = 0;
+	Businesses[bID][Product10incomeTotal] = 0;
+	Businesses[bID][Product10incomeToday] = 0;
+	Businesses[bID][Product11Price] = 0;
+	Businesses[bID][Product12Price] = 0;
+	Businesses[bID][Product13Price] = 0;
+	Businesses[bID][Product14Price] = 0;
+	Businesses[bID][Product15Price] = 0;
+	Businesses[bID][Product16Price] = 0;
+	Businesses[bID][Product17Price] = 0;
+	Businesses[bID][Product18Price] = 0;
+	Businesses[bID][Product19Price] = 0;
+	Businesses[bID][Product20Price] = 0;
+	Businesses[bID][Product21Price] = 0;
+	Businesses[bID][Product22Price] = 0;
+	Businesses[bID][Product23Price] = 0;
+	Businesses[bID][Product24Price] = 0;
+	Businesses[bID][Product25Price] = 0;
+	Businesses[bID][Product26Price] = 0;
+	Businesses[bID][Product27Price] = 0;
+	Businesses[bID][Product28Price] = 0;
+	Businesses[bID][Product29Price] = 0;
+	Businesses[bID][Product30Price] = 0;
+	Businesses[bID][BConfiscated] = 0;
+	// Businesses[bID][BPlaced] = 0;
+	// Businesses[bID][BIntSet] = 0;
+	// Businesses[bID][BInterior] = 0;
+	Businesses[bID][BGov] = 0;
+	// Businesses[bID][BShowIcon] = 0;
+	Businesses[bID][mIncomeTotal] = 0;
+	Businesses[bID][mIncomePhoneTotal] = 0;
+	Businesses[bID][mIncomePhoneToday] = 0;
+	Businesses[bID][mIncomeFuelPetrolToday] = 0;
+	Businesses[bID][mIncomeFuelPetrolTotal] = 0;
+	Businesses[bID][mIncomeFuelOilToday] = 0;
+	Businesses[bID][mIncomeFuelOilTotal] = 0;
+	Businesses[bID][mIncomeFuelGasToday] = 0;
+	Businesses[bID][mIncomeFuelGasTotal] = 0;
+	Businesses[bID][mIncomeVehicleTotal] = 0;
+	Businesses[bID][mIncomeVehicleToday] = 0;
+	Businesses[bID][mIncomeEntranceTotal] = 0;
+	Businesses[bID][mIncomeEntranceToday] = 0;
+	Businesses[bID][mAlarm] = 0;
+	
+	SaveBizData(bID, "Owner");
+	SaveBizData(bID, "BusinessName");
+	SaveBizData(bID, "UID");
+	SaveBizData(bID, "Owner");
+	SaveBizData(bID, "Faction");
+	SaveBizData(bID, "FactionTimeLeft"); // how long to end of company contract
+	// SaveBizData(bID, "EnterX");
+	// SaveBizData(bID, "EnterY");
+	// SaveBizData(bID, "EnterZ");
+	// SaveBizData(bID, "EnterWorld");
+	// SaveBizData(bID, "EnterInterior");
+	// SaveBizData(bID, "EnterAngle");
+	// SaveBizData(bID, "ExitX");
+	// SaveBizData(bID, "ExitY");
+	// SaveBizData(bID, "ExitZ");
+	// SaveBizData(bID, "ExitInterior");
+	// SaveBizData(bID, "ExitAngle");
+	SaveBizData(bID, "Owned");
+	SaveBizData(bID, "Enterable");
+	// SaveBizData(bID, "BizPrice");
+	SaveBizData(bID, "EntranceCost");
+	SaveBizData(bID, "Till");
+	SaveBizData(bID, "Locked");
+	// SaveBizData(bID, "BizType");
+	SaveBizData(bID, "Products");
+	SaveBizData(bID, "VehicleSpawned");
+	SaveBizData(bID, "VehicleCount");
+	SaveBizData(bID, "MaxVehicles");
+	SaveBizData(bID, "VehicleOrderCount");
+	SaveBizData(bID, "SalesJob");
+	SaveBizData(bID, "W9MM");
+	SaveBizData(bID, "W9MMIncomeTotal");
+	SaveBizData(bID, "W9MMIncomeToday");
+	SaveBizData(bID, "W9MMSil");
+	SaveBizData(bID, "W9MMSilIncomeTotal");
+	SaveBizData(bID, "W9MMSilIncomeToday");
+	SaveBizData(bID, "WDesEagle");
+	SaveBizData(bID, "WDesEagleIncomeTotal");
+	SaveBizData(bID, "WDesEagleIncomeToday");
+	SaveBizData(bID, "WMicroSMG");
+	SaveBizData(bID, "WMicroSMGIncomeTotal");
+	SaveBizData(bID, "WMicroSMGIncomeToday");
+	SaveBizData(bID, "WMP5");
+	SaveBizData(bID, "WMP5IncomeTotal");
+	SaveBizData(bID, "WMP5IncomeToday");
+	SaveBizData(bID, "WTec9");
+	SaveBizData(bID, "WTec9IncomeTotal");
+	SaveBizData(bID, "WTec9IncomeToday");
+	SaveBizData(bID, "WShotgun");
+	SaveBizData(bID, "WShotgunIncomeTotal");
+	SaveBizData(bID, "WShotgunIncomeToday");
+	SaveBizData(bID, "WAK47");
+	SaveBizData(bID, "WAK47IncomeTotal");
+	SaveBizData(bID, "WAK47IncomeToday");
+	SaveBizData(bID, "WM4");
+	SaveBizData(bID, "WM4IncomeTotal");
+	SaveBizData(bID, "WM4IncomeToday");
+	SaveBizData(bID, "WRifle");
+	SaveBizData(bID, "WRifleIncomeTotal");
+	SaveBizData(bID, "WRifleIncomeToday");
+	SaveBizData(bID, "WSRifle");
+	SaveBizData(bID, "WSRifleIncomeTotal");
+	SaveBizData(bID, "WSRifleIncomeToday");
+	SaveBizData(bID, "W9MMAmmo");
+	SaveBizData(bID, "W9MMAmmoIncomeTotal");
+	SaveBizData(bID, "W9MMAmmoIncomeToday");
+	SaveBizData(bID, "W50AEAmmo");
+	SaveBizData(bID, "W50AEAmmoIncomeTotal");
+	SaveBizData(bID, "W50AEAmmoIncomeToday");
+	SaveBizData(bID, "WBuckshot");
+	SaveBizData(bID, "WBuckshotIncomeTotal");
+	SaveBizData(bID, "WBuckshotIncomeToday");
+	SaveBizData(bID, "W762MMAmmo");
+	SaveBizData(bID, "W762MMAmmoIncomeTotal");
+	SaveBizData(bID, "W762MMAmmoIncomeToday");
+	SaveBizData(bID, "W127MMAmmo");
+	SaveBizData(bID, "W127MMAmmoIncomeTotal");
+	SaveBizData(bID, "W127MMAmmoIncomeToday");
+	SaveBizData(bID, "BRadio1Bought"); // Is radio bought
+	SaveBizData(bID, "BRadio1On"); // Is radio ON
+	SaveBizData(bID, "BRadio1Ch"); // Radio channell
+	SaveBizData(bID, "BRadio1Vol"); // Volume of radio
+	SaveBizData(bID, "BRadio1X"); // radio x pos 
+	SaveBizData(bID, "BRadio1Y"); // radio y pos
+	SaveBizData(bID, "BRadio1Z"); // radio z pos
+	SaveBizData(bID, "BRadio1Angle");
+	SaveBizData(bID, "Product1");
+	SaveBizData(bID, "Product1type");
+	SaveBizData(bID, "Product1price");
+	SaveBizData(bID, "Product1count");
+	SaveBizData(bID, "Product1buy");
+	SaveBizData(bID, "Product1incomeTotal");
+	SaveBizData(bID, "Product1incomeToday");
+	SaveBizData(bID, "Product2");
+	SaveBizData(bID, "Product2type");
+	SaveBizData(bID, "Product2price");
+	SaveBizData(bID, "Product2count");
+	SaveBizData(bID, "Product2buy");
+	SaveBizData(bID, "Product2incomeTotal");
+	SaveBizData(bID, "Product2incomeToday");
+	SaveBizData(bID, "Product3");
+	SaveBizData(bID, "Product3type");
+	SaveBizData(bID, "Product3price");
+	SaveBizData(bID, "Product3count");
+	SaveBizData(bID, "Product3buy");
+	SaveBizData(bID, "Product3incomeTotal");
+	SaveBizData(bID, "Product3incomeToday");
+	SaveBizData(bID, "Product4");
+	SaveBizData(bID, "Product4type");
+	SaveBizData(bID, "Product4price");
+	SaveBizData(bID, "Product4count");
+	SaveBizData(bID, "Product4buy");
+	SaveBizData(bID, "Product4incomeTotal");
+	SaveBizData(bID, "Product4incomeToday");
+	SaveBizData(bID, "Product5");
+	SaveBizData(bID, "Product5type");
+	SaveBizData(bID, "Product5price");
+	SaveBizData(bID, "Product5count");
+	SaveBizData(bID, "Product5buy");
+	SaveBizData(bID, "Product5incomeTotal");
+	SaveBizData(bID, "Product5incomeToday");
+	SaveBizData(bID, "Product6");
+	SaveBizData(bID, "Product6type");
+	SaveBizData(bID, "Product6price");
+	SaveBizData(bID, "Product6count");
+	SaveBizData(bID, "Product6buy");
+	SaveBizData(bID, "Product6incomeTotal");
+	SaveBizData(bID, "Product6incomeToday");
+	SaveBizData(bID, "Product7");
+	SaveBizData(bID, "Product7type");
+	SaveBizData(bID, "Product7price");
+	SaveBizData(bID, "Product7count");
+	SaveBizData(bID, "Product7buy");
+	SaveBizData(bID, "Product7incomeTotal");
+	SaveBizData(bID, "Product7incomeToday");
+	SaveBizData(bID, "Product8");
+	SaveBizData(bID, "Product8type");
+	SaveBizData(bID, "Product8price");
+	SaveBizData(bID, "Product8count");
+	SaveBizData(bID, "Product8buy");
+	SaveBizData(bID, "Product8incomeTotal");
+	SaveBizData(bID, "Product8incomeToday");
+	SaveBizData(bID, "Product9");
+	SaveBizData(bID, "Product9type");
+	SaveBizData(bID, "Product9price");
+	SaveBizData(bID, "Product9count");
+	SaveBizData(bID, "Product9buy");
+	SaveBizData(bID, "Product9incomeTotal");
+	SaveBizData(bID, "Product9incomeToday");
+	SaveBizData(bID, "Product10");
+	SaveBizData(bID, "Product10type");
+	SaveBizData(bID, "Product10price");
+	SaveBizData(bID, "Product10count");
+	SaveBizData(bID, "Product10buy");
+	SaveBizData(bID, "Product10incomeTotal");
+	SaveBizData(bID, "Product10incomeToday");
+	SaveBizData(bID, "Product11Price");
+	SaveBizData(bID, "Product12Price");
+	SaveBizData(bID, "Product13Price");
+	SaveBizData(bID, "Product14Price");
+	SaveBizData(bID, "Product15Price");
+	SaveBizData(bID, "Product16Price");
+	SaveBizData(bID, "Product17Price");
+	SaveBizData(bID, "Product18Price");
+	SaveBizData(bID, "Product19Price");
+	SaveBizData(bID, "Product20Price");
+	SaveBizData(bID, "Product21Price");
+	SaveBizData(bID, "Product22Price");
+	SaveBizData(bID, "Product23Price");
+	SaveBizData(bID, "Product24Price");
+	SaveBizData(bID, "Product25Price");
+	SaveBizData(bID, "Product26Price");
+	SaveBizData(bID, "Product27Price");
+	SaveBizData(bID, "Product28Price");
+	SaveBizData(bID, "Product29Price");
+	SaveBizData(bID, "Product30Price");
+	SaveBizData(bID, "Confiscated");
+	// SaveBizData(bID, "BPlaced");
+	// SaveBizData(bID, "BIntSet");
+	// SaveBizData(bID, "BInterior");
+	SaveBizData(bID, "Gov");
+	// SaveBizData(bID, "BShowIcon");
+	SaveBizData(bID, "IncomeTotal");
+	SaveBizData(bID, "IncomePhoneTotal");
+	SaveBizData(bID, "IncomePhoneToday");
+	SaveBizData(bID, "IncomeFuelPetrolToday");
+	SaveBizData(bID, "IncomeFuelPetrolTotal");
+	SaveBizData(bID, "IncomeFuelOilToday");
+	SaveBizData(bID, "IncomeFuelOilTotal");
+	SaveBizData(bID, "IncomeFuelGasToday");
+	SaveBizData(bID, "IncomeFuelGasTotal");
+	SaveBizData(bID, "IncomeVehicleTotal");
+	SaveBizData(bID, "IncomeVehicleToday");
+	SaveBizData(bID, "IncomeEntranceTotal");
+	SaveBizData(bID, "IncomeEntranceToday");
+	SaveBizData(bID, "Alarm");
+	
+	if(type)
+		Businesses[bID][PickupID] = CreateDynamicPickup(1272, 1, Businesses[bID][EnterX], Businesses[bID][EnterY], Businesses[bID][EnterZ]);
+	else
+	{
+		Businesses[bID][EnterX] = 0.0;
+		Businesses[bID][EnterY] = 0.0;
+		Businesses[bID][EnterZ] = 0.0;
+		Businesses[bID][EnterWorld] = 0;
+		Businesses[bID][EnterInterior] = 0;
+		Businesses[bID][EnterAngle] = 0.0;		
+		Businesses[bID][Enterable] = 0;
+		
+		SaveBizData(bID, "EnterX");
+		SaveBizData(bID, "EnterY");
+		SaveBizData(bID, "EnterZ");
+		SaveBizData(bID, "EnterWorld");
+		SaveBizData(bID, "EnterInterior");
+		SaveBizData(bID, "EnterAngle");
+		SaveBizData(bID, "Enterable");
+	}
+	
+	new businesstype[128], string[256];
+	if(Businesses[bID][BizType] != 0)
+	{
+		if(Businesses[bID][BizType] == 1) { businesstype = "Restauracja"; }
+		else if(Businesses[bID][BizType] == 2) { businesstype = "Siec komorkowa"; }
+		else if(Businesses[bID][BizType] == 3) { businesstype = "Sklep 24/7"; }
+		else if(Businesses[bID][BizType] == 4) { businesstype = "Sklep z bronia"; }
+		else if(Businesses[bID][BizType] == 5) { businesstype = "Studio reklamowe"; }
+		else if(Businesses[bID][BizType] == 6) { businesstype = "Sklep z ubraniami"; }
+		else if(Businesses[bID][BizType] == 7) { businesstype = "Bar/Club"; }
+		else if(Businesses[bID][BizType] == 8) { businesstype = "Studio nagraniowe"; }
+		else if(Businesses[bID][BizType] == 9) { businesstype = "Studio"; }
+		else if(Businesses[bID][BizType] == 10) { businesstype = "Salon samochodowy"; }
+		else if(Businesses[bID][BizType] == 11) { businesstype = "Stacja paliw"; }
+	}
+	else { businesstype = "Nie ustawione"; }
+
+	format(string, sizeof(string), "Ten biznes jest na sprzeda¿ !");
+	UpdateDynamic3DTextLabelText(Business3DTextLabelA[bID], COLOR_LIGHTBLUE2, string);
+
+	format(string, sizeof(string), "Numer Budynku: %d, Nazwa biznesu: %s, Typ biznesu: %s",bID,Businesses[bID][BusinessName],businesstype);
+	UpdateDynamic3DTextLabelText(Business3DTextLabelB[bID], COLOR_LIGHTBLUE2, string);
+
+	format(string, sizeof(string), "Cena: %d$",Businesses[bID][BizPrice]);
+	UpdateDynamic3DTextLabelText(Business3DTextLabelC[bID], COLOR_LIGHTBLUE2, string);
+}
+
+ResetHouseData(hID, type = 1)
+{
+	// type 0 - reset all data
+	// type 1 - removes owner, etc, just prepare for next buyer
+	
+	DestroyDynamicPickup(Houses[hID][PickupID]);
+	
+	strdel(Houses[hID][Description], 0, 128);
+	format(Houses[hID][Owner], 128, "Brak");
+	strdel(Houses[hID][HRenter], 0, MAX_PLAYER_NAME);
+	format(Houses[hID][HRenter], MAX_PLAYER_NAME, "Brak");
+	Houses[hID][HUID] = 0;
+	Houses[hID][Owned] = 0;
+	Houses[hID][Rentable] = 0;
+	Houses[hID][RentCost] = 0;
+	Houses[hID][Locked] = 0;
+	Houses[hID][HConfiscated] = 0;
+	Houses[hID][HouseType] = 0;
+	
+	SaveHouseData(hID, "Description");
+	SaveHouseData(hID, "UID");
+	SaveHouseData(hID, "Owner");
+	SaveHouseData(hID, "Renter");
+	SaveHouseData(hID, "Owned");
+	SaveHouseData(hID, "Rentable");
+	SaveHouseData(hID, "RentCost");
+	SaveHouseData(hID, "Locked");
+	SaveHouseData(hID, "Confiscated");
+	SaveHouseData(hID, "HouseType");
+	
+	if(type)
+		Houses[hID][PickupID] = CreateDynamicPickup(1273, 1, Houses[hID][EnterX], Houses[hID][EnterY], Houses[hID][EnterZ]);
+	else
+	{
+		Houses[hID][EnterX] = 0.0;
+		Houses[hID][EnterY] = 0.0;
+		Houses[hID][EnterZ] = 0.0;
+		Houses[hID][EnterWorld] = 0;
+		Houses[hID][EnterInterior] = 0;
+		Houses[hID][EnterAngle] = 0;	
+		Houses[hID][HousePrice] = 0;
+		Houses[hID][Money] = 0;	
+		Houses[hID][HItem1] = 0;
+		Houses[hID][HItem2] = 0;
+		Houses[hID][HItem3] = 0;
+		Houses[hID][HItem4] = 0;
+		Houses[hID][HItem5] = 0;
+		Houses[hID][HItem1type] = 0;
+		Houses[hID][HItem2type] = 0;
+		Houses[hID][HItem3type] = 0;
+		Houses[hID][HItem4type] = 0;
+		Houses[hID][HItem5type] = 0;
+		if(Houses[hID][HRadio1Bought])
+			DestroyDynamicObject(Businesses[hID][BRadio1Obj]);
+		Houses[hID][HRadio1On] = 0;
+		
+		SaveHouseData(hID, "EnterX");
+		SaveHouseData(hID, "EnterY");
+		SaveHouseData(hID, "EnterZ");
+		SaveHouseData(hID, "EnterWorld");
+		SaveHouseData(hID, "EnterInterior");
+		SaveHouseData(hID, "EnterAngle");
+		SaveHouseData(hID, "HousePrice");
+		SaveHouseData(hID, "Materials");
+		SaveHouseData(hID, "Drugs");
+		SaveHouseData(hID, "Money");
+		SaveHouseData(hID, "HItem1");
+		SaveHouseData(hID, "HItem2");
+		SaveHouseData(hID, "HItem3");
+		SaveHouseData(hID, "HItem4");
+		SaveHouseData(hID, "HItem5");
+		SaveHouseData(hID, "HItem1type");
+		SaveHouseData(hID, "HItem2type");
+		SaveHouseData(hID, "HItem3type");
+		SaveHouseData(hID, "HItem4type");
+		SaveHouseData(hID, "HItem5type");
+	}
+}
+
+stock isInWheelChangePoint(playerid)
+{
+	if(PlayerToPoint(2.0, playerid, gWheelChangePos[pos1X], gWheelChangePos[pos1Y], gWheelChangePos[pos1Z]) ||
+		PlayerToPoint(2.0, playerid, gWheelChangePos[pos2X], gWheelChangePos[pos2Y], gWheelChangePos[pos2Z]) ||
+		PlayerToPoint(2.0, playerid, gWheelChangePos[pos3X], gWheelChangePos[pos3Y], gWheelChangePos[pos3Z]) ||
+		PlayerToPoint(2.0, playerid, gWheelChangePos[pos4X], gWheelChangePos[pos4Y], gWheelChangePos[pos4Z]) ||
+		PlayerToPoint(2.0, playerid, gWheelChangePos[pos5X], gWheelChangePos[pos5Y], gWheelChangePos[pos5Z]) ||
+		PlayerToPoint(2.0, playerid, gWheelChangePos[pos6X], gWheelChangePos[pos6Y], gWheelChangePos[pos6Z]) ||
+		PlayerToPoint(2.0, playerid, gWheelChangePos[pos7X], gWheelChangePos[pos7Y], gWheelChangePos[pos7Z]) ||
+		PlayerToPoint(2.0, playerid, gWheelChangePos[pos8X], gWheelChangePos[pos8Y], gWheelChangePos[pos8Z]))
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 stock ShowBizFProductList(playerid, bizid)
 {
 	new string[512];
@@ -1961,6 +2331,53 @@ stock ShowBizFProductList(playerid, bizid)
 		ShowPlayerDialog(playerid, DIALOG_FBUY_1, DIALOG_STYLE_LIST, "Restauracja", string, "Wybierz", "Zamknij");
 	else
 		ShowPlayerDialog(playerid, DIALOG_FBUY_1, DIALOG_STYLE_LIST, "Restauracja", string, "Jedz/pij", "Zamknij");		
+}
+
+stock ReloadBizText(bizid)
+{
+	new string[128];
+	DestroyDynamic3DTextLabel(Business3DTextLabelA[bizid]);
+	DestroyDynamic3DTextLabel(Business3DTextLabelB[bizid]);
+	DestroyDynamic3DTextLabel(Business3DTextLabelC[bizid]);
+	
+	new businesstype[128];
+	if(Businesses[bizid][BizType] != 0)
+	{
+		if(Businesses[bizid][BizType] == 1) { businesstype = "Restauracja"; }
+		else if(Businesses[bizid][BizType] == 2) { businesstype = "Siec komorkowa"; }
+		else if(Businesses[bizid][BizType] == 3) { businesstype = "Sklep 24/7"; }
+		else if(Businesses[bizid][BizType] == 4) { businesstype = "Sklep z bronia"; }
+		else if(Businesses[bizid][BizType] == 5) { businesstype = "Studio reklamowe"; }
+		else if(Businesses[bizid][BizType] == 6) { businesstype = "Sklep z ubraniami"; }
+		else if(Businesses[bizid][BizType] == 7) { businesstype = "Bar/Club"; }
+		else if(Businesses[bizid][BizType] == 8) { businesstype = "Studio nagraniowe"; }
+		else if(Businesses[bizid][BizType] == 9) { businesstype = "Studio"; }
+		else if(Businesses[bizid][BizType] == 10) { businesstype = "Salon samochodowy"; }
+		else if(Businesses[bizid][BizType] == 11) { businesstype = "Stacja paliw"; }
+	}
+	else { businesstype = "Nie ustawione"; }
+	if(Businesses[bizid][Owned] == 0)
+	{
+		format(string, sizeof(string), "Ten biznes jest na sprzeda¿!");
+		Business3DTextLabelA[bizid] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[bizid][EnterX], Businesses[bizid][EnterY], Businesses[bizid][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+		format(string, sizeof(string), "Numer Budynku: %d, Nazwa biznesu: %s, Typ biznesu: %s", bizid, Businesses[bizid][BusinessName],businesstype);
+		Business3DTextLabelB[bizid] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[bizid][EnterX], Businesses[bizid][EnterY], Businesses[bizid][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+		
+		format(string, sizeof(string), "Cena: %d$",Businesses[bizid][BizPrice]);
+		Business3DTextLabelC[bizid] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[bizid][EnterX], Businesses[bizid][EnterY], Businesses[bizid][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+	}
+	else
+	{
+		format(string, sizeof(string), "Nazwa biznesu: %s, Typ biznesu: %s", Businesses[bizid][BusinessName], businesstype);
+		Business3DTextLabelA[bizid] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[bizid][EnterX], Businesses[bizid][EnterY], Businesses[bizid][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+		format(string, sizeof(string), "Numer Budynku: %d, W³aœciciel: %s", bizid, GetRealName(Businesses[bizid][Owner]));
+		Business3DTextLabelB[bizid] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[bizid][EnterX], Businesses[bizid][EnterY], Businesses[bizid][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+		format(string, sizeof(string), "Wejœciówka: %d$",Businesses[bizid][EntranceCost]);
+		Business3DTextLabelC[bizid] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[bizid][EnterX], Businesses[bizid][EnterY], Businesses[bizid][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+	}
 }
 
 stock ShowPoliceComputer(playerid)
@@ -2295,8 +2712,8 @@ stock SendPoliceCbMessage(playerid, type = 0)
 					{
 						if(gPlayerVars[playerid][mAtHouseID] != -1)
 							SetPlayerCheckpoint(i, Houses[gPlayerVars[playerid][mAtHouseID]][EnterX], Houses[gPlayerVars[playerid][mAtHouseID]][EnterY], Houses[gPlayerVars[playerid][mAtHouseID]][EnterZ], 10.0);
-						else if(gPlayerVars[playerid][mAtBuildingId] != -1)
-							SetPlayerCheckpoint(i, Building[gPlayerVars[playerid][mAtBuildingId]][EnterX], Building[gPlayerVars[playerid][mAtBuildingId]][EnterY], Building[gPlayerVars[playerid][mAtBuildingId]][EnterZ], 10.0);
+						else if(gPlayerVars[playerid][mAtBuildingID] != -1)
+							SetPlayerCheckpoint(i, Building[gPlayerVars[playerid][mAtBuildingID]][EnterX], Building[gPlayerVars[playerid][mAtBuildingID]][EnterY], Building[gPlayerVars[playerid][mAtBuildingID]][EnterZ], 10.0);
 						else if(gPlayerVars[playerid][mAtBizID] != -1)
 							SetPlayerCheckpoint(i, Businesses[gPlayerVars[playerid][mAtBizID]][EnterX], Businesses[gPlayerVars[playerid][mAtBizID]][EnterY], Businesses[gPlayerVars[playerid][mAtBizID]][EnterZ], 10.0);
 						else
@@ -2316,27 +2733,27 @@ GrowthWeed(id)
 	{
 		case 1:
 		{
+			SaveWeedData(id, "Pos");
 			MoveDynamicObject(gWeed[id][mObjId], gWeed[id][mPosX], gWeed[id][mPosY], gWeed[id][mPosZ]+0.7, 0.017);
-			gWeed[id][mPosZ] += 0.65;
+			gWeed[id][mPosZ] += 0.7;
 			gWeed[id][mPhase] = 2;
 			SaveWeedData(id, "Phase");
-			SaveWeedData(id, "Pos");
 		}
 		case 2:
 		{
+			SaveWeedData(id, "Pos");
 			MoveDynamicObject(gWeed[id][mObjId], gWeed[id][mPosX], gWeed[id][mPosY], gWeed[id][mPosZ]+0.7, 0.017);
-			gWeed[id][mPosZ] += 0.6;
+			gWeed[id][mPosZ] += 0.7;
 			gWeed[id][mPhase] = 3;
 			SaveWeedData(id, "Phase");
-			SaveWeedData(id, "Pos");
 		}
 		case 3:
 		{
+			SaveWeedData(id, "Pos");
 			MoveDynamicObject(gWeed[id][mObjId], gWeed[id][mPosX], gWeed[id][mPosY], gWeed[id][mPosZ]+0.7, 0.017);
-			gWeed[id][mPosZ] += 0.6;
+			gWeed[id][mPosZ] += 0.7;
 			gWeed[id][mPhase] = 4;
 			SaveWeedData(id, "Phase");
-			SaveWeedData(id, "Pos");
 		}
 	}
 }
@@ -2353,95 +2770,19 @@ SelectTestQuestion(playerid)
 
 IsAtBank(playerid)
 {
-	for(new i = 0; i < sizeof(BankPosition); i++)
-	{
-		if(PlayerToPoint(1.0, playerid, BankPosition[i][X],  BankPosition[i][Y],  BankPosition[i][Z]))
-		{
-			return 1;
-		}
-	}
-	return 0;
+	if(PlayerToPoint(2.0, playerid, BankPosition[X], BankPosition[Y], BankPosition[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition3[X], BankPosition3[Y], BankPosition3[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition4[X], BankPosition4[Y], BankPosition4[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition5[X], BankPosition5[Y], BankPosition5[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition6[X], BankPosition6[Y], BankPosition6[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition7[X], BankPosition7[Y], BankPosition7[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition8[X], BankPosition8[Y], BankPosition8[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition9[X], BankPosition9[Y], BankPosition9[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition10[X], BankPosition10[Y], BankPosition10[Z])
+		|| PlayerToPoint(2.0, playerid, BankPosition11[X], BankPosition11[Y], BankPosition11[Z])
+	)
+		return 1;
+	else
+		return 0;
 }
-
-stock WeaponIdToSlot(wId)
-{
-	switch(wId)
-	{
-		case 0: return 0;
-		case 1: return 0;
-		case 2: return 1;
-		case 3: return 1;
-		case 4: return 1;
-		case 5: return 1;
-		case 6: return 1;
-		case 7: return 1;
-		case 8: return 1;
-		case 9: return 1;
-		case 10: return 10;
-		case 11: return 10;
-		case 12: return 10;
-		case 13: return 10;
-		case 14: return 10;
-		case 15: return 10;
-		case 16: return 8;
-		case 17: return 8;
-		case 18: return 8;
-		case 22: return 2;
-		case 23: return 2;
-		case 24: return 2;
-		case 25: return 3;
-		case 26: return 3;
-		case 27: return 3;
-		case 28: return 4;
-		case 29: return 4;
-		case 30: return 5;
-		case 31: return 5;
-		case 32: return 4;
-		case 33: return 6;
-		case 34: return 6;
-		case 35: return 7;
-		case 36: return 7;
-		case 37: return 7;
-		case 38: return 7;
-		case 39: return 8;
-		case 40: return 12;
-		case 41: return 9;
-		case 42: return 9;
-		case 43: return 9;
-		case 44: return 11;
-		case 45: return 11;
-		case 46: return 11;
-	}
-	return 0;
-}
-
-stock CreateLocationsCp()
-{
-	for(new i = 0; i < sizeof(gLsLocations); i++)
-	{
-		gLsLocations[i][mLocationPosCp] = CreateDynamicCP(gLsLocations[i][mLocationPosX], gLsLocations[i][mLocationPosY], gLsLocations[i][mLocationPosZ], 1.0, -1, -1, -1, 5000.0);
-	}
-}
-
-stock HideLocationsCp(playerid)
-{
-	for(new i = 0; i < sizeof(gLsLocations); i++)
-	{
-		TogglePlayerDynamicCP(playerid, gLsLocations[i][mLocationPosCp], 0);
-	}
-}
-
-stock IsInFrontOfCell(playerid)
-{
-	for(new i = 0; i < sizeof(gPrisonCells); i++)
-	{
-		if(PlayerToPoint(1.0, playerid, gPrisonCells[i][mPosXCellEntrance], gPrisonCells[i][mPosYCellEntrance], gPrisonCells[i][mPosZCellEntrance]))
-		{
-			return 1;
-		}
-	}
-	
-	return 0;
-}
-
-// That's all folks

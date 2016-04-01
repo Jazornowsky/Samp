@@ -9,35 +9,30 @@
 
 timer Engine[ENGINE_STARTUP_TIME](playerid)
 {
+	// if(gVehData[GetPlayerVehicleID(playerid)-1][EngineOn] == 0)
+	// {
 	new carid = GetPlayerVehicleID(playerid);
-	
 	EngineTurningOn[playerid] = 0;
-	
 	if(carid != INVALID_VEHICLE_ID)
 	{
 		if(gVehData[carid-1][CarFuel] > 0.5)
 		{
-			if(gVehData[carid-1][mVehType] == 0)
+			if( gVehData[carid-1][mVehType] == 0 )
 			{
-				gVehData[carid-1][BatteryCapacity] -= 1.0;
+				gVehData[carid-1][BatteryCapacity]-= 1.0;
 				SaveVehData(carid-1, "BatteryCapacity");
 			}
-			
-			new enginedyn, lights, alarm, bonnet, boot, objective, doors;
-			
+			new enginedyn,lights,alarm,bonnet,boot,objective,doors;
 			GetVehicleParamsEx(carid, enginedyn, lights, alarm, doors, bonnet, boot, objective);
-			SetVehicleParamsEx(carid, 1, lights, alarm, doors, bonnet, boot, objective);
-			
+			SetVehicleParamsEx(carid,1,lights,alarm,doors,bonnet,boot,objective);
 			gVehData[carid-1][EngineOn] = 1;
-			SaveVehData(carid-1, "EngineOn");
-			
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Silnik uruchomiony");
-			
+			SaveVehData(carid-1, "EngineOn");
 			return 1;
 		}
 	}
-	
 	SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie uda³o siê odpaliæ silnika");
+	// }
 	return 1;
 }
 
@@ -52,19 +47,12 @@ timer EngineNoKey[ENGINE_NO_KEY_TIME](playerid)
 		tmprandom = random(100);
 		EngineTurningOn[playerid] = 0;
 		
-		if(gVehData[carid-1][mVehType] != 0 && gVehData[carid-1][mVehType] != 9)
-		{
-			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz uruchomiæ tego pojazdu");
-			return 1;
-		}
-		
 		if(tmprandom >= 0 && tmprandom <= 30)
 		{
 			gVehData[carid-1][mVehIgnitionDamaged] = 1;
 			SaveVehData(carid-1, "VehIgnitionDamaged");
 			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Uszkodzi³eœ stacyjke");
 		}
-		
 		if(tmprandom >= 65 && tmprandom <= 100)
 		{
 			if( gVehData[carid-1][mVehType] == 0 )

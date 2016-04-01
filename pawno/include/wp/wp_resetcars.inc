@@ -3,12 +3,12 @@
 	// format(string, sizeof(string), "SELECT COUNT(ID) AS founder_count FROM `samp_users_items`");
 	
 	// format(string, sizeof(string), "SELECT * FROM `samp_users_items`");
-	// wp_mysql_query(string);
+	// mysql_query(string);
 	// mysql_store_result();
 
 	// mysql_fetch_row(db_result, "|");
 	// split2(db_result, arrCoords, '|');
-	// wp_mysql_free_result();
+	// mysql_free_result();
 	
 	// tmpVar[item1] = strval(arrCoords[0]);
 	// tmpVar[item2] = strval(arrCoords[1]);

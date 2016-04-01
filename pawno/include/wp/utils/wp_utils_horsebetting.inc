@@ -105,7 +105,7 @@ stock HorseRacePrepare(step)
 		{
 			foreach(Player, i)
 			{
-				if(gPlayerVars[i][mAtBuildingId] == 121)
+				if(gPlayerVars[i][mAtBuildingID] == 121)
 				{
 					SendClientMessage(i, COLOR_LIGHTYELLOW2, "[INFO:] Wyœcig siê rozpoczyna, koniec zak³adów ! Wpisz /ogladaj aby zobaczyæ wyœcig");
 					PlayerPlaySound(i, 5410, 0, 0, 0);
@@ -201,7 +201,7 @@ timer HorseAnim[100]()
 				gPlayerData[i][pBank] += floatround(winValue - (winValue * DynamicTaxes[VatTaxMax]));
 				DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= floatround(winValue - (winValue * DynamicTaxes[VatTaxMax]));
 			}
-			if(gPlayerVars[i][mAtBuildingId] == 121)
+			if(gPlayerVars[i][mAtBuildingID] == 121)
 				SendClientMessage(i, COLOR_ORANGE, "[INFO:] Wygra³ koñ z numerem 1 !");
 		}
 		gHorseStop = 1;
@@ -218,13 +218,13 @@ timer HorseAnim[100]()
 				else
 					winValue = (3.0 - (floatpower(2.0, floatlog(float(allBets), float(betsOnHorse[1]))))) * gHorseMoneyBet[i];
 				
-				if(gPlayerVars[i][mAtBuildingId] == 121)
+				if(gPlayerVars[i][mAtBuildingID] == 121)
 					GivePlayerCash(i, floatround(winValue - (winValue * DynamicTaxes[VatTaxMax])));
 				else
 					gPlayerData[i][pBank] += floatround(winValue - (winValue * DynamicTaxes[VatTaxMax]));
 				DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= floatround(winValue - (winValue * DynamicTaxes[VatTaxMax]));
 			}
-			if(gPlayerVars[i][mAtBuildingId] == 121)
+			if(gPlayerVars[i][mAtBuildingID] == 121)
 				SendClientMessage(i, COLOR_ORANGE, "[INFO:] Wygra³ koñ z numerem 2 !");
 		}
 		gHorseStop = 1;
@@ -244,7 +244,7 @@ timer HorseAnim[100]()
 				gPlayerData[i][pBank] += floatround(winValue - (winValue * DynamicTaxes[VatTaxMax]));
 				DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= floatround(winValue - (winValue * DynamicTaxes[VatTaxMax]));
 			}
-			if(gPlayerVars[i][mAtBuildingId] == 121)
+			if(gPlayerVars[i][mAtBuildingID] == 121)
 				SendClientMessage(i, COLOR_ORANGE, "[INFO:] Wygra³ koñ z numerem 3 !");
 		}
 		gHorseStop = 1;
@@ -264,7 +264,7 @@ timer HorseAnim[100]()
 				gPlayerData[i][pBank] += floatround(winValue - (winValue * DynamicTaxes[VatTaxMax]));
 				DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= floatround(winValue - (winValue * DynamicTaxes[VatTaxMax]));
 			}
-			if(gPlayerVars[i][mAtBuildingId] == 121)
+			if(gPlayerVars[i][mAtBuildingID] == 121)
 				SendClientMessage(i, COLOR_ORANGE, "[INFO:] Wygra³ koñ z numerem 4 !");
 		}
 		gHorseStop = 1;
@@ -295,7 +295,7 @@ timer HorseAnim[100]()
 			{
 				if(gHorseBetOnHorse[i] == lHorseWon)
 				{
-					if(gPlayerVars[i][mAtBuildingId] == 121)
+					if(gPlayerVars[i][mAtBuildingID] == 121)
 					{
 						PlayerPlaySound(i, 5448, 0, 0, 0);
 						SendClientMessage(i, COLOR_GREEN, "Wygra³eœ !");
@@ -303,7 +303,7 @@ timer HorseAnim[100]()
 				}
 				else if(gHorseBetOnHorse[i] != lHorseWon)
 				{
-					if(gPlayerVars[i][mAtBuildingId] == 121)
+					if(gPlayerVars[i][mAtBuildingID] == 121)
 					{
 						PlayerPlaySound(i, 5453, 0, 0, 0);
 						SendClientMessage(i, COLOR_GREEN, "Przegra³eœ !");

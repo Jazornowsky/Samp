@@ -26,24 +26,6 @@ stock PayDay()
 	LoadRandomPickupEvent();
 	
 	/*
-	* Expire San News Msgs
-	*/
-	for(new i = 0; i < sizeof(gSanNewsMsgs); i++)
-	{
-		if(gSanNewsMsgs[i][mTimeLeft] > 0)
-		{
-			gSanNewsMsgs[i][mTimeLeft]--;
-			SaveNews(i, "TimeLeft");
-		}
-		
-		if(gSanNewsMsgs[i][mTimeLeft] == 0)
-		{
-			gSanNewsMsgs[i][mUsed] = 0;
-			SaveNews(i, "Used");
-		}
-	}
-	
-	/*
 	* Item factory items reproduce
 	*/
 	for(new i = 0; i < sizeof(gItemFactories); i++)
@@ -97,11 +79,6 @@ stock PayDay()
 					SaveVehData(i, "CarRepairTimeLeft");
 				}
 			}
-		}
-		
-		if(strlen(gVehData[i][mRenter]) > 0)
-		{
-			UpdatePlayerDataByName(gVehData[i][mRenter], "Bank", -gVehData[i][mRentPrice]);
 		}
 		
 		if((strcmp(gVehData[i][Owner], "None", true) == 0 || strlen(gVehData[i][Owner]) < 0 ||
@@ -365,22 +342,22 @@ stock PayDay()
 		Businesses[i][mWBuckshotIncomeToday] = 0;
 		Businesses[i][mW762MMAmmoIncomeToday] = 0;
 		Businesses[i][mW127MMAmmoIncomeToday] = 0;
-		SaveBizData(i, "W9MMIncomeToday");
-		SaveBizData(i, "W9MMSilIncomeToday");
-		SaveBizData(i, "WDesEagleIncomeToday");
-		SaveBizData(i, "WMicroSMGIncomeToday");
-		SaveBizData(i, "WMP5IncomeToday");
-		SaveBizData(i, "WTec9IncomeToday");
-		SaveBizData(i, "WShotgunIncomeToday");
-		SaveBizData(i, "WAK47IncomeToday");
-		SaveBizData(i, "WM4IncomeToday");
-		SaveBizData(i, "WRifleIncomeToday");
-		SaveBizData(i, "WSRifleIncomeToday");
-		SaveBizData(i, "W9MMAmmoIncomeToday");
-		SaveBizData(i, "W50AEAmmoIncomeToday");
-		SaveBizData(i, "WBuckshotIncomeToday");
-		SaveBizData(i, "W762MMAmmoIncomeToday");
-		SaveBizData(i, "W127MMAmmoIncomeToday");
+		SaveBizData(i, "mW9MMIncomeToday");
+		SaveBizData(i, "mW9MMSilIncomeToday");
+		SaveBizData(i, "mWDesEagleIncomeToday");
+		SaveBizData(i, "mWMicroSMGIncomeToday");
+		SaveBizData(i, "mWMP5IncomeToday");
+		SaveBizData(i, "mWTec9IncomeToday");
+		SaveBizData(i, "mWShotgunIncomeToday");
+		SaveBizData(i, "mWAK47IncomeToday");
+		SaveBizData(i, "mWM4IncomeToday");
+		SaveBizData(i, "mWRifleIncomeToday");
+		SaveBizData(i, "mWSRifleIncomeToday");
+		SaveBizData(i, "mW9MMAmmoIncomeToday");
+		SaveBizData(i, "mW50AEAmmoIncomeToday");
+		SaveBizData(i, "mWBuckshotIncomeToday");
+		SaveBizData(i, "mW762MMAmmoIncomeToday");
+		SaveBizData(i, "mW127MMAmmoIncomeToday");
 		SaveBizData(i, "Product1incomeToday");
 		SaveBizData(i, "Product2incomeToday");
 		SaveBizData(i, "Product3incomeToday");
@@ -483,7 +460,6 @@ stock PayDay()
 			DynamicFactions[i][WFactoryCPPartSetup2ID] = CreateDynamicCP(px+WFCP[1][0], py+WFCP[1][1], pz+WFCP[1][2], 2.0); // Make weapon parts
 			DynamicFactions[i][WFactoryCPAmmoPartSetup1ID] = CreateDynamicCP(px+WFCP[2][0], py+WFCP[2][1], pz+WFCP[2][2], 2.0); // Make weapon subparts
 			DynamicFactions[i][WFactoryCPPartTakeID] = CreateDynamicCP(px+WFCP[3][0], py+WFCP[3][1], pz+WFCP[3][2], 2.0); // Take/buy ammo/weapon (sub) parts
-			DynamicFactions[i][WFactoryCPSafeID] = CreateDynamicCP(px+WFCP[5][0], py+WFCP[5][1], pz+WFCP[5][2], 2.0); // Factory money safe
 			DynamicFactions[i][WFactoryCPAmmoPartSetup2ID] = CreateDynamicCP(px+WFCP[4][0], py+WFCP[4][1], pz+WFCP[4][2], 2.0); // Make weapon subparts
 			DynamicFactions[i][WFactoryEnabled] = 1;
 			DynamicFactions[i][WFactoryJustBought] = 0;
@@ -496,13 +472,12 @@ stock PayDay()
 	* Minimal payday for connected players
 	* Some stuff still needs to be done in full payday
 	*/
-	foreach(Player, i)
+	for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
 	{
-		if(!IsPlayerConnected(i) || !gPlayerLogged[i] || gPlayerData[i][pAdmin] > 4)
+		if(!IsPlayerConnected(i) || !gPlayerLogged[i] || gPlayerData[i][pAdmin] > 0)
 		{
 			continue;
 		}
-		
 		if(gPlayerData[i][pJailed] == 1)
 		{
 			SendClientMessage(i, COLOR_RED, "[INFO:] Nie mo¿esz otrzymaæ wyp³aty bêd¹c w wiêzieniu !");
@@ -597,96 +572,6 @@ stock PayDay()
 				}
 			}
 		}
-		
-		/*
-		* Give player faction payment and other payment
-		*/
-		if(gPlayerData[i][pFaction2] != 255)
-		{
-			for(new n = 0; n < sizeof(DynamicFactions); n++)
-			{
-				if(PayRank[n][FactionID] == gPlayerData[i][pFaction2])
-				{
-					switch(gPlayerData[i][pRank2])
-					{
-						case 1:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 1, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank1];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank1];
-						}
-						case 2:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 2, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank2];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank2];							
-						}
-						case 3:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 3, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank3];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank3];
-						}
-						case 4:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 4, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank4];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank4];
-						}
-						case 5:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 5, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank5];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank5];
-						}
-						case 6:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 6, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank6];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank6];
-						}
-						case 7:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 7, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank7];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank7];
-						}
-						case 8:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 8, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank8];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank8];
-						}
-						case 9:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 9, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank9];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank9];
-						}
-						case 10:
-						{
-							format(string, sizeof(string), "[PAYDAY:] Player name = %s, rank 10, Bank = %d + %d, Faction id = %d, Bank = %d - %d",
-								gPlayerData[i][pName], gPlayerData[i][pBank], PayRank[n][Rank2], gPlayerData[i][pFaction2], DynamicFactions[gPlayerData[i][pFaction2]][fBank], PayRank[n][Rank2]);
-							gPlayerData[i][pBank] += PayRank[n][Rank10];
-							DynamicFactions[PayRank[n][FactionID]][fBank] -= PayRank[n][Rank10];
-						}
-					}
-					PayDayLog(string);
-					SaveFData(gPlayerData[i][pFaction2], "Bank");
-					break;
-				}
-			}
-		}
-		
 		if(gPlayerData[i][pJob] == 0 && gPlayerData[i][pFaction] == 255)
 		{
 			gPlayerData[i][pBank] += Zasilek;
@@ -695,6 +580,40 @@ stock PayDay()
 			
 			DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= Zasilek;
 			SaveFData(FACTIONID_GOVERNMENT, "Bank");
+		}	
+		
+		/*
+		* Credit repayment
+		*/
+		if(gPlayerData[i][mCreditValue] > 0)
+		{
+			gPlayerData[i][pBank] -= gPlayerData[i][mCreditRepayment];
+			gPlayerData[i][mCreditPayed] += gPlayerData[i][mCreditRepayment];
+			DynamicFactions[FACTIONID_GOVERNMENT][fBank] += gPlayerData[i][mCreditRepayment];
+			SaveFData(FACTIONID_GOVERNMENT, "Bank");
+			if(gPlayerData[i][mCreditPayed] >= gPlayerData[i][mCreditValue])
+			{
+				gPlayerData[i][mCreditRepayment] = 0;
+				gPlayerData[i][mCreditPayed] = 0;
+				gPlayerData[i][mCreditValue] = 0;
+				SavePlayerData(i, "CreditRepayment");
+				SavePlayerData(i, "CreditValue");
+			}
+			SavePlayerData(i, "CreditPayed");
+		}
+		
+		/*
+		* Pay taxes, costs, tickets, etc.
+		*/
+		gPlayerData[i][pBank] -= DynamicTaxes[RadioTax];
+		DynamicFactions[FACTIONID_GOVERNMENT][fBank] += DynamicTaxes[RadioTax];
+		if((gPlayerData[i][pCash] + gPlayerData[i][pBank]) >= DynamicTaxes[TheRich])
+		{
+			gPlayerData[i][pBank] -= floatround(DynamicTaxes[RichTax] * (gPlayerData[i][pBank]+gPlayerData[i][pCash]), floatround_round);
+			format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = taxes (the rich)", gPlayerData[i][pName], gPlayerData[i][pBank], DynamicTaxes[TheRich]); 
+			PayDayLog(string);
+			
+			DynamicFactions[FACTIONID_GOVERNMENT][fBank] += DynamicTaxes[TheRich];
 		}
 		if(gPlayerData[i][pCost] > 0)
 		{
@@ -705,7 +624,6 @@ stock PayDay()
 			gPlayerData[i][pCost] = 0;
 			SavePlayerData(i, "Cost");
 		}
-		
 		if(gPlayerData[i][pTicket] > 0)
 		{
 			gPlayerData[i][pBank] -= gPlayerData[i][pTicket];
@@ -714,7 +632,6 @@ stock PayDay()
 			
 			DynamicFactions[FACTIONID_POLICE][fBank] += gPlayerData[i][pTicket];
 			SaveFData(FACTIONID_POLICE, "Bank");
-			
 			gPlayerData[i][pTicket] = 0;
 			SavePlayerData(i, "Ticket");
 		}
@@ -727,317 +644,14 @@ stock PayDay()
 			gPlayerData[i][pJobTimeChange]--;
 			SavePlayerData(i, "JobTimeChange");
 		}
-		
-		/*
-		* Set bank status befor PayDay for PayDay Message
-		*/
-		gPlayerData[i][pPayDayMessage] = 1;
-		gPlayerData[i][pBankOld] = gPlayerData[i][pBank];
-		gPlayerData[i][pBankIncome] = 0;
-		gPlayerData[i][pBankLoose] = 0;
-		SavePlayerData(i, "PayDayMessage");
-		SavePlayerData(i, "BankOld");
-
-		/*
-		* Reduce drive licence days
-		*/
-		new pslot[MAX_PLAYER_ITEM_SLOT];
-		PHaveItemEx(i, 3, 4, pslot);
-		for(new j = 0; j < MAX_PLAYER_ITEM_SLOT; j++)
-		{
-			if(pslot[j])
-			{
-				if(SlotParam1(i, j+1) > 0)
-					SetPSlotParam1(i, j+1, SlotParam1(i, j+1)-1);
-				if(SlotParam2(i, j+1) > 0)
-					SetPSlotParam1(i, j+1, SlotParam2(i, j+1)-1);
-				if(SlotParam3(i, j+1) > 0)
-					SetPSlotParam1(i, j+1, SlotParam3(i, j+1)-1);
-			}
-		}
-		
-		/*
-		* Credit repayment
-		*/
-		if(gPlayerData[i][mCreditValue] > 0 && gPlayerData[i][pAdmin] != 5)
-		{
-			format(string, sizeof(string), "[PAYDAY:] Player name = %s, credit repayment, Bank = $%d - $%d",
-				gPlayerData[i][pName], gPlayerData[i][pBank], gPlayerData[i][mCreditRepayment]);
-			PayDayLog(string);
-			
-			gPlayerData[i][pBank] -= gPlayerData[i][mCreditRepayment];
-			gPlayerData[i][pBankLoose] += gPlayerData[i][mCreditRepayment];
-			
-			gPlayerData[i][mCreditPayed] += gPlayerData[i][mCreditRepayment];	
-			SavePlayerData(i, "CreditPayed");
-			
-			DynamicFactions[FACTIONID_GOVERNMENT][fBank] += gPlayerData[i][mCreditRepayment];
-			SaveFData(FACTIONID_GOVERNMENT, "Bank");
-			
-			if(gPlayerData[i][mCreditPayed] >= gPlayerData[i][mCreditValue])
-			{
-				gPlayerData[i][mCreditRepayment] = 0;
-				gPlayerData[i][mCreditPayed] = 0;
-				gPlayerData[i][mCreditValue] = 0;
-				SavePlayerData(i, "CreditRepayment");
-				SavePlayerData(i, "CreditValue");
-			}
-			
-			
-		}
-		
-		/*
-		* Pay for OC/AC
-		*/
-		PHaveItemEx(i, 3, 19, pslot);
-		for(new j = 1; j <= MAX_PLAYER_ITEM_SLOT; j++)
-		{
-			if(pslot[j-1])
-			{
-				if(SlotParam3(i, j) > 0)
-				{
-					gPlayerData[i][pBank] -= 4;
-					gPlayerData[i][pBankLoose] += 4;
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 4;
-				}
-				if(SlotParam4(i, j) > 0)
-				{
-					gPlayerData[i][pBank] -= 6;
-					gPlayerData[i][pBankLoose] += 6;
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 6;
-				}
-			}
-		}
-		
-		if( gPlayerData[i][pJob] == 0 && gPlayerData[i][pFaction] == 255 )
-		{
-			format(string, sizeof(string), "[PAYDAY:] Player name = %s, Bank = %d + %d", gPlayerData[i][pName], gPlayerData[i][pBank], Zasilek);
-			PayDayLog(string);
-			gPlayerData[i][pBank] += Zasilek;
-			gPlayerData[i][pBankIncome] += Zasilek;
-			DynamicFactions[FACTIONID_GOVERNMENT][fBank] -= Zasilek;
-			SaveFData( FACTIONID_GOVERNMENT, "Bank" );
-		}
-
-		/*
-		* Pay taxes, costs, tickets, etc.
-		*/
-		format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = Radio tax", gPlayerData[i][pName], gPlayerData[i][pBank], DynamicTaxes[RadioTax]);
-		PayDayLog(string);
-		
-		gPlayerData[i][pBank] -= DynamicTaxes[RadioTax];
-		gPlayerData[i][pBankLoose] += DynamicTaxes[RadioTax];
-		
-		DynamicFactions[FACTIONID_GOVERNMENT][fBank] += DynamicTaxes[RadioTax];
-		
-		if( ( gPlayerData[i][pCash] + gPlayerData[i][pBank] ) >= DynamicTaxes[TheRich] )
-		{
-			format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = taxes (the rich)", gPlayerData[i][pName], gPlayerData[i][pBank], floatround( DynamicTaxes[RichTax] * (gPlayerData[i][pBank]+gPlayerData[i][pCash]), floatround_round));
-			PayDayLog(string);
-			gPlayerData[i][pBank] -= floatround( DynamicTaxes[RichTax] * (gPlayerData[i][pBank]+gPlayerData[i][pCash]), floatround_round);
-			gPlayerData[i][pBankLoose] += floatround( DynamicTaxes[RichTax] * (gPlayerData[i][pBank]+gPlayerData[i][pCash]), floatround_round);
-			DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround( DynamicTaxes[RichTax] * (gPlayerData[i][pBank]+gPlayerData[i][pCash]), floatround_round);
-		}
-		
-		if( gPlayerData[i][pCost] > 0 )
-		{
-			format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = costs", gPlayerData[i][pName], gPlayerData[i][pBank], gPlayerData[i][pCost]);
-			PayDayLog(string);
-			gPlayerData[i][pBank] -= gPlayerData[i][pCost];
-			gPlayerData[i][pBankLoose] += gPlayerData[i][pCost];						
-			gPlayerData[i][pCost] = 0;
-			SavePlayerData( i, "Cost" );
-		}
-		
-		if( gPlayerData[i][pTicket] > 0 )
-		{
-			format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = ticket", gPlayerData[i][pName], gPlayerData[i][pBank], gPlayerData[i][pTicket]);
-			PayDayLog(string);
-			gPlayerData[i][pBank] -= gPlayerData[i][pTicket];
-			gPlayerData[i][pBankLoose] += gPlayerData[i][pTicket];
-			DynamicFactions[FACTIONID_POLICE][fBank] += gPlayerData[i][pTicket];
-			SaveFData( FACTIONID_POLICE, "Bank" );
-			gPlayerData[i][pTicket] = 0;
-			SavePlayerData( i, "Ticket" );
-		}
-		
-		for(new j = 0; j < sizeof(Houses); j++)
-		{
-			if(strcmp(gPlayerData[i][pName], Houses[j][HRenter], false) == 0 && strlen(Houses[j][HRenter]) > 0)
-			{
-				if(gPlayerData[i][pBank] < 0)
-				{
-					strmid(Houses[j][HRenter], "Brak", 0, MAX_PLAYER_NAME, 255);
-					SaveHouseData(j, "Renter");
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, House rent deleted, House ID: %d", gPlayerData[i][pName], j);
-					PayDayLog(string);
-				}
-				else
-				{
-					gPlayerData[i][pBank] -= Houses[j][RentCost];
-					gPlayerData[i][pBankLoose] += Houses[j][RentCost];
-					UpdatePlayerDataByName(Houses[j][Owner], "Bank", Houses[j][RentCost]);
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Bank = %d - %d, SOURCE = house rent, House ID: %d", gPlayerData[i][pName], gPlayerData[i][pBank], Houses[j][RentCost], j);
-					PayDayLog(string);
-				}
-			}
-		}
-
-		/*
-		* Is player on debt ?
-		*/
-		if( gPlayerData[i][pBank] < -5000 )
-		{
-			gPlayerData[i][pIsDeptor] = 1;
-			SavePlayerData(i,"IsDeptor");
-			for(new j = 0; j < sizeof(Houses); j++)
-			{
-				if( strcmp(Houses[j][Owner], gPlayerData[i][pName], true) == 0 && strlen(Houses[j][Owner]) > 0 )
-				{
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, House ID: %d, confiscated", gPlayerData[i][pName], j);
-					PayDayLog(string);
-					Houses[j][HConfiscated] = 1;
-					SaveHouseData(j, "Confiscated");
-				}
-			}
-			for(new j = 0; j < sizeof(Businesses); j++)
-			{
-				if( strcmp(Businesses[j][Owner], gPlayerData[i][pName], true) == 0 && strlen(Businesses[j][Owner]) > 0 )
-				{
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Biz ID: %d, confiscated", gPlayerData[i][pName], j);
-					PayDayLog(string);
-					Businesses[j][BConfiscated] = 1;
-					SaveBizData(j, "Confiscated");
-				}
-			}
-			for(new j = 0; j < sizeof(gVehData); j++)
-			{
-				if( strcmp(gVehData[j][Owner], gPlayerData[i][pName], true) == 0 && strlen(gVehData[j][Owner]) > 0 )
-				{
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Veh ID: %d, confiscated", gPlayerData[i][pName], j);
-					PayDayLog(string);
-
-					new enginedyn,lights,alarm,doors,bonnet,boot,objective;
-					GetVehicleParamsEx(j+1,enginedyn,lights,alarm,doors,bonnet,boot,objective);
-					SetVehicleParamsEx(j+1,enginedyn,lights,alarm,1,bonnet,boot,objective);
-
-					gVehData[j][Closed] = 1;
-					SaveVehData(j, "Closed");
-					gVehData[j][VConfiscated] = 1;
-					SaveVehData(j, "Confiscated");
-				}
-			}
-		}
-		else if( gPlayerData[i][pIsDeptor] && gPlayerData[i][pBank] >= -5000 )
-		{
-			gPlayerData[i][pIsDeptor] = 0;
-			SavePlayerData(i,"IsDeptor");
-			for(new j = 0; j < sizeof(Houses); j++)
-			{
-				if( strcmp(Houses[j][Owner], gPlayerData[i][pName], true) == 0 && strlen(Houses[j][Owner]) > 0 )
-				{
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, House ID: %d, deconfiscated", gPlayerData[i][pName], j);
-					PayDayLog(string);
-
-					Houses[j][HConfiscated] = 0;
-					SaveHouseData(j, "Confiscated");
-				}
-			}
-			for(new j = 0; j < sizeof(Businesses); j++)
-			{
-				if( strcmp(Businesses[j][Owner], gPlayerData[i][pName], true) == 0 && strlen(Businesses[j][Owner]) > 0 )
-				{
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Biz ID: %d, deconfiscated", gPlayerData[i][pName], j);
-					PayDayLog(string);
-
-					Businesses[j][BConfiscated] = 0;
-					SaveBizData(j, "Confiscated");
-				}
-			}
-			for(new j = 0; j < sizeof(gVehData); j++)
-			{
-				if( strcmp(gVehData[j][Owner], gPlayerData[i][pName], true) == 0 && strlen(gVehData[j][Owner]) > 0 )
-				{
-					format(string, sizeof(string), "[PAYDAY:] PlayerName = %s, Veh ID: %d, deconfiscated", gPlayerData[i][pName], j);
-					PayDayLog(string);
-
-					new enginedyn,lights,alarm,doors,bonnet,boot,objective;
-					GetVehicleParamsEx(j+1,enginedyn,lights,alarm,doors,bonnet,boot,objective);
-					SetVehicleParamsEx(j+1,enginedyn,lights,alarm,0,bonnet,boot,objective);
-
-					gVehData[j][Closed] = 0;
-					SaveVehData(j, "Closed");
-					gVehData[j][VConfiscated] = 0;
-					SaveVehData(j, "Confiscated");
-				}
-			}
-		}
-
-		/*
-		* Calculate and update player RP score
-		*/
-		gPlayerData[i][pScore] = ( gPlayerData[i][pRPCount] * 2 ) - ( gPlayerData[i][pDeathCount] * 100 ) /*+ floatround( (gPlayerData[i][pHoursOnDuty]/5), floatround_round )*/;
-		SavePlayerData(i, "Score");
-
-		/*
-		* VIP reduce
-		*/
-		if( gVipReduceOn )
-		{
-			if(gPlayerData[i][pVipAFKT] > 0)
-			{
-				gPlayerData[i][pVipAFKT]--;
-				SavePlayerData(i, "VipAFKT");
-			}
-			if(gPlayerData[i][pVipExpT] > 0)
-			{
-				gPlayerData[i][pVipExpT]--;
-				SavePlayerData(i, "VipExpT");
-			}
-			if(gPlayerData[i][pVipItem] > 0)
-			{
-				gPlayerData[i][pVipItem]--;
-				SavePlayerData(i, "VipItem");
-			}
-		}
-
-		/*
-		* Other stuff
-		*/
-		if(gPlayerData[i][pWarnings] > 0)
-		{
-			if(gPlayerData[i][pWarnCooldown] <= 0)
-			{
-				gPlayerData[i][pWarnings]--;
-				SavePlayerData(i, "Warnings");
-				gPlayerData[i][pWarnCooldown] = WARN_COOLDOWN;
-			}
-			else
-			{
-				gPlayerData[i][pWarnCooldown]--;
-				SavePlayerData(i, "WarnCooldown");
-			}
-		}
-		
-		gPlayerData[i][pLastLogged]++;
-		gPlayerData[i][pBankNew] = gPlayerData[i][pBank];
-		SavePlayerData(i, "LastLogged");
-		SavePlayerData(i, "Bank");
-		SavePlayerData(i, "BankIncome");
-		SavePlayerData(i, "BankLoose");
-		SavePlayerData(i, "BankNew");
-
-		format(string, sizeof(string), "[PAYDAY:] Player %s end in character cash: $%d, in bank cash: $%d", gPlayerData[i][pName], gPlayerData[i][pCash], gPlayerData[i][pBank]);
-		PayDayLog(string);		
-		
 		SaveFData(FACTIONID_GOVERNMENT, "Bank");
 		printf("[PAYDAY:] Logged player [%d] passed", i);
 	}
 	
 	// DATABASE SAVE =================================================================================================
 	PayDayLog("[PAYDAY:] Counting...");
-	format(string, sizeof(string), "SELECT COUNT(*) AS founder_count FROM `samp_users` WHERE `Banned` = '0' ");
-	wp_mysql_query(string, COUNT_PAYDAY, INVALID_PLAYER_ID, db_con2);
+	format(string, sizeof(string), "SELECT COUNT(*) FROM `samp_users` WHERE `Banned` = '0' ");
+	mysql_query(string, COUNT_PAYDAY, INVALID_PLAYER_ID, db_con2);
 	//SetTimer("PayDay",86400000,0); // sprawdza czy jest dana godzina, wyplaca pieniadze wszystkim graczom
 	return 1;
 }

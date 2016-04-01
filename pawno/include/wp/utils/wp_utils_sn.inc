@@ -7,116 +7,28 @@
 *
 *************************************************************************************************************/
 
-stock RefreshSanNewsMsgForAll()
-{
-	foreach(Player, i)
-	{
-		if(!gPlayerLogged[i])
-		{
-			continue;
-		}
-		
-		RefreshSanNewsMsg(i);
-	}
-}
-
-stock RefreshSanNewsMsg(playerid)
-{
-	static string[255];
-
-	if(!gSanNewsMsgs[gSanNewsCurrentMsg][mUsed])
-	{
-		format(string, sizeof(string), "SAN NEWS: Brak wiadomosci...");
-		PlayerTextDrawSetString(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], string);
-	}
-	else
-	{
-		format(string, sizeof(string), "SAN NEWS: %s", gSanNewsMsgs[gSanNewsCurrentMsg][mContent]);
-		PlayerTextDrawSetString(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], string);
-	}
-}
-
-stock CreateSanNewsBox(playerid)
-{
-	if(!gPlayerVars[playerid][mVehicleStatusShow])
-	{
-		gPlayerVars[playerid][mSanNewsTextDrawId] = CreatePlayerTextDraw(playerid, 0.0, 434.5, " ");
-	}
-	else
-	{
-		gPlayerVars[playerid][mSanNewsTextDrawId] = CreatePlayerTextDraw(playerid, 0.0, 427.0, " ");
-	}
-	
-	PlayerTextDrawUseBox(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 1);
-	PlayerTextDrawBoxColor(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 0x000000AA);
-	PlayerTextDrawAlignment(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 0);
-	PlayerTextDrawBackgroundColor(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 0x000000ff);
-	PlayerTextDrawFont(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 1);
-	PlayerTextDrawLetterSize(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 0.15, 0.525);
-	PlayerTextDrawColor(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 0xffffffff);
-	PlayerTextDrawSetOutline(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 1);
-	PlayerTextDrawSetProportional(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 1);
-	PlayerTextDrawSetShadow(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], 1);
-	
-	PlayerTextDrawShow(playerid, gPlayerVars[playerid][mSanNewsTextDrawId]);
-	
-	RefreshSanNewsMsg(playerid);
-}
-
 stock RedrawSanNewsBox(playerid)
 {
-	static string[255];
-	
-	new route;
-
-	if(!gPlayerVars[playerid][mSanNewsStatus])
-	{
-		PlayerTextDrawHide(playerid, gPlayerVars[playerid][mSanNewsTextDrawId]);
-		return;
-	}
-	
-	if(!gPlayerVars[playerid][mSanNewsTextDrawCreated])
-	{
-		gPlayerVars[playerid][mSanNewsTextDrawCreated] = 1;
-		CreateSanNewsBox(playerid);
-	}
-	
-	if(gPlayerVars[playerid][mVehicleStatusShowChanged])
-	{
-		PlayerTextDrawDestroy(playerid, gPlayerVars[playerid][mSanNewsTextDrawId]);
-		CreateSanNewsBox(playerid);
-	}
-	
-	if(gSanNewsTimeLeft > 0)
-	{
-		gSanNewsTimeLeft--;
-	}
-	
-	if(gSanNewsTimeLeft == 0)
-	{
-		gSanNewsTimeLeft = 50;
-		
-		do
-		{
-			gSanNewsCurrentMsg++;
-			route++;
-			
-			if(route == sizeof(gSanNewsMsgs))
-			{
-				format(string, sizeof(string), "SAN NEWS: Brak wiadomosci...");
-				PlayerTextDrawSetString(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], string);
-				
-				return;
-			}
-			
-			if(gSanNewsCurrentMsg >= sizeof(gSanNewsMsgs))
-			{
-				gSanNewsCurrentMsg = 0;
-			}
-		}
-		while(!gSanNewsMsgs[gSanNewsCurrentMsg][mUsed]);
-		
-		format(string, sizeof(string), "SAN NEWS: %s", gSanNewsMsgs[gSanNewsCurrentMsg][mContent]);
-		PlayerTextDrawSetString(playerid, gPlayerVars[playerid][mSanNewsTextDrawId], string);
-	}
+	if(gPlayerVars[playerid][mSanNewsStatus])
+		TextDrawDestroy(gPlayerVars[playerid][mSanNewsStatus]);
+	if(!gPlayerVars[playerid][mVehicleStatusShow])
+		gPlayerVars[playerid][mSanNewsStatus] = TextDrawCreate(0.0, 434.5, " ");
+	else
+		gPlayerVars[playerid][mSanNewsStatus] = TextDrawCreate(0.0, 427.0, " ");
+	TextDrawUseBox(gPlayerVars[playerid][mSanNewsStatus], 1);
+	TextDrawBoxColor(gPlayerVars[playerid][mSanNewsStatus], 0x000000AA);
+	TextDrawAlignment(gPlayerVars[playerid][mSanNewsStatus], 0);
+	TextDrawBackgroundColor(gPlayerVars[playerid][mSanNewsStatus], 0x000000ff);
+	TextDrawFont(gPlayerVars[playerid][mSanNewsStatus], 1);
+	TextDrawLetterSize(gPlayerVars[playerid][mSanNewsStatus], 0.15, 0.525);
+	TextDrawColor(gPlayerVars[playerid][mSanNewsStatus], 0xffffffff);
+	TextDrawSetOutline(gPlayerVars[playerid][mSanNewsStatus], 1);
+	TextDrawSetProportional(gPlayerVars[playerid][mSanNewsStatus], 1);
+	TextDrawSetShadow(gPlayerVars[playerid][mSanNewsStatus], 1);
+	if(strlen(gSanNewsMsg[gSanNewsMsgId]))
+		TextDrawSetString(gPlayerVars[playerid][mSanNewsStatus], gSanNewsMsg[gSanNewsMsgId]);
+	else
+		TextDrawSetString(gPlayerVars[playerid][mSanNewsStatus], "SAN NEWS: Brak nowych wiadomosci...");
+	gPlayerVars[playerid][mSanNewsStatusShow] = 1;
+	TextDrawShowForPlayer(playerid, gPlayerVars[playerid][mSanNewsStatus]);
 }

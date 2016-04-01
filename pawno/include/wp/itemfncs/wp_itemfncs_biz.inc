@@ -45,18 +45,7 @@ stock ItemsOnBizSlot(itemtype, itemid)
 			case 145..150: return 30;
 			case 151: return 15;	
 			case 152: return 15;
-			case 153: return 30;
-			case 154: return 15;
-			case 155: return 15;
-			case 156: return 15;
-			case 157: return 15;
-			case 166: return 50;
-			case 173: return 500;
-			case 174: return 60;
-			case 175: return 40;
-			case 176: return 30;
-			case 177: return 20;
-			case 178: return 50;
+			case 153: return 30;			
 			default: return 1;
 		}
 	}
@@ -74,10 +63,6 @@ stock ItemsOnBizSlot(itemtype, itemid)
 			case 14: return 50;
 			case 15: return 10;
 			case 20: return 30;
-			case 21: return 30;
-			case 22: return 30;
-			case 23: return 30;
-			case 24: return 100;
 			default: return 1;
 		}
 	}
@@ -136,11 +121,11 @@ stock ItemsOnBizSlot(itemtype, itemid)
 	}
 	else if(itemtype == 8)
 	{
-		return 20;
+		return 10;
 	}
 	else if(itemtype == 9)
 	{
-		return 20;
+		return 10;
 	}
 	return 1;
 }

@@ -17,7 +17,7 @@ public RefuelingCanister(playerid, Float:refillvalue, slot, gasStationID, Float:
 	new string[128];
 	if( SlotParam1(playerid, slot) >= 25 )
 	{
-		format(string, sizeof(string), "Zatankowano kanister na %.1fltr za $%d.\n\nAby op³aciæ paliwo przejdŸ do kasy znajduj¹cej siê w budynku stacji.", refillvalue, floatround(refillvalue * GasStations[gasStationID][PetrolPrice]) );
+		format(string, sizeof(string), "Zatankowano kanister na %.1fltr za %d$.\n\nAby op³aciæ paliwo przejdŸ do kasy znajduj¹cej siê w budynku stacji.", refillvalue, floatround(refillvalue * GasStations[gasStationID][PetrolPrice]) );
 		ShowPlayerDialog( playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", string, "Zamknij", "" );
 		return 1;
 	}	
@@ -27,7 +27,7 @@ public RefuelingCanister(playerid, Float:refillvalue, slot, gasStationID, Float:
 		{
 			if( GasStations[gasStationID][PetrolResourceValue] <= 0 )
 			{
-				format(string, sizeof(string), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nDo kanistra zatankowano %.1fltr za $%d.",
+				format(string, sizeof(string), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nDo kanistra zatankowano %.1fltr za %d$.",
 				refillvalue, GasStations[gasStationID][PetrolPrice]);
 				ShowPlayerDialog( playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", string, "Zamknij", "" );
 				return 1;
@@ -35,7 +35,7 @@ public RefuelingCanister(playerid, Float:refillvalue, slot, gasStationID, Float:
 			GasStations[gasStationID][PetrolResourceValue] -= FUEL_REFUEL_STEP_CNSTR; 
 			gPlayerData[playerid][pGasStationRefPetrol][ GasStations[gasStationID][BusinessID] ] += FUEL_REFUEL_STEP_CNSTR;
 			refillvalue += FUEL_REFUEL_STEP_CNSTR;
-			format( string, sizeof( string ), "Zatankowano %.1fltr, koszt: $%d", 
+			format( string, sizeof( string ), "Zatankowano %.1fltr, koszt: %d$", 
 			refillvalue, floatround(refillvalue * GasStations[gasStationID][PetrolPrice]));
 			GameTextForPlayer( playerid, string, 2000, GAME_TEXT_STYLE_4 );
 			SavePlayerData( playerid, "GasStationRefPetrol", GasStations[gasStationID][BusinessID] );
@@ -44,7 +44,7 @@ public RefuelingCanister(playerid, Float:refillvalue, slot, gasStationID, Float:
 		{
 			if( GasStations[gasStationID][OilResourceValue] <= 0 )
 			{
-				format(string, sizeof(string), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nDo kanistra zatankowano %.1fltr za $%d.",
+				format(string, sizeof(string), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nDo kanistra zatankowano %.1fltr za %d$.",
 				refillvalue, GasStations[gasStationID][OilPrice]);
 				ShowPlayerDialog( playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", string, "Zamknij", "" );
 				return 1;
@@ -52,7 +52,7 @@ public RefuelingCanister(playerid, Float:refillvalue, slot, gasStationID, Float:
 			GasStations[gasStationID][OilResourceValue] -= FUEL_REFUEL_STEP_CNSTR; 
 			gPlayerData[playerid][pGasStationRefOil][ GasStations[gasStationID][BusinessID] ] += FUEL_REFUEL_STEP_CNSTR;
 			refillvalue += FUEL_REFUEL_STEP_CNSTR;
-			format( string, sizeof( string ), "Zatankowano %.1fltr, koszt: $%d", 
+			format( string, sizeof( string ), "Zatankowano %.1fltr, koszt: %d$", 
 			refillvalue, floatround(refillvalue * GasStations[gasStationID][OilPrice]));
 			GameTextForPlayer( playerid, string, 2000, GAME_TEXT_STYLE_4 );
 			SavePlayerData( playerid, "GasStationRefOil", GasStations[gasStationID][BusinessID] );
@@ -99,193 +99,81 @@ public RefuelingVehicleCanister(playerid, vehicleid,Float:xpos,Float:ypos,Float:
 	return 1;
 }
 
-public RefuelVehicleFly(playerid, Float:refillvalue, Float:pPosX, Float:pPosY, Float:pPosZ, truckId, tlId, planeId)
-{
-	new string[512];
-	
-	if(!PlayerToPoint(1.0, playerid, pPosX, pPosY, pPosZ) || gVehData[truckId-1][EngineOn])
-	{
-		format(string, sizeof(string), "Przerwa³eœ tankowanie !\nPojazd zosta³ zatankowany na %dltr. Koszt paliwa: $%d.",
-			floatround(refillvalue, floatround_round), floatround(refillvalue * gRafinery[RafFlyLtrCost], floatround_round));
-		ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-		
-		gVehData[tlId-1][TankerIsRefueling] = 0;
-		
-		return 1;
-	}
-	
-	if(gVehData[planeId][CarFuel] >= float(VehFTank(planeId+1)))
-	{
-		format(string, sizeof(string), "Pojazd zosta³ zatankowany na %dltr. Koszt paliwa: $%d.",
-			floatround(refillvalue, floatround_round), floatround(refillvalue * gRafinery[RafFlyLtrCost], floatround_round));
-		ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", string, "Zamknij", "");
-		
-		gVehData[tlId-1][TankerIsRefueling] = 0;
-		
-		return 1;
-	}
-	
-	if(gVehData[tlId-1][TankerResourceValue] <= 0)
-	{
-		format(string, sizeof(string), "Tankowanie przerwane - cysterna jest pusta.\nPojazd zosta³ zatankowany na %dltr. Koszt paliwa: $%d.",
-			floatround(refillvalue, floatround_round), floatround(refillvalue * gRafinery[RafFlyLtrCost], floatround_round));
-		ShowPlayerDialog(playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", string, "Zamknij", "");
-		return 1;
-	}
-	
-	gVehData[tlId-1][TankerResourceValue] -= floatround(FUEL_REFUEL_STEP_CNSTR); 
-	SaveVehData(tlId-1, "TankerResourceValue");
-	
-	refillvalue += FUEL_REFUEL_STEP_CNSTR;
-	
-	format(string, sizeof(string), "Zatankowano %dltr, koszt: $%d", floatround(refillvalue, floatround_round), floatround(refillvalue * gRafinery[RafFlyLtrCost], floatround_round));
-	GameTextForPlayer(playerid, string, 1500, GAME_TEXT_STYLE_4);
-
-	gVehData[tlId-1][TankerIsRefueling] = 0;
-	
-	gVehData[planeId][CarFuel] += FUEL_REFUEL_STEP_CNSTR;
-	SaveVehData(planeId, "CarFuel");
-	
-	SetTimerEx("RefuelVehicleFly", 1000, false, "iffffddd", playerid, refillvalue, pPosX, pPosY, pPosZ, truckId, tlId, planeId);
-	
-	return 1;
-}
-
 public RefuelingVehicle(playerid, vehicleid, Float:refillvalue, gasStationID, Float:pPosX, Float:pPosY, Float:pPosZ)
 {
 	new form[512];
-	
-	if(!PlayerToPoint(1.0, playerid, pPosX, pPosY, pPosZ) || gVehData[vehicleid-1][EngineOn])
+	if( !PlayerToPoint(1.0, playerid, pPosX, pPosY, pPosZ) || gVehData[vehicleid-1][EngineOn] )
 	{
-		format(form, sizeof(form), "Przerwa³eœ tankowanie !\n\nTwój pojazd zosta³ zatankowany na %dltr za $%d.\n\nAby op³aciæ paliwo przejdŸ do kasy znajduj¹cej siê w budynku stacji.", floatround(refillvalue, floatround_round), floatround(refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round));
-		ShowPlayerDialog(playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "");
-		
+		format(form, sizeof(form), "Przerwa³eœ tankowanie !\n\nTwój pojazd zosta³ zatankowany na %dltr za %d$.\n\nAby op³aciæ paliwo przejdŸ do kasy znajduj¹cej siê w budynku stacji.",floatround( refillvalue, floatround_round ), floatround( refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round ) );
+		ShowPlayerDialog( playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "" );
 		gVehData[vehicleid-1][IsRefueling] = 0;
-		
-		SaveGasStations();
-		
-		SavePlayerData(playerid, "GasStationRefPetrol", GasStations[gasStationID][BusinessID]);
-		SavePlayerData(playerid, "GasStationRefOil", GasStations[gasStationID][BusinessID]);
-		SavePlayerData(playerid, "GasStationRefGas", GasStations[gasStationID][BusinessID]);
-		
 		return 1;
 	}
-	
-	if(gVehData[vehicleid-1][CarFuel] >= float(VehFTank(vehicleid)))
+	if( gVehData[vehicleid-1][CarFuel] >= float( VehFTank(vehicleid) ) )
 	{
 		format(form, sizeof(form), "vehicle id: %d, fuel type: %d", vehicleid, gVehData[vehicleid-1][Fuel]);
-		SaveStatsData(form, gPlayerData[playerid][pName], floatround(refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round), GasStations[gasStationID][BusinessID], Businesses[GasStations[gasStationID][BusinessID]][BizType]);
-				
-		format(form, sizeof(form), "Twój pojazd zosta³ zatankowany na %dltr za $%d.\n\nAby op³aciæ paliwo przejdŸ do kasy znajduj¹cej siê w budynku stacji.", floatround(refillvalue, floatround_round), floatround(refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round));
-		ShowPlayerDialog(playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "");
-		
+		SaveStatsData(form, gPlayerData[playerid][pName], floatround( refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round ), GasStations[gasStationID][BusinessID], Businesses[GasStations[gasStationID][BusinessID]][BizType]);
+		format(form, sizeof(form), "Twój pojazd zosta³ zatankowany na %dltr za %d$.\n\nAby op³aciæ paliwo przejdŸ do kasy znajduj¹cej siê w budynku stacji.", floatround( refillvalue, floatround_round ), floatround( refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round ) );
+		ShowPlayerDialog( playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "" );
 		gVehData[vehicleid-1][IsRefueling] = 0;
-		
-		SaveGasStations();
-		
-		SavePlayerData(playerid, "GasStationRefPetrol", GasStations[gasStationID][BusinessID]);
-		SavePlayerData(playerid, "GasStationRefOil", GasStations[gasStationID][BusinessID]);
-		SavePlayerData(playerid, "GasStationRefGas", GasStations[gasStationID][BusinessID]);
-		
 		return 1;
 	}		
-	
 	switch(gVehData[vehicleid-1][Fuel])
 	{
 		case 0: 
 		{	
-			if(GasStations[gasStationID][PetrolResourceValue] <= 0)
+			if( GasStations[gasStationID][PetrolResourceValue] <= 0 )
 			{
-				format(form, sizeof(form), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nTwój pojazd zosta³ zatankowany na %dltr za $%d.",floatround(refillvalue, floatround_round), floatround(refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round));
-				ShowPlayerDialog(playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "");
-				
-				SaveGasStations();
-				
-				SavePlayerData(playerid, "GasStationRefPetrol", GasStations[gasStationID][BusinessID]);
-				SavePlayerData(playerid, "GasStationRefOil", GasStations[gasStationID][BusinessID]);
-				SavePlayerData(playerid, "GasStationRefGas", GasStations[gasStationID][BusinessID]);
-				
+				format(form, sizeof(form), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nTwój pojazd zosta³ zatankowany na %dltr za %d$.",floatround( refillvalue, floatround_round ), floatround( refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round ));
+				ShowPlayerDialog( playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "" );
 				return 1;
 			}
-			
 			GasStations[gasStationID][PetrolResourceValue] -= FUEL_REFUEL_STEP; 
-			
-			gPlayerData[playerid][pGasStationRefPetrol][GasStations[gasStationID][BusinessID]] += FUEL_REFUEL_STEP;
-			
+			gPlayerData[playerid][pGasStationRefPetrol][ GasStations[gasStationID][BusinessID] ] += FUEL_REFUEL_STEP;
 			refillvalue += FUEL_REFUEL_STEP;
-			
-			format(form, sizeof(form), "Zatankowano %dltr, koszt: $%d", floatround(refillvalue, floatround_round),  floatround(refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round));
-			GameTextForPlayer(playerid, form, 1500, GAME_TEXT_STYLE_4);
-
+			format( form, sizeof( form ), "Zatankowano %dltr, koszt: %d$", floatround( refillvalue, floatround_round ),  floatround( refillvalue * GasStations[gasStationID][PetrolPrice], floatround_round ) );
+			GameTextForPlayer( playerid, form, 1000, GAME_TEXT_STYLE_4 );
+			SavePlayerData( playerid, "GasStationRefPetrol", GasStations[gasStationID][BusinessID] );
 			gVehData[vehicleid-1][IsRefueling] = 0;
 		}
 		case 1: 
 		{
-			if(GasStations[gasStationID][OilResourceValue] <= 0)
+			if( GasStations[gasStationID][OilResourceValue] <= 0 )
 			{
-				format(form, sizeof(form), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nTwój pojazd zosta³ zatankowany na %ltr za $%d.",floatround(refillvalue, floatround_round), floatround(refillvalue * GasStations[gasStationID][OilPrice], floatround_round));
-				ShowPlayerDialog(playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "");
-				
-				SaveGasStations();
-				
-				SavePlayerData(playerid, "GasStationRefPetrol", GasStations[gasStationID][BusinessID]);
-				SavePlayerData(playerid, "GasStationRefOil", GasStations[gasStationID][BusinessID]);
-				SavePlayerData(playerid, "GasStationRefGas", GasStations[gasStationID][BusinessID]);
-				
+				format(form, sizeof(form), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nTwój pojazd zosta³ zatankowany na %ltr za %d$.",floatround( refillvalue, floatround_round ), floatround( refillvalue * GasStations[gasStationID][OilPrice], floatround_round ));
+				ShowPlayerDialog( playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "" );
 				return 1;
 			}
-			
 			GasStations[gasStationID][OilResourceValue] -= FUEL_REFUEL_STEP; 
-			
-			gPlayerData[playerid][pGasStationRefOil][GasStations[gasStationID][BusinessID]] += FUEL_REFUEL_STEP;
-			
+			gPlayerData[playerid][pGasStationRefOil][ GasStations[gasStationID][BusinessID] ] += FUEL_REFUEL_STEP;
 			refillvalue += FUEL_REFUEL_STEP;
-			
-			format(form, sizeof(form), "Zatankowano %dltr, koszt: $%d", floatround(refillvalue, floatround_round),  floatround(refillvalue * GasStations[gasStationID][OilPrice], floatround_round));
-			GameTextForPlayer(playerid, form, 1500, GAME_TEXT_STYLE_4);
-			
-			SavePlayerData(playerid, "GasStationRefOil", GasStations[gasStationID][BusinessID]);
-			
+			format( form, sizeof( form ), "Zatankowano %dltr, koszt: %d$", floatround( refillvalue, floatround_round ),  floatround( refillvalue * GasStations[gasStationID][OilPrice], floatround_round ) );
+			GameTextForPlayer( playerid, form, 1000, GAME_TEXT_STYLE_4 );
+			SavePlayerData( playerid, "GasStationRefOil", GasStations[gasStationID][BusinessID] );
 			gVehData[vehicleid-1][IsRefueling] = 0;
 		}
 		case 2: 
 		{ 
-			if(GasStations[gasStationID][GasResourceValue] <= 0)
+			if( GasStations[gasStationID][GasResourceValue] <= 0 )
 			{
-				format(form, sizeof(form), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nTwój pojazd zosta³ zatankowany na %ltr za $%d.",floatround(refillvalue, floatround_round), floatround(refillvalue * GasStations[gasStationID][GasPrice], floatround_round));
-				ShowPlayerDialog(playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "");
-				
-				SaveGasStations();
-				
-				SavePlayerData(playerid, "GasStationRefPetrol", GasStations[gasStationID][BusinessID]);
-				SavePlayerData(playerid, "GasStationRefOil", GasStations[gasStationID][BusinessID]);
-				SavePlayerData(playerid, "GasStationRefGas", GasStations[gasStationID][BusinessID]);
-				
+				format(form, sizeof(form), "Tankowanie przerwane - zabrak³o paliwa na stacji.\nTwój pojazd zosta³ zatankowany na %ltr za %d$.",floatround( refillvalue, floatround_round ), floatround( refillvalue * GasStations[gasStationID][GasPrice], floatround_round ));
+				ShowPlayerDialog( playerid, DIALOG_REFUEL_VEH, DIALOG_STYLE_MSGBOX, "Stacja benzynowa", form, "Zamknij", "" );
 				return 1;
 			}
-			
 			GasStations[gasStationID][GasResourceValue] -= FUEL_REFUEL_STEP; 
-			
-			gPlayerData[playerid][pGasStationRefGas][GasStations[gasStationID][BusinessID]] += FUEL_REFUEL_STEP;
-			
+			gPlayerData[playerid][pGasStationRefGas][ GasStations[gasStationID][BusinessID] ] += FUEL_REFUEL_STEP;
 			refillvalue += FUEL_REFUEL_STEP;
-			
-			format(form, sizeof(form), "Zatankowano %dltr, koszt: $%d", floatround(refillvalue, floatround_round),  floatround(refillvalue * GasStations[gasStationID][GasPrice], floatround_round));
-			GameTextForPlayer(playerid, form, 1500, GAME_TEXT_STYLE_4);
-			
-			SavePlayerData(playerid, "GasStationRefGas", GasStations[gasStationID][BusinessID]);
-			
+			format( form, sizeof( form ), "Zatankowano %dltr, koszt: %d$", floatround( refillvalue, floatround_round ),  floatround( refillvalue * GasStations[gasStationID][GasPrice], floatround_round ) );
+			GameTextForPlayer( playerid, form, 1000, GAME_TEXT_STYLE_4 );
+			SavePlayerData( playerid, "GasStationRefGas", GasStations[gasStationID][BusinessID] );
 			gVehData[vehicleid-1][IsRefueling] = 0;
 		}
 	}
-	
 	gVehData[vehicleid-1][CarFuel] += FUEL_REFUEL_STEP;
 	SaveVehData(vehicleid-1, "CarFuel");
-	
+	SaveGasStations();
 	SaveFuleStationData(gasStationID, "PetrolResourceValue");
-	
 	SetTimerEx("RefuelingVehicle", 1000, false, "idfdfff", playerid, vehicleid, refillvalue, gasStationID, pPosX, pPosY, pPosZ);
-	
 	return 1;
 }
 
@@ -317,7 +205,6 @@ public DrainTankerFuel(playerid, Float:tankerX, Float:tankerY, Float:tankerZ)
 		case TANKER_TYPE_PETROL: { gRafinery[RafResourcePetrol]++; }
 		case TANKER_TYPE_OIL: { gRafinery[RafResourceOil]++; }
 		case TANKER_TYPE_GAS: { gRafinery[RafResourceGas]++; }
-		case TANKER_TYPE_FLY: { gRafinery[RafResourceFly]++; }
 	}
 	SaveRafinery();
 	if( gVehData[tlID-1][TankerResourceValue] == 0 )
@@ -506,109 +393,55 @@ public FuelTankerGas(playerid, Float:tankerX, Float:tankerY, Float:tankerZ)
 		SetTimerEx("FuelTankerGas", FUEL_TANKER_STEP, false, "ifff", playerid, tankerX, tankerY, tankerZ);
 	return 1;
 }
-public FuelTankerFly(playerid, Float:tankerX, Float:tankerY, Float:tankerZ)
-{
-	new vehID = GetPlayerVehicleID(playerid);
-	new tlID = GetVehicleTrailer(vehID);
-	/* Player left truck or moved truck */
-	if(!(PlayerToPoint(4.0, playerid, tankerX, tankerY, tankerZ)))
-	{
-		gVehData[tlID-1][TankerIsRefueling] = 0;
-		ShowPlayerDialog(playerid,
-										DIALOG_RAF_RSC_CP_INFO_A,
-										DIALOG_STYLE_MSGBOX,
-										RAF_RSC_CP_MENU_HEADER,
-										RAF_RSC_CP_MENU_REFUELED_C,
-										RAF_RSC_CP_MENU_EXIT,
-										"" );
-		return 1;
-	}
-	new string[64];
-	if( gRafinery[RafResourceFly] > 0 )
-	{
-		gVehData[tlID-1][TankerResourceValue]++;
-		gRafinery[RafResourceGas]--;
-		format(string, sizeof(string), "Tankowanie cysterny - %dl/%dl", gVehData[tlID-1][TankerResourceValue], MAX_TANKER_RESOURCE_VALUE );
-		GameTextForPlayer( playerid, string, FUEL_TANKER_STEP, GAME_TEXT_STYLE_6 );
-		SaveVehData(tlID-1, "TankerResourceValue");
-		SaveRafinery();
-	}
-	else
-	{
-		gVehData[tlID-1][TankerIsRefueling] = 0;
-		ShowPlayerDialog(playerid,
-										DIALOG_RAF_RSC_CP_INFO_A,
-										DIALOG_STYLE_MSGBOX,
-										RAF_RSC_CP_MENU_HEADER,
-										RAF_RSC_CP_MENU_REFUELED_B,
-										RAF_RSC_CP_MENU_EXIT,
-										"" );
-		return 1;
-	}
-	if( gVehData[tlID-1][TankerResourceValue] >= MAX_TANKER_RESOURCE_VALUE )
-	{
-		gVehData[tlID-1][TankerIsRefueling] = 0;
-		ShowPlayerDialog(playerid,
-										DIALOG_RAF_RSC_CP_INFO_A,
-										DIALOG_STYLE_MSGBOX,
-										RAF_RSC_CP_MENU_HEADER,
-										RAF_RSC_CP_MENU_REFUELED_A,
-										RAF_RSC_CP_MENU_EXIT,
-										"" );
-		return 1;
-	}
-	else
-		SetTimerEx("FuelTankerFly", FUEL_TANKER_STEP, false, "ifff", playerid, tankerX, tankerY, tankerZ);
-	return 1;
-}
 
 timer RefuelingStation[FUEL_TANKER_STEP](playerid, gasStationID)
 {
 	if( !PlayerToPoint( 10.0, playerid, GasStations[gasStationID][GSposX], GasStations[gasStationID][GSposY], GasStations[gasStationID][GSposZ] ) )
 	{
-		ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, DIALOG_INFO_HEADER, RAF_GS_REFUELED_B, DIALOG_INFO_EXIT, "" );
+		ShowPlayerDialog(playerid,
+										DIALOG_INFO,
+										DIALOG_STYLE_MSGBOX,
+										DIALOG_INFO_HEADER,
+										RAF_GS_REFUELED_B,
+										DIALOG_INFO_EXIT,
+										"" );
 		return 1;
 	}
 	new vehID = GetPlayerVehicleID(playerid);
 	new tlID = GetVehicleTrailer(vehID);
-	
 	/* Not enough fuel */
 	if( gVehData[tlID-1][TankerResourceValue] <= 0 )
 	{
 		gVehData[tlID-1][TankerIsRefueling] = 0;
 		gVehData[tlID-1][TankerResourceType] = TANKER_TYPE_NONE;
 		SaveVehData(tlID-1, "TankerResourceType");
-		
 		GivePlayerCash(playerid, floatround( gRafinery[RafRefuelReward]/2, floatround_round) );
-		
 		DynamicFactions[FACTIONID_RAFINERY][fBank] -= floatround( gRafinery[RafRefuelReward]/2, floatround_round);
 		SaveFData(FACTIONID_RAFINERY, "Bank");
-		
-		ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, DIALOG_INFO_HEADER, RAF_GS_REFUELED_C, DIALOG_INFO_EXIT, "" );
+		ShowPlayerDialog(playerid,
+										DIALOG_INFO,
+										DIALOG_STYLE_MSGBOX,
+										DIALOG_INFO_HEADER,
+										RAF_GS_REFUELED_C,
+										DIALOG_INFO_EXIT,
+										"" );
 		return 1;
 	}
-	
 	new string[128];
-	
 	switch( gVehData[tlID-1][TankerResourceType] )
 	{
 		case TANKER_TYPE_PETROL:
 		{
 			GasStations[gasStationID][PetrolResourceValue] += 1.0;
 			SaveGSData( gasStationID, "PetrolResourceValue" );
-			
 			gVehData[tlID-1][TankerResourceValue]--;
 			SaveVehData(tlID-1, "TankerResourceValue");
-			
 			DynamicFactions[FACTIONID_RAFINERY][fBank] += gRafinery[RafPetrolLtrCost];
 			SaveFData(FACTIONID_RAFINERY, "Bank");
-			
 			Businesses[GasStations[gasStationID][BusinessID]][Till] -= gRafinery[RafPetrolLtrCost];
 			SaveBizData(GasStations[gasStationID][BusinessID], "Till");
-			
 			format(string, sizeof(string), "Nape³nianie zbiorników - %.1fl/%.1fl", GasStations[gasStationID][PetrolResourceValue], GasStations[gasStationID][MaxPetrolResourceValue] );
 			GameTextForPlayer( playerid, string, FUEL_TANKER_STEP, GAME_TEXT_STYLE_6 );
-			
 			/* Tanks fueled */
 			if( GasStations[gasStationID][PetrolResourceValue] >= GasStations[gasStationID][MaxPetrolResourceValue] )
 			{
@@ -621,7 +454,13 @@ timer RefuelingStation[FUEL_TANKER_STEP](playerid, gasStationID)
 				GivePlayerCash(playerid, gRafinery[RafRefuelReward]);
 				DynamicFactions[FACTIONID_RAFINERY][fBank] -= gRafinery[RafRefuelReward];
 				SaveFData(FACTIONID_RAFINERY, "Bank");
-				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, DIALOG_INFO_HEADER, RAF_GS_REFUELED_A, DIALOG_INFO_EXIT, "" );
+				ShowPlayerDialog(playerid,
+												DIALOG_INFO,
+												DIALOG_STYLE_MSGBOX,
+												DIALOG_INFO_HEADER,
+												RAF_GS_REFUELED_A,
+												DIALOG_INFO_EXIT,
+												"" );
 				return 1;
 			}
 			/* No more till for refuel */

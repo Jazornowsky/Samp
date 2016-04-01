@@ -10,7 +10,6 @@
 LoadScript()
 {
 	print("[INFO:] LoadScript started");
-	
 	LoadDynamicFactions();
 	LoadDynamicZones();
 	LoadDynamicCarSpawns();
@@ -28,12 +27,14 @@ LoadScript()
 	LoadSkillPositionc();
 	LoadSkillPositiond();
 	LoadSkillPositione();
-	LoadSkillPositionf();
 	LoadBoatTestPosition();
 	LoadPlaneTestPosition();
+	LoadBankPosition();
+	LoadBankPosition2();
 	LoadPoliceComputerPassword();
 	LoadDynamicTaxes();
 	LoadWeaponLicensePosition();
+	LoadWheelChangePosition();
 	LoadTaxiJob();
 	LoadBusJob();
 	LoadMzgkJob();
@@ -83,12 +84,9 @@ LoadScript()
 	LoadRandomPickupEvent();
 	LoadRaces();
 	LoadWeed();
-	LoadMapIcons();
-	LoadPublicAds();
-	LoadPickupInfos();
-	LoadNews();
-	CreateLocationsCp();
-	HorseRacePrepare(1);
+	//LoadWantedList();
+
+	//Audio_SetPack("camping", true); // audio plugin
 
 	print("[INFO:] All loading functions initiated");
 

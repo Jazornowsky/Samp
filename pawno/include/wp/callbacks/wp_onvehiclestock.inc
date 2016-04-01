@@ -36,42 +36,35 @@ public OnVehicleSpawn(vehicleid)
 	SetVehicleParamsEx(vehicleid,gVehData[vehicleid-1][EngineOn],gVehData[vehicleid-1][LightsOn],0,gVehData[vehicleid-1][Closed],gVehData[vehicleid-1][BonnetUp],gVehData[vehicleid-1][BootUp],objective);
 	SetVehicleHealth(vehicleid, gVehData[vehicleid-1][CarHealth]);
 	
-	if(gVehData[vehicleid-1][mVehPaintJob])
-	{
-		ChangeVehiclePaintjob(vehicleid, gVehData[vehicleid-1][mVehPaintJob]);
-	}
-	
-	/*if(gVehData[vehicleid-1][mVehModel] != 594)
-	{
-		if(gVehData[vehicleid-1][mVehSpoiler] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehSpoiler]);
-		if(gVehData[vehicleid-1][mVehHood] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehHood]);
-		if(gVehData[vehicleid-1][mVehRoof] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehRoof]);
-		if(gVehData[vehicleid-1][mVehSideskirt] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehSideskirt]);
-		if(gVehData[vehicleid-1][mVehLamps] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehLamps]);
-		if(gVehData[vehicleid-1][mVehNitro] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehNitro]);
-		if(gVehData[vehicleid-1][mVehExhaust] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehExhaust]);
-		if(gVehData[vehicleid-1][mVehWheels] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehWheels]);
-		if(gVehData[vehicleid-1][mVehStereo] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehStereo]);
-		if(gVehData[vehicleid-1][mVehHydraulics] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehHydraulics]);
-		if(gVehData[vehicleid-1][mVehFrontBumper] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehFrontBumper]);
-		if(gVehData[vehicleid-1][mVehRearBumper] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehRearBumper]);
-		if(gVehData[vehicleid-1][mVehVentLeft] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehVentLeft]);
-		if(gVehData[vehicleid-1][mVehVentRight] != 0)
-			AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehVentRight]);
-	}*/
+	if(gVehData[vehicleid-1][mVehSpoiler] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehSpoiler]);
+	if(gVehData[vehicleid-1][mVehHood] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehHood]);
+	if(gVehData[vehicleid-1][mVehRoof] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehRoof]);
+	if(gVehData[vehicleid-1][mVehSideskirt] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehSideskirt]);
+	if(gVehData[vehicleid-1][mVehLamps] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehLamps]);
+	if(gVehData[vehicleid-1][mVehNitro] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehNitro]);
+	if(gVehData[vehicleid-1][mVehExhaust] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehExhaust]);
+	if(gVehData[vehicleid-1][mVehWheels] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehWheels]);
+	if(gVehData[vehicleid-1][mVehStereo] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehStereo]);
+	if(gVehData[vehicleid-1][mVehHydraulics] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehHydraulics]);
+	if(gVehData[vehicleid-1][mVehFrontBumper] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehFrontBumper]);
+	if(gVehData[vehicleid-1][mVehRearBumper] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehRearBumper]);
+	if(gVehData[vehicleid-1][mVehVentLeft] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehVentLeft]);
+	if(gVehData[vehicleid-1][mVehVentRight] != 0)
+		AddVehicleComponent(vehicleid, gVehData[vehicleid-1][mVehVentRight]);
+				
 	
 	new vehid = vehicleid - 1;
 	new string[10];
@@ -137,43 +130,21 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 public OnVehicleDeath(vehicleid, killerid)
 {
 	VehJustRespawned[vehicleid-1] = 20;
-	
-	if(strlen(gVehData[vehicleid-1][mRenter]))
-	{
-		UpdatePlayerDataByName(gVehData[vehicleid-1][mRenter], "Bank", -gVehData[vehicleid-1][mRentPenalty]);
-	}
-	
-	// indicators
-	if(Indicators_xqz[vehicleid][2]) DestroyObject(Indicators_xqz[vehicleid][2]), DestroyObject(Indicators_xqz[vehicleid][3]),DestroyObject(Indicators_xqz[vehicleid][5]),Indicators_xqz[vehicleid][2]=0;
-	if(Indicators_xqz[vehicleid][0]) DestroyObject(Indicators_xqz[vehicleid][0]), DestroyObject(Indicators_xqz[vehicleid][1]),DestroyObject(Indicators_xqz[vehicleid][4]),Indicators_xqz[vehicleid][0]=0;
-	
 	defer ResetVehicleData(vehicleid, 1);
-	
 	new Year, Month, Day;
 	new Float:x, Float:y, Float:z;
 	getdate(Year, Month, Day);
-	
 	static string[512];
-	
 	if(killerid != INVALID_PLAYER_ID && killerid != 255)
-	{
 		format(string, sizeof(string), "[VEHICLE:] Vehicle ID: %d destroyed by %s, Faction: %d, Type: %d, Damaged: %d, CarRepairTimeLeft: %d", vehicleid, GetPlayerNameEx(killerid), gVehData[vehicleid-1][mVehFaction], gVehData[vehicleid-1][CarDamaged], gVehData[vehicleid-1][CarRepairTimeLeft]);
-	}
 	else
-	{
 		format(string, sizeof(string), "[VEHICLE:] Vehicle ID: %d destroyed by NOBODY, Faction: %d, Type: %d, Damaged: %d, CarRepairTimeLeft: %d", vehicleid, gVehData[vehicleid-1][mVehFaction], gVehData[vehicleid-1][CarDamaged], gVehData[vehicleid-1][CarRepairTimeLeft]);
-	}
-	
 	VehicleLog(string);
-	
 	format(string, sizeof(string), "[VEHICLE:] mVehX: %f, mVehY: %f, mVehZ: %f, mVehOwned: %d, Owner: %s, CarResetT: %d, BusinessID: %d, CarSerial: %d", gVehData[vehicleid-1][mVehX], gVehData[vehicleid-1][mVehY], gVehData[vehicleid-1][mVehZ], gVehData[vehicleid-1][mVehOwned], gVehData[vehicleid-1][Owner], gVehData[vehicleid-1][CarResetT], gVehData[vehicleid-1][BusinessID], gVehData[vehicleid-1][CarSerial]);
 	VehicleLog(string);
-	
 	format(string, sizeof(string), "[VEHICLE:] Model: %d", gVehData[vehicleid-1][mVehModel]);
 	VehicleLog(string);
-	
 	GetVehiclePos(vehicleid, x, y, z);
-	
 	for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
 	{
 		if(IsPlayerConnected(i))
@@ -188,7 +159,6 @@ public OnVehicleDeath(vehicleid, killerid)
 			}
 		}
 	}
-	
 	return 1;
 }
 

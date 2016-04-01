@@ -1239,19 +1239,5 @@ stock MountVehicleItem(itemid, tveh)
 			}
 		}
 	}
-	
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

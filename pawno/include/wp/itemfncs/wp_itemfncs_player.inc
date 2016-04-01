@@ -7,9 +7,6 @@
 *
 *************************************************************************************************************/
 
-/*
-How many of items of given type and id can be hold on one slot
-*/
 stock ItemsOnCharacterSlot(itemtype, itemid)
 {
 	if(itemtype == 1)
@@ -22,7 +19,7 @@ stock ItemsOnCharacterSlot(itemtype, itemid)
 			case 4: return 2;
 			case 5: return 1;
 			case 6: return 1;
-			case 7: return 4;
+			case 7: return 2;
 			case 8: return 1;
 			case 9: return 15;
 			case 10: return 1;
@@ -54,7 +51,7 @@ stock ItemsOnCharacterSlot(itemtype, itemid)
 			case 36: return 60;
 			case 37: return 60;
 			case 38: return 60;
-			case 39: return 50;
+			case 39: return 60;
 			case 40: return 60;
 			case 41: return 60;
 			case 42: return 60;
@@ -76,18 +73,10 @@ stock ItemsOnCharacterSlot(itemtype, itemid)
 			case 134..142: return 6;
 			case 143: return 2;
 			case 144: return 10;
-			case 145..147: return 4;
-			case 148: return 1;
-			case 149..150: return 4;
+			case 145..150: return 4;
 			case 151: return 3;
 			case 152: return 2;
 			case 153: return 5;
-			case 173: return 100;
-			case 174: return 1;
-			case 175: return 4;
-			case 176: return 2;
-			case 177: return 2;
-			case 178: return 4;
 			default: return 100;
 		}
 	}
@@ -577,15 +566,7 @@ stock InsertPlayerPickupItem(playerid, slot, size = 1)
 			gPickupItem[i][PickupItemParam6] = size;
 		}
 		gPickupItem[i][pickupLifeTime] = PICKUP_LIFE_TIME;
-		
-		if(gPickupItem[i][PickupItemType] == 1 && gPickupItem[i][PickupItem] >= 13 && gPickupItem[i][PickupItem] <= 35)
-		{
-			gPickupItem[i][pickupID] = CreateDynamicPickup(ItemToWeapon(gPickupItem[i][PickupItem]), 1, px, py, pz, GetPlayerVirtualWorld(i), -1, -1, 50.0);
-		}
-		else
-		{			
-			gPickupItem[i][pickupID] = CreateDynamicPickup(1559, 1, px, py, pz, GetPlayerVirtualWorld(i), -1, -1, 50.0);
-		}
+		gPickupItem[i][pickupID] = CreateDynamicPickup(1559, 1, px, py, pz, GetPlayerVirtualWorld(i), -1, -1, 50.0);
 		gPickupItem[i][pickupX] = px;
 		gPickupItem[i][pickupY] = py;
 		gPickupItem[i][pickupZ] = pz;
@@ -4326,107 +4307,107 @@ stock SlotParam5(playerid, slot)
 {
 	if(slot == 1)
 	{
-		format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem1param5]);
+		strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem1param5], 0, strlen(gPlayerData[playerid][pItem1param5]));
 	}
 	else if (slot == 2)
 	{
-		format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem2param5]);
+		strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem2param5], 0, strlen(gPlayerData[playerid][pItem2param5]));
 	}
 	else if (slot == 3)
 	{
-		format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem3param5]);
+		strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem3param5], 0, strlen(gPlayerData[playerid][pItem3param5]));
 	}
 	else if (slot == 4)
 	{
-		format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem4param5]);
+		strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem4param5], 0, strlen(gPlayerData[playerid][pItem4param5]));
 	}
 	else if (slot == 5)
 	{
-		format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem5param5]);
+		strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem5param5], 0, strlen(gPlayerData[playerid][pItem5param5]));
 	}
 	else if (PHaveExpandItem(playerid) || gPlayerData[playerid][pVipItem] > 0)
 	{
 		if (slot == 6)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem6param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem6param5], 0, strlen(gPlayerData[playerid][pItem6param5]));
 		}
 		else if (slot == 7)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem7param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem7param5], 0, strlen(gPlayerData[playerid][pItem7param5]));
 		}
 		else if (slot == 8)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem8param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem8param5], 0, strlen(gPlayerData[playerid][pItem8param5]));
 		}
 		else if (slot == 9)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem9param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem9param5], 0, strlen(gPlayerData[playerid][pItem9param5]));
 		}
 		else if (slot == 10)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem10param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem10param5], 0, strlen(gPlayerData[playerid][pItem10param5]));
 		}
 		else if (slot == 11)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem11param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem11param5], 0, strlen(gPlayerData[playerid][pItem11param5]));
 		}
 		else if (slot == 12)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem12param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem12param5], 0, strlen(gPlayerData[playerid][pItem12param5]));
 		}
 		else if (slot == 13)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem13param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem13param5], 0, strlen(gPlayerData[playerid][pItem13param5]));
 		}
 		else if (slot == 14)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem14param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem14param5], 0, strlen(gPlayerData[playerid][pItem14param5]));
 		}
 		else if (slot == 15)
 		{
-			format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem15param5]);
+			strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem15param5], 0, strlen(gPlayerData[playerid][pItem15param5]));
 		}
 		else if (gPlayerData[playerid][pVipItem] > 0)
 		{
 			if (slot == 16)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem16param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem16param5], 0, strlen(gPlayerData[playerid][pItem16param5]));
 			}
 			else if (slot == 17)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem17param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem17param5], 0, strlen(gPlayerData[playerid][pItem17param5]));
 			}
 			else if (slot == 18)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem18param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem18param5], 0, strlen(gPlayerData[playerid][pItem18param5]));
 			}
 			else if (slot == 19)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem19param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem19param5], 0, strlen(gPlayerData[playerid][pItem19param5]));
 			}
 			else if (slot == 20)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem20param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem20param5], 0, strlen(gPlayerData[playerid][pItem20param5]));
 			}
 			else if (slot == 21)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem21param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem21param5], 0, strlen(gPlayerData[playerid][pItem21param5]));
 			}
 			else if (slot == 22)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem22param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem22param5], 0, strlen(gPlayerData[playerid][pItem22param5]));
 			}
 			else if (slot == 23)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem23param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem23param5], 0, strlen(gPlayerData[playerid][pItem23param5]));
 			}
 			else if (slot == 24)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem24param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem24param5], 0, strlen(gPlayerData[playerid][pItem24param5]));
 			}
 			else if (slot == 25)
 			{
-				format(gDSelectedItemP5[playerid], 64, gPlayerData[playerid][pItem25param5]);
+				strmid(gDSelectedItemP5[playerid], gPlayerData[playerid][pItem25param5], 0, strlen(gPlayerData[playerid][pItem25param5]));
 			}
 		}
 	}
@@ -6529,10 +6510,9 @@ EatItem(playerid, type, item)
 					gPlayerData[playerid][pThirst] += 0.0;
 					gPlayerData[playerid][pPoison] += 2.5;
 					gPlayerData[playerid][pFat] += 10.0;
-					gPlayerData[playerid][pVitamins] += 0.0;
 					gPlayerData[playerid][pStomach] += 25.0;
 				}
-				case 125:
+				case 124:
 				{
 					gPlayerData[playerid][pEnergy] += 20.0;
 					gPlayerData[playerid][pHunger] -= 10.0;
@@ -6542,7 +6522,7 @@ EatItem(playerid, type, item)
 					gPlayerData[playerid][pVitamins] += 5.0;
 					gPlayerData[playerid][pStomach] += 20.0;
 				}
-				case 126:
+				case 125:
 				{
 					gPlayerData[playerid][pEnergy] += 10.0;
 					gPlayerData[playerid][pHunger] -= 10.0;
@@ -6552,7 +6532,7 @@ EatItem(playerid, type, item)
 					gPlayerData[playerid][pVitamins] += 10.0;
 					gPlayerData[playerid][pStomach] += 20.0;
 				}
-				case 127:
+				case 126:
 				{
 					gPlayerData[playerid][pEnergy] += 10.0;
 					gPlayerData[playerid][pHunger] -= 10.0;
@@ -6561,6 +6541,16 @@ EatItem(playerid, type, item)
 					gPlayerData[playerid][pFat] += 1.0;
 					gPlayerData[playerid][pVitamins] += 5.0;
 					gPlayerData[playerid][pStomach] += 20.0;
+				}
+				case 127:
+				{
+					gPlayerData[playerid][pEnergy] += 10.0;
+					gPlayerData[playerid][pHunger] -= 30.0;
+					gPlayerData[playerid][pThirst] += 5.0;					
+					gPlayerData[playerid][pPoison] += 2.5;
+					gPlayerData[playerid][pFat] += 10.0;
+					gPlayerData[playerid][pVitamins] += 0.0;
+					gPlayerData[playerid][pStomach] += 25.0;
 				}
 				case 128:
 				{
@@ -6575,16 +6565,6 @@ EatItem(playerid, type, item)
 				case 129:
 				{
 					gPlayerData[playerid][pEnergy] += 10.0;
-					gPlayerData[playerid][pHunger] -= 30.0;
-					gPlayerData[playerid][pThirst] += 5.0;					
-					gPlayerData[playerid][pPoison] += 2.5;
-					gPlayerData[playerid][pFat] += 10.0;
-					gPlayerData[playerid][pVitamins] += 0.0;
-					gPlayerData[playerid][pStomach] += 25.0;
-				}
-				case 130:
-				{
-					gPlayerData[playerid][pEnergy] += 10.0;
 					gPlayerData[playerid][pHunger] -= 15.0;
 					gPlayerData[playerid][pThirst] -= 40.0;					
 					gPlayerData[playerid][pPoison] += 0.0;
@@ -6592,7 +6572,7 @@ EatItem(playerid, type, item)
 					gPlayerData[playerid][pVitamins] += 15.0;
 					gPlayerData[playerid][pStomach] += 10.0;
 				}
-				case 131:
+				case 130:
 				{
 					gPlayerData[playerid][pEnergy] += 10.0;
 					gPlayerData[playerid][pHunger] -= 10.0;
@@ -6602,7 +6582,7 @@ EatItem(playerid, type, item)
 					gPlayerData[playerid][pVitamins] += 20.0;
 					gPlayerData[playerid][pStomach] += 15.0;
 				}
-				case 132:
+				case 131:
 				{
 					gPlayerData[playerid][pEnergy] += 10.0;
 					gPlayerData[playerid][pHunger] -= 10.0;
@@ -6612,32 +6592,21 @@ EatItem(playerid, type, item)
 					gPlayerData[playerid][pVitamins] += 25.0;
 					gPlayerData[playerid][pStomach] += 10.0;
 				}
-				case 133:
-				{
-					gPlayerData[playerid][pEnergy] += 5.0;
-					gPlayerData[playerid][pHunger] -= 10.0;
-					gPlayerData[playerid][pThirst] -= 40.0;					
-					gPlayerData[playerid][pPoison] += 5.0;
-					gPlayerData[playerid][pFat] += 10.0;
-					gPlayerData[playerid][pVitamins] += 10.0;
-					gPlayerData[playerid][pStomach] += 25.0;
-				}
 				case 134:
 				{
-					gPlayerData[playerid][pThirst] += 5.0;
 					if(gPlayerData[playerid][pDrunk] > 0.0)
 					{
 						gPlayerData[playerid][pPoison] += 10.0;
 						gPlayerData[playerid][pVitamins] -= 20.0;
 					}
-					gPlayerData[playerid][pPainKiller] += 20;
+					gPlayerData[playerid][pPainKiller] += 60;
 					SetPlayerDrunkLevel(playerid, 0);	
 				}
 				case 135:
 				{
 					gPlayerData[playerid][pThirst] += 20.0;	
 					gPlayerData[playerid][pDrunk] -= 15.0;
-					gPlayerData[playerid][pPainKiller] += 10;
+					gPlayerData[playerid][pPainKiller] += 60;
 					SetPlayerDrunkLevel(playerid, 0);
 				}
 				case 136:
@@ -6662,20 +6631,19 @@ EatItem(playerid, type, item)
 				}
 				case 138:
 				{
-					gPlayerData[playerid][pThirst] += 5.0;
 					gPlayerData[playerid][pVitamins] += 10.0;
 				}
 				case 139:
 				{
 					gPlayerData[playerid][pThirst] += 30.0;
 					gPlayerData[playerid][pFat] -= 10.0;
-					gPlayerData[playerid][pSlimming] += 20;
+					gPlayerData[playerid][pSlimming] += 120;
 				}
 				case 140:
 				{
 					gPlayerData[playerid][pHunger] += 30.0;
 					gPlayerData[playerid][pThirst] += 30.0;
-					gPlayerData[playerid][pFat] += 30.0;
+					gPlayerData[playerid][pFat] += 10.0;
 				}
 				case 141:
 				{
@@ -6754,7 +6722,7 @@ EatItem(playerid, type, item)
 				{
 					gPlayerData[playerid][pEnergy] += 20.0;
 					gPlayerData[playerid][pHunger] -= 30.0;
-					gPlayerData[playerid][pThirst] -= 15.0;					
+					gPlayerData[playerid][pThirst] += 15.0;					
 					gPlayerData[playerid][pPoison] -= 15.0;
 					gPlayerData[playerid][pFat] -= 5.0;
 					gPlayerData[playerid][pVitamins] += 10.0;
@@ -6963,10 +6931,10 @@ EatItem(playerid, type, item)
 					gPlayerData[playerid][pEnergy] += 0.0;
 					gPlayerData[playerid][pHunger] += 0.0;
 					gPlayerData[playerid][pThirst] -= 0.0;					
-					gPlayerData[playerid][pPoison] += 20.0;
+					gPlayerData[playerid][pPoison] += 0.0;
 					gPlayerData[playerid][pFat] += 0.0;
 					gPlayerData[playerid][pVitamins] -= 0.0;
-					gPlayerData[playerid][pStomach] += 10.0;
+					gPlayerData[playerid][pStomach] += 0.0;
 					gPlayerData[playerid][pDrunk] += 25.0;
 				}
 				case 4:
@@ -7092,8 +7060,8 @@ EatItem(playerid, type, item)
 	SavePlayerData(playerid, "HealthStatus");
 	if(gPlayerData[playerid][pShowHealthBars])
 	{
-		SetProgressBarValue(gPlayerData[playerid][pEnergyProgressBarID], gPlayerData[playerid][pEnergy]);
-		UpdateProgressBar(gPlayerData[playerid][pEnergyProgressBarID], playerid);
+		// SetProgressBarValue(gPlayerData[playerid][pEnergyProgressBarID], gPlayerData[playerid][pEnergy]);
+		// UpdateProgressBar(gPlayerData[playerid][pEnergyProgressBarID], playerid);
 		SetProgressBarValue(gPlayerData[playerid][pHungerProgressBarID], gPlayerData[playerid][pHunger]);
 		UpdateProgressBar(gPlayerData[playerid][pHungerProgressBarID], playerid);
 		SetProgressBarValue(gPlayerData[playerid][pThirstProgressBarID], gPlayerData[playerid][pThirst]);
@@ -7102,14 +7070,14 @@ EatItem(playerid, type, item)
 		// UpdateProgressBar(gPlayerData[playerid][pPoisonProgressBarID], playerid);
 		// SetProgressBarValue(gPlayerData[playerid][pFatProgressBarID], gPlayerData[playerid][pFat]);
 		// UpdateProgressBar(gPlayerData[playerid][pFatProgressBarID], playerid);
-		// SetProgressBarValue(gPlayerData[playerid][pStomachProgressBarID], gPlayerData[playerid][pStomach]);
-		// UpdateProgressBar(gPlayerData[playerid][pStomachProgressBarID], playerid);
+		SetProgressBarValue(gPlayerData[playerid][pStomachProgressBarID], gPlayerData[playerid][pStomach]);
+		UpdateProgressBar(gPlayerData[playerid][pStomachProgressBarID], playerid);
 		// SetProgressBarValue(gPlayerData[playerid][pVitaminsProgressBarID], gPlayerData[playerid][pVitamins]);
 		// UpdateProgressBar(gPlayerData[playerid][pVitaminsProgressBarID], playerid);
-		// SetProgressBarValue(gPlayerData[playerid][pDrunkProgressBarID], gPlayerData[playerid][pDrunk]);
-		// UpdateProgressBar(gPlayerData[playerid][pDrunkProgressBarID], playerid);
-		// SetProgressBarValue(gPlayerData[playerid][pNarcoticProgressBarID], gPlayerData[playerid][pNarcotic]);
-		// UpdateProgressBar(gPlayerData[playerid][pNarcoticProgressBarID], playerid);
+		SetProgressBarValue(gPlayerData[playerid][pDrunkProgressBarID], gPlayerData[playerid][pDrunk]);
+		UpdateProgressBar(gPlayerData[playerid][pDrunkProgressBarID], playerid);
+		SetProgressBarValue(gPlayerData[playerid][pNarcoticProgressBarID], gPlayerData[playerid][pNarcotic]);
+		UpdateProgressBar(gPlayerData[playerid][pNarcoticProgressBarID], playerid);
 	}
 }
 

@@ -14,33 +14,19 @@ ResetStats(playerid)
 	gHorseWatching[playerid] = 0;
 	gHorseMoneyBet[playerid] = 0;
 	gHorseBetOnHorse[playerid] = 0;
-	gPlayerData[playerid][mBroadCastMessages] = 1;
 	gPlayerVars[playerid][mPhoneDataReceived] = 1;
 	gPlayerVars[playerid][mBugInfoCoolDown] = 0;
 	gPlayerVars[playerid][mPhoneDataTimeout] = -1;
 	gPlayerVars[playerid][mAntiCheatTimer] = 0;
 	gPlayerVars[playerid][mAtHouseID] = -1;
-	gPlayerVars[playerid][mAtBuildingId] = -1;
+	gPlayerVars[playerid][mAtBuildingID] = -1;
 	gPlayerVars[playerid][mAtBizID] = -1;
 	gPlayerVars[playerid][mAtCamperId] = -1;
 	gPlayerVars[playerid][mVehicleStatusShow] = 0;
-	gPlayerVars[playerid][mSanNewsStatus] = 1;
-	gPlayerVars[playerid][mSanNewsTextDrawCreated] = 0;
-	gPlayerVars[playerid][mVehicleStatusShowChanged] = 0;
 	gPlayerVars[playerid][mIsPlayerHouseJacking] = 0;
 	gPlayerVars[playerid][mIsPlayerBizJacking] = 0;
 	gPlayerVars[playerid][mPassTries] = 0;
 	gPlayerVars[playerid][mNewbieCoolDown] = 0;
-	gPlayerVars[playerid][mRobbingHouseStage] = 0;
-	gPlayerVars[playerid][mRepairProgress] = 0;
-	gPlayerVars[playerid][mBulbToChange] = 0;
-	gPlayerVars[playerid][mWheelToChange] = 0;
-	gPlayerVars[playerid][mIsReanimate] = 0;
-	gPlayerVars[playerid][tempVehId] = 0;
-	gPlayerVars[playerid][mIsInTaxiTeleportId] = 0;
-	gPlayerVars[playerid][mTaxiTeleportTimeLeft] = 0;
-	gPlayerVars[playerid][mAtClotheStore] = false;
-	gPlayerVars[playerid][mIsIdleAnimationTimerActive] = false;
 	gPlayerData[playerid][pIsNPC] = 0;
 	gPlayerData[playerid][pLoading] = 0;
 	gPlayerData[playerid][pFaction] = 255;
@@ -68,6 +54,7 @@ ResetStats(playerid)
 	gPlayerData[playerid][pDrugsEffect] = 0;
 	gPlayerData[playerid][pDrugsTaken] = 0;
 	gPlayerData[playerid][pDrugsAddicted] = 0;
+	gPlayerData[playerid][pMaterials] = 0;
 	gPlayerData[playerid][pJob] = 0;
 	gPlayerData[playerid][pJobTimeChange] = 0;
 	gPlayerData[playerid][pJobLvl] = 0; // Bus
@@ -144,8 +131,8 @@ ResetStats(playerid)
 	gPlayerData[playerid][pSkillPointsM4] = 0;
 	gPlayerData[playerid][pSkillPointsSni] = 0;
 	gPlayerData[playerid][pPozwolenie] = 0;
-	gPlayerData[playerid][pTech] = 0;
-	gPlayerData[playerid][pLaw] = 0;
+	gPlayerData[playerid][pAng] = 0;
+	gPlayerData[playerid][pWf] = 0;
 	gPlayerData[playerid][pMat] = 0;
 	gPlayerData[playerid][pPol] = 0;
 	gPlayerData[playerid][pHis] = 0;
@@ -154,8 +141,8 @@ ResetStats(playerid)
 	gPlayerData[playerid][pDoktor] = 0;
 	gPlayerData[playerid][pMagister] = 0;
 	gPlayerData[playerid][pInz] = 0;
-	gPlayerData[playerid][pPktTech] = 0;
-	gPlayerData[playerid][pPktLaw] = 0;
+	gPlayerData[playerid][pPktAng] = 0;
+	gPlayerData[playerid][pPktWf] = 0;
 	gPlayerData[playerid][pPktMat] = 0;
 	gPlayerData[playerid][pPktPol] = 0;
 	gPlayerData[playerid][pPktHis] = 0;
@@ -180,18 +167,6 @@ ResetStats(playerid)
 	gPlayerData[playerid][pWSlot5Ammo] = 0;
 	gPlayerData[playerid][pWSlot6] = 0;
 	gPlayerData[playerid][pWSlot6Ammo] = 0;
-	gPlayerData[playerid][pWSlot7] = 0;
-	gPlayerData[playerid][pWSlot7Ammo] = 0;
-	gPlayerData[playerid][pWSlot8] = 0;
-	gPlayerData[playerid][pWSlot8Ammo] = 0;
-	gPlayerData[playerid][pWSlot9] = 0;
-	gPlayerData[playerid][pWSlot9Ammo] = 0;
-	gPlayerData[playerid][pWSlot10] = 0;
-	gPlayerData[playerid][pWSlot10Ammo] = 0;
-	gPlayerData[playerid][pWSlot11] = 0;
-	gPlayerData[playerid][pWSlot11Ammo] = 0;
-	gPlayerData[playerid][pWSlot12] = 0;
-	gPlayerData[playerid][pWSlot12Ammo] = 0;
 	gPlayerData[playerid][pMaxWeight] = 0;
 	gPlayerData[playerid][pPartType] = 0;
 	gPlayerData[playerid][pPartItem] = 0;
@@ -201,7 +176,6 @@ ResetStats(playerid)
 	gPlayerData[playerid][pSpeedGunOn] = 0;
 	gPlayerData[playerid][pSellerJobOn] = 0;
 	gPlayerData[playerid][pMountingW] = 0;
-	
 	for(new i = 0; i < MAX_BUSINESSES; i++)
 	{
 		gPlayerData[playerid][pGasStationRefGas][i] = 0;
@@ -218,9 +192,6 @@ ResetStats(playerid)
 	PlayerPos[playerid][3] = 0.0;
 	PlayerPos[playerid][4] = 0.0;
 	PlayerPos[playerid][5] = 0.0;
-	
-	TextDrawSetString(GangWar[playerid], " ");
-	TextDrawSetString(GangWarTime[playerid], " ");
 	
 	gIsPlayerFrozen[playerid] = 0;
 	gBusDriverIsPassenger[playerid] = 0;
@@ -241,6 +212,7 @@ ResetStats(playerid)
 	gSelectedSlot[playerid] = 0;
 	gSavePlayerReady[playerid] = 0;
 	DyingPlayerKillTime[playerid] = 0;
+	gunGiven[playerid] = 0;
 	NewbieTime[playerid] = 0;
 	KilledWithWeapon[playerid] = 0;
 	BigEar[playerid] = 0;
@@ -286,12 +258,11 @@ ResetStats(playerid)
 	TakingDrivingTestCE[playerid] = 0; //Player is not taking the driving test.
 	DrivingTestStep[playerid] = 0; //Player has not started the driving test.
 	BoatTestStep[playerid] = 0;
-	SetPlayerColor(playerid, COLOR_NOTLOGGED);//Set colour to not logged in.
+	SetPlayerColor(playerid,COLOR_NOTLOGGED);//Set colour to not logged in.
 	SpawnAttempts[playerid] = 0; //Player hasn't attempted to spawn yet.
 	gPlayerLogged[playerid] = 0;//Player is not logged in.
 	RegistrationStep[playerid] = 0;
 	FactionRequest[playerid] = 255; //Player hasn't been asked to join a faction.
-	CompanyRequest[playerid] = 255; //Player hasn't been asked to join a faction.
 	Mobile[playerid] = 255;
 	MusicHandle[playerid][0] = 0;
 	MusicHandle[playerid][1] = 0;

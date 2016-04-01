@@ -37,16 +37,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	strdel(giveplayername, 0, MAX_PLAYER_NAME);
 	cmd = strtok(cmdtext, idx);
 	idcar = GetPlayerVehicleID(playerid);
-	tmpcar = GetPlayerVehicleID(playerid)-1;
+	tmpcar = GetPlayerVehicleID(playerid) - 1;
 	
 	if(strcmp(cmd, "/", true) == 0)
 		return 1;
-		
-	if(gPlayerVars[playerid][mRepairProgress])
-	{
-		SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Obecnie wykonujesz czynnoœci przy pojeŸdzie i nie mo¿esz u¿ywaæ innych komend");
-		return 1;
-	}
 	
 	dcmd(loguj,5,cmdtext);
 	dcmd(l,1,cmdtext);
@@ -87,8 +81,8 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(ajail,5,cmdtext);
 		dcmd(abuildingopent,14,cmdtext);
 		dcmd(abuildingcloset,15,cmdtext);
-		//dcmd(kupczesci,9,cmdtext);
-		//dcmd(naprawpojazd,12,cmdtext);
+		dcmd(kupczesci,9,cmdtext);
+		dcmd(naprawpojazd,12,cmdtext);
 		dcmd(amechanicjobpos,15,cmdtext);
 		dcmd(amechanicrepairpoint,20,cmdtext);
 		dcmd(amechanicrepairpoint2,21,cmdtext);
@@ -100,6 +94,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(reanimuj,8,cmdtext);
 		dcmd(smierc,6,cmdtext);
 		dcmd(wyrobkarte,10,cmdtext);
+		dcmd(kuppojazdf,10,cmdtext);
 		dcmd(zezlomujpojazdf,15,cmdtext);
 		dcmd(sprowadzpojazd,14,cmdtext);
 		dcmd(statuszamowien,14,cmdtext);
@@ -193,13 +188,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(vipitem,7,cmdtext);
 		dcmd(playeritems,11,cmdtext);
 		dcmd(aservercmds,11,cmdtext);
+		dcmd(savebiz,7,cmdtext);
 		dcmd(afillbiztable,13,cmdtext);
 		dcmd(afillhousetable,15,cmdtext);
 		dcmd(housesource,11,cmdtext);
 		dcmd(miwd,4,cmdtext);
 		dcmd(wezitemzdomu,12,cmdtext);
 		dcmd(wlozitemdodomu,14,cmdtext);
-		dcmd(widd,4,cmdtext);
 		dcmd(setcarserial,12,cmdtext);
 		dcmd(setcarserialtoall,17,cmdtext);
 		dcmd(savefactions,12,cmdtext);
@@ -234,7 +229,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(przedstawrozliczenie,20,cmdtext);
 		dcmd(vehdamage,9,cmdtext);
 		dcmd(explodencars,12,cmdtext);
-		//dcmd(wymianaopon,11,cmdtext);
+		dcmd(wymianaopon,11,cmdtext);
 		dcmd(additemex,9,cmdtext);
 		dcmd(fixwheels,9,cmdtext);
 		dcmd(afillhouseitemstable,20,cmdtext);
@@ -244,7 +239,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(otworzbagaznik,14,cmdtext);
 		dcmd(zamknijbagaznik,15,cmdtext);
 		dcmd(zamknijmaske,12,cmdtext);
-		//dcmd(wymienzarowke,13,cmdtext);
+		dcmd(wymienzarowke,13,cmdtext);
 		dcmd(kolczatka,9,cmdtext);
 		dcmd(zwinkolczatke,13,cmdtext);
 		dcmd(zapallampki,11,cmdtext);
@@ -252,7 +247,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(lightdamagevalue,16,cmdtext);
 		dcmd(acarenters,10,cmdtext);
 		dcmd(acarentersex,12,cmdtext);
-		//dcmd(zamontujhak,11,cmdtext);
+		dcmd(zamontujhak,11,cmdtext);
 		dcmd(agodmode,8,cmdtext);
 		dcmd(acarmodel,9,cmdtext);
 		dcmd(acarcolor,9,cmdtext);
@@ -266,7 +261,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(acarcomponentslottype,21,cmdtext);
 		dcmd(acarpark,8,cmdtext);
 		dcmd(vehfueltype,11,cmdtext);
-		//dcmd(montazgazu,10,cmdtext);
+		dcmd(montazgazu,10,cmdtext);
 		dcmd(pktorganizacyjny2,17,cmdtext);
 		dcmd(ignorujooc,10,cmdtext);
 		dcmd(afiregov2,9,cmdtext);
@@ -280,7 +275,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(sprzedajnarkotyki,17,cmdtext);
 		dcmd(animacje,8,cmdtext);
 		dcmd(animacje2,9,cmdtext);
-		dcmd(animacje3,9,cmdtext);
 		dcmd(gotoxyz,7,cmdtext);
 		dcmd(loginonoff,10,cmdtext);
 		dcmd(abizproducts,12,cmdtext);
@@ -290,6 +284,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(gspos,5,cmdtext);
 		dcmd(cdp,3,cmdtext);
 		dcmd(menubroni,9,cmdtext);
+		dcmd(savebuildings,13,cmdtext);
 		dcmd(fabryka,7,cmdtext);
 		dcmd(fillbuildingstable,18,cmdtext);
 		dcmd(rfactory,8,cmdtext);
@@ -364,7 +359,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(obrocobiektpoj,14,cmdtext);
 		dcmd(idznaspacerniak,15,cmdtext);
 		dcmd(wrocdowiezienia,15,cmdtext);
-		//dcmd(czesci,6,cmdtext);
+		dcmd(czesci,6,cmdtext);
 		dcmd(ao,2,cmdtext);
 		dcmd(ileneonow,9,cmdtext);
 		dcmd(uwolnij,7,cmdtext);
@@ -428,6 +423,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(mojeitemywpojezdzie,19,cmdtext);
 		dcmd(przejmijster,12,cmdtext);
 		dcmd(opuscster,9,cmdtext);
+		dcmd(wheelchangepos,14,cmdtext);
 		dcmd(bizplaced,9,cmdtext);
 		dcmd(houseplaced,11,cmdtext);
 		dcmd(bizintset,9,cmdtext);
@@ -498,6 +494,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(osiagniecia2,12,cmdtext);
 		dcmd(wyplata,7,cmdtext);
 		dcmd(abizentrancefee,15,cmdtext);
+		dcmd(abuildingicon,13,cmdtext);
 		dcmd(abuildingiconshow,17,cmdtext);
 		dcmd(sethealcost,11,cmdtext);
 		dcmd(cenazaleczenie,14,cmdtext);
@@ -595,104 +592,11 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		dcmd(setvehpos,9,cmdtext);
 		dcmd(ustawwiadomosc,14,cmdtext);
 		dcmd(wyczyscwiadomosc,16,cmdtext);
-		dcmd(oddajkluczykipoj,16,cmdtext);
-		dcmd(changestacyjka,14,cmdtext);
-		dcmd(ahouselock,10,cmdtext);
-		dcmd(opuscprzymierzalnie,19,cmdtext);
-		dcmd(ahousestreetno,14,cmdtext);
-		dcmd(abizstreetno,12,cmdtext);
-		dcmd(abuildingstreetno,17,cmdtext);
-		dcmd(fwplac,6,cmdtext);
-		dcmd(kupbudynek,10,cmdtext);
-		dcmd(fstankonta,10,cmdtext);
-		dcmd(abuildingdata,13,cmdtext);
-		dcmd(abuildingprice,14,cmdtext);
-		dcmd(uzbrojenie,10,cmdtext);
-		dcmd(stanuzbrojenia,14,cmdtext);
-		dcmd(skonfiskuj,10,cmdtext);
-		dcmd(resetbuilding,13,cmdtext);
-		dcmd(sprzedajbudynek,15,cmdtext);
-		dcmd(asetmapicon,11,cmdtext);
-		dcmd(adeletemapicon,14,cmdtext);
-		dcmd(zarzadzajfirma,14,cmdtext);
-		dcmd(setpublicad,11,cmdtext);
-		dcmd(editpublicad,12,cmdtext);
-		dcmd(setpublicadcp,13,cmdtext);
-		dcmd(putnewpublicad,14,cmdtext);
-		dcmd(fillpublicadstable,18,cmdtext);
-		dcmd(publicadscmds,13,cmdtext);
-		dcmd(setpublicadtime,15,cmdtext);
-		dcmd(dodajogloszenie,15,cmdtext);
-		dcmd(removepublicad,14,cmdtext);
-		dcmd(usunogloszenie,14,cmdtext);
-		dcmd(zdemontujtablice,16,cmdtext);
-		dcmd(ogloszenia,10,cmdtext);
-		dcmd(przesuntablice,14,cmdtext);
-		dcmd(edytujogloszenie,16,cmdtext);
-		dcmd(abuildingtype,13,cmdtext);
-		dcmd(antibh,6,cmdtext);
-		dcmd(afk,3,cmdtext);
-		dcmd(abizfaction,11,cmdtext);
-		dcmd(abizfactiontime,15,cmdtext);
-		dcmd(zatankujlotnicze,16,cmdtext);
-		dcmd(cenazalitrlotniczego,20,cmdtext);
-		dcmd(startevent,10,cmdtext);
-		dcmd(stopevent,9,cmdtext);
-		dcmd(dolaczdoeventu,14,cmdtext);
-		dcmd(opuscevent,10,cmdtext);
-		dcmd(events,6,cmdtext);
-		dcmd(przerwijprace,13,cmdtext);
-		dcmd(abustrackcmds,13,cmdtext);
-		dcmd(atrashtrackcmds,15,cmdtext);
-		dcmd(asweepertrackcmds,17,cmdtext);
-		dcmd(afarmertrackcmds,16,cmdtext);
-		dcmd(ahoursplayed,12,cmdtext);
-		dcmd(vehbreaktimeleft,16,cmdtext);
-		dcmd(zonecmds,8,cmdtext);
-		dcmd(zarzadzajfrakcja,16,cmdtext);
-		dcmd(abroadcastmessages,18,cmdtext);
-		dcmd(listazakladow,13,cmdtext);
-		dcmd(setpt,5,cmdtext);
-		dcmd(getdist,7,cmdtext);
-		dcmd(showgarbage,11,cmdtext);
-		dcmd(hidegarbage,11,cmdtext);
-		dcmd(showtrash,9,cmdtext);
-		dcmd(hidetrash,9,cmdtext);
-		dcmd(listaobiektow,13,cmdtext);
-		dcmd(nrbudynku,9,cmdtext);
-		dcmd(gotoevent,9,cmdtext);
-		dcmd(agotocmds,9,cmdtext);
-		dcmd(walkower,8,cmdtext);
-		dcmd(listadonosow,12,cmdtext);
-		dcmd(komendybudynkow,15,cmdtext);
-		dcmd(setinfopickup,13,cmdtext);
-		dcmd(nazwabudynku,12,cmdtext);
-		dcmd(wynajempojazdu,14,cmdtext);
-		dcmd(wynajmijpojazd,14,cmdtext);
-		dcmd(zwrocpojazd,11,cmdtext);
-		dcmd(swyplac,7,cmdtext);
-		dcmd(swplac,6,cmdtext);
-		dcmd(sstan,5,cmdtext);
-		dcmd(listapojazdownawynajem,22,cmdtext);
-		dcmd(typbiz,6,cmdtext);
-		dcmd(cenabiz,7,cmdtext);
-		dcmd(cenabudynku,11,cmdtext);
-		dcmd(edytujobiektpoj,15,cmdtext);
-		dcmd(setalign,8,cmdtext);
-		dcmd(zdrowie,7,cmdtext);
-		dcmd(setvipobj,9,cmdtext);
-		dcmd(dodajnews,9,cmdtext);
-		dcmd(usunnews,8,cmdtext);
-		dcmd(pokaznews,9,cmdtext);
-		dcmd(dom,3,cmdtext);
-		dcmd(setvehicletosell,16,cmdtext);
-		dcmd(setvehicletorent,16,cmdtext);
-		//dcmd(abizicon,8,cmdtext);
 		
 		// dcmd(a3dvehids,9,cmdtext);
 		// dcmd(wyrzucitem,10,cmdtext);
 		// dcmd(przekazitem,11,cmdtext);
-		// dcmd(wezpilke,8,cmdtext);
+		//dcmd(wezpilke,8,cmdtext);
 		// dcmd(afk,3,cmdtext);
 		// dcmd(lightfw,7,cmdtext);
 		// dcmd(fwcp,4,cmdtext);
@@ -704,9 +608,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		// dcmd(setwfactorysetupcp1,19,cmdtext);
 		// dcmd(setwfactorytakecp,17,cmdtext);
 		// dcmd(ahalogeny,9,cmdtext);
-		// dcmd(zwiaz,
-		// dcmd(tuning,6,cmdtext);
-		// dcmd(zatankujzkanistra,17,cmdtext);
+		//dcmd(zwiaz,
+		//dcmd(tuning,6,cmdtext);
+		//dcmd(zatankujzkanistra,17,cmdtext);
 		
 		//==================================================[Animations]===============================================
 		dcmd(siad,4,cmdtext);
@@ -746,6 +650,11 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 	if(gPlayerData[playerid][pCharacterDying] == 0 && !PlayerCuffed[playerid] && !IsPlayerInAnyVehicle(playerid))
 	{
+		// if (strcmp(cmd, "/pijany", true) ==0 )
+		// {
+			// ApplyAnimation(playerid,"PED","WALK_DRUNK",4.1,1,1,1,1,1);
+			// return 1;
+		// }
 		if(strcmp(cmd, "/recedogory", true) == 0)
 		{
 			SetPlayerSpecialAction(playerid,SPECIAL_ACTION_HANDSUP);
@@ -765,6 +674,11 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}
 			return 1;
 		}
+		// if(strcmp(cmd, "/uzyjkomorki", true) == 0)
+		// {
+			// SetPlayerSpecialAction(playerid,SPECIAL_ACTION_USECELLPHONE);
+			// return 1;
+		// }
 		if(strcmp(cmd, "/schowajkomorke", true) == 0)
 		{
 			SetPlayerSpecialAction(playerid,SPECIAL_ACTION_STOPUSECELLPHONE);
@@ -891,7 +805,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			ApplyAnimation(playerid,"PED","SEAT_down",4.0,0,0,0,1,0);
 			return 1;
 		}
-		if (strcmp(cmd, "/wstan", true) == 0)
+		if (strcmp(cmd, "/wstan1", true) == 0)
 		{
 			ApplyAnimation(playerid,"PED","SEAT_up",4.0,0,1,1,0,0);
 			return 1;
@@ -6485,6 +6399,35 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}
 			return 1;
 		}
+		else if(strcmp(cmd, "/odbierzbron", true) == 0) // Reset the player's weapons
+		{
+			if(gPlayerData[playerid][pFaction] == 9)
+			{
+				tmp = strtok(cmdtext, idx);
+				if(!strlen(tmp))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTBLUE, "U¯YCIE: /odbierzbron [id]");
+					SendClientMessage(playerid, COLOR_LIGHTBLUE, "FUNKCJA: rozbroi gracza");
+					return 1;
+				}
+				if(giveplayerid != INVALID_PLAYER_ID)
+				{
+					ResetPlayerWeapons(giveplayerid);
+					format(string, sizeof(string), "-| Urzednik %s rozbroil gracza %s |-",gPlayerData[playerid][pName], gPlayerData[giveplayerid][pName]);
+					ABroadCast(COLOR_YELLOW,string,1);
+					
+					format(string, sizeof(string), "[GOVERNMENT:] Player: %s disarmed player: %s", gPlayerData[playerid][pName], gPlayerData[giveplayerid][pName]);
+					GovermentLog(string);
+				}
+				else if(giveplayerid == INVALID_PLAYER_ID)
+				{
+					format(string, sizeof(string), "%d nie jest on-line.", giveplayerid);
+					SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
+				}
+			}
+			else SendClientMessage(playerid, COLOR_LIGHTBLUE, "nie jesteœ urzednikiem.");
+			return 1;
+		}
 		else if(strcmp(cmd, "/coin", true) == 0)
 		{
 			if(IsPlayerConnected(playerid))
@@ -6502,364 +6445,115 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(PlayerFreeSlotCount(playerid) < 2)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Jesteœ przeci¹¿ony, nie mo¿esz schowaæ ¿adnej broni");
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Jesteœ przeci¹¿ony !");
 				return 1;
 			}
-			
 			gTGunID = GetPlayerWeapon(playerid);
-			gTGunAmmo = GetPlayerAmmo(playerid);
-			
-			new slotsNeeded = 0;
-			new noFreeSpace = false;
-			
-			printf("[WEAPON:] Player %s put weapon id %d and %d ammo into /mi", GetPlayerNameEx(playerid), gTGunID, gTGunAmmo);
-			
-			switch(gTGunID)
+			if(gTGunID >= 22 && gTGunID <= 42 && gTGunID != 40)
 			{
-				case 22: 
+				gTGunAmmo = GetPlayerAmmo(playerid);
+				RemovePlayerWeapon(playerid, gTGunID);
+				printf("[WEAPON:] Player %s put weapon id %d and %d ammo into /mi", GetPlayerNameEx(playerid), gTGunID, gTGunAmmo);
+				switch(gTGunID)
 				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 36)+1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 22: 
 					{
 						InsertPlayerItemEx(playerid, 1, 16, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 36, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 23: 
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 36) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 23: 
 					{
 						InsertPlayerItemEx(playerid, 1, 17, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 36, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 24:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 37) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 24:
 					{
 						InsertPlayerItemEx(playerid, 1, 18, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 37, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 25:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 38) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 25:
 					{
 						InsertPlayerItemEx(playerid, 1, 19, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 38, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 26:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 38) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 26:
 					{
 						InsertPlayerItemEx(playerid, 1, 20, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 38, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 27:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 38) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 27:
 					{
 						InsertPlayerItemEx(playerid, 1, 21, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 38, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 28:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 36) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 28:
 					{
 						InsertPlayerItemEx(playerid, 1, 22, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 36, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 29:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 36) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 29:
 					{
 						InsertPlayerItemEx(playerid, 1, 23, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 36, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 30:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 39) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 30:
 					{
 						InsertPlayerItemEx(playerid, 1, 24, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 39, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 31:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 39) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 31:
 					{
 						InsertPlayerItemEx(playerid, 1, 25, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 39, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 32:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 36) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 32:
 					{
 						InsertPlayerItemEx(playerid, 1, 26, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 36, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 33:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 40) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 33:
 					{
 						InsertPlayerItemEx(playerid, 1, 27, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 40, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 34:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 40) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 34:
 					{
 						InsertPlayerItemEx(playerid, 1, 28, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 40, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 35:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 41) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
+					case 35:
 					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 29, 0, 0, 0, 0, "Puste", 1);
+						InsertPlayerItemEx(playerid, 1, 29, 0, 0, 0, 0, "Puste", gTGunAmmo);
 						InsertPlayerItemEx(playerid, 1, 41, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 36:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 41) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 36:
 					{
 						InsertPlayerItemEx(playerid, 1, 30, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 41, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 37:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 42) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 37:
 					{
 						InsertPlayerItemEx(playerid, 1, 31, 0, 0, 0, 0, "Puste", 1);
 						InsertPlayerItemEx(playerid, 1, 42, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
-				}
-				case 38:
-				{
-					slotsNeeded = gTGunAmmo/ItemsOnCharacterSlot(1, 40) + 1;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
+					case 38:
 					{
 						InsertPlayerItemEx(playerid, 1, 32, 0, 0, 0, 0, "Puste", 1);
-						InsertPlayerItemEx(playerid, 1, 40, 0, 0, 0, 0, "Puste", gTGunAmmo);
+						InsertPlayerItemEx(playerid, 1, 39, 0, 0, 0, 0, "Puste", gTGunAmmo);
 					}
+					case 39: InsertPlayerItemEx(playerid, 1, 33, 0, 0, 0, 0, "Puste", gTGunAmmo);
+					case 41: InsertPlayerItemEx(playerid, 1, 34, 0, 0, 0, 0, "Puste", gTGunAmmo);
+					case 42: InsertPlayerItemEx(playerid, 1, 35, 0, 0, 0, 0, "Puste", gTGunAmmo);
+					case 5: InsertPlayerItemEx(playerid, 1, 145, 0, 0, 0, 0, "Puste", gTGunAmmo);
+					case 7: InsertPlayerItemEx(playerid, 1, 146, 0, 0, 0, 0, "Puste", gTGunAmmo);
+					case 1: InsertPlayerItemEx(playerid, 1, 147, 0, 0, 0, 0, "Puste", gTGunAmmo);
+					case 4: InsertPlayerItemEx(playerid, 1, 148, 0, 0, 0, 0, "Puste", gTGunAmmo);
+					case 6: InsertPlayerItemEx(playerid, 1, 149, 0, 0, 0, 0, "Puste", gTGunAmmo);
+					case 15: InsertPlayerItemEx(playerid, 1, 150, 0, 0, 0, 0, "Puste", gTGunAmmo);
 				}
-				case 39:
-				{
-					slotsNeeded = gTGunAmmo;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 33, 0, 0, 0, 0, "Puste", gTGunAmmo);
-					}
-				}
-				case 41:
-				{
-					slotsNeeded = gTGunAmmo;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 34, 0, 0, 0, 0, "Puste", gTGunAmmo);
-					}
-				}
-				case 42:
-				{
-					slotsNeeded = gTGunAmmo;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 35, 0, 0, 0, 0, "Puste", gTGunAmmo);
-					}
-				}
-				case 5:
-				{
-					slotsNeeded = gTGunAmmo;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 145, 0, 0, 0, 0, "Puste", gTGunAmmo);
-					}
-				}
-				case 7:
-				{
-					slotsNeeded = gTGunAmmo;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 146, 0, 0, 0, 0, "Puste", gTGunAmmo);
-					}
-				}
-				case 1:
-				{
-					slotsNeeded = gTGunAmmo;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 147, 0, 0, 0, 0, "Puste", gTGunAmmo);
-					}
-				}
-				case 4:
-				{
-					slotsNeeded = gTGunAmmo;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 148, 0, 0, 0, 0, "Puste", gTGunAmmo);
-					}
-				}
-				case 6:
-				{
-					slotsNeeded = gTGunAmmo;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 149, 0, 0, 0, 0, "Puste", gTGunAmmo);
-					}
-				}
-				case 15:
-				{
-					slotsNeeded = gTGunAmmo;
-					if(slotsNeeded > PlayerFreeSlotCount(playerid))
-					{
-						noFreeSpace = true;
-					}
-					else
-					{
-						InsertPlayerItemEx(playerid, 1, 150, 0, 0, 0, 0, "Puste", gTGunAmmo);
-					}
-				}
-				default:
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz schowaæ tej broni !");
-					return 1;
-				}
-			}
-			if(noFreeSpace)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz miejsca aby schowaæ t¹ broñ");
 			}
 			else
-			{
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Schowa³eœ swoj¹ broñ");
-				RemovePlayerWeapon(playerid, gTGunID);
-			}
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz schowaæ tej broni !");
 			return 1;
 		}
 		else if(strcmp(cmd, "/pokaznotki", true) == 0) // By LordMan
@@ -7430,9 +7124,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				{
 					if(IsPlayerConnected(GuardOffer[playerid]))
 					{
-						format(string, sizeof(string), "* Zaakceptowales protekcje za $%d od %s.",GuardPrice[playerid], GetPlayerNameEx(GuardOffer[playerid]));
+						format(string, sizeof(string), "* Zaakceptowales protekcje za %d$ od %s.",GuardPrice[playerid], GetPlayerNameEx(GuardOffer[playerid]));
 						SendClientMessage(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "* %s zaakceptowal twoja protekcje i przelal $%d na twoj rachunek.",GetPlayerNameEx(playerid), GuardPrice[playerid]);
+						format(string, sizeof(string), "* %s zaakceptowal twoja protekcje i przelal %d$ na twoj rachunek.",GetPlayerNameEx(playerid), GuardPrice[playerid]);
 						SendClientMessage(GuardOffer[playerid], COLOR_WHITE, string);
 						gPlayerData[GuardOffer[playerid]][pPayCheck] += GuardPrice[playerid] * 5;
 
@@ -7489,9 +7183,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								SendClientMessage(playerid, COLOR_GREY, "[INFO:] Nie mozesz sam sobie zaoferowac protekcji !");
 								return 1;
 							}
-							format(string, sizeof(string), "* Zaoferowales protekcje %s za $%d.", GetPlayerNameEx(giveplayerid), money);
+							format(string, sizeof(string), "* Zaoferowales protekcje %s za %d$.", GetPlayerNameEx(giveplayerid), money);
 							SendClientMessage(playerid, COLOR_WHITE, string);
-							format(string, sizeof(string), "* Ochroniarz %s chce Cie chronic za $%d, (wpisz /akceptujochroniarza) by go przyjac.", GetPlayerNameEx(playerid), money);
+							format(string, sizeof(string), "* Ochroniarz %s chce Cie chronic za %d$, (wpisz /akceptujochroniarza) by go przyjac.", GetPlayerNameEx(playerid), money);
 							SendClientMessage(giveplayerid, COLOR_WHITE, string);
 							GuardOffer[giveplayerid] = playerid;
 							GuardPrice[giveplayerid] = money;
@@ -7537,6 +7231,41 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_GRAD1, string);
 				}
 			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/sprawdzbron", true) == 0) // Edited by LordMan, orginally from CW-RP
+		{
+			if(gPlayerData[playerid][pFaction] != 9)
+			{
+				SendClientMessage(playerid, COLOR_GREY, "[INFO:] nie jesteœ upowazniony do uzywania tej komendy !");
+				return 1;
+			}
+			tmp = strtok(cmdtext,idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_GREY, "U¯YCIE: /sprawdzbron [playerid/partOName]");
+				return 1;
+			}
+			giveplayerid = ReturnUser(tmp);
+			if(giveplayerid == INVALID_PLAYER_ID)
+			{
+				SendClientMessage(playerid, COLOR_GREY, "[INFO:] Ten gracz jest off-line");
+				return 1;
+			}
+			new sweapon, sammo;
+			format(string, sizeof(string), "%s posiada nastepujace bronie:", gPlayerData[giveplayerid][pName]);
+			SendClientMessage(playerid, COLOR_GRAD1, string);
+			for (new i=0; i<9; i++)
+			{
+				GetPlayerWeaponData(giveplayerid, i, sweapon, sammo);
+				if(sweapon != 0)
+				{
+					format(string, sizeof(string), "%d: %d (%d)", i, sweapon, sammo);
+					SendClientMessage(playerid, COLOR_GRAD1, string);
+				}
+			}
+			format(string, sizeof(string), "[GOVERNMENT:] Weapon checked by: %s for %s", gPlayerData[playerid][pName], gPlayerData[giveplayerid][pName]);
+			GovermentLog(string);
 			return 1;
 		}
 		else if(strcmp(cmd, "/prison",true) == 0)
@@ -7627,67 +7356,109 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_RED, "[INFO:] Ktoœ ju¿ wys³a³ donos. Musisz chwile poczekaæ przed wys³aniem kolejnego !");
 				return 1;
 			}
-			
+			gReportCooldown = 10;
 			tmp = strtok(cmdtext, idx);
-			
 			if(!strlen(tmp))
 			{
-				SendClientMessage(playerid, COLOR_GRAD2, "[INFO:] /donos [playerid] [treœæ donosu]");
+				SendClientMessage(playerid, COLOR_GRAD2, "U¯YCIE: (/re)port [playerid/PartOName] [text]");
 				return 1;
 			}
-			
 			giveplayerid = strval(tmp);
-			
-			if(giveplayerid < 0 || giveplayerid >= CUSTOM_MAX_PLAYERS)
+			if(IsPlayerConnected(giveplayerid))
 			{
-				SendClientMessage(playerid, COLOR_GRAD2, "[INFO:] Niepoprawne ID");
+				if(giveplayerid != INVALID_PLAYER_ID)
+				{
+					new length = strlen(cmdtext);
+					while ((idx < length) && (cmdtext[idx] <= ' '))
+					{
+						idx++;
+					}
+					new offset = idx;
+					new result[64];
+					while ((idx < length) && ((idx - offset) < (sizeof(result) - 1)))
+					{
+						result[idx - offset] = cmdtext[idx];
+						idx++;
+					}
+					result[idx - offset] = EOS;
+					if(!strlen(result))
+					{
+						SendClientMessage(playerid, COLOR_GRAD2, "U¯YCIE: (/re)port [playerid/PartOName] [text]");
+						return 1;
+					}
+					format(string, sizeof(string), "Donos od: [ID:%d]%s, doniosl na gracza: [ID:%d]%s", playerid, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), giveplayerid);
+					ABroadCast(0xE19898AA,string,1);
+					SendModMessage(0xE19898AA, string);
+					format(string, sizeof(string), "Tresc donosu: %s", (result));
+					SendModMessage(0xE19898AA, string);
+					ABroadCast(0xE19898AA,string,1);
+					ABroadCast(0xA04C4CAA, "Wpisz '/akceptujraport [reporter id]' lub '/wyrzucraporty [reporter id]'",1);
+					SendModMessage(0xE19898AA, "Wpisz '/akceptujraport [reporter id]' lub '/wyrzucraporty [reporter id]'");
+					SendClientMessage(playerid, 0x96C184AA, "[INFO:] Admini przejrza report, dziekujemy za zgloszenie.");
+					PlayerNeedsHelp[playerid] = 1;
+					SetTimerEx("ReportReset", 120000, false, "i", playerid);
+				}
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/akceptujraport", true) == 0) // By LordMan
+		{
+			if(gPlayerData[playerid][pAdmin] == 0 && gPlayerData[playerid][pModerator] == 0)
+				return 0;
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_WHITE, "HINT: /akceptujraport [playerid/PartOName]");
 				return 1;
 			}
-			
-			if(gPlayerLogged[giveplayerid])
+			giveplayerid = ReturnUser(tmp);
+			if(IsPlayerConnected(giveplayerid))
 			{
-				new length = strlen(cmdtext);
-				
-				while ((idx < length) && (cmdtext[idx] <= ' '))
+				if(giveplayerid != INVALID_PLAYER_ID)
 				{
-					idx++;
-				}
-				
-				new offset = idx;
-				new result[64];
-				
-				while ((idx < length) && ((idx - offset) < (sizeof(result) - 1)))
-				{
-					result[idx - offset] = cmdtext[idx];
-					idx++;
-				}
-				
-				result[idx - offset] = EOS;
-				
-				if(!strlen(result))
-				{
-					SendClientMessage(playerid, COLOR_GRAD2, "U¯YCIE: (/re)port [playerid/PartOName] [text]");
-					return 1;
-				}
-				
-				format(string, sizeof(string), "Donos od: [ID:%d]%s, doniosl na gracza: [ID:%d]%s /listadonosow", playerid, GetPlayerNameEx(playerid), giveplayerid, GetPlayerNameEx(giveplayerid));
-				
-				ABroadCast(COLOR_ADMINCMD, string, 1);
-				SendModMessage(COLOR_ADMINCMD, string);
-				
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Administratorzy przejrz¹ raport, dziekujemy za zgloszenie");
-				
-				for(new i = 0; i < sizeof(gPlayersReports); i++)
-				{
-					if(!gPlayersReports[i][mReportUsed])
+					if(PlayerNeedsHelp[giveplayerid] == 1)
 					{
-						gPlayersReports[i][mReportUsed] = 1;
-						gPlayersReports[i][mReportTimeLeft] = 3600;
-						format(gPlayersReports[i][mReportContent], 128, result);
-						format(gPlayersReports[i][mReporter], MAX_PLAYER_NAME, gPlayerData[playerid][pName]);
-						format(gPlayersReports[i][mReported], MAX_PLAYER_NAME, gPlayerData[giveplayerid][pName]);
-						gReportCooldown = 10;
-						
+						PlayerNeedsHelp[giveplayerid] = 0;
+						format(string, sizeof(string), "[INFO:] %s wlasnie zaakceptowal raport [ID:%d]%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), giveplayerid);
+						ABroadCast(COLOR_YELLOW, string, 1);
+						format(string, sizeof(string), "** Administrator [ID:%d]%s zaakceptowal Twoj raport ! Please be patience.", playerid, GetPlayerNameEx(playerid));
+						SendClientMessage(giveplayerid, 0x4D903DAA, string);
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_GREY, "[INFO:] Uzytkownik nie wyslal raportu lub raport zaakceptowany !");
+						return 1;
+					}
+				}
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/usunraport", true) == 0) // By LordMan
+		{
+			if(gPlayerData[playerid][pAdmin] == 0 && gPlayerData[playerid][pModerator] == 0)
+				return 0;
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_WHITE, "[PODPOWIEDZ:] /usunraport [playerid/PartOName]");
+				return 1;
+			}
+			giveplayerid = ReturnUser(tmp);
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if(giveplayerid != INVALID_PLAYER_ID)
+				{
+					if(PlayerNeedsHelp[giveplayerid] == 1)
+					{
+						PlayerNeedsHelp[giveplayerid] = 0;
+						format(string, sizeof(string), "[INFO:] %s wyrzucil wlasnie raport [%d] %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), giveplayerid);
+						ABroadCast(COLOR_YELLOW, string, 1);
+						format(string, sizeof(string), "** Administrator [%d] %s odrzucil Twoj raport !", playerid, GetPlayerNameEx(playerid));
+						SendClientMessage(giveplayerid, 0xB35959AA, string);
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_GREY, "[INFO:] Uzytkownik nie wyslal raportu lub raport zaakceptowany !");
 						return 1;
 					}
 				}
@@ -7736,7 +7507,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			para1 = ReturnUser(tmp);
 			tmp = strtok(cmdtext, idx);
 			level = strval(tmp);
-			if(level > 299 || level < 0) { SendClientMessage(playerid, COLOR_GREY, "Wrong skin ID!"); return 1; }
+			if(level > 299 || level < 1) { SendClientMessage(playerid, COLOR_GREY, "Wrong skin ID!"); return 1; }
 			if(IsPlayerConnected(para1))
 			{
 				if(para1 != INVALID_PLAYER_ID)
@@ -7749,12 +7520,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(para1, COLOR_WHITE, string);
 					format(string, sizeof(string), "You have given %s skin to %d.", GetPlayerNameEx(giveplayerid), level);
 					SendClientMessage(playerid, COLOR_WHITE, string);
-					SetPlayerSkinEx(para1, gPlayerData[para1][pSkin]);
+					SetPlayerSkin(para1, gPlayerData[para1][pSkin]);
 				}
 			}//not connected
 			return 1;
 		}
-		else if(strcmp(cmd, "/szepcz", true) == 0 || strcmp(cmd, "/s", true) == 0 || strcmp(cmd, "/w", true) == 0)
+		else if(strcmp(cmd, "/szepcz", true) == 0 || strcmp(cmd, "/s", true) == 0)
 		{
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp))
@@ -7872,6 +7643,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				{
 					format(string, sizeof(string), "[SERVER:] %s zostal wyjebany w powietrze przez %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_LIGHTRED,string,1);
+					//SendClientMessageToAll(COLOR_DBLUE, string);
 					SetPlayerHealth(giveplayerid, 10);
 					new Float:boomx, Float:boomy, Float:boomz;
 					GetPlayerPos(giveplayerid,boomx, boomy, boomz);
@@ -7969,7 +7741,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 					if(DynamicFactions[level][fUseSkins] == 1)
 					{
-						SetPlayerSkinEx(para1,DynamicFactions[level][fSkin1]);
+						SetPlayerSkin(para1,DynamicFactions[level][fSkin1]);
 					}
 					printf("[WARNING:] /asetleader has been used by %s for %s", GetPlayerNameEx(playerid), GetPlayerNameEx(para1));
 				}
@@ -8030,7 +7802,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								format(string, sizeof(string), "[OGLOSZENIE:] Nadane przez: %s", gPlayerData[playerid][pName]);
 								SendClientMessageToAll(COLOR_WHITE, string);
 								SendClientMessageToAll(COLOR_LIGHTGREEN, "-----------------------------------------------------------------------------------------------------------------------");
-								format(string, sizeof(string), "[INFO:] Znaki zawarte: %d - Koszt: $%d - Podziekowania od %s", idx,payout,Businesses[i][BusinessName]);
+								format(string, sizeof(string), "[INFO:] Znaki zawarte: %d - Koszt: %d$ - Podziekowania od %s", idx,payout,Businesses[i][BusinessName]);
 								SendClientMessage(playerid, COLOR_WHITE, string);
 								
 								SendSmsToAll(playerid, 7100, result);
@@ -8105,8 +7877,62 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}
 			new id2;
 			id2 = strval(tmp);
+			new businesstype[128];
+			if(Businesses[id][Owned] == 0)
+			{
+				if(Businesses[id][BizType] != 0)
+				{
+					if(Businesses[id][BizType] == 1) { businesstype = "Restauracja"; }
+					else if(Businesses[id][BizType] == 2) { businesstype = "Siec komorkowa"; }
+					else if(Businesses[id][BizType] == 3) { businesstype = "Sklep 24/7"; }
+					else if(Businesses[id][BizType] == 4) { businesstype = "Sklep z bronia"; }
+					else if(Businesses[id][BizType] == 5) { businesstype = "Studio reklamowe"; }
+					else if(Businesses[id][BizType] == 6) { businesstype = "Sklep z ubraniami"; }
+					else if(Businesses[id][BizType] == 7) { businesstype = "Bar/Club"; }
+					else if(Businesses[id][BizType] == 8) { businesstype = "Studio nagraniowe"; }
+					else if(Businesses[id][BizType] == 9) { businesstype = "Studio"; }
+					else if(Businesses[id][BizType] == 10) { businesstype = "Salon samochodowy"; }
+					else if(Businesses[id][BizType] == 11) { businesstype = "Stacja paliw"; }
+				}
+				else { businesstype = "Nie ustawione"; }
+
+				format(string, sizeof(string), "Ten biznes jest na sprzeda¿!");
+				UpdateDynamic3DTextLabelText(Business3DTextLabelA[id], COLOR_LIGHTBLUE2, string);
+
+				format(string, sizeof(string), "Numer Budynku: %d, Nazwa biznesu: %s, Typ biznesu: %s",id,Businesses[id][BusinessName],businesstype);
+				UpdateDynamic3DTextLabelText(Business3DTextLabelB[id], COLOR_LIGHTBLUE2, string);
+
+				format(string, sizeof(string), "Cena: %d$",Businesses[id][BizPrice]);
+				UpdateDynamic3DTextLabelText(Business3DTextLabelC[id], COLOR_LIGHTBLUE2, string);
+			}
+			if(Businesses[id][Owned] == 1)
+			{
+				if(Businesses[id][BizType] != 0)
+				{
+					if(Businesses[id][BizType] == 1) { businesstype = "Restauracja"; }
+					else if(Businesses[id][BizType] == 2) { businesstype = "Siec komorkowa"; }
+					else if(Businesses[id][BizType] == 3) { businesstype = "Sklep 24/7"; }
+					else if(Businesses[id][BizType] == 4) { businesstype = "Sklep z bronia"; }
+					else if(Businesses[id][BizType] == 5) { businesstype = "Studio reklamowe"; }
+					else if(Businesses[id][BizType] == 6) { businesstype = "Sklep z ubraniami"; }
+					else if(Businesses[id][BizType] == 7) { businesstype = "Bar/Club"; }
+					else if(Businesses[id][BizType] == 8) { businesstype = "Studio nagraniowe"; }
+					else if(Businesses[id][BizType] == 9) { businesstype = "Studio"; }
+					else if(Businesses[id][BizType] == 10) { businesstype = "Salon samochodowy"; }
+					else if(Businesses[id][BizType] == 11) { businesstype = "Stacja paliw"; }
+				}
+				else { businesstype = "Nie ustawione"; }
+
+				format(string, sizeof(string), "Nazwa biznesu: %s, Typ biznesu: %s",Businesses[id][BusinessName],businesstype);
+				UpdateDynamic3DTextLabelText(Business3DTextLabelA[id], COLOR_LIGHTBLUE2, string);
+
+				format(string, sizeof(string), "Numer Budynku: %d, Typ biznesu: %s",id,Businesses[id][Owner]);
+				UpdateDynamic3DTextLabelText(Business3DTextLabelB[id], COLOR_LIGHTBLUE2, string);
+
+				format(string, sizeof(string), "Wejœciówka: %d$",Businesses[id][EntranceCost]);
+				UpdateDynamic3DTextLabelText(Business3DTextLabelC[id], COLOR_LIGHTBLUE2, string);
+			}
 			Businesses[id][BizType] = id2;
-			RefreshBizDescription(id);
 			format(form, sizeof form, "You've set Businesses ID: %d's type to %d.", id,id2);
 			SendClientMessage(playerid, COLOR_ADMINCMD,form);
 			SaveBizData(id, "BizType");
@@ -8123,6 +7949,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				return 1;
 			}
 			new id = strval(tmp);
+			new pmodel;
 			new Float:x,Float:y,Float:z;
 			GetPlayerPos(playerid, x, y, z);
 			Businesses[id][EnterX] = x;
@@ -8133,10 +7960,15 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			new Float:angle;
 			GetPlayerFacingAngle(playerid, angle);
 			Businesses[id][EnterAngle] = angle;
+			switch(Businesses[id][Owned])
+			{
+				case 0: pmodel = 1272;
+				case 1: pmodel = 1239;
+			}
+			DestroyDynamicPickup(Businesses[id][PickupID]);
+			Businesses[id][PickupID] = CreateDynamicPickup(pmodel, 1, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ]);
 			
-			
-			RefreshBizDescription(id);			
-			RefreshBizDescription(id);
+			ReloadBizText(id);
 			
 			SaveBizData(id, "EnterX");
 			SaveBizData(id, "EnterY");
@@ -8149,56 +7981,238 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SendClientMessage(playerid, COLOR_ADMINCMD, form);
 			return 1;
 		}
-		else if(strcmp(cmd, "/ustawbiz", true) == 0)
+		else if(strcmp(cmd, "/cenabiz", true) == 0)
 		{
-			if(gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT)
+			if(gPlayerData[playerid][pAdmin] != 5)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ urzednikiem");
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ta komenda zosta³a zablokowana !");
 				return 1;
 			}
-		
-			new id = -1;
-			
-			for(new i = 0; i < sizeof(Businesses); i++)
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
 			{
-				if(Businesses[i][BPlaced] || Businesses[i][Owned])
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /cenabiz [businessid] [price]");
+				return 1;
+			}
+			if(gPlayerData[playerid][pFaction] == 9)
+			{
+				new id;
+				id = strval(tmp);
+				
+				if(Businesses[id][Owned] == 1)
 				{
-					continue;
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz zmieniæ ceny biznesu kupionego !");
+					return 1;
+				}
+				tmp = strtok(cmdtext, idx);
+				if(!strlen(tmp))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /cenabiz [businessid] [price]");
+					return 1;
+				}
+				new id2;
+				id2 = strval(tmp);
+
+				if(id2 < 0)
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Cena musi byæ wiêksza lub równa zeru");
+					return 1;
 				}
 				
-				id = i;
+				Businesses[id][BizPrice] = id2;
+				new form[128];
+				format(form, sizeof form, "Ustawiles cene biznesu ID: %d na %d$", id,id2);
+				SendClientMessage(playerid, COLOR_ADMINCMD,form);
+				SaveBizData(id, "BizPrice");
+
+				if(Businesses[id][BizPrice] != 0) // Don't create the business icon if the Cena is 0.
+				{
+					if(Businesses[id][Owned] == 0)
+					{
+						// Businesses[i][PickupID] = CreateDynamicPickup(1272, 1, Businesses[i][EnterX], Businesses[i][EnterY], Businesses[i][EnterZ]);
+						DestroyDynamic3DTextLabel(Business3DTextLabelC[id]);
+						format(string, sizeof(string), "Cena: %d$",Businesses[id][BizPrice]);
+						Business3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+					}
+				}
+				else
+				{
+					// DestroyDynamicPickup(1272, 1, Businesses[i][EnterX], Businesses[i][EnterY], Businesses[i][EnterZ]);
+
+					format(string, sizeof(string), "");
+					Business3DTextLabelA[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "");
+					Business3DTextLabelB[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "");
+					Business3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				}
+				
+				// log
+				format(form, sizeof(form), "[GOVERNMENT:] Business id: %d, price set up to %d by %s", id, id2, gPlayerData[playerid][pName]);
+				GovermentLog(form);
 			}
-			
-			if(id == -1)
+			else
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Brak wolnych biznesów !");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ urzednikiem");
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/typbiz", true) == 0)
+		{
+			SendClientMessage(playerid, COLOR_RED, "[INFO:] Ta komenda zosta³a zablokowana");
+			return 1;
+			// tmp = strtok(cmdtext, idx);
+			// if(!strlen(tmp))
+			// {
+				// SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[BUSINESS TYPES:]");
+				// SendClientMessage(playerid, COLOR_ADMINCMD,BUSINESS_TYPES);
+				// SendClientMessage(playerid, COLOR_ADMINCMD,BUSINESS_TYPES2);
+				// SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /typbiz [businessid] [type]");
+				// return 1;
+			// }
+			// if(gPlayerData[playerid][pFaction] == 9)
+			// {
+					// new id;
+					// new form[128];
+					// id = strval(tmp);
+					// tmp = strtok(cmdtext, idx);
+					// if(!strlen(tmp))
+					// {
+						// SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[BUSINESS TYPES:]");
+						// SendClientMessage(playerid, COLOR_ADMINCMD,BUSINESS_TYPES);
+						// SendClientMessage(playerid, COLOR_ADMINCMD,BUSINESS_TYPES2);
+						// SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /typbiz [businessid] [type]");
+						// return 1;
+					// }
+					// new id2;
+					// id2 = strval(tmp);
+
+					// Businesses[id][BizType] = id2;
+					// format(form, sizeof form, "Ustawiles typ biz ID: %d's type to %d.", id,id2);
+					// SendClientMessage(playerid, COLOR_ADMINCMD,form);
+					// SaveBizData(id, "BizType");
+
+					// log
+					// format(form, sizeof(form), "[GOVERNMENT:] Business id: %d, type set up to: %d  by %s", id, id2, gPlayerData[playerid][pName]);
+					// GovermentLog(form);
+			// }
+			// else
+			// {
+				// SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "nie jesteœ urzednikiem.");
+			// }
+			// return 1;
+		}
+		else if(strcmp(cmd, "/ustawbiz", true) == 0)
+		{
+			if(gPlayerData[playerid][pAdmin] != 5)
+			{
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ta komenda zosta³a zablokowana !");
 				return 1;
 			}
-			
-			GetPlayerPos(playerid, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ]);
-			Businesses[id][EnterWorld] = GetPlayerVirtualWorld(playerid);
-			Businesses[id][EnterInterior] = GetPlayerInterior(playerid);				
-			GetPlayerFacingAngle(playerid, Businesses[id][EnterAngle]);
-			Businesses[id][BPlaced] = 1;
-			
-			RefreshBizIcon(id);
-			RefreshBizDescription(id);				
-			
-			SaveBizData(id, "EnterX");
-			SaveBizData(id, "EnterY");
-			SaveBizData(id, "EnterZ");
-			SaveBizData(id, "EnterInterior");
-			SaveBizData(id, "EnterWorld");
-			SaveBizData(id, "EnterAngle");
-			SaveBizData(id, "Placed");
-			
-			format(string, sizeof(string), "[INFO:] Postawi³eœ biz o ID %d", id);
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /ustawbiz [bizid]");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Raz ustawionego biznesu nie mo¿na przestawiæ !");
+				return 1;
+			}
+			new id = strval(tmp);
+			if(gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT)
+			{
+				if(Businesses[id][Owned])
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz skorzystaæ z tego ID poniewa¿ jest ono zajête !");
+					return 1;
+				}
+				if(Businesses[id][BPlaced])
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz u¿yæ tego ID poniewa¿ jest ono zajête, wybierz inne");
+					return 1;
+				}
+				if(!Businesses[id][BIntSet])
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Przed ustawieniem biznesu ustaw jego interior !");
+					return 1;
+				}
+				new pmodel;
+				new Float:x,Float:y,Float:z;
+				GetPlayerPos(playerid, x, y, z);
+				Businesses[id][EnterX] = x;
+				Businesses[id][EnterY] = y;
+				Businesses[id][EnterZ] = z;
+				Businesses[id][EnterWorld] = GetPlayerVirtualWorld(playerid);
+				Businesses[id][EnterInterior] = GetPlayerInterior(playerid);
+				new Float:angle;
+				GetPlayerFacingAngle(playerid, angle);
+				Businesses[id][EnterAngle] = angle;
+				switch(Businesses[id][Owned])
+				{
+					case 0: pmodel = 1272;
+					case 1: pmodel = 1239;
+				}
 
-			format(string, sizeof(string), "[GOVERNMENT:] Business id: %d, set up X: %f, Y: %f, Z: %f by %s", 
-				id, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ], gPlayerData[playerid][pName]);
-			GovermentLog(string);
-			
+				Businesses[id][PickupID] = ChangePickupModel(Businesses[id][PickupID], pmodel, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ]);
+
+				DestroyDynamic3DTextLabel(Business3DTextLabelA[id]);
+				DestroyDynamic3DTextLabel(Business3DTextLabelB[id]);
+				DestroyDynamic3DTextLabel(Business3DTextLabelC[id]);
+				new businesstype[128];
+				if(Businesses[id][BizType] != 0)
+				{
+					if(Businesses[id][BizType] == 1) { businesstype = "Restauracja"; }
+					else if(Businesses[id][BizType] == 2) { businesstype = "Siec komorkowa"; }
+					else if(Businesses[id][BizType] == 3) { businesstype = "Sklep 24/7"; }
+					else if(Businesses[id][BizType] == 4) { businesstype = "Sklep z bronia"; }
+					else if(Businesses[id][BizType] == 5) { businesstype = "Studio reklamowe"; }
+					else if(Businesses[id][BizType] == 6) { businesstype = "Sklep z ubraniami"; }
+					else if(Businesses[id][BizType] == 7) { businesstype = "Bar/Club"; }
+					else if(Businesses[id][BizType] == 8) { businesstype = "Studio nagraniowe"; }
+					else if(Businesses[id][BizType] == 9) { businesstype = "Studio"; }
+					else if(Businesses[id][BizType] == 10) { businesstype = "Salon samochodowy"; }
+					else if(Businesses[id][BizType] == 11) { businesstype = "Stacja paliw"; }
+				}
+				else { businesstype = "Nie ustawione"; }
+				if(Businesses[id][Owned] == 0)
+				{
+					format(string, sizeof(string), "Ten biznes jest na sprzeda¿!");
+					Business3DTextLabelA[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Numer Budynku: %d, Nazwa biznesu: %s, Typ biznesu: %s",id,Businesses[id][BusinessName],businesstype);
+					Business3DTextLabelB[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+					
+					format(string, sizeof(string), "Cena: %d$",Businesses[id][BizPrice]);
+					Business3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				}
+				else
+				{
+					format(string, sizeof(string), "Nazwa biznesu: %s, Typ biznesu: %s",Businesses[id][BusinessName],businesstype);
+					Business3DTextLabelA[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Numer Budynku: %d, W³aœciciel: %s", id,GetRealName(Businesses[id][Owner]));
+					Business3DTextLabelB[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Wejœciówka: %d$",Businesses[id][EntranceCost]);
+					Business3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTBLUE2, Businesses[id][EnterX], Businesses[id][EnterY], Businesses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				}
+				SaveBizData(id, "EnterX");
+				SaveBizData(id, "EnterY");
+				SaveBizData(id, "EnterZ");
+				SaveBizData(id, "EnterInterior");
+				SaveBizData(id, "EnterWorld");
+				SaveBizData(id, "EnterAngle");
+				new form[128];
+				format(form, sizeof(form), "[INFO:] Postawiles biz ID na : %d's.", id);
+				SendClientMessage(playerid, COLOR_ADMINCMD, form);
+
+				format(form, sizeof(form), "[GOVERNMENT:] Business id: %d, set up X: %f, Y: %f, Z: %f by %s", id, x, y, z, gPlayerData[playerid][pName]);
+				GovermentLog(form);
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ urzednikiem");
+			}
 			return 1;
 		}
 		else if(strcmp(cmd, "/abizexit", true) == 0)
@@ -8278,6 +8292,8 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			id2 = strval(tmp);
 			if(id2 < 1 || id2 > 52) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Interior ID's 1-50."); return 1; }
 			
+			Houses[id][HInterior] = id2;
+			SaveHouseData(id, "Interior");
 			if(id2 == 1)
 			{
 				Houses[id][ExitX] = 235.212356;
@@ -8773,7 +8789,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp))
 			{
-				SendClientMessage(playerid, COLOR_WHITE, "[INFO:] /abuildingint [buildingid] [id (1-50)]");
+				SendClientMessage(playerid, COLOR_WHITE, "[INFO:] /abuildingint [buildingid] [id (1-38)]");
 				return 1;
 			}
 			new id;
@@ -8781,19 +8797,17 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp))
 			{
-				SendClientMessage(playerid, COLOR_WHITE, "[INFO:] /abuildingint [buildingid] [id (1-50)]");
+				SendClientMessage(playerid, COLOR_WHITE, "[INFO:] /abuildingint [buildingid] [id (1-38)]");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "1: Sherman Dam - 2: Planning Department - 3: Ganton Gym - 4: Cobra Gym - 5: Below The Belt Gym - 6: RC Battlefield");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "7-9: Police Departments - 10-12: Schools - 13: 8 Track Stadium - 14: Bloodbowl Stadium - 15: Dirtbike Stadium");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "6: Kickstart Stadium - 17: Vice Stadium - 19: Halo Taxi - 20: Szpital - 21: Biuro - 22: Bank - 23: Szko³a - 24: Straz Pozarna");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "25: Town Library - 26: Court Hall - 27: Realistic Office - 28: Strzelnica - 29: Bank - 30: Office - 31: Basen - 32: Szpital");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "33: Bank - 34-35: Small Office - 36: Big office - 37: Stadion narodowy - 38: NASCAR - 39: garaz - 40: duzy garaz");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "41: Office - 42: Bank - 43: Willa/Budynek - 44: Biblioteka - 45: Bank - 46: Budynek dla gangu - 47: Budynek dla gangu");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "48: Szpital - 49: Office - 50: Office");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "33: Bank - 34-35: Small Office - 36: Big office - 37: Stadion narodowy - 38: NASCAR");
 				return 1;
 			}
 			new id2;
 			id2 = strval(tmp);
-			if(id2 < 1 || id2 > 50) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Interior ID's 1-50."); return 1; }
+			if(id2 < 1 || id2 > 38) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Interior ID's 1-38."); return 1; }
 			if(id2 == 1)
 			{
 				Building[id][ExitX] = -959.873962;
@@ -9136,687 +9150,334 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				format(string, sizeof string, "Building ID: %d - Description: Stadio narodowy.", id);
 				SendClientMessage(playerid, COLOR_ADMINCMD,string);
 			}
-			else if(id2 == 39)
-			{
-				Building[id][ExitX] = 608.0;
-				Building[id][ExitY] = -13.0;
-				Building[id][ExitZ] = 1001.0;
-				Building[id][ExitAngle] = 237.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Du¿y gara¿.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 40)
-			{
-				Building[id][ExitX] = 614.345;
-				Building[id][ExitY] = -126.796;
-				Building[id][ExitZ] = 998.104;
-				Building[id][ExitAngle] = 274.876;
-				Building[id][ExitInterior] = 3;
-				format(string, sizeof string, "Building ID: %d - Description: Ma³y gara¿.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 41)
-			{
-				Building[id][ExitX] = 1793.43;
-				Building[id][ExitY] = -1162.42;
-				Building[id][ExitZ] = 23.97;
-				Building[id][ExitAngle] = 253.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: office", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 42)
-			{
-				Building[id][ExitX] = 614.68;
-				Building[id][ExitY] = -1512.83;
-				Building[id][ExitZ] = 15.41;
-				Building[id][ExitAngle] = 91.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: bank", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 43)
-			{
-				Building[id][ExitX] = 2228.76;
-				Building[id][ExitY] = -1249.19;
-				Building[id][ExitZ] = 1048.53;
-				Building[id][ExitAngle] = 179.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: willa/budynek", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 44)
-			{
-				Building[id][ExitX] = 1316.81;
-				Building[id][ExitY] = -897.09;
-				Building[id][ExitZ] = 39.57;
-				Building[id][ExitAngle] = 179.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: biblioteka", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 45)
-			{
-				Building[id][ExitX] = 320.78;
-				Building[id][ExitY] = 1853.12;
-				Building[id][ExitZ] = 1613.36;
-				Building[id][ExitAngle] = 85.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: bank", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 46)
-			{
-				Building[id][ExitX] = 1263.41;
-				Building[id][ExitY] = -605.38;
-				Building[id][ExitZ] = 1001.08;
-				Building[id][ExitAngle] = 177.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: budynek dla gangu", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 47)
-			{
-				Building[id][ExitX] = 276.96;
-				Building[id][ExitY] = 1851.71;
-				Building[id][ExitZ] = 994.23;
-				Building[id][ExitAngle] = 269.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: budynek dla gangu", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 48)
-			{
-				Building[id][ExitX] = 295.0;
-				Building[id][ExitY] = 1898.32;
-				Building[id][ExitZ] = 499.28;
-				Building[id][ExitAngle] = 172.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: szpital", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 49)
-			{
-				Building[id][ExitX] = 243.79;
-				Building[id][ExitY] = 313.95;
-				Building[id][ExitZ] = 999.15;
-				Building[id][ExitAngle] = 268.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: office", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 50)
-			{
-				Building[id][ExitX] = 1200.28;
-				Building[id][ExitY] = -1464.91;
-				Building[id][ExitZ] = -22.94;
-				Building[id][ExitAngle] = 351.18;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: office", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			
 			SaveBData(id, "ExitX");
 			SaveBData(id, "ExitY");
 			SaveBData(id, "ExitZ");
-			SaveBData(id, "ExitAngle");
 			SaveBData(id, "ExitInterior");
-			
 			return 1;
 		}
 		else if(strcmp(cmd, "/wnetrzebudynku", true) == 0)
 		{
 			tmp = strtok(cmdtext, idx);
-			
 			if(!strlen(tmp))
 			{
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /wnetrzebudynku [id (1-50)]");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "1: Sherman Dam - 2: Planning Department - 3: Ganton Gym - 4: Cobra Gym - 5: Below The Belt Gym - 6: RC Battlefield");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "7-9: Police Departments - 10-12: Schools - 13: 8 Track Stadium - 14: Bloodbowl Stadium - 15: Dirtbike Stadium");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "6: Kickstart Stadium - 17: Vice Stadium - 19: Halo Taxi - 20: Szpital - 21: Biuro - 22: Bank - 23: Szko³a - 24: Straz Pozarna");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "25: Town Library - 26: Court Hall - 27: Realistic Office - 28: Strzelnica - 29: Bank - 30: Office - 31: Basen - 32: Szpital");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "33: Bank - 34-35: Small Office - 36: Big office - 37: Stadion narodowy - 38: NASCAR - 39: garaz - 40: duzy garaz");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "41: Office - 42: Bank - 43: Willa/Budynek - 44: Biblioteka - 45: Bank - 46: Budynek dla gangu - 47: Budynek dla gangu");
+				SendClientMessage(playerid, COLOR_WHITE, "[INFO:] /wnetrzebudynku [buildingid] [id (1-17)]");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] 1: Sherman Dam - 2: Planning Department - 3: Ganton Gym - 4: Cobra Gym - 5: Below The Belt Gym");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] 6: RC Battlefield - 7-9: Police Departments - 10-12: Schools - 13: 8 Track Stadium");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] 14: Bloodbowl Stadium - 15: Dirtbike Stadium - 16: Kickstart Stadium - 17: Vice Stadium");
 				return 1;
 			}
-			
-			if(gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT)
+			if(gPlayerData[playerid][pFaction] == 9)
 			{
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ urzednikiem.");
-			}
-			
-			new id = -1;
-			
-			for(new i = 0; i < sizeof(Building); i++)
-			{
-				if(!PlayerToPoint(2.0, playerid, Building[i][EnterX], Building[i][EnterY], Building[i][EnterZ]))
-				{
-					continue;
-				}
-				
-				id = i;
-				break;
-			}
-			
-			if(id == -1)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ przy wejœciu do budynku");
-				return 1;
-			}
-			
-			new id2;
-			id2 = strval(tmp);
-			
-			if(id2 < 1 || id2 > 50) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Wnetrze ID's 1-50."); return 1; }
+					new id;
+					id = strval(tmp);
+					tmp = strtok(cmdtext, idx);
+					if(!strlen(tmp))
+					{
+						SendClientMessage(playerid, COLOR_WHITE, "[INFO:] /wnetrzebudynku [buildingid] [id (1-29)]");
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] 1: Sherman Dam - 2: Planning Department - 3: Ganton Gym - 4: Cobra Gym - 5: Below The Belt Gym");
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] 6: RC Battlefield - 7-9: Police Departments - 10-12: Schools - 13: 8 Track Stadium");
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] 14: Bloodbowl Stadium - 15: Dirtbike Stadium - 16: Kickstart Stadium - 17: Vice Stadium");
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] 19: Halo Taxi - 20: Szpital - 21: Biuro - 22: Bank - 23: Szko³a");
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] 24: Straz Pozarna - 25: Town Library - 26: Court Hall - 27: Realistic Office - 28: Strzelnica -29:Bank");
+						return 1;
+					}
+					new id2;
+					id2 = strval(tmp);
+					if(id2 < 1 || id2 > 30) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Wnetrze ID's 1-25."); return 1; }
 
-			format(string, sizeof(string), "[GOVERNMENT:] Business id %d int set to %d by %s", id, id2,gPlayerData[playerid][pName]);
-			GovermentLog(string);
-		
-			if(id2 == 1)
-			{
-				Building[id][ExitX] = -959.873962;
-				Building[id][ExitY] = 1952.000000;
-				Building[id][ExitZ] = 9.044310;
-				Building[id][ExitInterior] = 17;
-				format(string, sizeof string, "Building ID: %d - Description: Sherman Dam.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					format(string, sizeof(string), "[GOVERNMENT:] Business id %d int set to %d by %s", id, id2,gPlayerData[playerid][pName]);
+					GovermentLog(string);
+					if(id2 == 1)
+					{
+						Building[id][ExitX] = -959.873962;
+						Building[id][ExitY] = 1952.000000;
+						Building[id][ExitZ] = 9.044310;
+						Building[id][ExitInterior] = 17;
+						format(string, sizeof string, "Building ID: %d - Description: Sherman Dam.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 2)
+					{
+						Building[id][ExitX] = 388.871979;
+						Building[id][ExitY] = 173.804993;
+						Building[id][ExitZ] = 1008.389954;
+						Building[id][ExitInterior] = 3;
+						format(string, sizeof string, "Building ID: %d - Description: Planning Department.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 3)
+					{
+						Building[id][ExitX] = 772.112000;
+						Building[id][ExitY] = -3.898650;
+						Building[id][ExitZ] = 1000.687988;
+						Building[id][ExitInterior] = 5;
+						format(string, sizeof string, "Building ID: %d - Description: Ganton Gym.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 4)
+					{
+						Building[id][ExitX] = 774.213989;
+						Building[id][ExitY] = -48.924297;
+						Building[id][ExitZ] = 1000.687988;
+						Building[id][ExitInterior] = 6;
+						format(string, sizeof string, "Building ID: %d - Description: Cobra Gym.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 5)
+					{
+						Building[id][ExitX] = 773.579956;
+						Building[id][ExitY] = -77.096695;
+						Building[id][ExitZ] = 1000.687988;
+						Building[id][ExitInterior] = 7;
+						format(string, sizeof string, "Building ID: %d - Description: Below The Belt Gym.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 6)
+					{
+						Building[id][ExitX] = -972.4957;
+						Building[id][ExitY] = 1060.983;
+						Building[id][ExitZ] = 1345.669;
+						Building[id][ExitInterior] = 10;
+						format(string, sizeof string, "Building ID: %d - Description: RC Battlefield.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 7)
+					{
+						Building[id][ExitX] = 246.783997;
+						Building[id][ExitY] = 63.900200;
+						Building[id][ExitZ] = 1003.639954;
+						Building[id][ExitInterior] = 6;
+						format(string, sizeof string, "Building ID: %d - Description: LSPD.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 8)
+					{
+						Building[id][ExitX] = 246.375992;
+						Building[id][ExitY] = 109.245995;
+						Building[id][ExitZ] = 1003.279968;
+						Building[id][ExitInterior] = 10;
+						format(string, sizeof string, "Building ID: %d - Description: SFPD.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 9)
+					{
+						Building[id][ExitX] = 238.661987;
+						Building[id][ExitY] = 141.051987;
+						Building[id][ExitZ] = 1003.049988;
+						Building[id][ExitInterior] = 3;
+						format(string, sizeof string, "Building ID: %d - Description: LVPD.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 10)
+					{
+						Building[id][ExitX] = 1494.429932;
+						Building[id][ExitY] = 1305.629883;
+						Building[id][ExitZ] = 1093.289917;
+						Building[id][ExitInterior] = 3;
+						format(string, sizeof string, "Building ID: %d - Description: Bike School.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 11)
+					{
+						Building[id][ExitX] = -2029.719971;
+						Building[id][ExitY] = -115.067993;
+						Building[id][ExitZ] = 1035.169922;
+						Building[id][ExitInterior] = 3;
+						format(string, sizeof string, "Building ID: %d - Description: Driving School.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 12)
+					{
+						Building[id][ExitX] = 420.484985;
+						Building[id][ExitY] = 2535.589844;
+						Building[id][ExitZ] = 10.020289;
+						Building[id][ExitInterior] = 10;
+						format(string, sizeof string, "Building ID: %d - Description: School (None).", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 13)
+					{
+						Building[id][ExitX] = -1397.782470;
+						Building[id][ExitY] = -203.723114;
+						Building[id][ExitZ] = 1051.346801;
+						Building[id][ExitInterior] = 7;
+						format(string, sizeof string, "Building ID: %d - Description: 8 Track Stadium.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 14)
+					{
+						Building[id][ExitX] = -1398.103515;
+						Building[id][ExitY] = 933.445434;
+						Building[id][ExitZ] = 1041.531250;
+						Building[id][ExitInterior] = 15;
+						format(string, sizeof string, "Building ID: %d - Description: Bloodbowl Stadium.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 15)
+					{
+						Building[id][ExitX] = -1428.809448;
+						Building[id][ExitY] = -663.595886;
+						Building[id][ExitZ] = 1060.219848;
+						Building[id][ExitInterior] = 4;
+						format(string, sizeof string, "Building ID: %d - Description: Dirtbike Stadium.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 16)
+					{
+						Building[id][ExitX] = -1486.861816;
+						Building[id][ExitY] = 1642.145996;
+						Building[id][ExitZ] = 1060.671875;
+						Building[id][ExitInterior] = 14;
+						format(string, sizeof string, "Building ID: %d - Description: Kickstart Stadium.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 17)
+					{
+						Building[id][ExitX] = -1401.830000;
+						Building[id][ExitY] = 107.051300;
+						Building[id][ExitZ] = 1032.273000;
+						Building[id][ExitInterior] = 1;
+						format(string, sizeof string, "Building ID: %d - Description: Vice Stadium (Only center is solid).", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 18)
+					{
+						Building[id][ExitX] = 1935.4089;
+						Building[id][ExitY] = -2110.2100;
+						Building[id][ExitZ] = -19.3109;
+						Building[id][ExitInterior] = 0;
+						format(string, sizeof string, "Building ID: %d - Description: Vice Stadium (Only center is solid).", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 19)
+					{
+						Building[id][ExitX] = 371.8502;
+						Building[id][ExitY] = 182.0368;
+						Building[id][ExitZ] = 1014.1875;
+						Building[id][ExitInterior] = 3;
+						format(string, sizeof string, "Building ID: %d - Description: Halo Taxi.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 20)
+					{
+						Building[id][ExitX] = -2676.3142089844;
+						Building[id][ExitY] = 665.36920166016;
+						Building[id][ExitZ] = 10.298047065;
+						Building[id][ExitInterior] = 0;
+						format(string, sizeof string, "Building ID: %d - Description: Szpital.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 21)
+					{
+						Building[id][ExitX] = 1831.6578369141;
+						Building[id][ExitY] = -1292.5003662109;
+						Building[id][ExitZ] = 109.20129394531;
+						Building[id][ExitInterior] = 0;
+						format(string, sizeof string, "Building ID: %d - Description: Biuro.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 22)
+					{
+						Building[id][ExitX] = -467.1987;
+						Building[id][ExitY] = -196.4525;
+						Building[id][ExitZ] = 986.3784;
+						Building[id][ExitInterior] = 0;
+						format(string, sizeof string, "Building ID: %d - Description: Bank.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 23)
+					{
+						Building[id][ExitX] = 1261;
+						Building[id][ExitY] = -785;
+						Building[id][ExitZ] = 1093;
+						Building[id][ExitInterior] = 0;
+						format(string, sizeof string, "Building ID: %d - Description: Szkola.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 24)
+					{
+						Building[id][ExitX] = 491.3903;
+						Building[id][ExitY] = 1398.7488;
+						Building[id][ExitZ] = 1081.2582;
+						Building[id][ExitInterior] = 0;
+						format(string, sizeof string, "Building ID: %d - Description: Straz pozarna.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 25)
+					{
+						Building[id][ExitX] = 223.085769653325;
+						Building[id][ExitY] = 1287.5047607422;
+						Building[id][ExitZ] = 1082.1408691406;
+						Building[id][ExitInterior] = 0;
+						format(string, sizeof string, "Building ID: %d - Description: Town Library.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 26)
+					{
+						Building[id][ExitX] = 1207.8029785156;
+						Building[id][ExitY] = -903.25885009766;
+						Building[id][ExitZ] = 1094.6083984375;
+						Building[id][ExitInterior] = 0;
+						format(string, sizeof string, "Building ID: %d - Description: Court hall.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 27)
+					{
+						Building[id][ExitX] = -2652.3493652344;
+						Building[id][ExitY] = 375.43951416016;
+						Building[id][ExitZ] = -0.520361;
+						Building[id][ExitInterior] = 0;
+						format(string, sizeof string, "Building ID: %d - Description: Realistic Office.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 28)
+					{
+						Building[id][ExitX] = 304.572479;
+						Building[id][ExitY] = -142.094192;
+						Building[id][ExitZ] = 1004.062500;
+						Building[id][ExitInterior] = 7;
+						format(string, sizeof string, "Building ID: %d - Description: Ammunation Shooting Range.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					else if(id2 == 28)
+					{
+						Building[id][ExitX] = 325.2;
+						Building[id][ExitY] = 113.67;
+						Building[id][ExitZ] = 1008;
+						Building[id][ExitInterior] = 9;
+						format(string, sizeof string, "Building ID: %d - Description: Bank.", id);
+						SendClientMessage(playerid, COLOR_ADMINCMD,string);
+					}
+					SaveBData(id, "ExitX");
+					SaveBData(id, "ExitY");
+					SaveBData(id, "ExitZ");
+					SaveBData(id, "ExitInterior");
+					
+					format(string, sizeof(string), "[GOVERNMENT:] Building interior changed by: %s, interior id: %d", gPlayerData[playerid][pName], id2);
+					GovermentLog(string);
 			}
-			else if(id2 == 2)
+			else
 			{
-				Building[id][ExitX] = 388.871979;
-				Building[id][ExitY] = 173.804993;
-				Building[id][ExitZ] = 1008.389954;
-				Building[id][ExitInterior] = 3;
-				format(string, sizeof string, "Building ID: %d - Description: Planning Department.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "nie jesteœ urzednikiem.");
 			}
-			else if(id2 == 3)
-			{
-				Building[id][ExitX] = 772.112000;
-				Building[id][ExitY] = -3.898650;
-				Building[id][ExitZ] = 1000.687988;
-				Building[id][ExitInterior] = 5;
-				format(string, sizeof string, "Building ID: %d - Description: Ganton Gym.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 4)
-			{
-				Building[id][ExitX] = 774.213989;
-				Building[id][ExitY] = -48.924297;
-				Building[id][ExitZ] = 1000.687988;
-				Building[id][ExitInterior] = 6;
-				format(string, sizeof string, "Building ID: %d - Description: Cobra Gym.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 5)
-			{
-				Building[id][ExitX] = 773.579956;
-				Building[id][ExitY] = -77.096695;
-				Building[id][ExitZ] = 1000.687988;
-				Building[id][ExitInterior] = 7;
-				format(string, sizeof string, "Building ID: %d - Description: Below The Belt Gym.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 6)
-			{
-				Building[id][ExitX] = -972.4957;
-				Building[id][ExitY] = 1060.983;
-				Building[id][ExitZ] = 1345.669;
-				Building[id][ExitInterior] = 10;
-				format(string, sizeof string, "Building ID: %d - Description: RC Battlefield.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 7)
-			{
-				Building[id][ExitX] = 246.783997;
-				Building[id][ExitY] = 63.900200;
-				Building[id][ExitZ] = 1003.639954;
-				Building[id][ExitInterior] = 6;
-				format(string, sizeof string, "Building ID: %d - Description: LSPD.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 8)
-			{
-				Building[id][ExitX] = 246.375992;
-				Building[id][ExitY] = 109.245995;
-				Building[id][ExitZ] = 1003.279968;
-				Building[id][ExitInterior] = 10;
-				format(string, sizeof string, "Building ID: %d - Description: SFPD.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 9)
-			{
-				Building[id][ExitX] = 238.661987;
-				Building[id][ExitY] = 141.051987;
-				Building[id][ExitZ] = 1003.049988;
-				Building[id][ExitInterior] = 3;
-				format(string, sizeof string, "Building ID: %d - Description: LVPD.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 10)
-			{
-				Building[id][ExitX] = 1494.429932;
-				Building[id][ExitY] = 1305.629883;
-				Building[id][ExitZ] = 1093.289917;
-				Building[id][ExitInterior] = 3;
-				format(string, sizeof string, "Building ID: %d - Description: Bike School.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 11)
-			{
-				Building[id][ExitX] = -2029.719971;
-				Building[id][ExitY] = -115.067993;
-				Building[id][ExitZ] = 1035.169922;
-				Building[id][ExitInterior] = 3;
-				format(string, sizeof string, "Building ID: %d - Description: Driving School.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 12)
-			{
-				Building[id][ExitX] = 420.484985;
-				Building[id][ExitY] = 2535.589844;
-				Building[id][ExitZ] = 10.020289;
-				Building[id][ExitInterior] = 10;
-				format(string, sizeof string, "Building ID: %d - Description: School (None).", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 13)
-			{
-				Building[id][ExitX] = -1397.782470;
-				Building[id][ExitY] = -203.723114;
-				Building[id][ExitZ] = 1051.346801;
-				Building[id][ExitInterior] = 7;
-				format(string, sizeof string, "Building ID: %d - Description: 8 Track Stadium.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 14)
-			{
-				Building[id][ExitX] = -1398.103515;
-				Building[id][ExitY] = 933.445434;
-				Building[id][ExitZ] = 1041.531250;
-				Building[id][ExitInterior] = 15;
-				format(string, sizeof string, "Building ID: %d - Description: Bloodbowl Stadium.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 15)
-			{
-				Building[id][ExitX] = -1428.809448;
-				Building[id][ExitY] = -663.595886;
-				Building[id][ExitZ] = 1060.219848;
-				Building[id][ExitInterior] = 4;
-				format(string, sizeof string, "Building ID: %d - Description: Dirtbike Stadium.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 16)
-			{
-				Building[id][ExitX] = -1486.861816;
-				Building[id][ExitY] = 1642.145996;
-				Building[id][ExitZ] = 1060.671875;
-				Building[id][ExitInterior] = 14;
-				format(string, sizeof string, "Building ID: %d - Description: Kickstart Stadium.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 17)
-			{
-				Building[id][ExitX] = -1401.830000;
-				Building[id][ExitY] = 107.051300;
-				Building[id][ExitZ] = 1032.273000;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Vice Stadium (Only center is solid).", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 18)
-			{
-				Building[id][ExitX] = 1935.4089;
-				Building[id][ExitY] = -2110.2100;
-				Building[id][ExitZ] = -19.3109;
-				Building[id][ExitInterior] = 0;
-				format(string, sizeof string, "Building ID: %d - Description: Vice Stadium (Only center is solid).", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 19)
-			{
-				Building[id][ExitX] = 371.8502;
-				Building[id][ExitY] = 182.0368;
-				Building[id][ExitZ] = 1014.1875;
-				Building[id][ExitInterior] = 3;
-				format(string, sizeof string, "Building ID: %d - Description: Halo Taxi.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 20)
-			{
-				Building[id][ExitX] = -2676.3142089844;
-				Building[id][ExitY] = 665.36920166016;
-				Building[id][ExitZ] = 10.298047065;
-				Building[id][ExitInterior] = 0;
-				format(string, sizeof string, "Building ID: %d - Description: Szpital.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 21)
-			{
-				Building[id][ExitX] = 1831.6578369141;
-				Building[id][ExitY] = -1292.5003662109;
-				Building[id][ExitZ] = 109.20129394531;
-				Building[id][ExitInterior] = 0;
-				format(string, sizeof string, "Building ID: %d - Description: Biuro.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 22)
-			{
-				Building[id][ExitX] = -467.1987;
-				Building[id][ExitY] = -196.4525;
-				Building[id][ExitZ] = 986.3784;
-				Building[id][ExitInterior] = 0;
-				format(string, sizeof string, "Building ID: %d - Description: Bank.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 23)
-			{
-				Building[id][ExitX] = 1261;
-				Building[id][ExitY] = -785;
-				Building[id][ExitZ] = 1093;
-				Building[id][ExitInterior] = 0;
-				format(string, sizeof string, "Building ID: %d - Description: Szkola.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 24)
-			{
-				Building[id][ExitX] = 491.3903;
-				Building[id][ExitY] = 1398.7488;
-				Building[id][ExitZ] = 1081.2582;
-				Building[id][ExitInterior] = 0;
-				format(string, sizeof string, "Building ID: %d - Description: Straz pozarna.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 25)
-			{
-				Building[id][ExitX] = 223.085769653325;
-				Building[id][ExitY] = 1287.5047607422;
-				Building[id][ExitZ] = 1082.1408691406;
-				Building[id][ExitInterior] = 0;
-				format(string, sizeof string, "Building ID: %d - Description: Town Library.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 26)
-			{
-				Building[id][ExitX] = 1207.8029785156;
-				Building[id][ExitY] = -903.25885009766;
-				Building[id][ExitZ] = 1094.6083984375;
-				Building[id][ExitInterior] = 0;
-				format(string, sizeof string, "Building ID: %d - Description: Court hall.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 27)
-			{
-				Building[id][ExitX] = -2652.3493652344;
-				Building[id][ExitY] = 375.43951416016;
-				Building[id][ExitZ] = -0.520361;
-				Building[id][ExitInterior] = 0;
-				format(string, sizeof string, "Building ID: %d - Description: Realistic Office.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 28)
-			{
-				Building[id][ExitX] = 304.572479;
-				Building[id][ExitY] = -142.094192;
-				Building[id][ExitZ] = 1004.062500;
-				Building[id][ExitInterior] = 7;
-				format(string, sizeof string, "Building ID: %d - Description: Ammunation Shooting Range.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 29)
-			{
-				Building[id][ExitX] = 325.2;
-				Building[id][ExitY] = 113.67;
-				Building[id][ExitZ] = 1008;
-				Building[id][ExitInterior] = 9;
-				format(string, sizeof string, "Building ID: %d - Description: Bank.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 30)
-			{
-				Building[id][ExitX] = 1200.32;
-				Building[id][ExitY] = -1465.77;
-				Building[id][ExitZ] = -22.94;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Office.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 31)
-			{
-				Building[id][ExitX] = 559.56;
-				Building[id][ExitY] = -2095.57;
-				Building[id][ExitZ] = 2.62;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Office.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 32)
-			{
-				Building[id][ExitX] = 1144.46;
-				Building[id][ExitY] = -2510.87;
-				Building[id][ExitZ] = 113.82;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Szpital.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 33)
-			{
-				Building[id][ExitX] = 1440.0;
-				Building[id][ExitY] = -1008.0;
-				Building[id][ExitZ] = 27.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Bank.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 34)
-			{
-				Building[id][ExitX] = 1303.8715;
-				Building[id][ExitY] = -994.8543;
-				Building[id][ExitZ] = 6644.9927;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Small Office.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 35)
-			{
-				Building[id][ExitX] = 243.79;
-				Building[id][ExitY] = 314.04;
-				Building[id][ExitZ] = 999.15;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Small Office.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 36)
-			{
-				Building[id][ExitX] = 1303.26;
-				Building[id][ExitY] = -995.82;
-				Building[id][ExitZ] = 6645.73;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Small Office.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 37)
-			{
-				Building[id][ExitX] = 270.77;
-				Building[id][ExitY] = -241.31;
-				Building[id][ExitZ] = 1010.08;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Stadio narodowy.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 38)
-			{
-				Building[id][ExitX] = 1942.54;
-				Building[id][ExitY] = -6591.49;
-				Building[id][ExitZ] = 21.24;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Stadio narodowy.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 39)
-			{
-				Building[id][ExitX] = 608.0;
-				Building[id][ExitY] = -13.0;
-				Building[id][ExitZ] = 1001.0;
-				Building[id][ExitAngle] = 237.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: Du¿y gara¿.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 40)
-			{
-				Building[id][ExitX] = 614.345;
-				Building[id][ExitY] = -126.796;
-				Building[id][ExitZ] = 998.104;
-				Building[id][ExitAngle] = 274.876;
-				Building[id][ExitInterior] = 3;
-				format(string, sizeof string, "Building ID: %d - Description: Ma³y gara¿.", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 41)
-			{
-				Building[id][ExitX] = 1793.43;
-				Building[id][ExitY] = -1162.42;
-				Building[id][ExitZ] = 23.97;
-				Building[id][ExitAngle] = 253.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: office", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 42)
-			{
-				Building[id][ExitX] = 614.68;
-				Building[id][ExitY] = -1512.83;
-				Building[id][ExitZ] = 15.41;
-				Building[id][ExitAngle] = 91.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: bank", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 43)
-			{
-				Building[id][ExitX] = 2228.76;
-				Building[id][ExitY] = -1249.19;
-				Building[id][ExitZ] = 1048.53;
-				Building[id][ExitAngle] = 179.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: willa/budynek", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 44)
-			{
-				Building[id][ExitX] = 1316.81;
-				Building[id][ExitY] = -897.09;
-				Building[id][ExitZ] = 39.57;
-				Building[id][ExitAngle] = 179.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: biblioteka", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 45)
-			{
-				Building[id][ExitX] = 320.78;
-				Building[id][ExitY] = 1853.12;
-				Building[id][ExitZ] = 1613.36;
-				Building[id][ExitAngle] = 85.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: bank", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 46)
-			{
-				Building[id][ExitX] = 1263.41;
-				Building[id][ExitY] = -605.38;
-				Building[id][ExitZ] = 1001.08;
-				Building[id][ExitAngle] = 177.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: budynek dla gangu", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 47)
-			{
-				Building[id][ExitX] = 276.96;
-				Building[id][ExitY] = 1851.71;
-				Building[id][ExitZ] = 994.23;
-				Building[id][ExitAngle] = 269.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: budynek dla gangu", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 48)
-			{
-				Building[id][ExitX] = 295.0;
-				Building[id][ExitY] = 1898.32;
-				Building[id][ExitZ] = 499.28;
-				Building[id][ExitAngle] = 172.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: szpital", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 49)
-			{
-				Building[id][ExitX] = 243.79;
-				Building[id][ExitY] = 313.95;
-				Building[id][ExitZ] = 999.15;
-				Building[id][ExitAngle] = 268.0;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: office", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			else if(id2 == 50)
-			{
-				Building[id][ExitX] = 1200.28;
-				Building[id][ExitY] = -1464.91;
-				Building[id][ExitZ] = -22.94;
-				Building[id][ExitAngle] = 351.18;
-				Building[id][ExitInterior] = 1;
-				format(string, sizeof string, "Building ID: %d - Description: office", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD,string);
-			}
-			
-			SaveBData(id, "ExitX");
-			SaveBData(id, "ExitY");
-			SaveBData(id, "ExitZ");
-			SaveBData(id, "ExitAngle");
-			SaveBData(id, "ExitInterior");
-			
-			format(string, sizeof(string), "[GOVERNMENT:] Building interior changed by: %s, interior id: %d", gPlayerData[playerid][pName], id2);
-			GovermentLog(string);
-			
 			return 1;
 		}
 		else if(strcmp(cmd, "/abizint", true) == 0)
 		{
 			if(gPlayerData[playerid][pAdmin] < 4)
 				return 0;
-				
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp))
 			{
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /abizint [bizId]");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /ahouseint [houseid] [id (1-50)]");
 				return 1;
 			}
-			gPlayerVars[playerid][mBizIdIntEdit] = strval(tmp);
-			
-			format(string2, sizeof(string2), "");
-			strcat(string2, "1. Marco Bistro (EAT)\n2. Big Spread Ranch (BAR)\n3. Burger Shot (EAT)\n4. Clickin Bell (EAT)\n5. Well Stacked Pizza (EAT)\n6. Rusty Browns Dohnuts (EAT)\n7. Jays Diner (EAT)\n");
-			strcat(string2, "8. Pump Truck Stop Diner (EAT)\n9. Alhambra (DRINK)\n10. Mistys (DRINK)\n11. Lil' Probe Inn (DRINK)\n12. Exclusive (CLOTHES)\n13. Binco (CLOTHES)\n14. ProLaps (CLOTHES)\n15. SubUrban (CLOTHES)\n");
-			strcat(string2, "16. Victim (CLOTHES)\n17. Zip (CLOTHES)\n18. Redsands Casino\n19. Off Track Betting\n20. Sex Shop\n21. Zero's RC Shop\n22. Ammunation 1\n23. Ammunation 2\n24. Ammunation 3\n25. Ammunation 4\n");
-			strcat(string2, "26. Ammunation 5\n27. Jizzys (DRINK)\n28. 24-7 1\n29. 24-7 2\n30. 24-7 3\n31. 24-7 4\n32. 24-7 5\n33. 24-7 6\n34. missing?\n35. Kibelek\n36. Wiejskie Disco (DRINK)\n37. Disco (DRINK)\n38. Shop Elex\n");
-			strcat(string2, "39. Restauracja (EAT/DRINK)\n40. Restrauracja (EAT/DRINK)\n41. Computer Shop\n42. Apteka\n43. Moto Shop\n44. Bar\n45. Restauracja/bar\n46. Restauracja\n47. 24/7\n48. Sklep meblowy\n49. Biz\n50. office\n");
-			strcat(string2, "51. Bar na eventy\n52. Bar\n53. Club");
-		
-			ShowPlayerDialog(playerid, DIALOG_SELECT_BIZ_INT, DIALOG_STYLE_LIST, "Interiory biznesów", string2, "Wybierz", "Anuluj");
-			
-			return 1;
-			/*
+			new id;
+			id = strval(tmp);
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp))
 			{
-				
-				
 				SendClientMessage(playerid, COLOR_WHITE, "[INFO:] /abizint [bizid] [id (1-41)]");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] [1:] Marcos Bistro (Eat) - [2:] Big Spread Ranch (Bar) - [3:] Burger Shot (Eat) - [4:] Cluckin Bell (Eat)");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] [5:] Well Stacked Pizza (Eat) - [6:] Rusty Browns Dohnuts (Eat) - [7:] Jays Diner (Eat) - [8:] Pump Truck Stop Diner (Eat)");
@@ -9824,13 +9485,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] [14:] ProLaps (Clothes) - [15:] SubUrban (Clothes) - [16:] Victim (Clothes) - [17:] Zip (Clothes) - [18:] Redsands Casino");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] [19:] Off Track Betting - [20:] Sex Shop - [21:] Zero's RC Shop - [22-26:] Ammunations");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] [27:] Jizzys (Drink) - [27-33:] 24-7's (Buy) - [35:] Kibelek - [36:] Wiejskie Disco (Drink) - [37:] Disco (Drink) - [38:] Shop Elex ");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] [39:] Restauracja (Eat/Drink) - [40:] Restauracja (Eat/Drink) - [41:] Computer Shop (Buy) - [42:] Apteka - [43:] Moto Shop");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INTS:] [39:] Restauracja (Eat/Drink) - [40:] Restauracja (Eat/Drink) - [41:] Computer Shop (Buy)");
 
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "1 - 5 kk  ; 2 - 3 kk  ; 3 - 2 kk  ; 4 - 1,5 kk  ; 5 - 1,8 kk  ; 6 - 1,5 kk  ; 7 - 2 kk  ; 8 - 0 k  ; 9 - 4 kk  ; 10 - 1,4 kk ;");
+				/*SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "1 - 5 kk  ; 2 - 3 kk  ; 3 - 2 kk  ; 4 - 1,5 kk  ; 5 - 1,8 kk  ; 6 - 1,5 kk  ; 7 - 2 kk  ; 8 - 0 k  ; 9 - 4 kk  ; 10 - 1,4 kk ;");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "11 - 1,3 kk ; 12 - 2 kk ; 13 - 1,8 kk ; 14 - 2,2 kk ; 15 - 1,8 kk ; 16 - 2,2 kk ; 17 - 1,9 kk ; 18 - 5 kk ; 19 - 5 kk ; 20 - 1 kk ;");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "21 - 1,2 kk ; 22 - 1,2 kk ; 23 - 1,8 kk ; 24 - 6,5 kk ; 25 - 6,5 kk ; 26 - 6,3 kk ; 27 - 10 kk ; 28 - 4 kk ; 29 - 5 kk ; 30 - 4,5 kk ;");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "31 - 4,5 kk ; 32 - 4 kk ; 33 - 3 kk ; 34 - 1 k ; 35 - 3 kk ;");
-				
+				*/
 				return 1;
 			}
 			new id2;
@@ -10237,27 +9898,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				Businesses[id][ExitInterior] = 10;
 				Businesses[id][ExitAngle] = 0.0;
 				format(string, sizeof string, "Business ID: %d - Description: Sklep komputerowy", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD, string);
-			}
-			else if(id2 = 42)
-			{
-				Businesses[id][ExitX] = 1521.21;
-				Businesses[id][ExitY] = 1561.55;
-				Businesses[id][ExitZ] = 1010.85;
-				Businesses[id][ExitInterior] = 1;
-				Businesses[id][ExitAngle] = 178.34;				
-				format(string, sizeof string, "Business ID: %d - Description: Apteka", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD, string);
-			}
-			else if(id2 = 43)
-			{
-				Businesses[id][ExitX] = 1473.91;
-				Businesses[id][ExitY] = 1291.64;
-				Businesses[id][ExitZ] = 1010.82;
-				Businesses[id][ExitInterior] = 1;
-				Businesses[id][ExitAngle] = 272.94;				
-				format(string, sizeof string, "Business ID: %d - Description: Moto Shop", id);
-				SendClientMessage(playerid, COLOR_ADMINCMD, string);
+				SendClientMessage(playerid, COLOR_ADMINCMD,string);
 			}
 			SaveBizData(id, "ExitX");
 			SaveBizData(id, "ExitY");
@@ -10265,7 +9906,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SaveBizData(id, "ExitInterior");
 			SaveBizData(id, "ExitAngle");
 			SaveBizData(id, "BizPrice");
-			return 1;*/
+			return 1;
 		}
 		else if(strcmp(cmd, "/abizname", true) == 0)
 		{
@@ -10299,12 +9940,38 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			if(strfind(result , "|" , true) == -1)
 			{
 				strmid(Businesses[id][BusinessName], (result), 0, strlen((result)), 128);
-				SaveBizData(id, "BusinessName");
-				
-				RefreshBizDescription(id);
 
-				format(string, sizeof(string), "[INFO:] You have set Business ID: %d name to %s", id, result);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+				new businesstype[128];
+				if(Businesses[id][BizType] != 0)
+				{
+					if(Businesses[id][BizType] == 1) { businesstype = "Restauracja"; }
+					else if(Businesses[id][BizType] == 2) { businesstype = "Siec komorkowa"; }
+					else if(Businesses[id][BizType] == 3) { businesstype = "Sklep 24/7"; }
+					else if(Businesses[id][BizType] == 4) { businesstype = "Sklep z bronia"; }
+					else if(Businesses[id][BizType] == 5) { businesstype = "Studio reklamowe"; }
+					else if(Businesses[id][BizType] == 6) { businesstype = "Sklep z ubraniami"; }
+					else if(Businesses[id][BizType] == 7) { businesstype = "Bar/Club"; }
+					else if(Businesses[id][BizType] == 8) { businesstype = "Studio nagraniowe"; }
+					else if(Businesses[id][BizType] == 9) { businesstype = "Studio"; }
+					else if(Businesses[id][BizType] == 10) { businesstype = "Salon samochodowy"; }
+					else if(Businesses[id][BizType] == 11) { businesstype = "Stacja paliw"; }
+				}
+				else { businesstype = "Nie ustawione"; }
+
+				if(Businesses[id][Owned] == 0)
+				{
+					format(string, sizeof(string), "Numer Budynku: %d, Nazwa biznesu: %s, Typ biznesu: %s",id,Businesses[id][BusinessName],businesstype);
+					UpdateDynamic3DTextLabelText(Business3DTextLabelB[id], COLOR_LIGHTBLUE2, string);
+				}
+				else
+				{
+					format(string, sizeof(string), "Numer Budynku: %d, Nazwa biznesu: %s, Typ biznesu: %s",id,Businesses[id][BusinessName],businesstype);
+					UpdateDynamic3DTextLabelText(Business3DTextLabelA[id], COLOR_LIGHTBLUE2, string);
+				}
+
+				format(string, sizeof(string), "[INFO:] You have set Business ID's: %d's name to %s", id,(result));
+				SendClientMessage(playerid, COLOR_ADMINCMD, string);
+				SaveBizData(id, "BusinessName");
 			}
 			else
 			{
@@ -10316,77 +9983,51 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pAdmin] < 4)
 				return 0;
-			for(new i = 0; i < sizeof(Businesses); i++)
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
 			{
-				if(!PlayerToPoint(1.0, playerid, Businesses[i][EnterX], Businesses[i][EnterY], Businesses[i][EnterZ]))
-					continue;
-				if(Businesses[i][BizType] == 10)
-				{
-					new cost;
-					for(new j = 0; j < sizeof(gVehData); j++)
-					{
-						if(gVehData[j][BusinessID] == i)
-							cost += cenyPojazdow[gVehData[j][mVehModel]-400];
-					}
-					//DynamicFactions[FACTIONID_GOVERNMENT][fBank] += Businesses[i][BizPrice]+cost;
-					//SaveFData(FACTIONID_GOVERNMENT, "Bank");
-					format(string, sizeof(string), "[INFO:] Sprzeda³eœ biznes wart $%d.", Businesses[i][BizPrice]+cost);
-				}
-				else
-				{
-					//DynamicFactions[FACTIONID_GOVERNMENT][fBank] += Businesses[i][BizPrice];
-					//SaveFData(FACTIONID_GOVERNMENT, "Bank");
-					format(string, sizeof(string), "[INFO:] Sprzeda³eœ biznes warty $%d.", Businesses[i][BizPrice]);
-				}
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
-
-				ResetBizData(i);
-				RefreshBizDescription(i);
-				
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /abizsell [businessid]");
 				return 1;
 			}
+			new id = strval(tmp);
+			Businesses[id][Locked] = 1;
+			Businesses[id][Owned] = 0;
+			strmid(Businesses[id][Owner], "None", 0, strlen("None"), 255);
+
+			Businesses[id][PickupID] = ChangePickupModel(Businesses[id][PickupID], 1272, Businesses[id][EnterX],Businesses[id][EnterY],Businesses[id][EnterZ]);
+
+			SaveBizData(id, "Locked");
+			SaveBizData(id, "Owned");
+			SaveBizData(id, "Owner");
+			new form[128];
+			format(form, sizeof(form), "[INFO:] You have sold business ID: %d.", id);
+			SendClientMessage(playerid, COLOR_ADMINCMD, form);
 			return 1;
 		}
 		else if(strcmp(cmd, "/sprzedajbiz", true) == 0)
 		{
-			if(gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT)
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ urzêdnikiem");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /sprzedajbiz [id biznesu]");
 				return 1;
 			}
-		
-			new id = -1;
-			
-			for(new i = 0; i < sizeof(Businesses); i++)
+			new id = strval(tmp);
+			if(gPlayerData[playerid][pFaction] == 9)
 			{
-				if(!PlayerToPoint(2.0, playerid, Businesses[i][EnterX], Businesses[i][EnterY], Businesses[i][EnterZ]))
-				{
-					continue;
-				}
-			
-				if(Businesses[i][Owned])
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz zmieniæ ceny biznesu kupionego !");
-					return 1;
-				}
+				format(string, sizeof(string), "[GOVERNMENT:] Business sold by: %s, biz id: %d, price: %d$, owner: %s", gPlayerData[playerid][pName], id, Businesses[id][BizPrice], Businesses[id][Owner]);
+				GovermentLog(string);
 				
-				id = i;
+				ResetBizData(id, 1);
+				
+				new form[128];
+				format(form, sizeof(form), "[INFO:] Sprzeda³eœ biznes od id: %d.", id);
+				SendClientMessage(playerid, COLOR_ADMINCMD, form);				
 			}
-			
-			if(id == -1)
+			else
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ przy wejœciu do ¿adnego biznesu");
-				return 1;
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ urzednikiem");
 			}
-			
-			format(string, sizeof(string), "[GOVERNMENT:] Business sold by: %s, biz id: %d, price: $%d, owner: %s", gPlayerData[playerid][pName], id, Businesses[id][BizPrice], Businesses[id][Owner]);
-			GovermentLog(string);
-			
-			ResetBizData(id);
-			
-			format(string, sizeof(string), "[INFO:] Sprzeda³eœ biznes od ID %d", id);
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);				
-			
 			return 1;
 		}
 		else if(strcmp(cmd, "/ahouseprice", true) == 0)
@@ -10412,7 +10053,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			Houses[id][HousePrice] = id2;
 			if(Houses[id][Owned] == 0)
 			{
-				format(string, sizeof(string), "Opis: %s, Cena: $%d",Houses[id][Description],Houses[id][HousePrice]);
+				format(string, sizeof(string), "Opis: %s, Cena: %d$",Houses[id][Description],Houses[id][HousePrice]);
 				UpdateDynamic3DTextLabelText(Houses3DTextLabelC[id], COLOR_LIGHTYELLOW2, string);
 			}
 			new form[128];
@@ -10432,8 +10073,19 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				return 1;
 			}
 			new id = strval(tmp);
-			
-			ResetHouseData(id, 1);
+			ResetHouseData(id, 1);			
+
+			new houselocation[MAX_ZONE_NAME];
+			GetCoords2DZone(Houses[id][EnterX],Houses[id][EnterY], houselocation, MAX_ZONE_NAME);
+
+			format(string, sizeof(string), "Ten dom jest na sprzedaz!");
+			UpdateDynamic3DTextLabelText(Houses3DTextLabelA[id], COLOR_LIGHTYELLOW2, string);
+
+			format(string, sizeof(string), "Adres: %d %s",id,houselocation);
+			UpdateDynamic3DTextLabelText(Houses3DTextLabelB[id], COLOR_LIGHTYELLOW2, string);
+
+			format(string, sizeof(string), "Opis: %s, Cena: %d$",Houses[id][Description],Houses[id][HousePrice]);
+			UpdateDynamic3DTextLabelText(Houses3DTextLabelC[id], COLOR_LIGHTYELLOW2, string);
 
 			new form[128];
 			format(form, sizeof(form), "[INFO:] You have sold house ID: %d.", id);
@@ -10667,71 +10319,133 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 		else if(strcmp(cmd, "/ustawdom", true) == 0)
 		{
-			new id = -1;
-			
-			for(new i = 0; i < sizeof(Houses); i++)
+			if(gPlayerData[playerid][pAdmin] != 5)
 			{
-				if(Houses[i][HPlaced])
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ta komenda zosta³a zablokowana !");
+				return 1;
+			}
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /ustawdom [id domu]");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Raz ustawionego domu nie mo¿na przestawiæ !");
+				return 1;
+			}
+			new id = strval(tmp);
+			if(gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT)
+			{
+				if(Houses[id][Owned])
 				{
-					continue;
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz skorzystaæ z tego ID poniewa¿ jest ono zajête !");
+					return 1;
 				}
-				
-				id = i;
-			}
-			
-			if(id == -1)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Brak wolnych domów !");
-				return 1;
-			}
-			
-			if(gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ urzednikiem");
-				return 1;
-			}
-			
-			if(Houses[id][Owned])
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz skorzystaæ z tego ID poniewa¿ jest ono zajête !");
-				return 1;
-			}
-			
-			if(Houses[id][HPlaced])
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] To ID zosta³o ju¿ wykorzystane, wybierz inne");
-				return 1;
-			}
-			
-			GetPlayerPos(playerid, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]);
-			Houses[id][EnterWorld] = GetPlayerVirtualWorld(playerid);
-			Houses[id][EnterInterior] = GetPlayerInterior(playerid);
-			Houses[id][HouseType] = HOUSET_HOUSE;
-			GetPlayerFacingAngle(playerid, Houses[id][EnterAngle]);
-			Houses[id][HPlaced] = 1;
+				if(Houses[id][HPlaced])
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] To ID zosta³o ju¿ wykorzystane, wybierz inne");
+					return 1;
+				}
+				if(!Houses[id][HIntSet])
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Przed ustawieniem domu ustaw jego interior !");
+					return 1;
+				}
+				new pmodel;
+				new Float:x,Float:y,Float:z;
+				GetPlayerPos(playerid, x, y, z);
+				Houses[id][EnterX] = x;
+				Houses[id][EnterY] = y;
+				Houses[id][EnterZ] = z;
+				Houses[id][EnterWorld] = GetPlayerVirtualWorld(playerid);
+				Houses[id][EnterInterior] = GetPlayerInterior(playerid);
+				Houses[id][HouseType] = HOUSET_HOUSE;
+				new Float:angle;
+				GetPlayerFacingAngle(playerid, angle);
+				Houses[id][EnterAngle] = angle;
+				Houses[id][HPlaced] = 1;
 
-			RefreshHouseDescription(id);
-			
-			SaveHouseData(id, "EnterX");
-			SaveHouseData(id, "EnterY");
-			SaveHouseData(id, "EnterZ");
-			SaveHouseData(id, "EnterWorld");
-			SaveHouseData(id, "EnterInterior");
-			SaveHouseData(id, "EnterAngle");
-			SaveHouseData(id, "Placed");
-			
-			format(string, sizeof(string), "[INFO:] Ustawi³eœ dom o ID %d", id);
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+				switch(Houses[id][Owned])
+				{
+					case 0: pmodel = 1273;
+					case 1: pmodel = 1239;
+				}
+				DestroyDynamicPickup(Houses[id][PickupID]);
+				Houses[id][PickupID] = CreateDynamicPickup(pmodel, 1, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]);
 
-			new Year, Month, Day;
-			getdate(Year, Month, Day);
-			new Hour, Minute, Second;
-			gettime(Hour, Minute, Second);
+				DestroyDynamic3DTextLabel(Houses3DTextLabelA[id]);
+				DestroyDynamic3DTextLabel(Houses3DTextLabelB[id]);
+				DestroyDynamic3DTextLabel(Houses3DTextLabelC[id]);
 
-			format(string, sizeof(string), "[GOVERNMENT:] House id: %d, set up X: %f, Y: %f, Z: %f by %s", 
-				id, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ], gPlayerData[playerid][pName]);
-			GovermentLog(string);
-			
+				if(Houses[id][Owned] == 0)
+				{
+					new houselocation[MAX_ZONE_NAME];
+					GetCoords2DZone(Houses[id][EnterX],Houses[id][EnterY], houselocation, MAX_ZONE_NAME);
+
+					format(string, sizeof(string), "Ten dom jest na sprzedaz!");
+					Houses3DTextLabelA[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Adres: %d %s",id,houselocation);
+					Houses3DTextLabelB[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Opis: %s, Cena: %d$",Houses[id][Description],Houses[id][HousePrice]);
+					Houses3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				}
+				else
+				{
+					if(Houses[id][Rentable] == 1)
+					{
+						new houselocation[MAX_ZONE_NAME];
+						GetCoords2DZone(Houses[id][EnterX],Houses[id][EnterY], houselocation, MAX_ZONE_NAME);
+
+						format(string, sizeof(string), "Adres: %d %s",id,houselocation);
+						Houses3DTextLabelA[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+						// format(string, sizeof(string), "Wlasciciel: %s",Houses[id][Owner]);
+						format(string, sizeof(string), " ",Houses[id][Owner]);
+						Houses3DTextLabelB[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+						format(string, sizeof(string), "Opis: %s Czynsz: %d$ (/wynajmijdom)",Houses[id][Description],Houses[id][RentCost]);
+						Houses3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+					}
+					else
+					{
+						new houselocation[MAX_ZONE_NAME];
+						GetCoords2DZone(Houses[id][EnterX],Houses[id][EnterY], houselocation, MAX_ZONE_NAME);
+
+						format(string, sizeof(string), "Adres: %d %s",id,houselocation);
+						Houses3DTextLabelA[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+						// format(string, sizeof(string), "Wlasciciel: %s",Houses[id][Owner]);
+						format(string, sizeof(string), " ",Houses[id][Owner]);
+						Houses3DTextLabelB[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+						format(string, sizeof(string), "Opis: %s",Houses[id][Description]);
+						Houses3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+					}
+				}
+				SaveHouseData(id, "EnterX");
+				SaveHouseData(id, "EnterY");
+				SaveHouseData(id, "EnterZ");
+				SaveHouseData(id, "EnterWorld");
+				SaveHouseData(id, "EnterInterior");
+				SaveHouseData(id, "EnterAngle");
+				SaveHouseData(id, "Placed");
+				new form[256];
+				format(form, sizeof(form), "[INFO:] Ustawi³eœ dom o ID: %d w dzielnicy", id);
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, form);
+
+				// log
+				new Year, Month, Day;
+				getdate(Year, Month, Day);
+				new Hour, Minute, Second;
+				gettime(Hour, Minute, Second);
+
+				format(form, sizeof(form), "[GOVERNMENT:] House id: %d, set up X: %f, Y: %f, Z: %f by %s", id, x, y, z,gPlayerData[playerid][pName]);
+				GovermentLog(form);
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "nie jesteœ urzednikiem..");
+			}
 			return 1;
 		}
 		else if(strcmp(cmd, "/wynajmijkomornika", true) == 0)
@@ -10749,7 +10463,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				getdate(Year, Month, Day);
 				new Hour, Minute, Second;
 				gettime(Hour, Minute, Second);
-				format(string, sizeof(string), "[GOVERNMENT:] Hose sold by broker: %s, ID domu: %d, cena: $%d, wlasciciel: %s", gPlayerData[playerid][pName], id, Houses[id][HousePrice], Houses[id][Owner]);
+				format(string, sizeof(string), "[GOVERNMENT:] Hose sold by broker: %s, ID domu: %d, cena: %d$, wlasciciel: %s", gPlayerData[playerid][pName], id, Houses[id][HousePrice], Houses[id][Owner]);
 				GovermentLog(string);
 				
 				Houses[id][Locked] = 1;
@@ -10763,7 +10477,17 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				DestroyDynamicPickup(Houses[id][PickupID]);
 				Houses[id][PickupID] = CreateDynamicPickup(1273, 1, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]);
 
-				RefreshHouseDescription(id);
+				new houselocation[MAX_ZONE_NAME];
+				GetCoords2DZone(Houses[id][EnterX],Houses[id][EnterY], houselocation, MAX_ZONE_NAME);
+
+				format(string, sizeof(string), "Ten dom jest na sprzedaz!");
+				UpdateDynamic3DTextLabelText(Houses3DTextLabelA[id], COLOR_LIGHTYELLOW2, string);
+
+				format(string, sizeof(string), "Adres: %d %s",id,houselocation);
+				UpdateDynamic3DTextLabelText(Houses3DTextLabelB[id], COLOR_LIGHTYELLOW2, string);
+
+				format(string, sizeof(string), "Opis: %s, Cena: %d$",Houses[id][Description],Houses[id][HousePrice]);
+				UpdateDynamic3DTextLabelText(Houses3DTextLabelC[id], COLOR_LIGHTYELLOW2, string);
 
 				SaveHouseData(id, "Locked");
 				SaveHouseData(id, "Owned");
@@ -10774,6 +10498,68 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				new form[128];
 				format(form, sizeof(form), "[INFO:] Sprzedales dom ID: %d.", id);
 				SendClientMessage(playerid, COLOR_ADMINCMD, form);
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "nie jesteœ urzednikiem.");
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/cenadomu", true) == 0)
+		{
+			if(gPlayerData[playerid][pAdmin] != 5)
+			{
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ta komenda zosta³a zablokowana !");
+				return 1;
+			}
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /cenadomu [id domu] [cena]");
+				return 1;
+			}
+			if(gPlayerData[playerid][pFaction] == 9)
+			{
+				new id;
+				id = strval(tmp);
+				tmp = strtok(cmdtext, idx);
+				if(!strlen(tmp))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /cenadomu [id domu] [cena]");
+					return 1;
+				}
+				new id2;
+				id2 = strval(tmp);
+
+				if(Houses[id][Owned] == 1)
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz zmieniæ ceny domu kupionego");
+					return 1;
+				}
+				if(id2 < 0)
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Cena musi byæ wiêksza lub równa zeru");
+					return 1;
+				}
+				Houses[id][HousePrice] = id2;
+				if(Houses[id][Owned] == 0)
+				{
+					format(string, sizeof(string), "Opis: %s, Cena: %d$",Houses[id][Description],Houses[id][HousePrice]);
+					UpdateDynamic3DTextLabelText(Houses3DTextLabelC[id], COLOR_LIGHTYELLOW2, string);
+				}
+
+				new form[128];
+				format(form, sizeof form, "[INFO:] Ustawiles cene domu ID: %d's na %d.", id,id2);
+				SendClientMessage(playerid, COLOR_ADMINCMD,form);
+				SaveHouseData(id, "HousePrice");
+
+				new Year, Month, Day;
+				getdate(Year, Month, Day);
+				new Hour, Minute, Second;
+				gettime(Hour, Minute, Second);
+
+				format(string, sizeof(string), "[GOVERNMENT:] House id: %d, price set up to: %d$ by %s", id, id2, GetPlayerNameEx(playerid));
+				GovermentLog(string);
 			}
 			else
 			{
@@ -10811,9 +10597,55 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}
 			DestroyDynamicPickup(Houses[id][PickupID]);
 			Houses[id][PickupID] = CreateDynamicPickup(pmodel, 1, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]);
-			
-			RefreshHouseDescription(id);
-			
+			DestroyDynamic3DTextLabel(Houses3DTextLabelA[id]);
+			DestroyDynamic3DTextLabel(Houses3DTextLabelB[id]);
+			DestroyDynamic3DTextLabel(Houses3DTextLabelC[id]);
+			if(Houses[id][Owned] == 0)
+			{
+				new houselocation[MAX_ZONE_NAME];
+				GetCoords2DZone(Houses[id][EnterX],Houses[id][EnterY], houselocation, MAX_ZONE_NAME);
+
+				format(string, sizeof(string), "Ten dom jest na sprzedaz!");
+				Houses3DTextLabelA[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+				format(string, sizeof(string), "Adres: %d %s",id,houselocation);
+				Houses3DTextLabelB[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+				format(string, sizeof(string), "Opis: %s, Cena: %d$",Houses[id][Description],Houses[id][HousePrice]);
+				Houses3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+			}
+			else
+			{
+				if(Houses[id][Rentable] == 1)
+				{
+					new houselocation[MAX_ZONE_NAME];
+					GetCoords2DZone(Houses[id][EnterX],Houses[id][EnterY], houselocation, MAX_ZONE_NAME);
+
+					format(string, sizeof(string), "Adres: %d %s",id,houselocation);
+					Houses3DTextLabelA[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Wlasciciel: %s",Houses[id][Owner]);
+					format(string, sizeof(string), " ",Houses[id][Owner]);
+					Houses3DTextLabelB[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Opis: %s Czynsz: %d$ (/wynajmijdom)",Houses[id][Description],Houses[id][RentCost]);
+					Houses3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				}
+				else
+				{
+					new houselocation[MAX_ZONE_NAME];
+					GetCoords2DZone(Houses[id][EnterX],Houses[id][EnterY], houselocation, MAX_ZONE_NAME);
+
+					format(string, sizeof(string), "Adres: %d %s",id,houselocation);
+					Houses3DTextLabelA[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+1.0, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), " ",Houses[id][Owner]);
+					Houses3DTextLabelB[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ]+0.5, 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+
+					format(string, sizeof(string), "Opis: %s",Houses[id][Description]);
+					Houses3DTextLabelC[id] = CreateDynamic3DTextLabel(string, COLOR_LIGHTYELLOW2, Houses[id][EnterX], Houses[id][EnterY], Houses[id][EnterZ], 25.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				}
+			}
 			SaveHouseData(id, "EnterX");
 			SaveHouseData(id, "EnterY");
 			SaveHouseData(id, "EnterZ");
@@ -10890,14 +10722,14 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 				if(Houses[id][Owned] == 0)
 				{
-					format(string, sizeof(string), "Opis: %s, Cena: $%d",Houses[id][Description],Houses[id][HousePrice]);
+					format(string, sizeof(string), "Opis: %s, Cena: %d$",Houses[id][Description],Houses[id][HousePrice]);
 					UpdateDynamic3DTextLabelText(Houses3DTextLabelC[id], COLOR_LIGHTYELLOW2, string);
 				}
 				else
 				{
 					if(Houses[id][Rentable] == 1)
 					{
-						format(string, sizeof(string), "Opis: %s Czynsz: $%d (/wynajmijdom)",Houses[id][Description],Houses[id][RentCost]);
+						format(string, sizeof(string), "Opis: %s Czynsz: %d$ (/wynajmijdom)",Houses[id][Description],Houses[id][RentCost]);
 						UpdateDynamic3DTextLabelText(Houses3DTextLabelC[id], COLOR_LIGHTYELLOW2, string);
 					}
 					else
@@ -10921,80 +10753,80 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pAdmin] < 1)
 				return 0;
-				
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp))
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /abuildingentrance [buildingid]");
 				return 1;
 			}
-			
 			new id = strval(tmp);
-			
-			GetPlayerPos(playerid, Building[id][EnterX], Building[id][EnterY], Building[id][EnterZ]);
+			new Float:x,Float:y,Float:z;
+			GetPlayerPos(playerid, x, y, z);
+			Building[id][EnterX] = x;
+			Building[id][EnterY] = y;
+			Building[id][EnterZ] = z;
 			Building[id][EnterWorld] = GetPlayerVirtualWorld(playerid);
 			Building[id][EnterInterior] = GetPlayerInterior(playerid);
-			GetPlayerFacingAngle(playerid, Building[id][EnterAngle]);
-			
-			RefreshBuildingDescription(id);
-			
+			Building[id][PickupID] = ChangePickupModel(Building[id][PickupID],1239,Building[id][EnterX], Building[id][EnterY], Building[id][EnterZ]);
+			new Float:angle;
+			GetPlayerFacingAngle(playerid, angle);
+			Building[id][EnterAngle] = angle;
 			SaveBData(id, "EnterX");
 			SaveBData(id, "EnterY");
 			SaveBData(id, "EnterZ");
 			SaveBData(id, "EnterAngle");
 			SaveBData(id, "EnterWorld");
 			SaveBData(id, "EnterInterior");
-			
-			format(string, sizeof(string), "[INFO:] You have set building ID: %d's location.", id);
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-			
+			new form[128];
+			format(form, sizeof(form), "[INFO:] You have set building ID: %d's location.", id);
+			SendClientMessage(playerid, COLOR_ADMINCMD, form);
 			return 1;
 		}
-		else if(strcmp(cmd, "/ustawbudynek", true) == 0)
+		else if(strcmp(cmd, "/wejsciebudynku", true) == 0)
 		{
-			if(gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT)
+			if(gPlayerData[playerid][pAdmin] != 5)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ urzêdnikiem");
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ta komenda zosta³a zablokowana !");
 				return 1;
 			}
-			
-			new id = -1;
-			
-			for(new i = 0; i < sizeof(Building); i++)
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
 			{
-				if(Building[i][mBuildingPlaced] || Building[i][FactionOwnerId] != -1)
-				{
-					continue;
-				}
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /wejsciebudynku [id budynku]");
+				return 1;
+			}
+			new id = strval(tmp);
+			if(gPlayerData[playerid][pFaction] == 9)
+			{
+				new Float:x,Float:y,Float:z;
+				GetPlayerPos(playerid, x, y, z);
+				Building[id][EnterX] = x;
+				Building[id][EnterY] = y;
+				Building[id][EnterZ] = z;
+				Building[id][EnterWorld] = GetPlayerVirtualWorld(playerid);
+				Building[id][EnterInterior] = GetPlayerInterior(playerid);
+				new Float:angle;
+				GetPlayerFacingAngle(playerid, angle);
+				Building[id][EnterAngle] = angle;
+				Building[id][PickupID] = ChangePickupModel(Building[id][PickupID],1239,Building[id][EnterX], Building[id][EnterY], Building[id][EnterZ]);
+				SaveBData(id, "EnterX");
+				SaveBData(id, "EnterY");
+				SaveBData(id, "EnterZ");
+				SaveBData(id, "EnterAngle");
+				SaveBData(id, "EnterWorld");
+				SaveBData(id, "EnterInterior");
+				new form[256];
+				format(form, sizeof(form), "[INFO:] Ustawiles budynek ID: %d .", id);
+				SendClientMessage(playerid, COLOR_ADMINCMD, form);
 				
-				id = i;
+				// log
+				format(form, sizeof(form), "[GOVERNMENT:] Building etrance set by %s for building ID %d", gPlayerData[playerid][pName], id);
+				GovermentLog(form);	
 			}
-			
-			if(id == -1)
+			else
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Brak wolnych budynków");
-				return 1;
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ urzednikiem.");
 			}
-			
-			GetPlayerPos(playerid, Building[id][EnterX], Building[id][EnterY], Building[id][EnterZ]);
-			Building[id][EnterWorld] = GetPlayerVirtualWorld(playerid);
-			Building[id][EnterInterior] = GetPlayerInterior(playerid);
-			GetPlayerFacingAngle(playerid, Building[id][EnterAngle]);
-			Building[id][mBuildingPlaced] = 1;
-			
-			RefreshBuildingDescription(id);
-			
-			SaveBData(id, "EnterX");
-			SaveBData(id, "EnterY");
-			SaveBData(id, "EnterZ");
-			SaveBData(id, "EnterAngle");
-			SaveBData(id, "EnterWorld");
-			SaveBData(id, "EnterInterior");
-			SaveBData(id, "BuildingPlaced");
-			
-			format(string, sizeof(string), "[INFO:] Ustawi³eœ budynek o ID %d", id);
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-			
 			return 1;
 		}
 		else if(strcmp(cmd, "/ksiazkatel", true) == 0)
@@ -11101,35 +10933,32 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 		else if(strcmp(cmd, "/abuildingexit", true) == 0)
 		{
-			if(gPlayerData[playerid][pAdmin] != 5)
-			{
+			if(gPlayerData[playerid][pAdmin] < 4)
 				return 0;
-			}
-			
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp))
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /abuildingexit [buildingid]");
 				return 1;
 			}
-			
 			new id = strval(tmp);
-			
-			GetPlayerPos(playerid, Building[id][ExitX], Building[id][ExitY], Building[id][ExitZ]);
+			new Float:x,Float:y,Float:z;
+			GetPlayerPos(playerid, x, y, z);
+			Building[id][ExitX] = x;
+			Building[id][ExitY] = y;
+			Building[id][ExitZ] = z;
 			Building[id][ExitInterior] = GetPlayerInterior(playerid);
-			GetPlayerFacingAngle(playerid, Building[id][ExitAngle]);
-			
+			new Float:angle;
+			GetPlayerFacingAngle(playerid, angle);
+			Building[id][ExitAngle] = angle;
 			SaveBData(id, "ExitX");
 			SaveBData(id, "ExitY");
 			SaveBData(id, "ExitZ");
 			SaveBData(id, "ExitAngle");
 			SaveBData(id, "ExitInterior");
-			
-			RefreshBuildingDescription(id);
-			
-			format(string, sizeof(string), "[INFO:] You have set building ID: %d's exit location.", id);
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-			
+			new form[128];
+			format(form, sizeof(form), "[INFO:] You have set building ID: %d's exit location.", id);
+			SendClientMessage(playerid, COLOR_ADMINCMD, form);
 			return 1;
 		}
 		else if(strcmp(cmd, "/abuildingname", true) == 0)
@@ -11164,9 +10993,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			if(strfind(result , "|" , true) == -1)
 			{
 				strmid(Building[id][BuildingName], (result), 0, strlen((result)), 128);
-				
-				RefreshBuildingDescription(id);
-				
 				format(string, sizeof(string), "[INFO:] You have set Building ID: %d's name to %s", id,(result));
 				SendClientMessage(playerid, COLOR_ADMINCMD, string);
 				SaveBData(id, "BuildingName");
@@ -11174,6 +11000,54 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			else
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Invalid symbol, | is not allowed!");
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/nazwabudynku", true) == 0)
+		{
+			if(gPlayerData[playerid][pAdmin] != 5)
+			{
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ta komenda zosta³a zablokowana !");
+				return 1;
+			}
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /nazwabudynku [buildingid] [name]");
+				return 1;
+			}
+			new id = strval(tmp);
+			if(gPlayerData[playerid][pFaction] == 9)
+			{
+				new length = strlen(cmdtext);
+				while ((idx < length) && (cmdtext[idx] <= ' '))
+				{
+					idx++;
+				}
+				new offset = idx;
+				new result[64];
+				while ((idx < length) && ((idx - offset) < (sizeof(result) - 1)))
+				{
+					result[idx - offset] = cmdtext[idx];
+					idx++;
+				}
+				result[idx - offset] = EOS;
+				if(!strlen(result))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /nazwabudynku [buildingid] [name]");
+					return 1;
+				}
+				strmid(Building[id][BuildingName], (result), 0, strlen((result)), 128);
+				format(string, sizeof(string), "[INFO:] You have set Building ID: %d's name to %s", id,(result));
+				SendClientMessage(playerid, COLOR_ADMINCMD, string);
+				SaveBData(id, "BuildingName");
+				
+				format(string, sizeof(string), "[GOVERNMENT:] Building name change by: %s to %s, building ID: %d", gPlayerData[playerid][pName], result, id);
+				GovermentLog(string);
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] nie jesteœ urzednikiem.");
 			}
 			return 1;
 		}
@@ -11204,9 +11078,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			id2 = strval(tmp);
 
 			Building[id][EntranceFee] = id2;
-			
-			RefreshBuildingDescription(id);
-			
 			new form[128];
 			format(form, sizeof form, "You've set Building ID: %d's Entrance Fee to %d.", id,id2);
 			SendClientMessage(playerid, COLOR_ADMINCMD,form);
@@ -11217,7 +11088,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pAdmin] < 1)
 				return 0;
-			SetPlayerToPos(playerid,BankPosition[0][X],BankPosition[0][Y],BankPosition[0][Z]);
+			SetPlayerToPos(playerid,BankPosition[X],BankPosition[Y],BankPosition[Z]);
+			SetPlayerInterior(playerid,BankPosition[Interior]);
+			SetPlayerVirtualWorld(playerid,BankPosition[World]);
+			SetPlayerFacingAngle(playerid,BankPosition[Angle]);
 			SendClientMessage(playerid, COLOR_ADMINCMD, "[INFO:] You teleported to the Bank Position.");
 			return 1;
 		}
@@ -11230,6 +11104,44 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SetPlayerVirtualWorld(playerid,gPlaneTestPosition[mPosW]);
 			SetPlayerFacingAngle(playerid,gPlaneTestPosition[mPosA]);
 			SendClientMessage(playerid, COLOR_ADMINCMD, "[INFO:] You teleported to the flying test position.");
+			return 1;
+		}
+		else if(strcmp(cmd, "/abankpos", true) == 0)
+		{
+			if(gPlayerData[playerid][pAdmin] < 4)
+				return 0;
+			new Float:x,Float:y,Float:z;
+			GetPlayerPos(playerid, x, y, z);
+			new Float:angle;
+			GetPlayerFacingAngle(playerid, angle);
+			BankPosition[X] = x;
+			BankPosition[Y] = y;
+			BankPosition[Z] = z;
+			BankPosition[World] = GetPlayerVirtualWorld(playerid);
+			BankPosition[Interior] = GetPlayerInterior(playerid);
+			BankPosition[Angle] = angle;
+			BankPosition[PickupID] = ChangePickupModel(BankPosition[PickupID],1239,BankPosition[X],BankPosition[Y],BankPosition[Z]);
+			SaveBankPosition();
+			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Bank Position.");
+			return 1;
+		}
+		else if(strcmp(cmd, "/abankpos2", true) == 0)
+		{
+			if(gPlayerData[playerid][pAdmin] < 4)
+				return 0;
+			new Float:x,Float:y,Float:z;
+			GetPlayerPos(playerid, x, y, z);
+			new Float:angle;
+			GetPlayerFacingAngle(playerid, angle);
+			BankPosition2[X] = x;
+			BankPosition2[Y] = y;
+			BankPosition2[Z] = z;
+			BankPosition2[World] = GetPlayerVirtualWorld(playerid);
+			BankPosition2[Interior] = GetPlayerInterior(playerid);
+			BankPosition2[Angle] = angle;
+			BankPosition2[PickupID] = ChangePickupModel(BankPosition2[PickupID],1239,BankPosition2[X],BankPosition2[Y],BankPosition2[Z]);
+			SaveBankPosition2();
+			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Bank Position.");
 			return 1;
 		}
 		else if(strcmp(cmd, "/adetectivejobpos", true) == 0)
@@ -11424,32 +11336,32 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Skill Position Sni.");
 			return 1;
 		}
-		else if(strcmp(cmd, "/askillpostech", true) == 0)
+		else if(strcmp(cmd, "/askillposAng", true) == 0)
 		{
 			if(gPlayerData[playerid][pAdmin] < 4)
 				return 0;
 			new Float:x,Float:y,Float:z;
 			GetPlayerPos(playerid, x, y, z);
-			SkillPosition[XTech] = x;
-			SkillPosition[YTech] = y;
-			SkillPosition[ZTech] = z;
-			SkillPosition[PickupIDTech] = ChangePickupModel(SkillPosition[PickupIDTech],1239,SkillPosition[XTech],SkillPosition[YTech],SkillPosition[ZTech]);
+			SkillPosition[XAng] = x;
+			SkillPosition[YAng] = y;
+			SkillPosition[ZAng] = z;
+			SkillPosition[PickupIDAng] = ChangePickupModel(SkillPosition[PickupIDAng],1239,SkillPosition[XAng],SkillPosition[YAng],SkillPosition[ZAng]);
 			SaveSkillPositiond();
 			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Skill Position Ang.");
 			return 1;
 		}
-		else if(strcmp(cmd, "/askillposlaw", true) == 0)
+		else if(strcmp(cmd, "/askillposWf", true) == 0)
 		{
 			if(gPlayerData[playerid][pAdmin] < 4)
 				return 0;
 			new Float:x,Float:y,Float:z;
 			GetPlayerPos(playerid, x, y, z);
-			SkillPosition[XLaw] = x;
-			SkillPosition[YLaw] = y;
-			SkillPosition[ZLaw] = z;
-			SkillPosition[PickupIDLaw] = ChangePickupModel(SkillPosition[PickupIDLaw],1239,SkillPosition[XLaw],SkillPosition[YLaw],SkillPosition[ZLaw]);
+			SkillPosition[XWf] = x;
+			SkillPosition[YWf] = y;
+			SkillPosition[ZWf] = z;
+			SkillPosition[PickupIDWf] = ChangePickupModel(SkillPosition[PickupIDWf],1239,SkillPosition[XWf],SkillPosition[YWf],SkillPosition[ZWf]);
 			SaveSkillPositiond();
-			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Skill Position law.");
+			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Skill Position Wf.");
 			return 1;
 		}
 		else if(strcmp(cmd, "/askillposMat", true) == 0)
@@ -11469,18 +11381,15 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		else if(strcmp(cmd, "/askillposPol", true) == 0)
 		{
 			if(gPlayerData[playerid][pAdmin] < 4)
-			{
 				return 0;
-			}
-
-			GetPlayerPos(playerid, SkillPosition[XPol], SkillPosition[YPol], SkillPosition[ZPol]);
-			
-			SkillPosition[PickupIDPol] = ChangePickupModel(SkillPosition[PickupIDPol], 1239, SkillPosition[XPol], SkillPosition[YPol], SkillPosition[ZPol]);
-			
+			new Float:x,Float:y,Float:z;
+			GetPlayerPos(playerid, x, y, z);
+			SkillPosition[XPol] = x;
+			SkillPosition[YPol] = y;
+			SkillPosition[ZPol] = z;
+			SkillPosition[PickupIDPol] = ChangePickupModel(SkillPosition[PickupIDPol],1239,SkillPosition[XPol],SkillPosition[YPol],SkillPosition[ZPol]);
 			SaveSkillPositiond();
-			
 			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Skill Position Pol.");
-			
 			return 1;
 		}
 		else if(strcmp(cmd, "/askillposHis", true) == 0)
@@ -11501,31 +11410,14 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pAdmin] < 4)
 				return 0;
-			
-			GetPlayerPos(playerid, SkillPosition[XBio], SkillPosition[YBio], SkillPosition[ZBio]);
-			
-			SkillPosition[PickupIDBio] = ChangePickupModel(SkillPosition[PickupIDBio],1239,SkillPosition[XBio],SkillPosition[YBio],SkillPosition[ZBio]);
-			
-			SaveSkillPositione();
-			
-			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Skill Position Bio.");
-			return 1;
-		}
-		else if(strcmp(cmd, "/askillposhighschool", true) == 0)
-		{
-			if(gPlayerData[playerid][pAdmin] < 4)
-			{
-				return 0;
-			}
-			
-			new Float:x, Float:y, Float:z;
+			new Float:x,Float:y,Float:z;
 			GetPlayerPos(playerid, x, y, z);
-			SkillPosition[XHighSchool] = x;
-			SkillPosition[YHighSchool] = y;
-			SkillPosition[ZHighSchool] = z;
-			SkillPosition[PickupIDHighSchool] = ChangePickupModel(SkillPosition[PickupIDHighSchool],1239,SkillPosition[XHighSchool],SkillPosition[YHighSchool],SkillPosition[ZHighSchool]);
-			SaveSkillPositionf();
-			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Skill Position High School.");
+			SkillPosition[XBio] = x;
+			SkillPosition[YBio] = y;
+			SkillPosition[ZBio] = z;
+			SkillPosition[PickupIDBio] = ChangePickupModel(SkillPosition[PickupIDBio],1239,SkillPosition[XBio],SkillPosition[YBio],SkillPosition[ZBio]);
+			SaveSkillPositione();
+			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Skill Position Bio.");
 			return 1;
 		}
 		else if(strcmp(cmd, "/askillposFiz", true) == 0)
@@ -11537,7 +11429,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SkillPosition[XFiz] = x;
 			SkillPosition[YFiz] = y;
 			SkillPosition[ZFiz] = z;
-			SkillPosition[PickupIDFiz] = ChangePickupModel(SkillPosition[PickupIDFiz],1239,SkillPosition[XFiz],SkillPosition[YFiz],SkillPosition[ZFiz]);
+			SkillPosition[PickupIDBio] = ChangePickupModel(SkillPosition[PickupIDFiz],1239,SkillPosition[XFiz],SkillPosition[YFiz],SkillPosition[ZFiz]);
 			SaveSkillPositione();
 			SendClientMessage(playerid, COLOR_ADMINCMD, "You have successfully set the Skill Position Fiz.");
 			return 1;
@@ -12005,7 +11897,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SendAdminMessage(COLOR_YELLOW, string);
 			return 1;
 		}
-		else if(strcmp(cmd, "/moderator", true) == 0 || strcmp(cmd, "/m", true) == 0)
+		else if(strcmp(cmd, "/supporter", true) == 0 || strcmp(cmd, "/su", true) == 0)
 		{
 			if(gPlayerData[playerid][pModerator] < 1)
 				return 0;
@@ -12025,7 +11917,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			result[idx - offset] = EOS;
 			if(!strlen(result))
 			{
-				SendClientMessage(playerid, COLOR_GRAD2, "U¯YCIE: (/m)oderator [moderator chat]");
+				SendClientMessage(playerid, COLOR_GRAD2, "U¯YCIE: (/su)pporter [Supporter chat]");
 				return 1;
 			}
 
@@ -12036,7 +11928,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			else if(gPlayerData[playerid][pModerator] == 2)
 				format(string, sizeof(string), "[MC][%d][SMod][%s]: %s", playerid, gPlayerData[playerid][pOOCName], result);
 			SendModMessage(COLOR_GREEN, string);
-			printf("Moderator %s: %s", sendername, result);
+			printf("Supporter %s: %s", sendername, result);
 			return 1;
 		}
 		else if(strcmp(cmd, "/listenchat", true) == 0)
@@ -12253,6 +12145,58 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			format(form, sizeof form, "You've set Faction ID: %d's Bank to %d.", id,id2);
 			SendClientMessage(playerid, COLOR_ADMINCMD,form);
 			SaveFData(id, "Bank");
+			return 1;
+		}
+		else if(strcmp(cmd, "/afactiondrugs", true) == 0)
+		{
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /afactiondrugs [factionid] [amount]");
+				return 1;
+			}
+			new id;
+			id = strval(tmp);
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /afactiondrugs [factionid] [amount]");
+				return 1;
+			}
+			new id2;
+			id2 = strval(tmp);
+
+			DynamicFactions[id][fDrugs] = id2;
+			SaveFData(id, "Drugs");
+			new form[128];
+			format(form, sizeof form, "You've set Faction ID: %d's Drugs to %d.", id,id2);
+			SendClientMessage(playerid, COLOR_ADMINCMD,form);
+			return 1;
+		}
+		else if(strcmp(cmd, "/afactionmats", true) == 0)
+		{
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /afactionmats [factionid] [amount]");
+				return 1;
+			}
+			new id;
+			id = strval(tmp);
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /afactionmats [factionid] [amount]");
+				return 1;
+			}
+			new id2;
+			id2 = strval(tmp);
+
+			DynamicFactions[id][fMaterials] = id2;
+			SaveFData(id, "Materials");
+			new form[128];
+			format(form, sizeof form, "You've set Faction ID: %d's Materials to %d.", id,id2);
+			SendClientMessage(playerid, COLOR_ADMINCMD,form);
 			return 1;
 		}
 		else if(strcmp(cmd, "/afactionrankamount", true) == 0)
@@ -12811,19 +12755,14 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			if(DynamicFactions[factionid][fType] == 1)
 			{
 				if((PlayerToPoint(5.0, playerid, DynamicFactions[factionid][fXDuty], DynamicFactions[factionid][fYDuty], DynamicFactions[factionid][fZDuty]) && GetPlayerVirtualWorld(playerid) == DynamicFactions[factionid][fWorldDuty]) ||
-				    (PlayerToPoint(5.0, playerid, DynamicFactions[factionid][fXDuty2], DynamicFactions[factionid][fYDuty2], DynamicFactions[factionid][fZDuty2]) && GetPlayerVirtualWorld(playerid) == DynamicFactions[factionid][fWorldDuty2]))
+				       (PlayerToPoint(5.0, playerid, DynamicFactions[factionid][fXDuty2], DynamicFactions[factionid][fYDuty2], DynamicFactions[factionid][fZDuty2]) && GetPlayerVirtualWorld(playerid) == DynamicFactions[factionid][fWorldDuty2]))
 				{
 					if(gPlayerData[playerid][pDuty] == 1)
 					{
+						SetPlayerSkin(playerid,gPlayerData[playerid][pSkin]);
 						gPlayerData[playerid][pDuty] = 0;
 						SavePlayerData(playerid, "Duty");
-						
-						SetPlayerArmourEx(playerid, 0);
-						
-						SetPlayerSkinEx(playerid, gPlayerData[playerid][pSkin]);
-						
 						PlayerActionMessage(playerid, 15.0, "odk³ada broñ do magazynu i przebiera siê");
-						
 						if(gPlayerData[playerid][pRank] == 1)
 						{
 							ReturnPlayerAmmoF(playerid, DynamicFactions[factionid][fGun1Rank1], DynamicFactions[factionid][fAmmo1Rank1]);
@@ -12886,22 +12825,14 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						}
 						return 1;
 					}
-					else
+					if(gPlayerData[playerid][pDuty] == 0)
 					{
 						gPlayerData[playerid][pDuty] = 1;
 						SavePlayerData(playerid, "Duty");
-						
-						SetPlayerArmourEx(playerid, 100);
-						
-						SetPlayerToFactionSkin(playerid);						
-						
-						PlayerActionMessage(playerid, 15.0, "pobra³ broñ z magazynu i przebra³ siê");
-						
-						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informajca", "Twoja broñ jest teraz w /mi", "Zamknij", "");
-						
+						SetPlayerToFactionSkin(playerid);
 						if(gPlayerData[playerid][pRank] == 1)
 						{
-							format(string, sizeof(string), "[%s:] %s pobra³ broñ", DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							format(string, sizeof(string), "[%s:] %s pobra³ broñ.",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
 							SendFactionMessage(factionid, COLOR_DARKPURPLE, string);
 							
 							AddPlayerAmmoF(playerid, DynamicFactions[factionid][fGun1Rank1], DynamicFactions[factionid][fAmmo1Rank1]);
@@ -12981,6 +12912,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						if(gPlayerData[playerid][pRank] == 2)
 						{
@@ -13064,6 +12999,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+							
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						if(gPlayerData[playerid][pRank] == 3)
 						{
@@ -13147,6 +13086,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						if(gPlayerData[playerid][pRank] == 4)
 						{
@@ -13230,6 +13173,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						if(gPlayerData[playerid][pRank] == 5)
 						{
@@ -13313,6 +13260,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						if(gPlayerData[playerid][pRank] == 6)
 						{
@@ -13396,6 +13347,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						if(gPlayerData[playerid][pRank] == 7)
 						{
@@ -13479,6 +13434,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						if(gPlayerData[playerid][pRank] == 8)
 						{
@@ -13562,6 +13521,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						if(gPlayerData[playerid][pRank] == 9)
 						{
@@ -13645,6 +13608,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						if(gPlayerData[playerid][pRank] == 10)
 						{
@@ -13654,6 +13621,20 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							AddPlayerAmmoF(playerid, DynamicFactions[factionid][fGun1Rank10], DynamicFactions[factionid][fAmmo1Rank10]);
 							AddPlayerAmmoF(playerid, DynamicFactions[factionid][fGun2Rank10], DynamicFactions[factionid][fAmmo2Rank10]);
 							AddPlayerAmmoF(playerid, DynamicFactions[factionid][fGun3Rank10], DynamicFactions[factionid][fAmmo3Rank10]);
+
+							// if(DynamicFactions[factionid][fGun1Rank1] == 25)	{ DynamicFactions[factionid][fBank] -= 700; }
+							// if(DynamicFactions[factionid][fGun1Rank1] == 29)	{ DynamicFactions[factionid][fBank] -= 900; }
+							// if(DynamicFactions[factionid][fGun1Rank1] == 28)	{ DynamicFactions[factionid][fBank] -= 800; }
+							// if(DynamicFactions[factionid][fGun1Rank1] == 30)	{ DynamicFactions[factionid][fBank] -= 5000; }
+							// if(DynamicFactions[factionid][fGun1Rank1] == 31)	{ DynamicFactions[factionid][fBank] -= 5000; }
+							// if(DynamicFactions[factionid][fGun1Rank1] == 32)	{ DynamicFactions[factionid][fBank] -= 800; }
+							// if(DynamicFactions[factionid][fGun1Rank1] == 33)	{ DynamicFactions[factionid][fBank] -= 1000; }
+							// if(DynamicFactions[factionid][fGun1Rank1] == 34)	{ DynamicFactions[factionid][fBank] -= 10000; }
+
+							// if(DynamicFactions[factionid][fGun2Rank1] == 22)	{ DynamicFactions[factionid][fBank] -= 300; }
+							// if(DynamicFactions[factionid][fGun2Rank1] == 23)	{ DynamicFactions[factionid][fBank] -= 400; }
+							// if(DynamicFactions[factionid][fGun2Rank1] == 24)	{ DynamicFactions[factionid][fBank] -= 1500; }
+
 							if(DynamicFactions[factionid][fGun1Rank10] == 3)	
 							{
 								GivePlayerGun(playerid, 3, 1);
@@ -13714,6 +13695,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GivePlayerGun(playerid, 4, 1);
 								DynamicFactions[factionid][fBank] -= 100;
 							}
+
+							// SaveFData(factionid, "Bank");
+							// format(string, sizeof(string), "[%s:] Brak piêdzy na koncie w frakcji na pobranie broni",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
+							// SendFactionMessage(8, COLOR_DARKPURPLE, string);
 						}
 						SaveFData(factionid, "Bank");
 						return 1;
@@ -13733,6 +13718,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, tmpstring);
 				return 1;
 			}
+			return 1;
 		}
 		else if(strcmp(cmd, "/wanted", true) == 0)
 		{
@@ -13781,144 +13767,102 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(IsPlayerInAnyVehicle(playerid))
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz skuæ kogoœ bêd¹c w pojeŸdzie");
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz skuæ kogoœ bêd¹c w pojeŸdzie !");
 				return 1;
 			}
-			
 			if(gPlayerData[playerid][pFaction] == 255)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Niew³aœciwa frakcja");
+				SendClientMessage(playerid, COLOR_RED, "[INFO:] Niew³aœciwa frakcja !");
 				return 1;
 			}
-			
 			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Niew³aœciwa frakcja");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja");
 				return 1;
 			}
 			tmp = strtok(cmdtext, idx);
-			
 			if(!strlen(tmp)) 
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /skuj [playerid]");
 				return 1;
 			}
-			
 			if(!gPlayerData[playerid][pDuty])
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ na s³u¿bie");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ na s³u¿bie");
 				return 1;
 			}
-			
 			giveplayerid = ReturnUser(tmp);
-			
-			if(!gPlayerLogged[giveplayerid])
+			if(!IsPlayerConnected(giveplayerid))
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten gracz nie jest zalogowany");
+				SendClientMessage(playerid, COLOR_RED, "[INFO:] Dany gracz nie jest online !");
 				return 1;
 			}
-			
-			if(PlayerCuffed[giveplayerid])
+			if(PlayerCuffed[giveplayerid] == 1)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ta osoba jest ju¿ w kajdankach");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Ta osoba jest ju¿ w kajdankach");
 				return 1;
 			}
-			
 			if(ProxDetectorS(1.5, playerid, giveplayerid))
 			{
-				if(giveplayerid == playerid)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz sam siebie ubezw³asnowolniæ !");
-					return 1;
-				}
-				
-				PlayerActionMessage(playerid, 15.0, "wyjmuje kajdanki i skuwa podejrzanego");
-				
-				format(string, sizeof(string), "[INFO:] Zosta³eœ skuty przez %s", GetPlayerNameEx(playerid));
+				if(giveplayerid == playerid) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie mo¿esz sam siebie ubezw³asnowolniæ !"); return 1; }
+				PlayerActionMessage(playerid,15.0, "wyjmuje kajdanki i skuwa podejrzanego");
+				format(string, sizeof(string), "[INFO:] Zosta³eœ ubezw³asnowolniony przez %s.", GetPlayerNameEx(playerid));
 				SendClientMessage(giveplayerid, COLOR_RED, string);
-				
-				format(string, sizeof(string), "[INFO:] Sku³eœ podejrzanego");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				format(string, sizeof(string), "[RADIO:] %s sku³ podejrzanego", GetPlayerNameEx(playerid));
-				SendFactionTypeMessage(FACTIONT_POLICE, COLOR_LSPD, string);
-				
+				format(string, sizeof(string), "[INFO:] %s zosta³ ubezw³asnowolniony.", GetPlayerNameEx(giveplayerid));
+				SendClientMessage(playerid, COLOR_WHITE, string);
 				SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
-				
 				PlayerCuffed[giveplayerid] = 1;
 			}
 			else
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ta osoba jest zbyt daleko od ciebie");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Gracz nie jest wystarczaj¹co blisko Ciebie !");
 				return 1;
 			}
-			
 			return 1;
 		}
 		else if(strcmp(cmd, "/rozkuj", true) == 0)
 		{
 			if(gPlayerData[playerid][pFaction] == 255)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Niew³aœciwa frakcja");
+				SendClientMessage(playerid, COLOR_RED, "[INFO:] Niew³aœciwa frakcja !");
 				return 1;
 			}
-			
 			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Niew³aœciwa frakcja");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja.");
 				return 1;
 			}
-			
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp)) 
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /rozkuj [playerid]");
 				return 1;
 			}
-			
-			if(!gPlayerData[playerid][pDuty])
+			if(gPlayerData[playerid][pDuty] == 0)
 			{
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ na s³u¿bie");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] nie jesteœ na s³u¿bie.");
 				return 1;
 			}
-			
 			giveplayerid = ReturnUser(tmp);
-			
-			if(!gPlayerLogged[giveplayerid])
+			if(!IsPlayerConnected(giveplayerid))
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten gracz nie jest zalogowany");
+				SendClientMessage(playerid, COLOR_RED, "[INFO:] Dany gracz nie jest online !");
 				return 1;
 			}
-			
-			if(!PlayerCuffed[giveplayerid])
+			if(PlayerCuffed[giveplayerid] == 0)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ta osoba nie jest skuta.");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Ta osoba nie jest skuta.");
 				return 1;
 			}
-			
 			if(ProxDetectorS(1.5, playerid, giveplayerid))
 			{
-				if(giveplayerid == playerid)
-				{
-					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie mo¿esz sam siebie rozkuæ");
-					return 1;
-				}
-				
-				PlayerActionMessage(playerid, 15.0, "rozkuwa podejrzanego i przypina kajdanki do paska");
-				
-				format(string, sizeof(string), "[INFO:] Zosta³eœ rozkuty przez %s", GetPlayerNameEx(playerid));
+				if(giveplayerid == playerid) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie mo¿esz sam siebie rozkuæ !"); return 1; }
+				format(string, sizeof(string), "[INFO:] Rozkuty przez %s.", GetPlayerNameEx(playerid));
 				SendClientMessage(giveplayerid, COLOR_RED, string);
-				
-				format(string, sizeof(string), "[INFO:] Rozku³eœ podejrzanego");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				format(string, sizeof(string), "[RADIO:] %s rozku³ podejrzanego", GetPlayerNameEx(playerid));
-				SendFactionTypeMessage(FACTIONT_POLICE, COLOR_LSPD, string);
-				
+				format(string, sizeof(string), "[INFO:] %s rozkuty.", GetPlayerNameEx(giveplayerid));
+				SendClientMessage(playerid, COLOR_WHITE, string);
 				SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
-				
 				PlayerCuffed[giveplayerid] = 0;
-				
 				return 1;
 			}
 			else
@@ -13957,6 +13901,8 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							if(giveplayerid == playerid) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie mo¿esz sam siebie zrewidowaæ!"); return 1; }
 							if(gPlayerData[playerid][pDuty] == 0) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ na s³u¿bie."); return 1; }
 							new text1[128], text2[128];
+							if(gPlayerData[giveplayerid][pDrugs] > 0) { text1 = "[REWIZJA:] Znaleziono narkotyki."; } else { text1 = "[REWIZJA:] Brak znalezionych narkotyków."; }
+							if(gPlayerData[giveplayerid][pMaterials] > 0) { text2 = "[REWIZJA:] Znaleziono czêœci do broni."; } else { text2 = "[REWIZJA:] Brak czêœci do broni."; }
 							format(string, sizeof(string), "-------------------[%s]-------------------", GetPlayerNameEx(giveplayerid));
 							SendClientMessage(playerid, COLOR_LIGHTGREEN, string);
 							format(string, sizeof(string), "%s", text1);
@@ -13972,12 +13918,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								GetPlayerWeaponData(giveplayerid,i,Player_Weapons[i],Player_Ammos[i]);
 								if(Player_Weapons[i] != 0)
 								{
-									if(Player_Ammos[i] > 0)
-									{
-										GetWeaponName(Player_Weapons[i],weaponName,255);
-										format(string,255, "[FRISK:] Znalezione bronie: %s.",weaponName);
-										SendClientMessage(playerid,COLOR_WHITE,string);
-									}
+
+									GetWeaponName(Player_Weapons[i],weaponName,255);
+									format(string,255, "[FRISK:] Znalezione bronie: %s.",weaponName);
+									SendClientMessage(playerid,COLOR_WHITE,string);
 								}
 							}
 						}
@@ -13996,7 +13940,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}
 			return 1;
 		}
-		/*else if(strcmp(cmd, "/skonfiskuj", true) == 0)
+		else if(strcmp(cmd, "/skonfiskuj", true) == 0)
 		{
 			if((gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] == 1) || AdminDuty[playerid])
 			{
@@ -14185,6 +14129,76 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						return 1;
 					}
 				}
+				else if(strcmp(x_nr, "narkotyki",true) == 0)
+				{
+					tmp = strtok(cmdtext, idx);
+					if(!strlen(tmp)) {
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /skonfiskuj narkotyki [playerid]");
+						return 1;
+					}
+					giveplayerid = ReturnUser(tmp);
+					if(IsPlayerConnected(giveplayerid))
+					{
+						if(giveplayerid != INVALID_PLAYER_ID)
+						{
+							if(ProxDetectorS(8.0, playerid, giveplayerid))
+							{
+								format(string, sizeof(string), "[INFO:] Narkotyki %s zosta³y skonfiskowane", GetPlayerNameEx(giveplayerid));
+								SendClientMessage(playerid, COLOR_WHITE, string);
+								format(string, sizeof(string), "[INFO:] %s skonfiskowa³ Twoje narkotyki.", GetPlayerNameEx(playerid));
+								SendClientMessage(giveplayerid, COLOR_RED, string);
+								gPlayerData[giveplayerid][pDrugs] = 0;
+
+								SavePlayerData(giveplayerid, "Drugs");
+							}
+							else
+							{
+								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Ten gracz nie jest w zasiêgu.");
+								return 1;
+							}
+						}
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwe ID.");
+						return 1;
+					}
+				}
+				else if(strcmp(x_nr, "materialy",true) == 0)
+				{
+					tmp = strtok(cmdtext, idx);
+					if(!strlen(tmp)) {
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /skonfiskuj materialy [playerid]");
+						return 1;
+					}
+					giveplayerid = ReturnUser(tmp);
+					if(IsPlayerConnected(giveplayerid))
+					{
+						if(giveplayerid != INVALID_PLAYER_ID)
+						{
+							if(ProxDetectorS(8.0, playerid, giveplayerid))
+							{
+								format(string, sizeof(string), "[INFO:] Materia³y %s zosta³y skonfiskowane.", GetPlayerNameEx(giveplayerid));
+								SendClientMessage(playerid, COLOR_WHITE, string);
+								format(string, sizeof(string), "[INFO:] %s skonfiskowa³ Twoje materia³y.", GetPlayerNameEx(playerid));
+								SendClientMessage(giveplayerid, COLOR_RED, string);
+								gPlayerData[giveplayerid][pMaterials] = 0;
+
+								SavePlayerData(giveplayerid, "Materials");
+							}
+							else
+							{
+								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Gracz nie jest w zasiêgu.");
+								return 1;
+							}
+						}
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwe ID.");
+						return 1;
+					}
+				}
 				else if(strcmp(x_nr, "bron",true) == 0)
 				{
 					tmp = strtok(cmdtext, idx);
@@ -14230,7 +14244,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				return 1;
 			}
 			return 1;
-		}*/
+		}
 		else if(strcmp(cmd, "/gbron", true) == 0)
 		{
 			if(gPlayerData[playerid][pFaction] == 255)
@@ -14255,7 +14269,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}		
 			if(gPlayerData[playerid][pDuty] == 1)
 			{
-				SetPlayerSkinEx(playerid,gPlayerData[playerid][pSkin]);
+				SetPlayerSkin(playerid,gPlayerData[playerid][pSkin]);
 				gPlayerData[playerid][pDuty] = 0;
 				SavePlayerData(playerid, "Duty");
 				PlayerActionMessage(playerid, 15.0, "odk³ada broñ do magazynu i przebiera siê");
@@ -14326,7 +14340,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				gPlayerData[playerid][pDuty] = 1;
 				SavePlayerData(playerid, "Duty");
 				SetPlayerToFactionSkin(playerid);
-				PlayerActionMessage(playerid, 15.0, "pobra³ broñ z magazynu i przebra³ siê");
 				if(gPlayerData[playerid][pRank] == 1)
 				{
 					format(string, sizeof(string), "[%s:] %s pobra³ broñ.",DynamicFactions[factionid][Name],GetPlayerNameEx(playerid));
@@ -14863,14 +14876,14 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							new Year, Month, Day;
 							getdate(Year, Month, Day);
 							format(string, sizeof(string), "INSERT INTO `samp_wanted` (`PlayerName` , `Description` , `CommitedDay` , `CommitedMonth` , `CommitedYear`) VALUES ('%s' , 'Otrzyma³ mandat za: %s' , '%d' , '%d' , '%d')", gPlayerData[giveplayerid][pName], result, Day, Month, Year);
-							wp_mysql_query(string, SAVE, giveplayerid, db_con2);
+							mysql_query(string, SAVE, giveplayerid, db_con2);
 							
 							gPlayerData[playerid][pAchieveTickets]++;
 							SavePlayerData(playerid, "AchieveTickets");
 							
-							format(string, sizeof(string), "[INFO:] Da³eœ mandat %s o wysokoœci $%d - Powód: %s.", GetPlayerNameEx(giveplayerid), moneys, (result));
+							format(string, sizeof(string), "[INFO:] Da³eœ mandat %s o wysokoœci %d$ - Powód: %s.", GetPlayerNameEx(giveplayerid), moneys, (result));
 							SendClientMessage(playerid, COLOR_WHITE, string);
-							format(string, sizeof(string), "[INFO:] %s da³ Tobie mandat w wysokoœci $%d - Powód: %s.", GetPlayerNameEx(playerid), moneys, (result));
+							format(string, sizeof(string), "[INFO:] %s da³ Tobie mandat w wysokoœci %d$ - Powód: %s.", GetPlayerNameEx(playerid), moneys, (result));
 							SendClientMessage(giveplayerid, COLOR_RED, string);
 							gPlayerData[giveplayerid][pTicket] += moneys;
 							SavePlayerData(giveplayerid, "Ticket");
@@ -14903,76 +14916,68 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz aresztowaæ bêd¹c w pojeŸdzie !");
 				return 1;
 			}
-			
 			if(gPlayerData[playerid][pFaction] == 255)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Niew³aœciwa frakcja");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja.");
 				return 1;
 			}
-			
 			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Niew³aœciwa frakcja");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja.");
 				return 1;
 			}
-			
 			if(!gPlayerData[playerid][pDuty])
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ na s³u¿bie !");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ na s³u¿bie !");
 				return 1;
 			}
-			
-			if(!PlayerToPoint(3.0, playerid, gMainPrisonPos[0], gMainPrisonPos[1], gMainPrisonPos[2]) && !IsInFrontOfCell(playerid))
+			if(!PlayerToPoint(30.0, playerid, -303.0, 1533.0, 75.0) && !PlayerToPoint(8.0, playerid, 268.0, 77.0, 1001.0) && !PlayerToPoint(8.0, playerid, 319.76, 312.17, 999.14) && !PlayerToPoint(8.0, playerid, 319.76, 316.07, 999.14))
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ ko³o wiezienia/celi - nie mo¿esz nikogo zaaresztowaæ !");
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Jeœli nie wiesz gdzie jest wiêzienie, skorzystaj z mapy");
+				SendClientMessage(playerid, COLOR_GREY, "[INFO:] Nie jesteœ ko³o wiezienia. Nie mo¿esz nikogo zaaresztowaæ !");
 				return 1;
 			}
-			
 			tmp = strtok(cmdtext, idx);
 			new time = strval(tmp);
 			if(PlayerToPoint(8.0, playerid, 268.0, 77.0, 1001.0))
 			{
 				if(time < 1 || time > 60)
 				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Czas aresztowania nie mo¿e byæ d³u¿szy ni¿ 60 minut i krótszy ni¿ 1 minuta !");
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Jeœli chcesz aresztowaæ podejrzanego na d³u¿ej udaj siê do g³ównego wiêzienia");
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Czas aresztowania nie mo¿e byæ d³u¿szy ni¿ 60 minut i krótszy ni¿ 1 minuta!");
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Jeœli chcesz aresztowaæ podejrzanego na d³u¿ej udaj siê do g³ównego wiêzienia");
 					return 1; 
 				}
-			}
-			
+			}		
 			if(!strlen(tmp))
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /aresztuj [czas]");
 				return 1;
 			}
-			
 			new suspect = GetClosestPlayer(playerid);
-			
-			if(!gPlayerLogged[suspect])
+			if(!IsPlayerConnected(suspect))
+			{
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Gracz nie jest po³¹czony !");
+				return 1;
+			}
+			if(!gPlayerLogged[playerid])
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Gracz nie jest zalogowany !");
 				return 1;
 			}
-			
-			if(GetDistanceBetweenPlayers(playerid, suspect) > 3)
+			if(GetDistanceBetweenPlayers(playerid,suspect) > 3)
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Jesteœ zbyt daleko od tej osoby ");
 				return 1;
 			}
-			
-			if(AdminDuty[suspect])
+			if(AdminDuty[suspect] == 1)
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz aresztowaæ administratora bêd¹cego na s³u¿bie !");
 				return 1;
 			}
-			
-			if(gPlayerData[suspect][pCharacterDying] > 0)
+			if(gPlayerData[playerid][pCharacterDying] > 0)
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz aresztowaæ osoby umieraj¹cej !");
 				return 1;
 			}
-			
 			if(!PlayerCuffed[suspect])
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Przed aresztowanie podejrzany musi mieæ za³o¿one kajdanki");
@@ -14983,26 +14988,18 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SavePlayerData(playerid, "AchieveArrests");
 			
 			PlayerCuffed[suspect] = 0;
-			SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
-			
 			if(!gPlayerData[suspect][pFirstJail])
 			{
 				gPlayerData[suspect][pFirstJail] = 1;
 				SavePlayerData(suspect, "FirstJail");
-				
+				// AddExpPoint(playerid);
 				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Jesteœ poraz pierwszy w wiêzieniu !");
 			}
-			
-			format(string, sizeof(string), "[INFO:] Aresztowa³eœ %s", GetPlayerNameEx(suspect));
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-			
-			format(string, sizeof(string), "[RADIO:] %s zosta³ aresztowany", GetPlayerNameEx(suspect));
-			SendFactionTypeMessage(FACTIONT_POLICE, COLOR_LSPD, string);
-			
+			format(string, sizeof(string), "[INFO:] %s zosta³ aresztowany.", GetPlayerNameEx(suspect));
+			SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 			ResetPlayerWeapons(suspect);		
-			SetPlayerSkinEx(suspect, 96);
-			
-			if(PlayerToPoint(3.0, playerid, gMainPrisonPos[0], gMainPrisonPos[1], gMainPrisonPos[2]))
+			SetPlayerSkin(suspect, 96);
+			if(!PlayerToPoint(8.0, playerid, 268.0, 77.0, 1001.0))
 			{
 				DBVariables[2][varDValue]++;
 				SetPlayerInterior(suspect, 0);
@@ -15042,38 +15039,29 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}
 			else
 			{
-				for(new i = 0; i < sizeof(gPrisonCells); i++)
-				{
-					if(!PlayerToPoint(1.0, playerid, gPrisonCells[i][mPosXCellEntrance], gPrisonCells[i][mPosYCellEntrance], gPrisonCells[i][mPosZCellEntrance]))
-					{
-						continue;
-					}
-					
-					SetPlayerToPos(suspect, gPrisonCells[i][mPosXInCell], gPrisonCells[i][mPosYInCell], gPrisonCells[i][mPosZInCell]);
-					gPlayerData[suspect][pCrashX] = gPrisonCells[i][mPosXInCell];
-					gPlayerData[suspect][pCrashY] = gPrisonCells[i][mPosYInCell];
-					gPlayerData[suspect][pCrashZ] = gPrisonCells[i][mPosZInCell];
-				}
+				SetPlayerToPos(suspect, 266.0,77.0,1001.0);
+				gPlayerData[suspect][pCrashX] = 266.0;
+				gPlayerData[suspect][pCrashY] = 77.0;
+				gPlayerData[suspect][pCrashZ] = 1001.0;
 			}
 			
 			format(string, sizeof(string), "UPDATE `samp_wanted` SET `Punished` = '1' WHERE `PlayerName` = '%s'", gPlayerData[suspect][pName]);
-			wp_mysql_query(string, SAVE, playerid, db_con2);
+			mysql_query(string, SAVE, playerid, db_con2);
 			
 			TogglePlayerControllable(suspect, 0);
 			defer UnfreezePlayer(suspect);
-			
+
+			//SetPlayerToPos(suspect,1775.0,-1563.0,1739.0);
 			gPlayerData[suspect][pJailTime] = time * 60;
+
 			SavePlayerData(suspect, "JailTime");
 
-			format(string, sizeof(string), "[INFO:] Aresztowany! - czas odsiadki: %d sekund", gPlayerData[suspect][pJailTime]);
+			format(string, sizeof(string), "[INFO:] Aresztowany! - Czas odsiadki: %d sekund", gPlayerData[suspect][pJailTime]);
 			SendClientMessage(suspect, COLOR_LIGHTYELLOW2, string);
-			
 			format(string, sizeof(string), "[INFO:] Jeœli chcesz wyjœæ na zewn¹trz wpisz /idznaspacerniak", gPlayerData[suspect][pJailTime]);
 			SendClientMessage(suspect, COLOR_LIGHTYELLOW2, string);
-			
-			format(string, sizeof(string), "[RADIO:] %s aresztowa³ podejrzanego", GetPlayerNameEx(playerid));
-			SendFactionTypeMessage(FACTIONT_POLICE, COLOR_LSPD, string);
-			
+			format(string, sizeof(string), "[SFPD:] %s aresztowa³ %s.",GetPlayerNameEx(playerid), GetPlayerNameEx(suspect));
+			SendFactionTypeMessage(1, COLOR_LSPD, string);
 			gPlayerData[suspect][pJailed] = 1;
 
 			SavePlayerData(suspect, "Jailed");
@@ -15084,12 +15072,256 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SavePlayerData(suspect, "WantedLvl");
 
 			PlayerCuffed[suspect] = 0;
-			
-			SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
-			
-			DynamicFactions[gPlayerData[playerid][pFaction]][fBank] -= gPlayerData[suspect][pJailTime];
-			SaveFData(gPlayerData[playerid][pFaction], "Bank");
-			
+			new faction = gPlayerData[playerid][pFaction];
+			DynamicFactions[faction][fBank] -= gPlayerData[suspect][pJailTime];
+			SaveFData(faction, "Bank");
+
+			SavePlayerData(playerid, "Jailed");
+			SavePlayerData(playerid, "JailTime");
+			return 1;
+		}
+		else if(strcmp(cmd, "/frakcja", true) == 0 || strcmp(cmd, "/f", true) == 0)
+		{
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Ta komenda nie jest ju¿ aktywna");
+			// if(gPlayerData[playerid][pCharacterDying] == 0)
+			// {
+				// new wstring[128];
+				// new faction = gPlayerData[playerid][pFaction];
+				// new rank = gPlayerData[playerid][pRank];
+				// new length = strlen(cmdtext);
+				// while ((idx < length) && (cmdtext[idx] <= ' '))
+				// {
+					// idx++;
+				// }
+				// new offset = idx;
+				// new result[128];
+				// while ((idx < length) && ((idx - offset) < (sizeof(result) - 1)))
+				// {
+					// result[idx - offset] = cmdtext[idx];
+					// idx++;
+				// }
+				// result[idx - offset] = EOS;
+				// if(!strlen(result))
+				// {
+					// SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] (/f)rakcja");
+					// return 1;
+				// }
+				// if((nofooc) && gPlayerData[playerid][pAdmin] < 1)
+				// {
+					// SendClientMessage(playerid, COLOR_GRAD2, "[INFO:] Chat frakcyjny zosta³ wy³¹czony przez administratora !");
+					// return 1;
+				// }
+				// if(Muted[playerid])
+				// {
+					// SendClientMessage(playerid, COLOR_RED, "[INFO:] Jesteœ uciszony, nie mo¿e u¿ywaæ tego chatu !");
+					// return 1;
+				// }
+				// if(gPlayerData[playerid][pFaction] != 255)
+				// {
+					// if(IsPlayerInAnyVehicle(playerid) || PHaveItem(playerid, 3, 2))
+					// {
+						// new vehicleID = GetPlayerVehicleID(playerid);
+						// if(vehicleID != INVALID_VEHICLE_ID && PHaveItem(playerid, 3, 2) == 0)
+						// {
+							// if(gVehData[vehicleID-1][mVehFaction] != 255)
+							// {
+								// if(gVehData[vehicleID-1][mVehFaction] != gPlayerData[playerid][pFaction] && PHaveItem(playerid, 3, 2) == 0)
+								// {
+									// SendClientMessage(playerid, COLOR_LIGHTYELLOW2,  "[INFO:] Nie jesteœ w pojeŸdzie frakcyjnym ani nie posiadasz radia !");
+									// return 1;
+								// }
+							// }
+						// }
+						// if(rank == 1)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank1],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+						// else if(rank == 2)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank2],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+						// else if(rank == 3)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank3],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+						// else if(rank == 4)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank4],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+						// else if(rank == 5)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank5],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+						// else if(rank == 6)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank6],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+						// else if(rank == 7)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank7],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+						// else if(rank == 8)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank8],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+						// else if(rank == 9)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank9],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+						// else if(rank == 10)
+						// {
+							// format(wstring, sizeof(wstring), "(([Radio:] %s %s: %s))",DynamicFactions[faction][fRank10],GetPlayerNameEx(playerid),result);
+							// SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
+							// FactionChatLog(wstring);
+						// }
+					// }
+					// else
+					// {
+						// SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie znajdujesz siê w pojeŸdzie frakcyjnym");
+						// return 1;
+					// }
+				// }
+				// else
+				// {
+					// SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ cz³onkiem frakcji !");
+				// }
+			// }
+			// else
+			// {
+				// SendClientMessage(playerid, COLOR_RED, "[INFO:] Twoja postaæ jest nieprzytomna, nie mo¿e mówiæ");
+			// }
+			return 1;
+		}
+		else if(strcmp(cmd, "/zapros", true) == 0)
+		{
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /zapros [id gracza]");
+				return 1;
+			}
+			giveplayerid = ReturnUser(tmp);
+			if(gPlayerData[playerid][pRank] == 1 && gPlayerData[playerid][pFaction] != 255)
+			{
+				if(gPlayerData[giveplayerid][pFaction] == 255)
+				{
+					if(IsPlayerConnected(giveplayerid))
+					{
+						if(giveplayerid != INVALID_PLAYER_ID)
+						{
+							new form[128];
+							new faction = gPlayerData[playerid][pFaction];
+							if(gPlayerLogged[giveplayerid])
+							{
+								if(DynamicFactions[faction][fJoinRank] == 0)
+								{
+									SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Ustal rangi swojej frakcji zanim zaprosisz graczy !");
+								}
+								else
+								{
+									FactionRequest[giveplayerid] = faction;
+									format(form,sizeof(form), "Zosta³eœ zaproszony do %s przez %s. (wpisz /akceptuj frakcje) aby do³¹czyæ. ",DynamicFactions[faction][Name],GetPlayerNameEx(playerid));
+									SendClientMessage(giveplayerid,COLOR_LIGHTBLUE,form);
+									format(form,sizeof(form), "Zaprosi³eœ %s do do³¹czenia do frakcji %s. ",GetPlayerNameEx(giveplayerid),DynamicFactions[faction][Name]);
+									SendClientMessage(playerid,COLOR_LIGHTBLUE,form);
+								}
+								return 1;
+							}
+							else
+							{
+								SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Ten gracz nie jest on-line!");
+							}
+						}
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwe ID.");
+					}
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Osobê któr¹ próbujesz zaprosiæ jest ju¿ we frakcji.");
+				}
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ liderem !");
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/wypros", true) == 0)
+		{
+			tmp = strtok(cmdtext, idx);
+			if(!strlen(tmp))
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /wypros [id gracza]");
+				return 1;
+			}
+			giveplayerid = ReturnUser(tmp);
+			if(gPlayerData[playerid][pRank] == 1 && gPlayerData[playerid][pFaction] != 255)
+			{
+				if(gPlayerData[giveplayerid][pFaction] == gPlayerData[playerid][pFaction])
+				{
+					if(IsPlayerConnected(giveplayerid))
+					{
+						if(gPlayerLogged[giveplayerid])
+						{
+							if(giveplayerid != INVALID_PLAYER_ID)
+							{
+								new form[128];
+								new faction = gPlayerData[playerid][pFaction];
+								format(form,sizeof(form), "Zosta³eœ wyproszony z %s przez %s.",DynamicFactions[faction][Name],GetPlayerNameEx(playerid));
+								SendClientMessage(giveplayerid,COLOR_LIGHTBLUE,form);
+								format(form,sizeof(form), "Wyprosi³eœ %s z %s.",GetPlayerNameEx(giveplayerid),DynamicFactions[faction][Name]);
+								SendClientMessage(playerid,COLOR_LIGHTBLUE,form);
+								gPlayerData[giveplayerid][pFaction] = 255;
+								gPlayerData[giveplayerid][pRank] = 0;
+
+								SavePlayerData(giveplayerid, "Faction");
+								SavePlayerData(giveplayerid, "Rank");
+
+								format(form, sizeof(form), "[FRAKCJA:] %s zosta³ wyproszony z frakcji przez %s.",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
+								SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, form);
+								return 1;
+							}
+						}
+						else
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Gracz nie jest on-line.");
+						}
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwe ID.");
+					}
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Próbowa³eœ wyprosiæ kogoœ kto nie jest w Twojej frakcji.");
+				}
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ liderem!");
+			}
 			return 1;
 		}
 		else if(strcmp(cmd, "/kick", true) == 0)
@@ -15216,10 +15448,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}
 			new text = strval(tmp);
 			new wstring[128];
-			format(wstring, sizeof(wstring), "[ID:%d] Faction Name: %s - Money: $%d - Join Rank: %d - Use Skins: %d - Type: %d",text, DynamicFactions[text][Name],DynamicFactions[text][fBank],DynamicFactions[text][fJoinRank],DynamicFactions[text][fUseSkins],DynamicFactions[text][fType]);
-			SendClientMessage(playerid, COLOR_ADMINCMD, wstring);
+			format(wstring, sizeof(wstring), "[ID:%d] Faction Name: %s - Materials: %d - Drugs: %d - Money: %d$ - Join Rank: %d - Use Skins: %d - Type: %d",text, DynamicFactions[text][Name],DynamicFactions[text][fMaterials],DynamicFactions[text][fDrugs],DynamicFactions[text][fBank],DynamicFactions[text][fJoinRank],DynamicFactions[text][fUseSkins],DynamicFactions[text][fType]);
+			SendClientMessage(playerid,COLOR_ADMINCMD, wstring);
 			format(wstring, sizeof(wstring), "[ID:%d] Skins: %d|%d|%d|%d|%d|%d|%d|%d|%d|%d - Rank Amount: %d - Use Color: %d", text,DynamicFactions[text][fSkin1],DynamicFactions[text][fSkin2],DynamicFactions[text][fSkin3],DynamicFactions[text][fSkin4],DynamicFactions[text][fSkin5],DynamicFactions[text][fSkin6],DynamicFactions[text][fSkin7],DynamicFactions[text][fSkin8],DynamicFactions[text][fSkin9],DynamicFactions[text][fSkin10],DynamicFactions[text][fRankAmount],DynamicFactions[text][fUseColor]);
-			SendClientMessage(playerid, COLOR_ADMINCMD, wstring);
+			SendClientMessage(playerid,COLOR_ADMINCMD, wstring);
 			return 1;
 		}
 		else if(strcmp(cmd, "/respawnvehicles", true) == 0)
@@ -15372,7 +15604,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[UZYCIA:] frakcje - produkty - umoweoc - umoweac - kosztorys - kupnobiznesu");
 				return 1;
 			}
-			
 			if(strcmp(x_info, "kupnobiznesu",true) == 0)
 			{
 				if(gBizBoughtApprovalSendBy[playerid] == -1 || !IsPlayerConnected(gBizBoughtApprovalSendBy[playerid]))
@@ -15392,10 +15623,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Wyda³eœ pozwolenie na kupno biznesu !");
 				SendClientMessage(gBizBoughtApprovalSendBy[playerid], COLOR_GREEN, "[INFO:] Otrzyma³eœ pozwolenie na kupno biznesu !");
 				gBizBoughtApprovalSendBy[playerid] = -1;
-				
 				return 1;
 			}			
-			else if(strcmp(x_info, "frakcje",true) == 0)
+			if(strcmp(x_info, "frakcje",true) == 0)
 			{
 				new faction = FactionRequest[playerid];
 				if(FactionRequest[playerid] != 255)
@@ -15412,11 +15642,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						SavePlayerData(playerid, "Rank");
 						SavePlayerData(playerid, "JoinedFaction");
 
+						FactionRequest[playerid] = 255;
 						format(wstring, sizeof(wstring), "[FRAKCJA:] %s w³¹œnie do³¹czy³ do frakcji.",GetPlayerNameEx(playerid));
 						SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, wstring);
-						
-						format(string, sizeof(string), "SELECT `additionalgroups` FROM `mybb_users` WHERE `uid` = '%d'", gPlayerData[playerid][pAccountOwnerID]);
-						wp_mysql_query(string, SET_FORUM_FACTION, playerid, db_con2);
 					}
 					else
 					{
@@ -15427,38 +15655,8 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				{
 					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Dosta³eœ oferte do³¹czenia do frakcji !");
 				}
-				
-				return 1;
 			}
-			else if(strcmp(x_info, "firme",true) == 0)
-			{
-				if(CompanyRequest[playerid] == 255)
-				{
-					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ ¿adnej propozycji zatrudnienia w firmie");
-					return 1;
-				}
-				
-				if(gPlayerData[playerid][pFaction2] != 255)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Jesteœ ju¿ zatrudniony w innej firmie");
-					return 1;
-				}
-				
-				format(string, sizeof(string), "[INFO:] Gratulacje ! Zosta³eœ pracownikiem %s", DynamicFactions[CompanyRequest[playerid]][Name]);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				gPlayerData[playerid][pFaction2] = CompanyRequest[playerid];
-				gPlayerData[playerid][pRank2] = 2;
-
-				SavePlayerData(playerid, "Faction2");
-				SavePlayerData(playerid, "Rank2");
-				
-				format(string, sizeof(string), "SELECT `additionalgroups` FROM `mybb_users` WHERE `uid` = '%d'", gPlayerData[playerid][pAccountOwnerID]);
-				wp_mysql_query(string, SET_FORUM_FACTION, playerid, db_con2);
-			
-				return 1;
-			}
-			else if(strcmp(x_info, "kosztorys", true) == 0)
+			if(strcmp(x_info, "kosztorys", true) == 0)
 			{
 				if(AccountantOffer[playerid] < 999)
 				{
@@ -15802,11 +16000,11 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								AccountantOffer[playerid] = 999;
 								AccountantCost[playerid] = 0;
 								
-								format(string, sizeof(string), "[PODATKI:] Pojazdy: $%d, Domy: $%d, Biznesy: $%d, Telefon: $%d, Radio: $%d, Od bogatych: $%d", cars, houses, businesses, phones, radio, richest);
+								format(string, sizeof(string), "[PODATKI:] Pojazdy: %d$, Domy: %d$, Biznesy: %d$, Telefon: %d$, Radio: %d$, Od bogatych: %d$", cars, houses, businesses, phones, radio, richest);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								format(string, sizeof(string), "[KOSZTY:] Mandaty: $%d, Ubezpieczenie: $%d, Inne koszta: $%d", tickets, ensurance, other);
+								format(string, sizeof(string), "[KOSZTY:] Mandaty: %d$, Ubezpieczenie: %d$, Inne koszta: %d$", tickets, ensurance, other);
 								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-								format(string, sizeof(string), "[KOSZTY:] Suma: $%d",cars+houses+businesses+phones,radio+richest+tickets+ensurance+other);
+								format(string, sizeof(string), "[KOSZTY:] Suma: %d$",cars+houses+businesses+phones,radio+richest+tickets+ensurance+other);
 								SendClientMessage(playerid, COLOR_RED, string);
 							}
 							else
@@ -15851,9 +16049,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 										// SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Mo¿esz przechowywaæ jedynie 200 produktów w swoim biznesie !");
 										// return 1;
 									// }
-									// format(string, sizeof(string), "[INFO:] Produkty kupione - koszt: $%d.", ProductsCost[playerid]);
+									// format(string, sizeof(string), "[INFO:] Produkty kupione - koszt: %d$.", ProductsCost[playerid]);
 									// SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-									// format(string, sizeof(string), "[INFO:] %s kupi³ od Ciebie produkty - koszt: $%d.", GetPlayerNameEx(playerid), ProductsCost[playerid]);
+									// format(string, sizeof(string), "[INFO:] %s kupi³ od Ciebie produkty - koszt: %d$.", GetPlayerNameEx(playerid), ProductsCost[playerid]);
 									// SendClientMessage(ProductsOffer[playerid], COLOR_LIGHTYELLOW2, string);
 									// new bizkey = gPlayerData[playerid][pBizKey];
 									// Businesses[bizkey][Products] += ProductsAmount[playerid];
@@ -15896,196 +16094,128 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					// return 1;
 				// }
 			// }
-			else if(strcmp(x_info, "umoweoc",true) == 0)
+			if(strcmp(x_info, "umoweoc",true) == 0)
 			{
 				if(EnsuranceOC[playerid][Level] == 0)
 				{
 					SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie posiadasz umowy OC do podpisania !");
 					return 1;
 				}
-				
 				if(gPlayerData[playerid][pCash] < 150)
 				{
-					SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie masz wystarczaj¹cej iloœc pieniêdzy (150$) by podpisaæ umowe !");
+					SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie masz wystarczaj¹cej iloœc pieniêdzy (2000$) by podpisaæ umowe !");
 					return 1;
 				}
-				
 				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 150;
 				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
 				GivePlayerCash(playerid, -150);
-				
 				new vehid = CarSerialToID(SlotParam1(playerid, EnsuranceOC[playerid][vehicleNr]));
-				
 				SetPSlotParam3(playerid, EnsuranceOC[playerid][vehicleNr], floatround(float(cenyPojazdow[gVehData[vehid][mVehModel]-400]) * 0.3, floatround_round));
-				
 				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Ubezpieczenie OC zosta³o aktywowane !");
-				
 				EnsuranceOC[playerid][Level] = 0;
-				
-				return 1;
 			}
-			else if(strcmp(x_info, "umoweac",true) == 0)
+			if(strcmp(x_info, "umoweac",true) == 0)
 			{
 				if(EnsuranceAC[playerid][Level] == 0)
 				{
 					SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie posiadasz umowy AC do podpisania !");
 					return 1;
 				}
-				
 				if(gPlayerData[playerid][pCash] < 450)
 				{
-					SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie masz wystarczaj¹cej iloœc pieniêdzy (450$) by podpisaæ umowe !");
+					SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie masz wystarczaj¹cej iloœc pieniêdzy (2000$) by podpisaæ umowe !");
 					return 1;
 				}
-				
 				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 450;
 				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
 				GivePlayerCash(playerid, -450);
-				
 				new vehid = CarSerialToID(SlotParam1(playerid, EnsuranceOC[playerid][vehicleNr]));
-				
 				SetPSlotParam4(playerid, EnsuranceOC[playerid][vehicleNr], floatround(float(cenyPojazdow[gVehData[vehid][mVehModel]-400]) * 0.3, floatround_round));
-				
 				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Ubezpieczenie AC zosta³o aktywowane !");
-				
 				EnsuranceAC[playerid][Level] = 0;
-				
-				return 1;
 			}
-			
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /akceptuj [u¿ycia]");
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[U¯YCIA:] frakcje - produkty - umoweoc - umoweac - kosztorys - kupnobiznesu");
 			return 1;
 		}
 		else if(strcmp(cmd, "/fwyplac", true) == 0)
 		{
-			if(gPlayerData[playerid][pFaction] == 255)
+			if(gPlayerData[playerid][pFaction] != 255)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie przynale¿ysz do ¿adnej frakcji");
-				return 1;
-			}
-			
-			// if((gPlayerData[playerid][pFaction] == FACTIONID_POLICE || gPlayerData[playerid][pFaction] == FACTIONID_MEDICS || gPlayerData[playerid][pFaction] == FACTIONID_RAFINERY
-				// || gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT || gPlayerData[playerid][pFaction] == FACTIONID_SANNEWS || gPlayerData[playerid][pFaction] == FACTIONID_TAXI) 
-				// && !DynamicFactions[gPlayerData[playerid][pFaction]][mPayOffGranted])
-			// {
-				// SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz poprosiæ administratora 5 lvl o zgode na wyp³ate pieniêdzy");
-				// return 1;
-			// }
-			
-			tmp = strtok(cmdtext, idx);
-			if(!strlen(tmp))
-			{
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fwyplac [kwota]");
-				return 1;
-			}
-			
-			new cashdeposit = strval(tmp);
-			if(!strlen(tmp))
-			{
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fwyplac [kwota]");
-				return 1;
-			}
-			
-			if(cashdeposit <= 0)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Wartoœæ wyp³aty musi byæ wiêksza od 0");
-				return 1;
-			}
-			
-			new inPosition = 0;
-			
-			if(!IsAtBank(playerid) && IsAtAtm(playerid))
-			{
-				inPosition = 2;
-			}
-			else
-			{
-				inPosition = 1;
-			}
+				if((gPlayerData[playerid][pFaction] == FACTIONID_POLICE || gPlayerData[playerid][pFaction] == FACTIONID_MEDICS || gPlayerData[playerid][pFaction] == FACTIONID_RAFINERY
+					|| gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT || gPlayerData[playerid][pFaction] == FACTIONID_SANNEWS || gPlayerData[playerid][pFaction] == FACTIONID_TAXI) 
+					&& !DynamicFactions[gPlayerData[playerid][pFaction]][mPayOffGranted])
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz poprosiæ administratora 5 lvl o zgode na wyp³ate pieniêdzy");
+					return 1;
+				}
 				
-			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != FACTIONT_GANG)
-			{
+				tmp = strtok(cmdtext, idx);
+				if(!strlen(tmp))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fwyplac [kwota]");
+					return 1;
+				}
+				new cashdeposit = strval(tmp);
+				if(!strlen(tmp))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fwyplac [kwota]");
+					return 1;
+				}
+				if(cashdeposit <= 0)
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Wartoœæ wyp³aty musi byæ wiêksza od 0 !");
+					return 1;
+				}
+				new inPosition = 0;
+				if(!IsAtBank(playerid))
+				{
+					for(new i = 0; i < 4; i++)
+					{
+						if(!PlayerToPoint(1.0, playerid, gATM[i][0], gATM[i][1], gATM[i][2]))
+							continue;
+						inPosition = 2;
+					}
+				}
+				else
+					inPosition = 1;
 				if(inPosition == 0)
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Aby wyp³aciæ pieni¹dze musisz znajdowaæ siê w banku lub przy automacie");
 					return 1;
 				}
-				
-				if(gPlayerData[playerid][pRank] != 1)
+				if(gPlayerData[playerid][pRank] == 1)
+				{
+					if(DynamicFactions[gPlayerData[playerid][pFaction]][fBank] >= cashdeposit + 3)
+					{
+						if(DynamicFactions[gPlayerData[playerid][pFaction]][mPayOffGranted])
+							DynamicFactions[gPlayerData[playerid][pFaction]][mPayOffGranted] = 0;
+						GivePlayerCash(playerid,cashdeposit);
+						DynamicFactions[gPlayerData[playerid][pFaction]][fBank]=DynamicFactions[gPlayerData[playerid][pFaction]][fBank]-cashdeposit - 3;
+						format(string, sizeof(string), "[INFO:] Wyp³aci³eœ %d$ z konta frakcji, nowy stan konta: %d$", cashdeposit,DynamicFactions[gPlayerData[playerid][pFaction]][fBank]);
+						SendClientMessage(playerid, COLOR_WHITE, string);
+						if(inPosition == 2)
+							SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Pobrano op³ate w wysokoœci 3$ za skorzystanie z automatu");
+						format(string, sizeof(string), "[FACTION:] %s wyp³aci³ %d$ z konta frakcji.",gPlayerData[playerid][pName],cashdeposit);
+						ABroadCast(COLOR_YELLOW, string, 5);
+						SaveFData(gPlayerData[playerid][pFaction], "Bank");
+						format(string, sizeof(string), "[CASH:] Player: %s, withdraw: %d$, from faction id: %d", gPlayerData[playerid][pName], cashdeposit, gPlayerData[playerid][pFaction]);
+						PayLog(string);
+						return 1;
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz tyle pieniêdzy na koncie frakcji !");
+						return 1;
+					}
+				}
+				else
 				{
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ liderem frakcji !");
 					return 1;
 				}
-				
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fBank] < cashdeposit + 3)
-				{
-					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz tyle pieniêdzy na koncie frakcji !");
-					return 1;
-				}
-				
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][mPayOffGranted])
-				{
-					DynamicFactions[gPlayerData[playerid][pFaction]][mPayOffGranted] = 0;
-				}
-				
-				GivePlayerCash(playerid,cashdeposit);
-				
-				DynamicFactions[gPlayerData[playerid][pFaction]][fBank] = DynamicFactions[gPlayerData[playerid][pFaction]][fBank] - cashdeposit - 3;
-				SaveFData(gPlayerData[playerid][pFaction], "Bank");
-				
-				format(string, sizeof(string), "[INFO:] Wyp³aci³eœ $%d z konta frakcji, nowy stan konta: $%d", cashdeposit,DynamicFactions[gPlayerData[playerid][pFaction]][fBank]);
-				SendClientMessage(playerid, COLOR_WHITE, string);
-				
-				if(inPosition == 2)
-				{
-					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Pobrano op³ate w wysokoœci 3$ za skorzystanie z automatu");
-				}
-				
-				ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
-				
-				format(string, sizeof(string), "[FACTION:] %s wyp³aci³ $%d z konta frakcji", gPlayerData[playerid][pName], cashdeposit);
-				ABroadCast(COLOR_YELLOW, string, 5);
-				
-				format(string, sizeof(string), "[CASH:] Player: %s, withdraw: $%d, from faction id: %d", gPlayerData[playerid][pName], cashdeposit, gPlayerData[playerid][pFaction]);
-				PayLog(string);
-				
-				return 1;
 			}
 			else
 			{
-				if(gPlayerVars[playerid][mAtBuildingId] == -1)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Aby wyp³aciæ pieni¹dze z frakcji musisz znajdowaæ siê w swoijej kryjówce");
-					return 1;
-				}
-				
-				if(Building[gPlayerVars[playerid][mAtBuildingId]][FactionOwnerId] != gPlayerData[playerid][pFaction])
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten budynek nie nale¿y do twojej frakcji");
-					return 1;
-				}
-				
-				if(Building[gPlayerVars[playerid][mAtBuildingId]][Cash] < cashdeposit)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz tyle pieniêdzy !");
-					return 1;
-				}
-				
-				format(string, sizeof(string), "[CASH:] Player: %s, withdraw: $%d, from faction id: %d", gPlayerData[playerid][pName], cashdeposit, gPlayerData[playerid][pFaction]);
-				PayLog(string);
-				
-				GivePlayerCash(playerid, cashdeposit);
-				
-				ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
-				
-				Building[gPlayerVars[playerid][mAtBuildingId]][Cash] -= cashdeposit;
-				SaveBData(gPlayerVars[playerid][mAtBuildingId], "Cash");
-				
-				format(string, sizeof(string), "[INFO:] Wyp³aci³eœ z kryjówki frakcji $%d", cashdeposit);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja.");
 			}
 			return 1;
 		}
@@ -16094,68 +16224,55 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			if(gPlayerData[playerid][pFaction2] != 255)
 			{
 				tmp = strtok(cmdtext, idx);
-				
 				if(!strlen(tmp))
 				{
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /firmawyplac [kwota]");
 					return 1;
 				}
-				
 				new cashdeposit = strval(tmp);
-				
 				if(!strlen(tmp))
 				{
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /firmawyplac [kwota]");
 					return 1;
 				}
-				
 				if(cashdeposit <= 0)
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Wartoœæ przelewu musi byæ wiêksza od 0 !");
 					return 1;
 				}
-				
 				new inPosition = 0;
-				
-				if(!IsAtBank(playerid) && IsAtAtm(playerid))
+				if(!PlayerToPoint(5.0,playerid,BankPosition[X],BankPosition[Y],BankPosition[Z]) 
+				&& !PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z]))
 				{
-					inPosition = 2;
+					for(new i = 0; i < 4; i++)
+					{
+						if(!PlayerToPoint(1.0, playerid, gATM[i][0], gATM[i][1], gATM[i][2]))
+							continue;
+						inPosition = 2;
+					}
 				}
 				else
-				{
 					inPosition = 1;
-				}
-					
 				if(inPosition == 0)
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Aby wyp³aciæ pieni¹dze musisz znajdowaæ siê w banku lub przy automacie");
 					return 1;
 				}
-				
 				if(gPlayerData[playerid][pRank2] == 1)
 				{
 					if(DynamicFactions[gPlayerData[playerid][pFaction2]][fBank] >= cashdeposit + 3)
 					{
 						GivePlayerCash(playerid,cashdeposit);
-						
 						DynamicFactions[gPlayerData[playerid][pFaction2]][fBank]=DynamicFactions[gPlayerData[playerid][pFaction2]][fBank]-cashdeposit - 3;
-						
-						format(string, sizeof(string), "[INFO:] Wyp³aci³eœ $%d z konta firmy, nowy stan konta: $%d", cashdeposit,DynamicFactions[gPlayerData[playerid][pFaction2]][fBank]);
+						format(string, sizeof(string), "[INFO:] Wyp³aci³eœ %d$ z konta firmy, nowy stan konta: %d$", cashdeposit,DynamicFactions[gPlayerData[playerid][pFaction2]][fBank]);
 						SendClientMessage(playerid, COLOR_WHITE, string);
-						
 						if(inPosition == 2)
-						{
 							SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Pobrano op³ate w wysokoœci 3$ za skorzystanie z automatu");
-						}
-						
-						format(string, sizeof(string), "[FACTION:] %s wyp³aci³ $%d z konta firmy.",gPlayerData[playerid][pName],cashdeposit);
+						format(string, sizeof(string), "[FACTION:] %s wyp³aci³ %d$ z konta firmy.",gPlayerData[playerid][pName],cashdeposit);
 						SendFactionMessage(gPlayerData[playerid][pFaction2], COLOR_FACTIONCHAT, string);
-						
 						SaveFData(gPlayerData[playerid][pFaction2], "Bank");
-						
-						format(string, sizeof(string), "[CASH:] Player: %s, withdraw: $%d, from faction id: %d", gPlayerData[playerid][pName], cashdeposit, gPlayerData[playerid][pFaction2]);
+						format(string, sizeof(string), "[CASH:] Player: %s, withdraw: %d$, from faction id: %d", gPlayerData[playerid][pName], cashdeposit, gPlayerData[playerid][pFaction2]);
 						PayLog(string);
-						
 						return 1;
 					}
 					else
@@ -16182,65 +16299,123 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			{
 				if(!PlayerToPoint(100.0, playerid, Businesses[i][ExitX], Businesses[i][ExitY], Businesses[i][ExitZ]) || GetPlayerVirtualWorld(playerid) != i)
 					continue;
-				
 				if(strcmp(gPlayerData[playerid][pName], Businesses[i][Owner], false) != 0)
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ w³aœcicielem tego biznesu !");
 					return 1;
 				}
-				
 				tmp = strtok(cmdtext, idx);
 				if(!strlen(tmp))
 				{
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /wyplaczbiznesu [kwota]");
 					return 1;
 				}
-				
 				new cashdeposit = strval(tmp);
 				if(!strlen(tmp))
 				{
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /wyplaczbiznesu [kwota]");
 					return 1;
 				}
-				
 				if(cashdeposit <= 0)
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Wyp³acana wartoœæ musi byæ wiêksza od 0");
 					return 1;
 				}
-				
 				if(cashdeposit > Businesses[i][Till])
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz tyle pieniêdzy w tym biznesie");
 					return 1;
 				}
-				
 				GivePlayerCash(playerid,cashdeposit);
-				
-				ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
-				
 				Businesses[i][Till] -= cashdeposit;
-				SaveBizData(i, "Till");
-				
-				format(string, sizeof(string), "[INFO:] Wyp³aci³eœ $%d ze swojej kasy w biznesie, nowy stan: $%d ", cashdeposit,Businesses[i][Till]);
+				format(string, sizeof(string), "[INFO:] Wyp³aci³eœ %d$ ze swojej kasy w biznesie, nowy stan: %d$ ", cashdeposit,Businesses[i][Till]);
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				format(string, sizeof(string), "[CASH:] Player: %s, withdraw: $%d, from business id: %d", gPlayerData[playerid][pName], cashdeposit, i);
+				SaveBizData(i, "Till");
+				format(string, sizeof(string), "[CASH:] Player: %s, withdraw: %d$, from business id: %d", gPlayerData[playerid][pName], cashdeposit, i);
 				PayLog(string);
-				
 				return 1;
 			}
 			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz znajdowaæ siê w biznesie aby wyp³aciæ pieni¹dze");
 			return 1;
 		}
-		else if(strcmp(cmd, "/firmawplac", true) == 0)
+		else if(strcmp(cmd, "/fwplac", true) == 0)
 		{
-			if(!IsAtBank(playerid))
+			if(!PlayerToPoint(5.0, playerid, BankPosition[X], BankPosition[Y], BankPosition[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition3[X], BankPosition3[Y], BankPosition3[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition4[X], BankPosition4[Y], BankPosition4[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition5[X], BankPosition5[Y], BankPosition5[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition6[X], BankPosition6[Y], BankPosition6[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition7[X], BankPosition7[Y], BankPosition7[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition8[X], BankPosition8[Y], BankPosition8[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition9[X], BankPosition9[Y], BankPosition9[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition10[X], BankPosition10[Y], BankPosition10[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition11[X], BankPosition11[Y], BankPosition11[Z]))
 			{				
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ w banku !");
 				return 1;
 			}
-			
+			if(gPlayerData[playerid][pFaction] != 255)
+			{
+				tmp = strtok(cmdtext, idx);
+				if(!strlen(tmp))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fwplac [kwota]");
+					return 1;
+				}
+				new cashdeposit = strval(tmp);
+				if(!strlen(tmp))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fwplac [kwota]");
+					return 1;
+				}
+				if(cashdeposit <= 0)
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Wartoœæ przelewu musi byæ wiêksza od 0 !");
+					return 1;
+				}
+				if(GetPlayerCash(playerid) >= cashdeposit)
+				{
+					GivePlayerCash(playerid,-cashdeposit);
+					DynamicFactions[gPlayerData[playerid][pFaction]][fBank] += cashdeposit;
+					
+					SaveFData(gPlayerData[playerid][pFaction], "Bank");
+					format(string, sizeof(string), "[CASH:] Player: %s, donate: %d$, to faction id: %d", gPlayerData[playerid][pName], cashdeposit, gPlayerData[playerid][pFaction]);
+					PayLog(string);
+					
+					format(string, sizeof(string), "[INFO:] Wp³aci³eœ %d$ na konto frakcji, nowy stan: %d$", cashdeposit,DynamicFactions[gPlayerData[playerid][pFaction]][fBank]);
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+					
+					return 1;
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz tyle pieniêdzy !");
+				}
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ we frakcji !");
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/firmawplac", true) == 0)
+		{
+			if(!PlayerToPoint(5.0, playerid, BankPosition[X], BankPosition[Y], BankPosition[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition3[X], BankPosition3[Y], BankPosition3[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition4[X], BankPosition4[Y], BankPosition4[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition5[X], BankPosition5[Y], BankPosition5[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition6[X], BankPosition6[Y], BankPosition6[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition7[X], BankPosition7[Y], BankPosition7[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition8[X], BankPosition8[Y], BankPosition8[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition9[X], BankPosition9[Y], BankPosition9[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition10[X], BankPosition10[Y], BankPosition10[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition11[X], BankPosition11[Y], BankPosition11[Z]))
+			{				
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ w banku !");
+				return 1;
+			}
 			if(gPlayerData[playerid][pFaction2] != 255)
 			{
 				tmp = strtok(cmdtext, idx);
@@ -16266,10 +16441,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					DynamicFactions[gPlayerData[playerid][pFaction2]][fBank] += cashdeposit;
 					
 					SaveFData(gPlayerData[playerid][pFaction2], "Bank");
-					format(string, sizeof(string), "[CASH:] Player: %s, donate: $%d, to faction id: %d", gPlayerData[playerid][pName], cashdeposit, gPlayerData[playerid][pFaction2]);
+					format(string, sizeof(string), "[CASH:] Player: %s, donate: %d$, to faction id: %d", gPlayerData[playerid][pName], cashdeposit, gPlayerData[playerid][pFaction2]);
 					PayLog(string);
 					
-					format(string, sizeof(string), "[INFO:] Wp³aci³eœ $%d na konto firmy, nowy stan: $%d", cashdeposit,DynamicFactions[gPlayerData[playerid][pFaction2]][fBank]);
+					format(string, sizeof(string), "[INFO:] Wp³aci³eœ %d$ na konto firmy, nowy stan: %d$", cashdeposit,DynamicFactions[gPlayerData[playerid][pFaction2]][fBank]);
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 					
 					return 1;
@@ -16287,7 +16462,17 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 		else if(strcmp(cmd, "/wplac", true) == 0)
 		{
-			if(!IsAtBank(playerid))
+			if(!PlayerToPoint(5.0, playerid, BankPosition[X], BankPosition[Y], BankPosition[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition3[X], BankPosition3[Y], BankPosition3[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition4[X], BankPosition4[Y], BankPosition4[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition5[X], BankPosition5[Y], BankPosition5[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition6[X], BankPosition6[Y], BankPosition6[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition7[X], BankPosition7[Y], BankPosition7[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition8[X], BankPosition8[Y], BankPosition8[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition9[X], BankPosition9[Y], BankPosition9[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition10[X], BankPosition10[Y], BankPosition10[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition11[X], BankPosition11[Y], BankPosition11[Z]))
 			{				
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ w banku !");
 				return 1;
@@ -16315,18 +16500,16 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				{
 					gPlayerData[playerid][pFirstBankUse] = 1;
 					SavePlayerData(playerid, "FirstBankUse");
+					// AddExpPoint(playerid);
 					SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Poraz pierwszy korzystasz z us³ug banku !");
 				}
-				
 				GivePlayerCash(playerid,-cashdeposit);
 				gPlayerData[playerid][pBank] = cashdeposit + gPlayerData[playerid][pBank];
 
-				ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
-				
-				format(string, sizeof(string), "[INFO:] Wp³aci³eœ $%d na Twoje konto w banku, nowy stan: $%d", cashdeposit,gPlayerData[playerid][pBank]);
+				format(string, sizeof(string), "[INFO:] Wp³aci³eœ %d$ na Twoje konto w banku, nowy stan: %d$", cashdeposit,gPlayerData[playerid][pBank]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
 				
-				format(string, sizeof(string), "[CASH:] Player: %s, donate: $%d, to bank", gPlayerData[playerid][pName], cashdeposit);
+				format(string, sizeof(string), "[CASH:] Player: %s, donate: %d$, to bank", gPlayerData[playerid][pName], cashdeposit);
 				PayLog(string);
 				return 1;
 			}
@@ -16339,16 +16522,27 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		else if(strcmp(cmd, "/wyplac", true) == 0)
 		{
 			new inPosition = 0;
-			
-			if(!IsAtBank(playerid) && IsAtAtm(playerid))
+			if(!PlayerToPoint(5.0, playerid, BankPosition[X], BankPosition[Y], BankPosition[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition3[X], BankPosition3[Y], BankPosition3[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition4[X], BankPosition4[Y], BankPosition4[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition5[X], BankPosition5[Y], BankPosition5[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition6[X], BankPosition6[Y], BankPosition6[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition7[X], BankPosition7[Y], BankPosition7[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition8[X], BankPosition8[Y], BankPosition8[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition9[X], BankPosition9[Y], BankPosition9[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition10[X], BankPosition10[Y], BankPosition10[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition11[X], BankPosition11[Y], BankPosition11[Z]))
 			{
-				inPosition = 2;
+				for(new i = 0; i < sizeof(gATM); i++)
+				{
+					if(!PlayerToPoint(1.0, playerid, gATM[i][0], gATM[i][1], gATM[i][2]))
+						continue;
+					inPosition = 2;
+				}
 			}
 			else
-			{
 				inPosition = 1;
-			}
-			
 			if(inPosition == 0)
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] ¯eby wyp³aciæ pieni¹dze musisz znajdowaæ siê w banku lub przy automacie");
@@ -16381,21 +16575,18 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Poraz pierwszy korzystasz z us³ug banku !");
 					return 1;
 				}
-				
-				ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
-				
 				GivePlayerCash(playerid,cashdeposit);
 				gPlayerData[playerid][pBank] -= cashdeposit ;
 				if(inPosition == 2)
 				{
 					gPlayerData[playerid][pBank] -= 3;
 					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Pobrano op³ate w wysokoœci 3$ za skorzystanie z automatu");
-					format(string, sizeof(string), "[INFO:] Wyp³aci³eœ $%d, nowy stan: $%d (uwzglêdniono 3$)", cashdeposit,gPlayerData[playerid][pBank]);
+					format(string, sizeof(string), "[INFO:] Wyp³aci³eœ %d$, nowy stan: %d$ (uwzglêdniono 3$)", cashdeposit,gPlayerData[playerid][pBank]);
 				}
 				else
-					format(string, sizeof(string), "[INFO:] Wyp³aci³eœ $%d, nowy stan: $%d", cashdeposit,gPlayerData[playerid][pBank]);
+					format(string, sizeof(string), "[INFO:] Wyp³aci³eœ %d$, nowy stan: %d$", cashdeposit,gPlayerData[playerid][pBank]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "[CASH:] Player: %s, withdraw: $%d, to bank", gPlayerData[playerid][pName], cashdeposit);
+				format(string, sizeof(string), "[CASH:] Player: %s, withdraw: %d$, to bank", gPlayerData[playerid][pName], cashdeposit);
 				PayLog(string);
 				return 1;
 			}
@@ -16420,7 +16611,17 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /przelew [playerid/PartOName] [ktwota]");
 				return 1;
 			}
-			if(!IsAtBank(playerid))
+			if(!PlayerToPoint(5.0, playerid, BankPosition[X], BankPosition[Y], BankPosition[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition3[X], BankPosition3[Y], BankPosition3[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition4[X], BankPosition4[Y], BankPosition4[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition5[X], BankPosition5[Y], BankPosition5[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition6[X], BankPosition6[Y], BankPosition6[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition7[X], BankPosition7[Y], BankPosition7[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition8[X], BankPosition8[Y], BankPosition8[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition9[X], BankPosition9[Y], BankPosition9[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition10[X], BankPosition10[Y], BankPosition10[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition11[X], BankPosition11[Y], BankPosition11[Z]))
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ w banku !");
 				return 1;
@@ -16457,12 +16658,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						}
 						gPlayerData[playerid][pBank] -= moneys;
 						gPlayerData[giveplayerid][pBank] += moneys;
-						format(string, sizeof(string), "[INFO:] Przela³eœ $%d na konto %s", moneys, GetPlayerNameEx(giveplayerid),giveplayerid);
+						format(string, sizeof(string), "[INFO:] Przela³eœ %d$ na konto %s", moneys, GetPlayerNameEx(giveplayerid),giveplayerid);
 						SendClientMessage(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[INFO:]Dosta³eœ przelew o wartoœci $%d od %s", moneys, GetPlayerNameEx(playerid), playerid);
+						format(string, sizeof(string), "[INFO:]Dosta³eœ przelew o wartoœci %d$ od %s", moneys, GetPlayerNameEx(playerid), playerid);
 						SendClientMessage(giveplayerid, COLOR_YELLOW, string);
 						
-						format(string, sizeof(string), "[CASH:] %s transfered cash value of $%d to %s", gPlayerData[playerid][pName], moneys, gPlayerData[giveplayerid][pName]);
+						format(string, sizeof(string), "[CASH:] %s transfered cash value of %d$ to %s", gPlayerData[playerid][pName], moneys, gPlayerData[giveplayerid][pName]);
 						PayLog(string);
 					}
 					else
@@ -16480,24 +16681,33 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		else if(strcmp(cmd, "/stankonta", true) == 0)
 		{
 			new inPosition = 0;
-			
-			if(!IsAtBank(playerid) && IsAtAtm(playerid))
+			if(!PlayerToPoint(5.0, playerid, BankPosition[X], BankPosition[Y], BankPosition[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition3[X], BankPosition3[Y], BankPosition3[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition4[X], BankPosition4[Y], BankPosition4[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition5[X], BankPosition5[Y], BankPosition5[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition6[X], BankPosition6[Y], BankPosition6[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition7[X], BankPosition7[Y], BankPosition7[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition8[X], BankPosition8[Y], BankPosition8[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition9[X], BankPosition9[Y], BankPosition9[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition10[X], BankPosition10[Y], BankPosition10[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition11[X], BankPosition11[Y], BankPosition11[Z]))
 			{
-				inPosition = 2;
+				for(new i = 0; i < 4; i++)
+				{
+					if(!PlayerToPoint(1.0, playerid, gATM[i][0], gATM[i][1], gATM[i][2]))
+						continue;
+					inPosition = 2;
+				}
 			}
 			else
-			{
 				inPosition = 1;
-			}
-			
 			if(inPosition == 0)
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] ¯eby sprawdziæ stan konta musisz znajdowaæ siê w banku lub przy automacie");
 				return 1;
 			}
-			
-			format(string, sizeof(string), "[INFO:] Stan konta: $%d", gPlayerData[playerid][pBank]);
-			
+			format(string, sizeof(string), "[INFO:] Stan konta: %d$.", gPlayerData[playerid][pBank]);
 			if(!gPlayerData[playerid][pFirstBankUse])
 			{
 				gPlayerData[playerid][pFirstBankUse] = 1;
@@ -16515,42 +16725,40 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_RED, "[INFO:] Niew³aœciwa frakcja !");
 				return 1;
 			}
-			
 			if(!CheckRankPrivilidges(gPlayerData[playerid][pFaction], gPlayerData[playerid][pRank], "fstankonta"))
 			{
 				SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie posiadasz uprawnieñ do sprawdzenie stanu konta frakcji !");
 				return 1;
 			}
-			
-			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != FACTIONT_GANG)
+			new inPosition = 0;
+			if(!PlayerToPoint(5.0, playerid, BankPosition[X], BankPosition[Y], BankPosition[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition3[X], BankPosition3[Y], BankPosition3[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition4[X], BankPosition4[Y], BankPosition4[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition5[X], BankPosition5[Y], BankPosition5[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition6[X], BankPosition6[Y], BankPosition6[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition7[X], BankPosition7[Y], BankPosition7[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition8[X], BankPosition8[Y], BankPosition8[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition9[X], BankPosition9[Y], BankPosition9[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition10[X], BankPosition10[Y], BankPosition10[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition11[X], BankPosition11[Y], BankPosition11[Z]))
 			{
-				if(!IsAtBank(playerid) && !IsAtAtm(playerid))
+				for(new i = 0; i < 4; i++)
 				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] ¯eby sprawdziæ stan konta musisz znajdowaæ siê w banku lub przy automacie");
-					return 1;
+					if(!PlayerToPoint(1.0, playerid, gATM[i][0], gATM[i][1], gATM[i][2]))
+						continue;
+					inPosition = 2;
 				}
-			
-				format(string, sizeof(string), "[INFO:] Stan konta frakcji: $%d.", DynamicFactions[gPlayerData[playerid][pFaction]][fBank]);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 			}
 			else
+				inPosition = 1;
+			if(inPosition == 0)
 			{
-				if(gPlayerVars[playerid][mAtBuildingId] == -1)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ w swojej kryjówce");
-					return 1;
-				}
-				
-				if(Building[gPlayerVars[playerid][mAtBuildingId]][FactionOwnerId] != gPlayerData[playerid][pFaction])
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] To nie jest twoja kryjówka");
-					return 1;
-				}
-				
-				format(string, sizeof(string), "[INFO:] W sejfie znajduje siê $%d", Building[gPlayerVars[playerid][mAtBuildingId]][Cash]);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] ¯eby sprawdziæ stan konta musisz znajdowaæ siê w banku lub przy automacie");
+				return 1;
 			}
-	
+			format(string, sizeof(string), "[INFO:] Stan konta frakcji: %d$.", DynamicFactions[gPlayerData[playerid][pFaction]][fBank]);
+			SendClientMessage(playerid, COLOR_WHITE, string);
 			return 1;
 		}
 		else if(strcmp(cmd, "/firmastankonta", true) == 0)
@@ -16565,25 +16773,75 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie jesteœ za³o¿ycielem tej firmy");
 				return 1;
 			}
-			
 			new inPosition = 0;
-			
-			if(!IsAtBank(playerid) && IsAtAtm(playerid))
+			if(!PlayerToPoint(5.0, playerid, BankPosition[X], BankPosition[Y], BankPosition[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition2[X], BankPosition2[Y], BankPosition2[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition3[X], BankPosition3[Y], BankPosition3[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition4[X], BankPosition4[Y], BankPosition4[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition5[X], BankPosition5[Y], BankPosition5[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition6[X], BankPosition6[Y], BankPosition6[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition7[X], BankPosition7[Y], BankPosition7[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition8[X], BankPosition8[Y], BankPosition8[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition9[X], BankPosition9[Y], BankPosition9[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition10[X], BankPosition10[Y], BankPosition10[Z])
+				&& !PlayerToPoint(2.0, playerid, BankPosition11[X], BankPosition11[Y], BankPosition11[Z]))
 			{
-				inPosition = 2;
+				for(new i = 0; i < 4; i++)
+				{
+					if(!PlayerToPoint(1.0, playerid, gATM[i][0], gATM[i][1], gATM[i][2]))
+						continue;
+					inPosition = 2;
+				}
 			}
 			else
-			{
 				inPosition = 1;
-			}
-			
 			if(inPosition == 0)
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] ¯eby sprawdziæ stan konta musisz znajdowaæ siê w banku lub przy automacie");
 				return 1;
 			}
-			format(string, sizeof(string), "[INFO:] Stan konta firmy: $%d.", DynamicFactions[gPlayerData[playerid][pFaction2]][fBank]);
+			format(string, sizeof(string), "[INFO:] Stan konta firmy: %d$.", DynamicFactions[gPlayerData[playerid][pFaction2]][fBank]);
 			SendClientMessage(playerid, COLOR_WHITE, string);
+			return 1;
+		}
+		else if(strcmp(cmd, "/fmatsy", true) == 0)
+		{
+			if(gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
+			{
+				if(PlayerToPoint(5.0,playerid,FactionMaterialsStorage[X],FactionMaterialsStorage[Y],FactionMaterialsStorage[Z]))
+				{
+					format(string, sizeof(string), "[INFO:] Iloœæ materia³ów: %d.", DynamicFactions[gPlayerData[playerid][pFaction]][fMaterials]);
+					SendClientMessage(playerid, COLOR_WHITE, string);
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ we frakcyjnym sk³adzie materia³ów !");
+				}
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja.");
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/fnarkotyki", true) == 0)
+		{
+			if(gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
+			{
+				if(PlayerToPoint(5.0,playerid,FactionDrugsStorage[X],FactionDrugsStorage[Y],FactionDrugsStorage[Z]))
+				{
+					format(string, sizeof(string), "[INFO:] Iloœæ narkotyków: %d.", DynamicFactions[gPlayerData[playerid][pFaction]][fDrugs]);
+					SendClientMessage(playerid, COLOR_WHITE, string);
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ we frakcyjnym sk³adzie narkotyków!");
+				}
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³¹œciwe ID.");
+			}
 			return 1;
 		}
 		else if(strcmp(cmd, "/wyplaczdomu", true) == 0)
@@ -16615,13 +16873,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						{
 							GivePlayerCash(playerid,cashdeposit);
 							Houses[i][Money] -= cashdeposit;
-							
-							ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
-							
-							format(string, sizeof(string), "[INFO:] Wyp³aci³eœ $%d ze swojego sejfu, nowy stan: $%d ", cashdeposit,Houses[i][Money]);
+							format(string, sizeof(string), "[INFO:] Wyp³aci³eœ %d$ ze swojego sejfu, nowy stan: %d$ ", cashdeposit,Houses[i][Money]);
 							SendClientMessage(playerid, COLOR_WHITE, string);
 							SaveHouseData(i, "Money");
-							format(string, sizeof(string), "[CASH:] Player: %s, withdraw: $%d, from house id: %d", gPlayerData[playerid][pName], cashdeposit, i);
+							format(string, sizeof(string), "[CASH:] Player: %s, withdraw: %d$, from house id: %d", gPlayerData[playerid][pName], cashdeposit, i);
 							PayLog(string);
 							return 1;
 						}
@@ -16671,12 +16926,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 									Houses[i][Money] += cashdeposit;
 
-									ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
-									
-									format(string, sizeof(string), "[INFO:] Wp³aci³eœ $%d do swojego sejfu, nowy stan: $%d ", cashdeposit,Houses[i][Money]);
+									format(string, sizeof(string), "[INFO:] Wp³aci³eœ %d$ do swojego sejfu, nowy stan: %d$ ", cashdeposit,Houses[i][Money]);
 									SendClientMessage(playerid, COLOR_WHITE, string);
 									
-									format(string, sizeof(string), "[CASH:] Player: %s, donate: $%d, to house id: %d", gPlayerData[playerid][pName], cashdeposit, i);
+									format(string, sizeof(string), "[CASH:] Player: %s, donate: %d$, to house id: %d", gPlayerData[playerid][pName], cashdeposit, i);
 									PayLog(string);
 
 									SaveHouseData(i, "Money");
@@ -16714,8 +16967,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				{
 					if(gVehData[idcar-1][EngineOn] == 0)
 					{
-						printf("START 6");
-					
 						StartEngine(playerid, tmpcar);
 						return 1;
 					}
@@ -16727,130 +16978,110 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						return 1;
 					}
 				}
-				
 				if(gVehData[tmpcar][EngineOn] == 0)
 				{
 					if(EngineTurningOn[playerid] == 0)
 					{
-						if(gVehData[tmpcar][CarDamaged])
+						if(gVehData[tmpcar][CarDamaged] == 0)
 						{
-							EngineTurningOn[playerid] = 1;
-							EngineInfo(playerid);
-							
-							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Pojazd uszkodzony lub w trakcie napraw/wymiany opon, wezwij mechanika !");
-							
-							return 1;
-						}
-						
-						if(gVehData[tmpcar][CarRepairTimeLeft])
-						{
-							EngineTurningOn[playerid] = 1;
-							EngineInfo(playerid);
-							
-							SendClientMessage(playerid, COLOR_RED, "[INFO:] Pojazd jest naprawiany, nie mo¿esz go uruchomiæ");
-							
-							return 1;
-						}
-						
-						if(gVehData[tmpcar][mVehIgnitionDamaged])
-						{
-							SendClientMessage(playerid, COLOR_RED, "[INFO:] Stacyjka pojazdu jest uszkodzona, nie mo¿na uruchomiæ silnika");
-							
-							return 1;
-						}
-						
-						if(gVehData[tmpcar][mVehIgnitionHacked] || PHaveItem(playerid, 2, gVehData[tmpcar][CarSerial]) > 0 || gVehData[tmpcar][mVehType] == 3 || (strcmp(gPlayerData[playerid][pName], Businesses[gVehData[tmpcar][BusinessID]][Owner], false) == 0 && !gVehData[tmpcar][mVehOwned]))
-						{
-							printf("START 2");
-						
-							StartEngine(playerid, tmpcar);
-							
-							return 1;
-						}
-						
-						if(gVehData[tmpcar][mVehFaction] == 255)
-						{
-							printf("START 3");
-						
-							if(gVehData[tmpcar][mVehType] == 1 || gVehData[tmpcar][mVehType] == 4 || gVehData[tmpcar][mVehType] == 5 || gVehData[tmpcar][mVehType] == 6 || gVehData[tmpcar][mVehType] == 7 || gVehData[tmpcar][mVehType] == 11)
+							if(gVehData[tmpcar][CarRepairTimeLeft] == 0)
 							{
-								StartEngine(playerid, tmpcar);
-								return 1;
-							}
-							
-							if(gVehData[tmpcar][mVehType] == 2 && gPlayerData[playerid][pJob] == 13)
-							{
-								StartEngine(playerid, tmpcar);
-								return 1;
-							}
-						}
-						
-						if(gVehData[tmpcar][mVehFaction] != 255)
-						{
-							if(gPlayerData[playerid][pFaction] == gVehData[tmpcar][mVehFaction])
-							{
-								if(gVehData[tmpcar][mVehType] == 0)
+								if(gVehData[tmpcar][mVehIgnitionDamaged])
 								{
-									if(gPlayerData[playerid][pDuty] == 0)
+									SendClientMessage(playerid, COLOR_RED, "[INFO:] Stacyjka pojazdu jest uszkodzona, nie mo¿na uruchomiæ silnika");
+									return 1;
+								}
+								if(gVehData[tmpcar][mVehIgnitionHacked] || PHaveItem(playerid, 2, gVehData[tmpcar][CarSerial]) > 0 || gVehData[tmpcar][mVehType] == 3
+									|| strcmp(gPlayerData[playerid][pName], Businesses[gVehData[tmpcar][BusinessID]][Owner], false) == 0 && !gVehData[tmpcar][mVehOwned])
+								{
+									StartEngine(playerid, tmpcar);
+									return 1;
+								}
+								if(gVehData[tmpcar][mVehFaction] == 255)
+								{
+									if(gVehData[tmpcar][mVehType] == 1 || gVehData[tmpcar][mVehType] == 4 || gVehData[tmpcar][mVehType] == 5 || gVehData[tmpcar][mVehType] == 6 || gVehData[tmpcar][mVehType] == 7|| gVehData[tmpcar][mVehType] == 11)
 									{
-										if(DynamicFactions[gVehData[tmpcar][mVehFaction]][fType] == 1)
-										{
-											SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie jesteœ na s³u¿bie - nie posiadasz kluczy");
-										}
-										else
-										{
-											SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie posiadasz kluczy - mo¿esz je wzi¹œæ z przebieralni");
-										}
-										
-										EngineTurningOn[playerid] = 1;
-										EngineInfo(playerid);
-										
+										StartEngine(playerid, tmpcar);
 										return 1;
 									}
-									
-									if(gPlayerData[playerid][pDuty])
+									if(gVehData[tmpcar][mVehType] == 2 && gPlayerData[playerid][pJob] == 13)
 									{
-										if(!CheckRankPrivilidges(gPlayerData[playerid][pFaction], gPlayerData[playerid][pRank], "vehdrive"))
-										{
-											SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie posiadasz uprawnieñ do prowadzenia pojazdów frakcyjnych !");
-											return 1;
-										}
-										else
-										{
-											printf("START 4");
-										
-											StartEngine(playerid, tmpcar);
-											return 1;
-										}												
+										StartEngine(playerid, tmpcar);
+										return 1;
 									}
 								}
+								if(gVehData[tmpcar][mVehFaction] != 255)
+								{
+									if(gPlayerData[playerid][pFaction] == gVehData[tmpcar][mVehFaction])
+									{
+										if(gVehData[tmpcar][mVehType] == 0)
+										{
+											if(gPlayerData[playerid][pDuty] == 0)
+											{
+												if(DynamicFactions[gVehData[tmpcar][mVehFaction]][fType] == 1)
+													SendClientMessage(playerid,COLOR_RED, "[INFO:] Nie jesteœ na s³u¿bie - nie posiadasz kluczy.");
+												else
+													SendClientMessage(playerid,COLOR_RED, "[INFO:] Nie posiadasz kluczy - mo¿esz je wzi¹œæ z przebieralni.");
+												EngineTurningOn[playerid] = 1;
+												EngineInfo(playerid);
+												return 1;
+											}
+											if(gPlayerData[playerid][pDuty])
+											{
+												if(!CheckRankPrivilidges(gPlayerData[playerid][pFaction], gPlayerData[playerid][pRank], "vehdrive"))
+												{
+													SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie posiadasz uprawnieñ do prowadzenia pojazdów frakcyjnych !");
+													return 1;
+												}
+												else
+												{
+													StartEngine(playerid, tmpcar);
+													return 1;
+												}												
+											}
+										}
+									}
+								}
+								if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_GANG)
+								{
+									if(VehInZoneStealTimeLeft(idcar) > 0)
+									{
+										format(string, sizeof(string), "[INFO:] Musisz odczekaæ jeszcze %d godzin zanim bêdziesz móg³ w³amaæ siê do tego pojazdu", VehInZoneStealTimeLeft(idcar));
+										SendClientMessage(playerid, COLOR_ORANGE, string);
+										return 1;
+									}
+									else if(VehInZoneStealTimeLeft(idcar) == -1)
+									{
+										SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Pojazd nie znajduje siê na ¿adnym terytorium - nie mo¿esz siê do niego w³amaæ");
+										return 1;
+									}
+									EngineTurningOn[playerid] = 1;
+									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[STATUS:] Brak kluczy - próba odpalenia silnika...");
+									PlayerActionMessage(playerid, 15.0, "próbuje odpaliæ silnik");
+									defer EngineNoKey(playerid);
+									return 1;
+								}
+								else
+								{
+									SendClientMessage(playerid, COLOR_RED, "[STATUS:] Nie posiadasz kluczy do tego pojazdu.");
+									EngineTurningOn[playerid] = 1;
+									EngineInfo(playerid);
+									return 1;
+								}
 							}
-						}
-						
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_GANG)
-						{
-							if(VehInZoneStealTimeLeft(idcar) > 0)
+							else
 							{
-								format(string, sizeof(string), "[INFO:] Musisz odczekaæ jeszcze %d godzin zanim bêdziesz móg³ w³amaæ siê do tego pojazdu", VehInZoneStealTimeLeft(idcar));
-								SendClientMessage(playerid, COLOR_ORANGE, string);
+								EngineTurningOn[playerid] = 1;
+								EngineInfo(playerid);
+								SendClientMessage(playerid, COLOR_RED, "[INFO:] Pojazd jest naprawiany, nie mo¿esz go uruchomiæ");
 								return 1;
 							}
-							else if(VehInZoneStealTimeLeft(idcar) == -1)
-							{
-								SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Pojazd nie znajduje siê na ¿adnym terytorium - nie mo¿esz siê do niego w³amaæ");
-								return 1;
-							}
-							EngineTurningOn[playerid] = 1;
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[STATUS:] Brak kluczy - próba odpalenia silnika...");
-							PlayerActionMessage(playerid, 15.0, "próbuje odpaliæ silnik");
-							defer EngineNoKey(playerid);
-							return 1;
 						}
 						else
 						{
-							SendClientMessage(playerid, COLOR_RED, "[STATUS:] Nie posiadasz kluczy do tego pojazdu.");
 							EngineTurningOn[playerid] = 1;
 							EngineInfo(playerid);
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Pojazd uszkodzony lub w trakcie napraw/wymiany opon, wezwij mechanika !");
 							return 1;
 						}
 					}
@@ -16869,13 +17100,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				}
 			}
 			else
-			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ w pojeŸdzie lub nie jesteœ kierowc¹ !");
-			}
-			
 			return 1;
 		}
-		else if(strcmp(cmd, "/przekaz", true) == 0 || strcmp(cmd, "/plac", true) == 0)
+		else if(strcmp(cmd, "/przekaz", true) == 0)
 		{
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp))
@@ -16942,27 +17170,19 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							if(moneys > 0 && playermoney >= moneys)
 							{
 								gTransferCoolDown[playerid] = 60;
-								
 								GivePlayerCash(playerid, - moneys);
 								GivePlayerCash(giveplayerid, moneys);
-								
-								format(string, sizeof(string), "[INFO:] $%d przekazane %s [%d]", moneys, GetPlayerNameEx(giveplayerid), giveplayerid);
-								SendClientMessage(playerid, COLOR_WHITE, string);
-								
-								format(string, sizeof(string), "[INFO:] %s (ID:%d) przekaza³ Tobie $%d.",GetPlayerNameEx(playerid), playerid, moneys);
-								SendClientMessage(giveplayerid, COLOR_WHITE, string);
-								
-								format(string, sizeof(string), "[CASH:] %s transfered cash value of $%d to %s", gPlayerData[playerid][pName], moneys, gPlayerData[giveplayerid][pName]);
-								PayLog(string);
-								
-								format(string, sizeof(string), "[INFO:] Gracz %s [%d] przekaza³ kase graczowi %s [%d], kwota: $%d",
-								gPlayerData[playerid][pName], playerid, gPlayerData[giveplayerid][pName], giveplayerid, moneys);
-								
-								ABroadCast(COLOR_YELLOW, string, 1);
-								
+								format(string, sizeof(string), "[INFO:] %d$ przekazane %s [%d]", moneys, GetPlayerNameEx(giveplayerid), giveplayerid);
 								PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+								SendClientMessage(playerid, COLOR_WHITE, string);
+								format(string, sizeof(string), "[INFO:] %s (ID:%d) przekaza³ Tobie %d$.",GetPlayerNameEx(playerid), playerid, moneys);
+								SendClientMessage(giveplayerid, COLOR_WHITE, string);
+								format(string, sizeof(string), "[CASH:] %s transfered cash value of %d$ to %s", gPlayerData[playerid][pName], moneys, gPlayerData[giveplayerid][pName]);
+								PayLog(string);
+								format(string, sizeof(string), "[INFO:] Gracz %s [%d] przekaza³ kase graczowi %s [%d], kwota: %d$",
+								gPlayerData[playerid][pName], playerid, gPlayerData[giveplayerid][pName], giveplayerid, moneys);
+								ABroadCast(COLOR_YELLOW, string, 1);
 								PlayerPlaySound(giveplayerid, 1052, 0.0, 0.0, 0.0);
-								ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, 0, 0, 0, 0, 0);
 							}
 							else
 							{
@@ -16991,14 +17211,17 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Ta komenda nie jest ju¿ aktywna ! Status licencji mo¿esz sprawdziæ przez /mi w itemie prawo jazdy");
 			return 1;
 		}
-		else if(strcmp(cmd, "/skilebroni", true) == 0)
+		else if(strcmp(cmd, "/skile",true)==0)
 		{
+			if(IsPlayerConnected(playerid))
+			{
+			//new string[128];
 			new Pis = gPlayerData[playerid][pSkillLevPis];
 			new Sil = gPlayerData[playerid][pSkillLevSil];
 			new Des = gPlayerData[playerid][pSkillLevDes];
 			new Sho = gPlayerData[playerid][pSkillLevSho];
-			// new Sha = gPlayerData[playerid][pSkillLevSha];
-			// new Spa = gPlayerData[playerid][pSkillLevSpa];
+			new Sha = gPlayerData[playerid][pSkillLevSha];
+			new Spa = gPlayerData[playerid][pSkillLevSpa];
 			new Mic = gPlayerData[playerid][pSkillLevMic];
 			new Mp5 = gPlayerData[playerid][pSkillLevMp5];
 			new Ak = gPlayerData[playerid][pSkillLevAk];
@@ -17008,23 +17231,43 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			new pSil = gPlayerData[playerid][pSkillPointsSil];
 			new pDes = gPlayerData[playerid][pSkillPointsDes];
 			new pSho = gPlayerData[playerid][pSkillPointsSho];
-			//new pSha = gPlayerData[playerid][pSkillPointsSha];
-			//new pSpa = gPlayerData[playerid][pSkillPointsSpa];
+			new pSha = gPlayerData[playerid][pSkillPointsSha];
+			new pSpa = gPlayerData[playerid][pSkillPointsSpa];
 			new pMic = gPlayerData[playerid][pSkillPointsMic];
 			new pMp5 = gPlayerData[playerid][pSkillPointsMp5];
 			new pAk = gPlayerData[playerid][pSkillPointsAk];
 			new pM4 = gPlayerData[playerid][pSkillPointsM4];
 			new pSni = gPlayerData[playerid][pSkillPointsSni];
-				
-			format(string2, sizeof(string2), ""#COLOR_BEGIN2"Umiejêtnoœæ pos³ugiwania siê broni¹ (poziom/punkty)\n\n");
-		
-			format(string2, sizeof(string2), "%s"#COLOR_BEGIN"Pistolet: "#COLOR_DEFAULT"%d/%d - "#COLOR_BEGIN"Pistolet z t³umikiem: "#COLOR_DEFAULT"%d/%d - "#COLOR_BEGIN"Desert Eagle: "#COLOR_DEFAULT"%d/%d - "#COLOR_BEGIN"Shotgun: "#COLOR_DEFAULT"%d/%d\n\n",
-				string2, Pis, pPis, Sil, pSil, Des, pDes, Sho, pSho);
-
-			format(string2, sizeof(string2), "%s"#COLOR_BEGIN"Micro SMG: "#COLOR_DEFAULT"%d/%d - "#COLOR_BEGIN"MP5: "#COLOR_DEFAULT"%d/%d - "#COLOR_BEGIN"AK-47: "#COLOR_DEFAULT"%d/%d - "#COLOR_BEGIN"M4: "#COLOR_DEFAULT"%d/%d - "#COLOR_BEGIN"snajperka: "#COLOR_DEFAULT"%d/%d",
-				string2, Mic, pMic, Mp5, pMp5, Ak, pAk, M4, pM4, Sni, pSni);
-	
-			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_BEGIN2"Umiejêtnoœci", string2, "Zamknij", "");
+			new Ang = gPlayerData[playerid][pAng];
+			new Wf = gPlayerData[playerid][pWf];
+			new Mat = gPlayerData[playerid][pMat];
+			new Pol = gPlayerData[playerid][pPol];
+			new His = gPlayerData[playerid][pHis];
+			new Fiz = gPlayerData[playerid][pFiz];
+			new Bio = gPlayerData[playerid][pBio];
+			new ppAng = gPlayerData[playerid][pPktAng];
+			new ppWf = gPlayerData[playerid][pPktWf];
+			new ppMat = gPlayerData[playerid][pPktMat];
+			new ppPol = gPlayerData[playerid][pPktPol];
+			new ppHis = gPlayerData[playerid][pPktHis];
+			new ppFiz = gPlayerData[playerid][pPktFiz];
+			new ppBio = gPlayerData[playerid][pPktBio];
+			SendClientMessage(playerid, COLOR_LIGHTGREEN, "----------------------[Umiejetnosci:]----------------------");
+			format(string, sizeof(string), "[Poziomy:] Pis: %d - Sil: %d - Des: %d - Sho: %d - Sha: %d - Spa: %d",Pis,Sil,Des,Sho,Sha,Spa);
+			SendClientMessage(playerid,COLOR_LIGHTORANGE, string);
+			format(string, sizeof(string), "[Punkty:] Pis: %d - Sil: %d - Des: %d - Sho: %d - Sha: %d - Spa: %d",pPis,pSil,pDes,pSho,pSha,pSpa);
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, string);
+			format(string, sizeof(string), "[Poziomy:] Mic: %d - Mp5: %d - Ak: %d - M4: %d - Sni: %d",Mic,Mp5,Ak,M4,Sni);
+			SendClientMessage(playerid,COLOR_LIGHTORANGE, string);
+			format(string, sizeof(string), "[Punkty:] Mic: %d - Mp5: %d - Ak: %d - M4: %d - Sni: %d",pMic,pMp5,pAk,pM4,pSni);
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, string);
+			format(string, sizeof(string), "[Poziomy:] Ang: %d - WF: %d - Mat: %d - Pol: %d - His: %d - Fiz: %d - Bio: %d",Ang,Wf,Mat,Pol,His,Fiz,Bio);
+			SendClientMessage(playerid,COLOR_LIGHTORANGE, string);
+			format(string, sizeof(string), "[Punkty:] Ang: %d - WF: %d - Mat: %d - Pol: %d - His: %d - Fiz: %d - Bio: %d",ppAng,ppWf,ppMat,ppPol,ppHis,ppFiz,ppBio);
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, string);
+			SendClientMessage(playerid, COLOR_LIGHTGREEN, "-----------------------------------------------------------");
+			}
+			return 1;
 		}
 		else if(strcmp(cmd, "/pokazid",true)==0)
 		{
@@ -17140,13 +17383,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 		else if(strcmp(cmd, "/resetanimacji",true)==0)
 		{
-			if(gPlayerData[playerid][pCharacterDying])
+			if(gPlayerData[playerid][pCharacterDying] == 0)
 			{
-				SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie mo¿esz teraz u¿yæ tej komendy");
+				ClearAnimations(playerid);
 			}
 			else
 			{
-				ClearAnimations(playerid);
+				SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie mo¿esz u¿yæ tej komendy w przypadku umieraj¹cej postaci !");
 			}
 			return 1;
 		}
@@ -17186,7 +17429,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 							new Float:x,Float:y,Float:z;
 							GetPlayerPos(id,x,y,z);
-							SetPlayerCheckpoint(playerid,x+float(random(100)-100),y+float(random(100)-100),z,10.0);
+							SetPlayerCheckpoint(playerid,x+float(random(400)-200),y+float(random(400)-200),z,10.0);
 							ClearCheckpointsForPlayer(playerid);
 							TrackingPlayer[playerid] = 1;
 						}
@@ -17231,7 +17474,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 					new Float:x,Float:y,Float:z;
 					GetVehiclePos(id+1,x,y,z);
-					SetPlayerCheckpoint(playerid,x+float(random(100)-100),y+float(random(100)-100),z,10.0);
+					SetPlayerCheckpoint(playerid,x+float(random(320)-160),y+float(random(320)-160),z,100.0);
 					defer ClearCheckpointsForPlayer(playerid);
 					TrackingCar[playerid] = 1;
 				}
@@ -17373,7 +17616,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								new Year, Month, Day;
 								getdate(Year, Month, Day);
 								format(string, sizeof(string), "INSERT INTO `samp_wanted` (`PlayerName` , `Description` , `CommitedDay` , `CommitedMonth` , `CommitedYear`) VALUES ('%s' , '%s' , '%d' , '%d' , '%d')", gPlayerData[giveplayerid][pName], result, Day, Month, Year);
-								wp_mysql_query(string, SAVE, giveplayerid, db_con2);
+								mysql_query(string, SAVE, giveplayerid, db_con2);
 								
 								format(string, sizeof(string), "[INFO:] Uzna³eœ %s za podejrzanego, Powód: %s.", GetPlayerNameEx(giveplayerid),result);
 								SendClientMessage(playerid, COLOR_WHITE, string);
@@ -17409,23 +17652,22 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}
 			return 1;
 		}
-		else if(strcmp(cmd, "/acmds1", true) == 0)
+		else if(strcmp(cmd, "/apomoc1", true) == 0)
 		{
 			if(gPlayerData[playerid][pAdmin] > 0)
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "================================================================================================================================");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[GROUP:] /aplayercmds - /achatcmds - /afactioncmds - /avehcmds - /abuildingcmds - /ahousecmds - /abizcmds - /agotocmds");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[GROUP:] /afactorylegalcmds - /afactorycmds - /ajobscmds - /rafinerycmds - /aservercmds  - /aothercmds - /itemfactorycmds");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[GROUP:] /racecmds - /publicadscmds - /events - /abustrackcmds - /atrashtrackcmds - /asweepertrackcmds - /afarmertrackcmds");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[GROUP:] /zonecmds");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/setint - /acceptreport - /abankpos - /aweaponlicensepos - /aflyingtestpos - /adrivingtestpos - /admissionchamberpos - /antibh");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/usunraport - /fly - /name - /supervehslap - /lotterycash - /testdrivebuypos - /testdriveprice - /abroadcastmessages");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[GROUP:] /racecmds");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/setint - /acceptreport - /abankpos - /aweaponlicensepos - /aflyingtestpos - /adrivingtestpos - /admissionchamberpos");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/usunraport - /fly - /name - /supervehslap - /lotterycash - /wheelchangepos - /nadajegzaminatora - /testdrivebuypos - /testdriveprice");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/testdriveareaentrancepos - /testdriveareaexitpos - /testdriverareabuypos - /testdriveareabuytime - /testdriveareabuyprice");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "================================================================================================================================");
 			}
 			return 1;
 		}
-		else if(strcmp(cmd, "/acmds2", true) == 0)
+		else if(strcmp(cmd, "/apomoc2", true) == 0)
 		{
 			if(gPlayerData[playerid][pAdmin] > 0)
 			{
@@ -17434,7 +17676,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/acarparkdefault - /acarsreset - /ahousesreset - /abizreset - /acarmodelprice - /resetcamera - /setcamerapos - /setcameralookat");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/fixdamage - /resetpracy - /unmodcar - /savetune - /checkhp - /setpneon - /setpgarage - /sethealcost - /setexaminecost - /globalsms");
     			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/snews - /respawnthiscar(/rtc) - /update - /setstartspawn - /setstartmoney - /setstartbank - /setstartskin - /asetleader - /objmaterial");
-    			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/payoffgrant - /asetmapicon - /adeletemapicon - /setpt - /getdist - /setinfopickup");
+    			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/payoffgrant");
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "================================================================================================================================");
 			}
 			return 1;
@@ -17443,7 +17685,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] == 1)
 			{
-				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "(/f)rakcja - /sluzba - (/p)odejrzany - /aresztuj - /wanted - /skuj - /rozkuj - /rewiduj - /zgloszenia");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "(/f)rakcja - /sluzba - (/p)odejrzany - (/r)adio - (/m)egafon - /aresztuj - /wanted - /skuj - /rozkuj - /rewiduj - /zgloszenia");
 				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/paralizuj - /skonfiskuj - /mandat - /kody - /zaciagnij - /ww (wezwij wsparcie) - /sprawdzpasy - /punktykarne");
 				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/pilotpd - /sprawdznumer - /kolczatka - /zwinkolczatke - /komputerpolicyjny (/kp) - /przeszukaj - /haslokp - /podpalfab");
 
@@ -17456,23 +17698,27 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 		else if(strcmp(cmd, "/komendyurzedu", true) == 0)
 		{
-			if(gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT)
+			if(gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT)
 			{
-				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ urzêdnikiem");
-				return 1;
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/ustawdom - /wnetrzedomu - /sprzedajdom - /cenadomu");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/wnetrzebudynku - /wejsciebudynku - /nazwabudynku - /cenazalitr");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/ustawbiz - /cenabiz - /typbiz - /sprzedajbiz");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/resetpktbroni - /dajpozwolenie - /dajbron - /odbierzbron - /sprawdzbron - /komendyurzedu2");
 			}
-			
-			format(string2, sizeof(string2), ""#COLOR_BEGIN2" * Komendy urzêdu *\n\n"#COLOR_BEGIN"Domy:\n  "#COLOR_DEFAULT"/ustawdom - /wnetrzedomu - /listawnetrz - /sprzedazdomu\n\n");
-			strcat(string2, ""#COLOR_BEGIN"Budynki:\n  "#COLOR_DEFAULT"/ustawbudynek - /cenabudynku - /wnetrzebudynku - /nazwabudynku\n\n");
-			strcat(string2, ""#COLOR_BEGIN"Biznesy:\n  "#COLOR_DEFAULT"/ustawbiz - /cenabiz - /typbiz - /sprzedajbiz\n\n");
-			strcat(string2, ""#COLOR_BEGIN"Ubezpieczenie:\n  "#COLOR_DEFAULT"/umowaoc - /umowaac - /wyplacodszkodowanieoc - /wyplacodszkodowanieac\n\n");
-			strcat(string2, ""#COLOR_BEGIN"Dokumenty:\n  "#COLOR_DEFAULT"/wyrobdowod - /wyrobprawojazdy - /wyrobdowodrejestracyjny\n\n");
-			strcat(string2, ""#COLOR_BEGIN"Podatki:\n  "#COLOR_DEFAULT"/podatki1 - /podatki2\n\n");
-			strcat(string2, ""#COLOR_BEGIN"Pozosta³e:\n  "#COLOR_DEFAULT"/nrbudynku - /resetpktbroni - /dajpozwolenie - /cenazalitr - /wynajmijkomornika - /dekonfiskata\n");
-			strcat(string2, ""#COLOR_BEGIN"  "#COLOR_DEFAULT"/news - /zmost - /omost - /zslums - /oslums\n\n");
-			
-			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_TITLE"Lista komend", string2, "Zamknij", "");
-			
+			else
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja.");
+			return 1;
+		}
+		else if(strcmp(cmd, "/komendyurzedu2", true) == 0)
+		{
+			if(gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT)
+			{		
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/umowaoc - /umowaac - /wyplacodszkodowanieoc - /wyplacodszkodowanieac");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/news - /wyrobdowod - /wyrobprawojazdy - /podatki1 - /podatki2 - /wynajmijkomornika - /zmost - /omost - /zslums - /oslums");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/dekonfiskata - /wyrobdowodrejestracyjny");
+			}
+			else
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja.");
 			return 1;
 		}
 		else if(strcmp(cmd, "/komendymedykow", true) == 0)
@@ -17491,101 +17737,117 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pJob] == 0)
 			{
-				if(PlayerToPoint(1.0, playerid, GunJob[TakeJobX], GunJob[TakeJobY], GunJob[TakeJobZ]))
+				if(PlayerToPoint(1.0, playerid,GunJob[TakeJobX],GunJob[TakeJobY],GunJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == GunJob[TakeJobWorld])
 					{
 						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz dilerem broni, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 1;
+						gPlayerData[playerid][pJob] = 1; //Gun Job
 
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, DrugJob[TakeJobX], DrugJob[TakeJobY], DrugJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,DrugJob[TakeJobX],DrugJob[TakeJobY],DrugJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == DrugJob[TakeJobWorld])
 					{
 						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz dilerem narkotyków, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 2;
+						gPlayerData[playerid][pJob] = 2; //Drug Job
 
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, DetectiveJobPosition[X], DetectiveJobPosition[Y], DetectiveJobPosition[Z]))
+				else if(PlayerToPoint(1.0, playerid,DetectiveJobPosition[X],DetectiveJobPosition[Y],DetectiveJobPosition[Z]))
 				{
-					if(gPlayerData[playerid][pMat] < 2)
-					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Do tej pracy wymagany jest przynajmniej licencjat z matematyki");
-					}
-					else
-					{
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz detektywem, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 3;
+					// if(GetPlayerVirtualWorld(playerid) == DetectiveJobPosition[World])
+					// {
+						if(gPlayerData[playerid][pWf] < 2 || gPlayerData[playerid][pMat] < 4)
+						{
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Do tej pracy wymagany jest przynajmniej 2 poziom WFu oraz 4 poziom matematyki");
+						}
+						else
+						{
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz detektywem, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 3; //Detective Job
 
-						SavePlayerData(playerid, "Job");
-					}
+							SavePlayerData(playerid, "Job");
+						}
+					// }
 				}
-				else if(PlayerToPoint(1.0, playerid, LawyerJobPosition[X], LawyerJobPosition[Y], LawyerJobPosition[Z]))
+				else if(PlayerToPoint(1.0, playerid,LawyerJobPosition[X],LawyerJobPosition[Y],LawyerJobPosition[Z]))
 				{
-					if(gPlayerData[playerid][pMat] < 2 || gPlayerData[playerid][pLaw] < 2)
-					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz mieæ co najmniej licencjat z nauk matematycznych i prawniczych aby zdobyæ t¹ prace");
-					}
-					else
-					{
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz prawnikiem, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 4;
+					// if(GetPlayerVirtualWorld(playerid) == LawyerJobPosition[World])
+					// {
+						if(gPlayerData[playerid][pMat] < 5)
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Musisz mieæ co najmniej 5 poziom matematyki aby zdobyæ t¹ prace");
+						}
+						else
+						{
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz prawnikiem, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 4; //Lawyer Job
 
-						SavePlayerData(playerid, "Job");
-					}
+							SavePlayerData(playerid, "Job");
+						}
+					// }
 				}
-				else if(PlayerToPoint(1.0, playerid, WhoreJob[TakeJobX], WhoreJob[TakeJobY], WhoreJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,WhoreJob[TakeJobX],WhoreJob[TakeJobY],WhoreJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == WhoreJob[TakeJobWorld])
 					{
 						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz dziwk¹, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 6;
+						gPlayerData[playerid][pJob] = 6; //Whore Job
 
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, RapistJob[TakeJobX], RapistJob[TakeJobY], RapistJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,RapistJob[TakeJobX],RapistJob[TakeJobY],RapistJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == RapistJob[TakeJobWorld])
 					{
 						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:]] Jesteœ teraz gwa³cicielem, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 8;
+						gPlayerData[playerid][pJob] = 8; //Rapist Job
 
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, BodyJob[TakeJobX], BodyJob[TakeJobY], BodyJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,BodyJob[TakeJobX],BodyJob[TakeJobY],BodyJob[TakeJobZ]))
 				{
-					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz ochroniarzem, wpisz /komendypracy.");
-					gPlayerData[playerid][pJob] = 9; //Body Job
+					// if(GetPlayerVirtualWorld(playerid) == BodyJob[TakeJobWorld])
+					// {
+						if(gPlayerData[playerid][pWf] < 3)
+						{
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Musisz mieæ przynamniej 3 poziom WFu aby zdobyæ t¹ prace");
+						}
+						else
+						{
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz ochroniarzem, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 9; //Body Job
 
-					SavePlayerData(playerid, "Job");
+							SavePlayerData(playerid, "Job");
+						}
+					// }
 				}
-				else if(PlayerToPoint(1.0, playerid, BoxerJob[TakeJobX], BoxerJob[TakeJobY], BoxerJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,BoxerJob[TakeJobX],BoxerJob[TakeJobY],BoxerJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == BoxerJob[TakeJobWorld])
 					{
 						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz boxerem, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 7;
+						gPlayerData[playerid][pJob] = 7; //Boxer Job
 
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, CarjackJob[TakeJobX], CarjackJob[TakeJobY], CarjackJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,CarjackJob[TakeJobX],CarjackJob[TakeJobY],CarjackJob[TakeJobZ]))
 				{
-					if(gPlayerData[playerid][pFaction] == 255)
+					if(gPlayerData[playerid][pFaction ] == 255)
 					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz przynale¿eæ do gangu");
+						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie nale¿ysz do ¿adnej frakcji");
 						return 1;
 					}
 					if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
 					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz przynale¿eæ do gangu");
+						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Niew³aœciwy typ frakcji");
 						return 1;
 					}
 					if(GetPlayerVirtualWorld(playerid) == CarjackJob[TakeJobWorld])
@@ -17596,7 +17858,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, StuntJob[TakeJobX], StuntJob[TakeJobY], StuntJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,StuntJob[TakeJobX],StuntJob[TakeJobY],StuntJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == StuntJob[TakeJobWorld])
 					{
@@ -17606,7 +17868,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, DirJob[TakeJobX], DirJob[TakeJobY], DirJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,DirJob[TakeJobX],DirJob[TakeJobY],DirJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == DirJob[TakeJobWorld])
 					{
@@ -17616,166 +17878,159 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, ProductsSellerJob[TakeJobX], ProductsSellerJob[TakeJobY], ProductsSellerJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,ProductsSellerJob[TakeJobX],ProductsSellerJob[TakeJobY],ProductsSellerJob[TakeJobZ]))
 				{
 					if(PHaveItemParam5Ex(playerid, 3, 6, gPlayerData[playerid][pName]) != -1)
 					{
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz sprzedawc¹ produktów, wpisz /komendypracy.");
+						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz sprzedawc¹ produktów, wpisz /komendypracy.");
 						gPlayerData[playerid][pJob] = 5; //Products Seller Job
 
 						SavePlayerData(playerid, "Job");
 					}
 					else
 					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Do tej pracy wymagane jest prawo jazdy");
+						SendClientMessage(playerid, COLOR_RED, "[INFO:] Do tej pracy wymagane jest prawo jazdy");
 						return 1;
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, BusJob[TakeJobX], BusJob[TakeJobY], BusJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,BusJob[TakeJobX],BusJob[TakeJobY],BusJob[TakeJobZ]))
 				{
+					// NOTE: Brak prawa jazdy kat. D
 					new slot = PHaveItem(playerid, 3, 6);
-					if(slot == 0 || SlotParam2(playerid, slot) <= 0)
-					{
-						SendClientMessage(playerid, COLOR_ORANGE,"[INFO:] Prawo jazdy jest wymagane do tej pracy !");
-					}
+					if(slot == 0 || SlotParam3(playerid, slot) <= 0)
+						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Prawo jazdy jest wymagane do tej pracy !");
 					else
 					{
-						SlotParam5(playerid, slot);
+						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz kierowc¹ autobusu, wpisz /komendypracy.");
+						gPlayerData[playerid][pJob] = 13; //Bus Driver
+						SetProgressBarMaxValue(JobProgress[playerid], float(11 + (gPlayerData[playerid][pJobLvl]*5)));
 						
-						if(strcmp(gDSelectedItemP5[playerid], gPlayerData[playerid][pName], false) != 0 || strlen(gDSelectedItemP5[playerid]) == 0)
-						{
-							SendClientMessage(playerid, COLOR_ORANGE,"[INFO:] Prawo jazdy jest wymagane do tej pracy !");
-							return 1;
-						}
-						
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz kierowc¹ autobusu, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 13; 
-
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, MzgkJob[TakeJobX], MzgkJob[TakeJobY], MzgkJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,MzgkJob[TakeJobX],MzgkJob[TakeJobY],MzgkJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == MzgkJob[TakeJobWorld])
 					{
 						new slot = PHaveItem(playerid, 3, 6);
-						if(slot == 0 || SlotParam2(playerid, slot) <= 0)
-						{
-							SendClientMessage(playerid, COLOR_ORANGE,"[INFO:] Prawo jazdy jest wymagane do tej pracy !");
-						}
+						if(slot == 0 || SlotParam3(playerid, slot) <= 0)
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Prawo jazdy jest wymagane do tej pracy !");
 						else
 						{
-							SlotParam5(playerid, slot);
-							
-							if(strcmp(gDSelectedItemP5[playerid], gPlayerData[playerid][pName], false) != 0 || strlen(gDSelectedItemP5[playerid]) == 0)
-							{
-								SendClientMessage(playerid, COLOR_ORANGE,"[INFO:] Prawo jazdy jest wymagane do tej pracy !");
-								return 1;
-							}
-							
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2,"[SUKCES:] Jesteœ teraz kierowc¹ œmieciarki wpisz /komendypracy.");
-							gPlayerData[playerid][pJob] = 14; 
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz kierowc¹ œmieciarki wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 14; //Mzgk Driver
+							SetProgressBarMaxValue(JobProgress[playerid], float(11 + (gPlayerData[playerid][pMzgkJobLvl]*5)));
 
 							SavePlayerData(playerid, "Job");
 						}
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, SweeperJob[TakeJobX], SweeperJob[TakeJobY], SweeperJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,SweeperJob[TakeJobX],SweeperJob[TakeJobY],SweeperJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == SweeperJob[TakeJobWorld])
 					{
 						new slot = PHaveItemParam5Ex(playerid, 3, 5, gPlayerData[playerid][pName]);
 						if(slot == -1)
-						{
-							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Dowód jest wymagany do tej pracy !");
-						}
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Dowód jest wymagany do tej pracy !");
 						else
 						{
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz kierowc¹ myjki drogowej, wpisz /komendypracy.");
-							gPlayerData[playerid][pJob] = 15;
-							SavePlayerData(playerid, "Job");
-							
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz kierowc¹ myjki samochodowej, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 15; //Sweeper Driver
 							SetProgressBarMaxValue(JobProgress[playerid], float(11 + (gPlayerData[playerid][pSweeperJobLvl]*5)));
+							
+							SavePlayerData(playerid, "Job");
 						}
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, TaxiJob[TakeJobX], TaxiJob[TakeJobY], TaxiJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,TaxiJob[TakeJobX],TaxiJob[TakeJobY],TaxiJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == TaxiJob[TakeJobWorld])
 					{
 						new slot = PHaveItem(playerid, 3, 6);
 						if(slot == 0 || SlotParam2(playerid, slot) <= 0)
-							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Prawo jazdy jest wymagane do tej pracy !");
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Prawo jazdy jest wymagane do tej pracy !");
 						else
 						{
-							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz taksówkarzem, wpisz /komendypracy.");
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz taksówkarzem, wpisz /komendypracy.");
 							gPlayerData[playerid][pJob] = 16; // Taxi driver
 
 							SavePlayerData(playerid, "Job");
 						}
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, MechanicJob[TakeJobX], MechanicJob[TakeJobY], MechanicJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,MechanicJob[TakeJobX],MechanicJob[TakeJobY],MechanicJob[TakeJobZ]))
 				{
-					if(gPlayerData[playerid][pTech] < 2)
-					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz mieæ co najmniej licencjat z nauk technicznych");
-					}
-					else
-					{
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz mechanikiem, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 17; // Mechanik
+					// if(GetPlayerVirtualWorld(playerid) == MechanicJob[TakeJobWorld])
+					// {
+						if(gPlayerData[playerid][pWf] < 1 || gPlayerData[playerid][pMat] < 1)
+						{
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Musisz mieæ co najmniej 1 poziom WFu i 1 poziom matematyki ¿eby zdobyæ t¹ prace");
+						}
+						else
+						{
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz mechanikiem, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 17; // Mechanik
 
-						SavePlayerData(playerid, "Job");
-					}
+							SavePlayerData(playerid, "Job");
+						}
+					// }
 				}
-				else if(PlayerToPoint(1.0, playerid,FarmerJob[TakeJobX], FarmerJob[TakeJobY], FarmerJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,FarmerJob[TakeJobX],FarmerJob[TakeJobY],FarmerJob[TakeJobZ]))
 				{
 					if(GetPlayerVirtualWorld(playerid) == FarmerJob[TakeJobWorld])
 					{
-						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz rolnikiem, wpisz /komendypracy.");
+						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz Farmerem, wpisz /komendypracy.");
 						gPlayerData[playerid][pJob] = 18; //Farmer Driver
 						SetProgressBarMaxValue(JobProgress[playerid], float(15 + (gPlayerData[playerid][pFarmerJobLvl]*5)));
 
 						SavePlayerData(playerid, "Job");
 					}
 				}
-				else if(PlayerToPoint(1.0, playerid, SellerJob[TakeJobX], SellerJob[TakeJobY], SellerJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,SellerJob[TakeJobX],SellerJob[TakeJobY],SellerJob[TakeJobZ]))
 				{
-					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz sprzedawc¹/ekspedientem, wpisz /komendypracy.");
-					gPlayerData[playerid][pJob] = 19; //Seller
-
-					SavePlayerData(playerid, "Job");
-				}
-				else if(PlayerToPoint(1.0, playerid, AccountantJob[TakeJobX], AccountantJob[TakeJobY], AccountantJob[TakeJobZ]))
-				{
-					if(gPlayerData[playerid][pMat] < 3)
-					{
-						SendClientMessage(playerid, COLOR_RED, "[INFO:] Musisz posiadaæ tytu³ magistra aby zdobyæ t¹ prace !");
-						return 1;
-					}
-					else
-					{
-						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz ksiêgowym, wpisz /komendypracy.");
-						gPlayerData[playerid][pJob] = 20;
+					// if(GetPlayerVirtualWorld(playerid) == SellerJob[TakeJobWorld])
+					// {
+						SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz sprzedawc¹/ekspedientem, wpisz /komendypracy.");
+						gPlayerData[playerid][pJob] = 19; //Seller
 
 						SavePlayerData(playerid, "Job");
-					}
+					// }
 				}
-				else if(PlayerToPoint(1.0, playerid, NewsBoyJob[TakeJobX], NewsBoyJob[TakeJobY], NewsBoyJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,AccountantJob[TakeJobX],AccountantJob[TakeJobY],AccountantJob[TakeJobZ]))
 				{
-					format(string2, sizeof(string2), "Jesteœ teraz roznosicielem gazet\nKomendy :\n/wezprace /zrezygnujzpracy /komendypracy\n/pobierzgazety /rzucgazete\nGazety pobiera siê w punkcie poboru pracy roznosiciela gazet i wpisaniu komendy /pobierzgazety\n\n");
-					format(string2, sizeof(string2), "%sRoznoszenie gazet odbywa siê poprzez podejœcie pod dom lub biznes i wpisaniu /rzucgazete.\n\nJednorazowo mo¿esz przenosiæ do %d gazety.\nStawka za jedn¹ gazete to $%d.", string2, NewsBoyJob[TakeJobPapersCount], NewsBoyJob[TakeJobReward]);
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string2, "Zamknij", "");
-					gPlayerData[playerid][pJob] = 21;
+					// if(GetPlayerVirtualWorld(playerid) == SellerJob[TakeJobWorld])
+					// {
+						if(gPlayerData[playerid][pMagister] == 0)
+						{
+							SendClientMessage(playerid, COLOR_RED, "[INFO:] Musisz posiadaæ tytu³ magistra aby zdobyæ t¹ prace !");
+							return 1;
+						}
+						else
+						{
+							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[SUKCES:] Jesteœ teraz ksiêgowym, wpisz /komendypracy.");
+							gPlayerData[playerid][pJob] = 20; //Accountant
 
-					SavePlayerData(playerid, "Job");
+							SavePlayerData(playerid, "Job");
+						}
+					// }
 				}
-				else if(PlayerToPoint(1.0, playerid, WFWorkerJob[TakeJobX], WFWorkerJob[TakeJobY], WFWorkerJob[TakeJobZ]))
+				else if(PlayerToPoint(1.0, playerid,NewsBoyJob[TakeJobX],NewsBoyJob[TakeJobY],NewsBoyJob[TakeJobZ]))
+				{
+					// if(GetPlayerVirtualWorld(playerid) == SellerJob[TakeJobWorld])
+					// {
+						format(string2, sizeof(string2), "Jesteœ teraz roznosicielem gazet\nKomendy :\n/wezprace /zrezygnujzpracy /komendypracy\n/pobierzgazety /rzucgazete\nGazety pobiera siê w punkcie poboru pracy roznosiciela gazet i wpisaniu komendy /pobierzgazety\n\n");
+						strcat(string2, "Roznoszenie gazet odbywa sie poprzez podejscie pod dom i wpisaniu /rzucgazete\n\n Pobierasz 15 gazet\nNIE SPRINTUJ (NON RP)\nStawka : 4$/gazeta\n\nPowodzenia");
+						ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string2, "Zamknij", "");
+						gPlayerData[playerid][pJob] = 21; //NewsBoy
+
+						SavePlayerData(playerid, "Job");
+					// }
+				}
+				else if(PlayerToPoint(1.0, playerid, WFWorkerJob[TakeJobX],WFWorkerJob[TakeJobY],WFWorkerJob[TakeJobZ]))
 				{
 					if(gPlayerData[playerid][pFaction] != 255)
 					{
-						if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_GANG)
+						if(DynamicFactions[ gPlayerData[playerid][pFaction] ][fType] == 3)
 						{
 							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz posiadaæ tej pracy bêd¹c jednoczeœnie w gangu !");
 							return 1;
@@ -17785,7 +18040,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					gPlayerData[playerid][pJob] = 22;
 					SavePlayerData(playerid, "Job");
 				}
-				
 				gPlayerData[playerid][pJobTimeChange] = 300;
 				SavePlayerData(playerid, "JobTimeChange");
 			}
@@ -17797,6 +18051,30 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 		else if(strcmp(cmd, "/zrezygnujzpracy", true) == 0)
 		{
+			// if(gPlayerData[playerid][pJob] != 0)
+			// {
+				// if(gPlayerData[playerid][pJobTimeChange] == 0)
+				// {
+					// if(gBusDriverOnDuty[playerid] == 1)
+					// {
+						// gBusDriverOnDuty[playerid] = 0;
+					// }
+					// gPlayerData[playerid][pJob] = 0;
+
+					// SavePlayerData(playerid, "Job");
+
+					// SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Zrezygnowa³eœ ze swojej pracy.");
+				// }
+				// else
+				// {
+					// format(string, sizeof(string), "[INFO:] Nie mo¿esz jeszcze zrezygnowaæ ze swoje pracy. Musisz przepracowaæ jeszcze %d pkt poziomu postaci", gPlayerData[playerid][pJobTimeChange]);
+					// SendClientMessage(playerid,COLOR_RED, string);
+				// }
+			// }
+			// else
+			// {
+				// SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Nie masz aktualnie pracy !");
+			// }
 			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Aby zwolniæ siê z pracy musisz udaæ siê do urzêdu w Twoim mieœcie");
 			return 1;
 		}
@@ -17807,112 +18085,118 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			{
 				if(gPlayerData[playerid][pJob] == 1)
 				{			
-					format(string2, sizeof(string2), " * "#COLOR_BEGIN2"Komendy pracy - diler broni *\n "#COLOR_DEFAULT"/wezprace /zrezygnujzpracy /komendypracy\n /menubroni /skladaj\n\n");
-					strcat(string2, " "#COLOR_BEGIN2"* Opis pracy *\n"#COLOR_DEFAULT"Do pracy wymagany jest PLECAK.\n Pamiêtaj aby mieæ 6-7 slotów wolnych w /mi.\nFabrykê broni gangu znajdziesz tylko za informacja lidera gangu, jest ona œciœle chroniona.\n");
-					strcat(string2, #COLOR_BEGIN"W fabryce s¹ 3 rodzaje checkpointów:\n"#COLOR_DEFAULT" - poboru czêœci za pomoc¹ /menubroni\n - sk³adania czêœci broni oraz broni za pomoc¹ /skladaj\n - sk³adania amunicji, równie¿ cmd /skladaj\n");
-					strcat(string2, "Checkpointy bez problemów znajdziesz w fabryce.\n ");
-					strcat(string2, #COLOR_BEGIN"Czas sk³adania:\n"#COLOR_DEFAULT"W zale¿noœci od tego co jest sk³adane czas oscyluje miêdzy 10-30 sekund, np 9mm sk³ada siê z 5 czêœci ka¿da po 20 sec, czyli 9mm z³o¿one zostanie po 100 sekundach.\n");
-					strcat(string2, "Z³o¿on¹ broñ nale¿y pobraæ w punkcie poboru bron , ¿eby móc j¹ sprzedaæ. Sprzedaje siê je nie skryptowo przez przekazywanie towaru w /mi i pieniêdzy przez /przekaz lub /przelew.");
+					format(string2, sizeof(string2), "Gratulacje zosta³eœ dilerem broni\n Komendy :\n /wezprace /zrezygnujzpracy /komendypracy\n /menubroni /skladaj\n \n");
+					strcat(string2, "Do pracy wymagany jest PLECAK. \n Pamiêtaj aby mieæ 6-7 slotów wolnych w /mi \n Fabrykê broni gangu znajdziesz tylko za informacja lidera gangu, jest ona œcis³e chroniona.\n ");
+					strcat(string2, "W fabryce s¹ 3 rodzaje cheakpointow : \n - poboru czêœci za pomoc¹ /menubroni \n - sk³adania czêœci broni oraz broni za pomoc¹ /skladaj \n - sk³adania amunicji równie¿ cmd /skladaj \n ");
+					strcat(string2, "Cheakpointy bez problemów znajdziesz w fabryce, rozejrzyj siê i poczytaj opisy danych cp\n ");
+					strcat(string2, "Czas sk³adania : \n W zale¿noœci co siê sk³ada czas sk³adania bêdzie miedzy 10-30 sec za ka¿de z³o¿eniem czêœci, np 9mm sk³ada siê z 5 czêœci ka¿da po 20 sec, czyli 9mm z³o¿ymy po 100 sec. ");
+					strcat(string2, "Zrobiona broñ nale¿y pobraæ w pkt poboru broni , ¿eby móc j¹ sprzedaæ !!! Sprzedaje sie za pomoc¹ rozmowy miedzy 2 graczami, przekazaniu pieniêdzy oraz przekazaniu towaru przez /mi ");
+					strcat(string2, "Stawka : Brak\n\n Znalezione bugi prosimy zg³aszaæ na forum \n\n Powodzenia");
 					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string2, "Zamknij", "");
 				}
 				else if(gPlayerData[playerid][pJob] == 2)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - diler narkotyków *\n  "#COLOR_DEFAULT"/narkotyki - /sprzedajnarkotyki", "Zamknij", ""); 
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Diler narkotyków] - /narkotyki - /sprzedajnarkotyki");
 				}
 				else if(gPlayerData[playerid][pJob] == 3)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - detektyw *\n  "#COLOR_DEFAULT"/sledz - /sledzpojazd", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Detektyw] - /sledz - /sledzpojazd");
 				}
 				else if(gPlayerData[playerid][pJob] == 4)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - prawnik *\n  "#COLOR_DEFAULT"/uwolnij", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Prawnik] - /uwolnij");
 				}
 				else if(gPlayerData[playerid][pJob] == 5)
 				{
-					format(string2, sizeof(string2), #COLOR_BEGIN2" * Komendy pracy - sprzedawca produktów *\n"#COLOR_DEFAULT"/wezprace /zrezygnujzpracy /komendypracy\n\n");				
-					strcat(string2, #COLOR_BEGIN" * Opis *\n"#COLOR_DEFAULT"Do pracy wymagany jest: PLECAK, SAMOCHÓD, ZNAJOMOŒÆ PRODUKTÓW i BIZNESÓW.\nZalecane jest posiadanie co najmniej 6 wolnych slotów w /mi oraz w samochodzie.\nPolecane samochody: transportowe z du¿¹ iloœci¹ slotów w baga¿niku.\n");					
-					strcat(string2, "Zadaniem sprzedawcy jest dostarczenie produktów z hurtowni do biznesów.\nHurtownie znajdziesz za pomoc¹ ikonki samochodu ciê¿arowego na mapie.\nHurtownie mo¿na znaleŸæ korzystaj¹c z mapy w /mi.\n");					
-					strcat(string2, "Hurtownie posiadaj¹ checkpointy, przy których mo¿liwy jest zakup dostêpnych produktów.\n");
-					strcat(string2, "Zakupiony towar trafia bezpoœrednio do baga¿nika pojazdu. Aby go pobraæ nale¿y wpisaæ /otworzbaga¿nik a nastêpnie /miwp.\n");					
-					strcat(string2, "Zakupione produkty mo¿na sprzedaæ w biznesach, wybieraj¹c który produkt chcemy sprzedaæ poprzez /mi.\nPo wybraniu produktu ukazuje siê nam informacja ile dostaniemy za produkt z mo¿liwoœci¹ rezygnacji z tranzakcji.");
+					format(string2, sizeof(string2), "Gratulacje zosta³eœ sprzedawc¹ produktów\n Komendy :\n /wezprace /zrezygnujzpracy /komendypracy\n \n \n");				
+					strcat(string2, "Do pracy wymagany jest PLECAK, SAMOCHOD, ZNAJOMOŒÆ PRODUKTÓW i BIZNESÓW. \n Pamiêtaj aby mieæ 6-7 slotów wolnych w /mi oraz w samochodzie \n Polecane samochody : transportowe z max iloœci¹ slotów w baga¿niku\n ");					
+					strcat(string2, "Zadaniem sprzedawcy jest dostarczenie produktów z hurtowni do biznesów. Hurtownie znajdziesz za pomoc¹ ikonki samochodu ciê¿arowego na mapie. Dostêpne s¹ 2 hurtownie, jedna w lv kolejna w flint country(zachodni wyjazd z ls)");					
+					strcat(string2, "Doje¿d¿amy do hurtowni, szukamy produktu który nas interesuje w cp wokó³ hurtowni, kazdy cp posiada do 10 produktów w ró¿nej cenie oraz iloœci.\n ");
+					strcat(string2, "Pobrany towar znajduje siê w baga¿niku. Aby go pobraæ nale¿y wpisaæ /otworzbaga¿nik nastêpnie /miwp ");					
+					strcat(string2, "Nastêpnie udajemy siê do wnêtrza biznesu, wybieramy który produkt chcemy sprzedaæ poprzez /mi . Pokazuje nam siê informacja ile dostaniemy za produkt i ostatecznie albo siê zgadzamy albo nie.");
+					strcat(string2, "Sprzedawaæ produkty mo¿emy równie¿ bezpoœrednio graczom, wystarczy pogadaæ z graczem, ustaliæ cenê i sprzedaæ");					
+					strcat(string2, "Stawka : Ile sprzeda¿ tyle bêdziesz mia³\n\n Nie daj siê oszukaæ Zawsze szukaj sklepu w którym zyskasz. Nie sprzedawaj za darmo.\n\n Znalezione bugi prosimy zg³aszaæ na forum \n\n Powodzenia");
 					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string2, "Zamknij", "");
 				}
 				else if(gPlayerData[playerid][pJob] == 6)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - dziwka *\n  "#COLOR_DEFAULT"Musisz poprostu uprawiaæ stosunek z innymi graczami /animlist", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Dziwka] - Musisz poprostu uprawiaæ stosunek z innymi graczami /animlist");
 				}
 				else if(gPlayerData[playerid][pJob] == 7)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - bokser *\n  "#COLOR_DEFAULT"/walcz", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Boxer] - /walcz");
 				}
 				else if(gPlayerData[playerid][pJob] == 8)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - gwa³ciciel *\n  "#COLOR_DEFAULT"/gwalc", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Gwa³ciciel] - /gwalc");
 				}
 				else if(gPlayerData[playerid][pJob] == 9)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - ochroniarz *\n  "#COLOR_DEFAULT"/ochroniaz", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Ochroniarz] - /ochroniarz");
 				}
 				else if(gPlayerData[playerid][pJob] == 10)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - z³odziej samochodów *\n  "#COLOR_DEFAULT"/wlamsiedopojazdu", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Z³odziej samochodów] - /wlamsiedopojazdu");
 				}
 				else if(gPlayerData[playerid][pJob] == 11)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - kaskader *\n  "#COLOR_DEFAULT"/rozpocznijpokaz - /zakonczpokaz", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Kaskader] - /rozpocznijpokaz - /zakonczpokaz");
 				}
 				else if(gPlayerData[playerid][pJob] == 12)
 				{
 					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Re¿yser] - Not a Quite interesting job =/ but...");
 					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Re¿yser] - Simply Start a Business and hire Filmers");
 					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Re¿yser] - and actors and Start Recording");
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - re¿yser *\n  "#COLOR_DEFAULT"Em, nie ma", "Zamknij", "");
 				}
 				else if(gPlayerData[playerid][pJob] == 13)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - kierowca autobusu *\n  "#COLOR_DEFAULT"Wsiadasz do autobusu i jedziesz linia autobusowa - /przerwijprace", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Kierowca Autobusu] - Brak komend. Wsiadasz do autobusu i jedziesz linia autobusowa");
 				}
 				else if(gPlayerData[playerid][pJob] == 14)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - kierowca œmiecarki *\n  "#COLOR_DEFAULT"Wsiadasz do œmieciarki i zaczynasz jechac do koszy na smieci - /przerwijprace", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Kierowca Smieciarki] - Brak komend. Wsiadasz do smieciarki i zaczynasz jechac do koszy na smieci");
 				}
 				else if(gPlayerData[playerid][pJob] == 15)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - kierowca myjki drogowej *\n  "#COLOR_DEFAULT"Wsiadasz do myjki drogowej i zaczynasz czyœciæ ulice - /przerwijprace", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Kierowca Myjki samochodowej] - Brak komend. Wsiadasz do sweepera i zaczynasz czyscic ulice");
 				}
 				else if(gPlayerData[playerid][pJob] == 17)
 				{					
-					format(string2, sizeof(string2), #COLOR_BEGIN2" * Komendy pracy - mechanik *\n"#COLOR_DEFAULT"/zrezygnujzpracy\n/przemaluj - /stanpojazdu - ");				
-					strcat(string2, "/wymontujcb - /podladujakumulator - /zdemontuj - /naprawstacyjke");
+					format(string2, sizeof(string2), "Gratulacje zosta³eœ mechanikiem samochodowym\n Komendy :\n /wezprace /zrezygnujzpracy /komendypracy\n /kupczesci - /naprawpojazd - /przemaluj - /stanpojazdu \n");				
+					strcat(string2, "/wymianaopon - /czesci - /wymontujcb /wymienzarowke - /zamontujhak - /montazgazu - /zamontujalarm - /podladujakumulator - /zdemontuj  - /naprawstacyjke\n\n");					
+					strcat(string2, "Jako mechanik masz za zadanie naprawiaæ/holowaæ pojazdy w przypadku gdy poprosi Ciê o to gracz. Punkty naprawy znajdziesz na mapce pod ikon¹ klucza ");			
+					strcat(string2, "Sam ustalasz cenê naprawy pojazdu jednak musisz o niej powiadomiæ klienta jeszcze przez napraw¹.\n");
+					strcat(string2, "Punkt skupu czêœci znajdziesz w Bayside, w pó³nocnym mieœcie. \n");
+					strcat(string2, "Mechanicy posiadaj¹ 2-3 wspólne holowniki, dbaj o niego, naprawiaj, uzupe³niaj paliwo. Zniszczenie holownika grozi odpowiedzialnoœci¹ karna do 10 000$ oraz 1 dzieñ w wiêzieniu \n");
+					strcat(string2, "Stawka : Zale¿y od negocjacji z klientami\n\n Znalezione bugi prosimy zg³aszac na forum \n\n Powodzenia");
 					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string2, "Zamknij", "");
 				}
 				else if(gPlayerData[playerid][pJob] == 18)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - rolnik *\n  "#COLOR_DEFAULT"/przerwijprace", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Farmer] - Pamietaj o stosowaniu /ja oraz /do przy zsypie zbo¿a. Za nie przestrzeganie grozi kara");
 				}
 				else if(gPlayerData[playerid][pJob] == 19)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - sprzedawca/ekspedient *\n  "#COLOR_DEFAULT"Jak zacz¹æ prace ? - Udajesz siê do najbli¿szego biznesu.\nW jego wnêtrzu obs³ugujesz klientów.", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Sprzedawca/ekspedient] - Jak zacz¹æ prace ? - Udajesz siê do najbli¿szego biznesu. W jego wnêtrzu obs³ugujesz klientów");
 				}
 				else if(gPlayerData[playerid][pJob] == 20)
 				{
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Komendy", #COLOR_BEGIN2" * Komendy pracy  - ksiêgowy *\n  "#COLOR_DEFAULT"/przedstawrozliczenie - pokazuje danej osobie jego wydatki oraz kwote odprowadzan¹ na podatki.", "Zamknij", "");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[ZAWÓD:] - [Ksiêgowy] /przedstawrozliczenie - pokazuje danej osobie jego wydatki oraz kwote odprowadzan¹ na podatki");
 				}
 				else if(gPlayerData[playerid][pJob] == 21)
 				{
-					format(string2, sizeof(string2), #COLOR_BEGIN2" * Komendy pracy - roznosiciel gazet *\n");
-					format(string2, sizeof(string2), "%s"#COLOR_DEFAULT"/wezprace - /zrezygnujzpracy - /komendypracy\n/pobierzgazety - /rzucgazete\nGazety pobiera siê w punkcie poboru pracy roznosiciela gazet i wpisaniu komendy /pobierzgazety.\n\n", string);
-					format(string2, sizeof(string2), "%sRoznoszenie gazet odbywa sie poprzez podejœcie pod dom lub biznes i wpisaniu komendy /rzucgazete\n\nJednorazowo mo¿esz pobraæ %d gazet.\nStawka za gazete: $%d", string, NewsBoyJob[TakeJobPapersCount], NewsBoyJob[TakeJobReward]);
-					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, #COLOR_TITLE"Informacja", string, "Zamknij", "");
+					format(string, sizeof(string), "Jesteœ teraz roznosicielem gazet\n Komendy :\n /wezprace /zrezygnujzpracy /komendypracy\n /pobierzgazety /rzucgazete\n Gazety pobiera siê w punkcie poboru pracy roznosiciela gazet i wpisaniu komendy /pobierzgazety\n\n");
+					format(string, sizeof(string), "%sRoznoszenie gazet odbywa sie poprzez podejœcie pod dom i wpisaniu /rzucgazete\n\n Pobierasz 15 gazet\n NIE SPRINTUJ (NON RP)\n Stawka : %d$/gazeta\n\n Znalezione bugi prosimy zg³aszaæ na forum \n\nPowodzenia", string, NewsBoyJob[TakeJobReward]);
+					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
 				}
 				else if(gPlayerData[playerid][pJob] == 22)
 				{
-					format(string2, sizeof(string2), #COLOR_BEGIN2" * Komendy pracy - pracownik fabryki broni *\n"#COLOR_DEFAULT"/wezprace - /zrezygnujzpracy - /komendypracy - /pobierzczesci - /skladaj\n\n");
-					strcat(string2, #COLOR_BEGIN2" * Opis *\n"#COLOR_DEFAULT"Do pracy wymagany jest PLECAK.\nPamiêtaj aby mieæ 7 wolnych slotów w /mi.\nFabrykê broni znajdziesz za pomoc¹ mapy w /mi.\n");
-					strcat(string2, "W fabryce s¹ 3 rodzaje checkpointów:\n - poboru czêœci za pomoc¹ /pobierzczesci\n - sk³adania czêœci broni oraz broni za pomoca /skladaj\n - sk³adania amunicji równie¿ cmd /skladaj\n");
-					strcat(string2, "Checkpointy bez problemów znajdziesz wewn¹trz fabryki.\n"); 
-					strcat(string2, "Czas sk³adania:\nW zale¿noœci co siê sk³ada czas sk³adania bêdzie miedzy 10-30 sekund za ka¿de z³o¿enie czêœci, np 9mm sk³ada siê z 5 czêœci ka¿da po 20 sekund, czyli 9mm zostanie z³o¿one po 100 sekundach.");
-					format(string2, sizeof(string2), "%sStawka : $%d/z³o¿enie ca³ej czêœci.\n\n", string2, FACTORY_L_REWARD);
+					format(string2, sizeof(string2), "Gratulacje zosta³eœ pracownikiem fabryki broni\n Komendy :\n /wezprace /zrezygnujzpracy /komendypracy\n /pobierzczesci /skladaj\n \n");
+					strcat(string2, "Do pracy wymagany jest PLECAK. \n Pamiêtaj aby mieæ 6-7 slotów wolnych w /mi \n Fabrykê broni znajdziesz za pomoc¹ Mapy - ikonka broni.\n ");
+					strcat(string2, "W fabryce s¹ 3 rodzaje cheakpointow : \n - poboru czêœci za pomoc¹ /pobierzczesci \n - sk³adania czêœci broni oraz broni za pomoca /skladaj \n - sk³adania amunicji równie¿ cmd /skladaj \n ");
+					strcat(string2, "Checkpointy bez problemów znajdziesz w fabryce, rozejrzyj siê i poczytaj opisy danych cp\n"); 
+					strcat(string2, "Czas sk³adania : \n W zale¿noœci co siê sk³ada czas sk³adania bêdzie miedzy 10-30 sec za ka¿de z³o¿enie czêœci, np 9mm sk³ada siê z 5 czêœci ka¿da po 20 sec, czyli 9mm z³o¿ymy po 100 sec. ");
+					format(string2, sizeof(string2), "%sStawka : %d$/z³o¿enie ca³ej czêœci\n\n Znalezione bugi prosimy zg³aszaæ na forum \n\n Powodzenia ", string2, FACTORY_L_REWARD);
 					ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string2, "Zamknij", "");
 				}
 			}
@@ -17977,7 +18261,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						new price = moneys * 100;
 						if(GetPlayerCash(playerid) > price)
 						{
-							format(string, sizeof(string), "[INFO:] Kupi³eœ %d paczek - koszt: $%d.", moneys, price);
+							format(string, sizeof(string), "[INFO:] Kupi³eœ %d paczek - koszt: %d$.", moneys, price);
 
 							SendClientMessage(playerid, COLOR_WHITE, string);
 							SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Musisz teraz dostarczyæ paczki.");
@@ -17990,7 +18274,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						}
 						else
 						{
-							format(string, sizeof(string), "[INFO:] Nie masz $%d.", price);
+							format(string, sizeof(string), "[INFO:] Nie masz %d$.", price);
 							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 						}
 					}
@@ -18063,7 +18347,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		SendClientMessage(playerid, COLOR_GREY, "1.Na serwerze obowi¹zuj¹ podstawowe zasady kultury.");
 		SendClientMessage(playerid, COLOR_GREY, "2.Podobnie jak na ka¿dym Role Play'u obowi¹zuje gra IC.");
 		SendClientMessage(playerid, COLOR_GREY, "3.Proœby do administracji o podniesienie rangi OOC...");
-		SendClientMessage(playerid, COLOR_GREY, "...do moderator lub administratora bêdzie skutecznie zwalczane.");
+		SendClientMessage(playerid, COLOR_GREY, "...do Supportera lub Administratora bêdzie skutecznie zwalczane.");
 		SendClientMessage(playerid, COLOR_GREY, "4.U¿ywanie programów wspomagaj¹cych grê zawsze koñczy siê banem.");
 		SendClientMessage(playerid, COLOR_GREY, "Aby zobaczyæ ci¹g dalszy u¿yj komendy /zasady2.");
 		return 1;
@@ -18130,7 +18414,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "Prawo jazdy zdaje siê w Mongomery. Na mapce literka S. Zdawaæ mo¿na jedynie pod obecnoœci¹ EGZAMINATORA. ");
 			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "Egzamin sk³ada siê z 2 czêœci : teoretycznej i praktycznej. Teoria sk³ada siê z kilku pytañ, natomiast praktyczny z trzech czêœci : obs³uga samochodu, plac manewrowy, miasto.");
 			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "Aby zaliczyæ egzamin nale¿y powy¿sze warunki spe³niæ na dana kategorie");
-			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "Wiecej informacji o Word znajdziecie na forum WParty.eu");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "Wiecej informacji o Word znajdziecie na forum WParty.pl");
 
 			return 1;
 		}
@@ -18165,44 +18449,21 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 		else if(strcmp(cmd, "/komendy", true) == 0 || strcmp(cmd, "/cmds", true) == 0)
 		{
-			format(string2, sizeof(string2), " "#COLOR_BEGIN"* Popularne *"#COLOR_DEFAULT"\n  /statystyki - /skilebroni - /mojeitemy(/mi) - /panelgracza - /osiagniecia - /zdrowie\n\n");
-			strcat(string2, " "#COLOR_BEGIN"* Pogrupowane *"#COLOR_DEFAULT"\n  /komendypracy - /komendybanku - /komendybudynkow - /komendypojazdow - /komendydomu - /komendybiznesu - /komendygarazu\n  /obiekty - /opis - /ogloszenie - /czaty - /ogloszenia");
+			SendClientMessage(playerid,COLOR_YELLOW, "____________________________________________________");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/pomoc - /zglosproblem - /statystyki - /osiagniecia - /mojeitemy(/mi) - /opis - /komendypracy - /komendybanku - /komendypojazdow");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/komendydomu - /komendybiznesu - /komendygarazu - /czaty - /animacje(2) - /panelgracza - /admini - /kupdrink - /proba");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/donos - /wyrzucgracza - /glosujza - /kostka - /ogloszenie - /notatki - /obiekty - /zdejmijpancerz");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/czolowka");
 			
 			if(gPlayerData[playerid][pFaction] != 255)
-			{
-				strcat(string2, " - /komendyfrakcji");
-			
-				if(gPlayerData[playerid][pRank] == 1)
-				{
-					strcat(string2, " - /komendylidera");
-				}
-				
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_POLICE)
-				{
-					strcat(string2, " - /komendypolicji");
-				}
-				
-				if(gPlayerData[playerid][pFaction] == FACTIONID_MEDICS)
-				{
-					strcat(string2, " - /komendymedykow");
-				}
-			}
-			
-			if(gPlayerData[playerid][pFaction2] != 255)
-			{
-				strcat(string2, " - /komendyfirmy");
-			}
-			
-			strcat(string2, "\n\n "#COLOR_BEGIN"* U¿ytkowe *"#COLOR_DEFAULT"\n  /zglosproblem - /donos - /wyrzucgracza - /glosujza - /admini\n\n");
-			strcat(string2, " "#COLOR_BEGIN"* Pozosta³e *"#COLOR_DEFAULT"\n  /wlozbron - /animacje - /animacje2 - /proba - /kostka - /notatki - /zdejmijpancerz - /afk - /opuscprzymierzalnie - /czolowka\n\n");
-			
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/komendypolicji - /komendylidera - /komendyfrakcji");
+
 			if(gPlayerData[playerid][pAdmin] > 0)
 			{
-				strcat(string2, " "#COLOR_BEGIN"* Adminowskie *"COLOR_DEFAULT"\n /acmds1 - /acmds2");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/apomoc[1/2]");
 			}
 			
-			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, ""#COLOR_BEGIN2"Komendy", string2, "Zamknij", "");
-			
+			SendClientMessage(playerid,COLOR_YELLOW, "____________________________________________________");
 			return 1;
 		}
 		else if(strcmp(cmd, "/odbierz", true) == 0 || strcmp(cmd, "/odb", true) == 0)
@@ -18243,9 +18504,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		else if(strcmp(cmd, "/rozlacz", true) == 0)
 		{
 			if(!DisconnectPhone(playerid))
-			{
 				SendClientMessage(playerid,  COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ po³aczony !");
-			}
 			else
 			{
 				SendClientMessage(playerid,  COLOR_LIGHTYELLOW2, "[INFO:] Roz³¹czy³eœ siê");
@@ -18253,12 +18512,83 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			}
 			return 1;
 		}
+		else if(strcmp(cmd, "/kup",true)==0)
+		{
+			new x_info[256];
+			new wstring[128];
+			new slot;
+			for(new i = 0; i < sizeof(Businesses); i++)
+			{
+				if(PlayerToPoint(25.0, playerid,Businesses[i][ExitX], Businesses[i][ExitY], Businesses[i][ExitZ]))
+				{
+					if(GetPlayerVirtualWorld(playerid) == i)
+					{
+						if(Businesses[i][BizType] == 1) //restauracje etc.
+						{
+							if(Businesses[i][Products] == 0)
+							{
+								SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Brak produktów !");
+								return 1;
+							}
+							x_info = strtok(cmdtext, idx);
+
+							if(!strlen(x_info))
+							{
+								format(wstring, sizeof(wstring), "[------------------------[%s]------------------------]", Businesses[i][BusinessName]);
+								SendClientMessage(playerid, COLOR_LIGHTGREEN, wstring);
+								SendClientMessage(playerid, COLOR_RED, "(Wpisz nazwe, bez spacji. Np.: {A10000} /kup baton)");
+								SendClientMessage(playerid, COLOR_WHITE, "* Baton WParty - Cena: $2. {A10000} (baton)");
+								return 1;
+							}
+							if(strcmp(x_info, "baton",true) == 0)
+							{
+								if(GetPlayerCash(playerid) >= 2)
+								{						
+									GivePlayerCash(playerid, -2);
+									
+									slot = PHaveItem(playerid, 1, 9);
+									if(slot > 0)
+									{
+										SetPSlotParam6(playerid, slot, SlotParam6(playerid,slot)+1);
+									}
+									else 
+									{
+										if(InsertPlayerItemEx(playerid, 1, 9, 0, 0, 0, 0, "Puste", 1) == 0)
+										{
+											SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie masz miejsca na batona !");
+											return 1;
+										}
+									}
+									SendClientMessage(playerid, COLOR_GREEN, "[SUKCES:] Kupi³eœ baton");
+									
+									Businesses[i][Products]--;
+									Businesses[i][Till] += 2;
+									
+									SaveBizData(i, "Products");
+									SaveBizData(i, "Till");
+									SaveStatsData("baton", gPlayerData[playerid][pName], 2, i, Businesses[i][BizType]);
+
+									return 1;
+								}
+								else
+								{
+									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz wystarczaj¹cej iloœci pieniêdzy !");
+								}
+							}
+						}
+						if(Businesses[i][BizType] == 3) //24-7
+						{
+							SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Aby kupiæ coœ w sklepie wejdŸ w czerwone kólko obok kasy");
+							return 1;
+						}
+					}
+				}
+			}
+			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz znajdowaæ siê w sklepie aby u¿yæ tej komendy !");
+			return 1;
+		}
 		else if(strcmp(cmd, "/kupdrink",true)==0)
 		{
-			format(string, sizeof(string), "Komenda zosta³a wy³¹czona.");
-			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", string, "Zamknij", "");
-			
-			/*
 			new x_info[256];
 			new Float:HP;
 			for(new i = 0; i < sizeof(Businesses); i++)
@@ -18449,8 +18779,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						}
 					}
 				}
-			}*/
-			
+			}
 			return 1;
 		}
 		else if(strcmp(cmd, "/jedz", true) == 0)
@@ -18469,6 +18798,234 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				}	
 			}
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Aby coœ zjeœæ musisz udaæ siê do jednej z restauracja/pubu");
+			return 1;
+		}
+		else if(strcmp(cmd, "/fweznarkotyki", true) == 0)
+		{
+			if(IsPlayerConnected(playerid))
+			{
+				new playername[MAX_PLAYER_NAME];
+				GetPlayerName(playerid, playername, sizeof(playername));
+				new bouse = gPlayerData[playerid][pFaction];
+				if(gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
+				{
+					tmp = strtok(cmdtext, idx);
+					if(!strlen(tmp))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fweznarkotyki [iloœæ]");
+						return 1;
+					}
+					new materialsdeposit = strval(tmp);
+					if(!strlen(tmp))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fweznarkotyki [iloœæ]");
+						return 1;
+					}
+					if(gPlayerData[playerid][pRank] == 1)
+					{
+						if(PlayerToPoint(1.0, playerid,FactionDrugsStorage[X],FactionDrugsStorage[Y],FactionDrugsStorage[Z]))
+						{
+							if(DynamicFactions[bouse][fDrugs] >= materialsdeposit)
+							{
+								gPlayerData[playerid][pDrugs] += materialsdeposit;
+								DynamicFactions[bouse][fDrugs]=DynamicFactions[bouse][fDrugs]-materialsdeposit;
+								format(string, sizeof(string), "[INFO:] Wzi¹³eœ %d narkotyków z magazynu, nowa iloœæ: %d ", materialsdeposit,DynamicFactions[bouse][fDrugs]);
+								SendClientMessage(playerid, COLOR_WHITE, string);
+								PlayerActionMessage(playerid,15.0, "zabra³ narkotyki z magazynu");
+								format(string, sizeof(string), "[FRAKCJA:] %s wzi¹³ %d wzi¹³ narkotyki z magazynu.",GetPlayerNameEx(playerid),materialsdeposit);
+								SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, string);
+								SaveFData(bouse, "Drugs");
+								return 1;
+							}
+							else
+							{
+								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie ma tylu narkotyków w magazynie !");
+							}
+						}
+						else
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ w magazynie frakcji !");
+						}
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ liderem frakcji !");
+					}
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie nale¿ysz do frakcji !");
+				}
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/fodloznarkotyki", true) == 0)
+		{
+			if(IsPlayerConnected(playerid))
+			{
+				new playername[MAX_PLAYER_NAME];
+				GetPlayerName(playerid, playername, sizeof(playername));
+				new bouse = gPlayerData[playerid][pFaction];
+				if(gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
+				{
+					tmp = strtok(cmdtext, idx);
+					if(!strlen(tmp))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fodloznarkotyki [iloœæ]");
+						return 1;
+					}
+					new materialsdeposit = strval(tmp);
+					if(!strlen(tmp))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fodloznarkotyki [iloœæ]");
+						return 1;
+					}
+					if(PlayerToPoint(1.0, playerid,FactionDrugsStorage[X],FactionDrugsStorage[Y],FactionDrugsStorage[Z]))
+					{
+						if(gPlayerData[playerid][pDrugs] >= materialsdeposit)
+						{
+							gPlayerData[playerid][pDrugs] -= materialsdeposit;
+
+							SavePlayerData(playerid, "Drugs");
+
+							DynamicFactions[bouse][fDrugs]=DynamicFactions[bouse][fDrugs]+materialsdeposit;
+							format(string, sizeof(string), "[INFO:] Od³o¿y³eœ %d narkotyków do magazynu frakcji, nowy stan: %d ", materialsdeposit,DynamicFactions[bouse][fDrugs]);
+							SendClientMessage(playerid, COLOR_WHITE, string);
+							format(string, sizeof(string), "[FACTION:] %s od³o¿y³ %d narkotyków do magazynu frakcji.",GetPlayerNameEx(playerid),materialsdeposit);
+							SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, string);
+							SaveFData(bouse, "Drugs");
+							return 1;
+						}
+						else
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie posiadasz tylu narkotyków !");
+						}
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ w magazynie frakcji!");
+					}
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja.");
+				}
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/fwezmaterialy", true) == 0)
+		{
+			if(IsPlayerConnected(playerid))
+			{
+				new playername[MAX_PLAYER_NAME];
+				GetPlayerName(playerid, playername, sizeof(playername));
+				new bouse = gPlayerData[playerid][pFaction];
+				if(gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
+				{
+					tmp = strtok(cmdtext, idx);
+					if(!strlen(tmp))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fwezmaterialy [iloœæ]");
+						return 1;
+					}
+					new materialsdeposit = strval(tmp);
+					if(!strlen(tmp))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fwezmaterialy [iloœæ]");
+						return 1;
+					}
+					if(gPlayerData[playerid][pRank] == 1)
+					{
+						if(PlayerToPoint(1.0, playerid,FactionMaterialsStorage[X],FactionMaterialsStorage[Y],FactionMaterialsStorage[Z]))
+						{
+							if(DynamicFactions[bouse][fMaterials] >= materialsdeposit)
+							{
+								gPlayerData[playerid][pMaterials] += materialsdeposit;
+
+								SavePlayerData(playerid, "Materials");
+
+								DynamicFactions[bouse][fMaterials]=DynamicFactions[bouse][fMaterials]-materialsdeposit;
+								format(string, sizeof(string), "[INFO:] Wzi¹³eœ %d materia³ów z magazynu frakcji, nowy stan: %d ", materialsdeposit,DynamicFactions[bouse][fMaterials]);
+								SendClientMessage(playerid, COLOR_WHITE, string);
+								format(string, sizeof(string), "[FACTION:] %s wzi¹³ %d materia³ów z magazynu frakcji.",GetPlayerNameEx(playerid),materialsdeposit);
+								SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, string);
+								SaveFData(bouse, "Materials");
+								return 1;
+							}
+							else
+							{
+								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie ma tyle materia³ów w magazynie !");
+							}
+						}
+						else
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ w magazynie frakcji !");
+						}
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ liderem frakcji !");
+					}
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie nale¿ysz do frakcji !");
+				}
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/fodlozmaterialy", true) == 0)
+		{
+			if(IsPlayerConnected(playerid))
+			{
+				new playername[MAX_PLAYER_NAME];
+				GetPlayerName(playerid, playername, sizeof(playername));
+				new bouse = gPlayerData[playerid][pFaction];
+				if(gPlayerData[playerid][pFaction] != 255 && DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 1)
+				{
+					tmp = strtok(cmdtext, idx);
+					if(!strlen(tmp))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fodlozmaterialy [iloœæ]");
+						return 1;
+					}
+					new materialsdeposit = strval(tmp);
+					if(!strlen(tmp))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /fodlozmaterialy [iloœæ]");
+						return 1;
+					}
+					if(PlayerToPoint(1.0, playerid,FactionMaterialsStorage[X],FactionMaterialsStorage[Y],FactionMaterialsStorage[Z]))
+					{
+						if(gPlayerData[playerid][pMaterials] >= materialsdeposit)
+						{
+							gPlayerData[playerid][pMaterials] -= materialsdeposit;
+
+							SavePlayerData(playerid, "Materials");
+
+							DynamicFactions[bouse][fMaterials]=DynamicFactions[bouse][fMaterials]+materialsdeposit;
+							format(string, sizeof(string), "[INFO:] Od³o¿y³eœ %d materia³ów do magazynu frakcji, iloœæ materia³ów: %d ", materialsdeposit,DynamicFactions[bouse][fMaterials]);
+							SendClientMessage(playerid, COLOR_WHITE, string);
+							format(string, sizeof(string), "[FACTION:] %s od³o¿y³ %d materia³ów do magazynu frakcji.",GetPlayerNameEx(playerid),materialsdeposit);
+							SendFactionMessage(gPlayerData[playerid][pFaction], COLOR_FACTIONCHAT, string);
+							SaveFData(bouse, "Materials");
+							return 1;
+						}
+						else
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz tyle materia³ów !");
+						}
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ w magazynie frakcji !");
+					}
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja.");
+				}
+			}
 			return 1;
 		}
 		else if(strcmp(cmd, "/sprzedajdom", true) == 0)
@@ -18490,49 +19047,27 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 
-				format(string, sizeof(string), "[INFO:] Sprzeda³eœ dom za $%d", Houses[i][HousePrice]);
+				format(string, sizeof(string), "[INFO:] Sprzeda³eœ dom za %d$", Houses[i][HousePrice]);
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 
-				RefreshHouseDescription(i);
-				
-				format(string, sizeof(string), "[GOVERNMENT:] House id: %d, sold for: $%d, by %s", i, Houses[i][HousePrice], GetPlayerNameEx(playerid));
+				Houses[i][PickupID] = ChangePickupModel(Houses[i][PickupID], 1273, Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]);
+
+				new houselocation[MAX_ZONE_NAME];
+				GetCoords2DZone(Houses[i][EnterX],Houses[i][EnterY], houselocation, MAX_ZONE_NAME);
+
+				format(string, sizeof(string), "Ten dom jest na sprzeda¿!");
+				UpdateDynamic3DTextLabelText(Houses3DTextLabelA[i], COLOR_LIGHTYELLOW2, string);
+
+				format(string, sizeof(string), "Adres: %d %s",i,houselocation);
+				UpdateDynamic3DTextLabelText(Houses3DTextLabelB[i], COLOR_LIGHTYELLOW2, string);
+
+				format(string, sizeof(string), "Opis: %s, Cena: %d$",Houses[i][Description],Houses[i][HousePrice]);
+				UpdateDynamic3DTextLabelText(Houses3DTextLabelC[i], COLOR_LIGHTYELLOW2, string);
+
+				format(string, sizeof(string), "[GOVERNMENT:] House id: %d, sold for: %d$, by %s", i, Houses[i][HousePrice], GetPlayerNameEx(playerid));
 				GovermentLog(string);
 
 				RemovePlayerItemExUsed(playerid, slot);
-
-				return 1;
-			}
-			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz byæ przed wejœciem do domu aby go sprzedaæ !");
-			return 1;
-		}
-		else if(strcmp(cmd, "/sprzedazdomu", true) == 0)
-		{
-			if(gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ urzêdnikiem");
-				return 1;
-			}
-			
-			for(new i = 0; i < sizeof(Houses); i++)
-			{
-				if(!PlayerToPoint(3.0, playerid,Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]))
-				{
-					continue;
-				}
-				
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += Houses[i][HousePrice];
-				
-				ResetHouseData(i, 1);
-
-				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-
-				format(string, sizeof(string), "[INFO:] Sprzeda³eœ dom za $%d", Houses[i][HousePrice]);
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
-
-				RefreshHouseDescription(i);
-				
-				format(string, sizeof(string), "[GOVERNMENT:] House id: %d, sold for: $%d, by %s", i, Houses[i][HousePrice], GetPlayerNameEx(playerid));
-				GovermentLog(string);
 
 				return 1;
 			}
@@ -18543,7 +19078,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			for(new i = 0; i < sizeof(Houses); i++)
 			{
-				if(PlayerToPoint(0.7, playerid,Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]) && GetPlayerVirtualWorld(playerid) == Houses[i][EnterWorld] || (PlayerToPoint(3.0, playerid,Houses[i][ExitX], Houses[i][ExitY], Houses[i][ExitZ]) && GetPlayerVirtualWorld(playerid) == i))
+				if(PlayerToPoint(1.0, playerid,Houses[i][EnterX], Houses[i][EnterY], Houses[i][EnterZ]) && GetPlayerVirtualWorld(playerid) == 0 || (PlayerToPoint(3.0, playerid,Houses[i][ExitX], Houses[i][ExitY], Houses[i][ExitZ]) && GetPlayerVirtualWorld(playerid) == i))
 				{
 					if(PHaveItemParam1Ex(playerid, 2, -1, Houses[i][HUID]) || PHaveItemParam1Ex(playerid, 4, -1, Houses[i][HUID]) || PHaveItemParam1Ex(playerid, 10, -1, Houses[i][HUID]) ||
 						PHaveItemParam1Ex(playerid, 11, -1, Houses[i][HUID]))
@@ -18737,60 +19272,43 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			{
 				if(!PlayerToPoint(1.0, playerid, Houses[h][EnterX], Houses[h][EnterY], Houses[h][EnterZ]))
 					continue;
-				
-				if(strlen(Houses[h][Owner]) == 0)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten dom nie jest na wynajem");
-					return 1;
-				}
-				
 				if(!Houses[h][Owned])
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten dom nie zosta³ kupiony i nie mo¿e zostaæ wynajêty");
 					return 1;
 				}
-				
 				if(!Houses[h][Rentable])
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten dom nie jest przeznaczony na wynajem");
 					return 1;
 				}
-				
 				if(strcmp(gPlayerData[playerid][pName], Houses[h][Owner], false) == 0)
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz wynajmowaæ w³asnego domu !");
 					return 1;
 				}
-				
 				if(strcmp(Houses[h][HRenter], "Brak", true) != 0 && strcmp(Houses[h][HRenter], "None", true) != 0)
 				{
 					SendClientMessage(playerid, COLOR_RED, "[INFO:] Ten dom jest ju¿ przez kogoœ wynajmowany !");
 					return 1;
 				}
-				
 				if(!PlayerFreeSlotCount(playerid))
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz miejsca na klucze !");
 					return 1;
 				}
-				
-				if(!PHaveItemParam1Ex(playerid, 4, h, Houses[h][HUID]))
+				if(PHaveItemParam1Ex(playerid, 4, h, Houses[h][HUID]))
 				{
-					InsertPlayerItem(playerid, 4, h, Houses[h][HUID], 1);
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Posiadasz ju¿ klucze do tego domu");
 					return 1;
 				}
-				
-				format(Houses[h][HRenter], MAX_PLAYER_NAME, gPlayerData[playerid][pName]);
+				InsertPlayerItem(playerid, 4, h, Houses[h][HUID], 1);
+				strmid(Houses[h][HRenter], gPlayerData[playerid][pName], 0, MAX_PLAYER_NAME, 255);
 				SaveHouseData(h, "Renter");
-				
-				RefreshHouseDescription(h);
-				
 				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Dom zosta³ wynajêty, op³ata bêdzie pobierana rano ka¿dego dnia nastêpnego");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Jeœli chcesz zrezygnowaæ z wynajmu tego domu wpisz /zrezygnujzwynajmu");
-				
+				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Jeœli chcesz zrezygnowaæ z wynajmu tego domu wpisz /zrezygnujzwynajmu");
 				return 1;
 			}
-			
 			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz znajdowaæ siê przed drzwiami do domu aby móc go wynaj¹æ !");
 			return 1;
 		}
@@ -18800,43 +19318,32 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			for(new h = 0; h < sizeof(Houses); h++)
 			{
 				if(!PlayerToPoint(1.0, playerid, Houses[h][EnterX], Houses[h][EnterY], Houses[h][EnterZ]))
-				{
 					continue;
-				}
-				
 				if(!Houses[h][Owned])
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten dom nie zosta³ kupiony i nie mo¿e zostaæ wynajêty");
 					return 1;
 				}
-				
 				if(strcmp(gPlayerData[playerid][pName], Houses[h][HRenter], false) != 0)
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie wynajmujesz tego domu !");
 					return 1;
 				}
-				
 				if(!PHaveItemParam1Ex(playerid, 4, -1, Houses[h][HUID]))
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Aby zrezygnowaæ z wynajmu musisz posiadaæ przy sobie klucz do tego domu");
 					return 1;
 				}
-				
 				slot = PHaveItemParam2Ex(playerid, 4, -1, 1);
-				
 				if(!slot)
 				{
 					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Aby zrezygnowaæ z wynajmu musisz posiadaæ przy sobie klucz do tego domu");
 					return 1;
 				}
-				
 				RemovePlayerItemExUsed(playerid, slot);
-				
 				strdel(Houses[h][HRenter], 0, MAX_PLAYER_NAME);
 				format(Houses[h][HRenter], MAX_PLAYER_NAME, "Brak", 255);
 				SaveHouseData(h, "Renter");
-				
-				RefreshHouseDescription(h);
 				
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Zrezygnowa³eœ z wynajmu tego domu");
 				return 1;
@@ -18867,10 +19374,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					new houselocation[MAX_ZONE_NAME];
 					GetCoords2DZone(Houses[i][EnterX], Houses[i][EnterY], houselocation, MAX_ZONE_NAME);
 
-					format(string, sizeof(string), "Opis: %s Czynsz: $%d (/wynajmijdom)", Houses[i][Description], Houses[i][RentCost]);
+					format(string, sizeof(string), "Opis: %s Czynsz: %d$ (/wynajmijdom)", Houses[i][Description], Houses[i][RentCost]);
 					UpdateDynamic3DTextLabelText(Houses3DTextLabelC[i], COLOR_LIGHTYELLOW2, string);					
 					
-					format(string, sizeof(string), "[INFO:] Ustawi³eœ cene wynajmu na: $%d", Houses[i][RentCost]);
+					format(string, sizeof(string), "[INFO:] Ustawi³eœ cene wynajmu na: %d$", Houses[i][RentCost]);
 					SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 					return 1;
 				}
@@ -18895,7 +19402,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					Houses[i][Rentable] = 1;
 					SaveHouseData(i, "Rentable");
 					
-					format(string, sizeof(string), "Opis: %s Czynsz: $%d (/wynajmijdom)", Houses[i][Description], Houses[i][RentCost]);
+					format(string, sizeof(string), "Opis: %s Czynsz: %d$ (/wynajmijdom)", Houses[i][Description], Houses[i][RentCost]);
 					UpdateDynamic3DTextLabelText(Houses3DTextLabelC[i], COLOR_LIGHTYELLOW2, string);	
 					
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Wynajem uaktywniony");
@@ -18970,10 +19477,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						TogglePlayerControllable(playerid, 0);
 						defer UnfreezePlayer(playerid);
 						
+						DestroyDynamicPickup(Houses[h][PickupID]);
+						Houses[h][PickupID] = CreateDynamicPickup(1239, 1, Houses[h][EnterX],Houses[h][EnterY],Houses[h][EnterZ]);
+						
 						Houses[h][Rentable] = 0;
 						Houses[h][RentCost] = 0;
 						Houses[h][Money] = 0;
-						Houses[h][Locked] = 1;
+						Houses[h][Locked] = 0;
 						Houses[h][HItem1] = 0;
 						Houses[h][HItem2] = 0;
 						Houses[h][HItem3] = 0;
@@ -18989,8 +19499,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						Houses[h][HRadio1Obj] = 0;
 						Houses[h][HouseType] = 0;
 						Houses[h][HConfiscated] = 0;
-						
-						RefreshHouseDescription(h);
 						
 						GetCoords2DZone(Houses[h][EnterX],Houses[h][EnterY], houselocation, MAX_ZONE_NAME);
 						format(string, sizeof(string), "Adres: %d %s",h,houselocation);
@@ -19061,9 +19569,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					return 1;
 				}
 				Businesses[i][EntranceCost] = strval(tmp);
-				format(string, sizeof(string), "Wejœciówka: $%d",Businesses[i][EntranceCost]);
+				format(string, sizeof(string), "Wejœciówka: %d$",Businesses[i][EntranceCost]);
 				UpdateDynamic3DTextLabelText(Business3DTextLabelC[i], COLOR_LIGHTBLUE2, string);
-				format(string, sizeof(string), "[INFO:] Ustawi³eœ wejœciówke biznesu na $%d", Businesses[i][EntranceCost]);
+				format(string, sizeof(string), "[INFO:] Ustawi³eœ wejœciówke biznesu na %d$", Businesses[i][EntranceCost]);
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 				
 				PlayerActionMessage(playerid,15.0, "nakleja kartke na drzwi");
@@ -19108,14 +19616,31 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				if(strfind(result , "|" , true) == -1)
 				{
 					strmid(Businesses[i][BusinessName], result, 0, 64, 255);
-					SaveBizData(i, "BusinessName");
-					
-					RefreshBizDescription(i);
-					
-					format(string, sizeof(string), "[INFO:] Ustawi³eœ nazwe swojego biznesu na: %s", Businesses[i][BusinessName]);
+					new businesstype[128];
+					if(Businesses[i][BizType] != 0)
+					{
+						if(Businesses[i][BizType] == 1) { businesstype = "Restauracja"; }
+						else if(Businesses[i][BizType] == 2) { businesstype = "Siec komorkowa"; }
+						else if(Businesses[i][BizType] == 3) { businesstype = "Sklep 24/7"; }
+						else if(Businesses[i][BizType] == 4) { businesstype = "Sklep z bronia"; }
+						else if(Businesses[i][BizType] == 5) { businesstype = "Studio reklamowe"; }
+						else if(Businesses[i][BizType] == 6) { businesstype = "Sklep z ubraniami"; }
+						else if(Businesses[i][BizType] == 7) { businesstype = "Bar/Club"; }
+						else if(Businesses[i][BizType] == 8) { businesstype = "Studio nagraniowe"; }
+						else if(Businesses[i][BizType] == 9) { businesstype = "Studio"; }
+						else if(Businesses[i][BizType] == 10) { businesstype = "Salon samochodowy"; }
+						else if(Businesses[i][BizType] == 11) { businesstype = "Stacja paliw"; }
+					}
+					else { businesstype = "Nie ustawione"; }
+
+					format(string, sizeof(string), "Nazwa biznesu: %s, Typ biznesu: %s",Businesses[i][BusinessName],businesstype);
+					UpdateDynamic3DTextLabelText(Business3DTextLabelA[i], COLOR_LIGHTBLUE2, string);
+					format(string, sizeof(string), "[INFO:] Ustawi³eœ nazwe swojego biznesu na: %s",Businesses[i][BusinessName]);
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 					
 					PlayerActionMessage(playerid,15.0, "montuje nowy szyld");
+					
+					SaveBizData(i, "BusinessName");
 					return 1;
 				}
 				else
@@ -19132,15 +19657,24 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			for(new i = 0; i < sizeof(Businesses); i++)
 			{
 				if(!PlayerToPoint(100.0, playerid, Businesses[i][ExitX], Businesses[i][ExitY], Businesses[i][ExitZ]) || GetPlayerVirtualWorld(playerid) != i)
-				{
 					continue;
+				if(strcmp(gPlayerData[playerid][pName], Businesses[i][Owner], false) != 0 && (!Businesses[i][BGov] || gPlayerData[playerid][pFaction] != FACTIONID_GOVERNMENT))
+				{
+					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ w³aœcicielem tego biznesu !");
+					return 1;
 				}
 				
-				ShowBizInfo(playerid);
 				
+				format(string, sizeof(string), "Nazwa biznesu: %s\nPieni¹dze w kasie: %d$\nWejœciówka: %d$\nWycena biznesu: %d$", Businesses[i][BusinessName], Businesses[i][Till], Businesses[i][EntranceCost], Businesses[i][BizPrice]);
+				if(Businesses[i][BizType] == BIZT_VEHICLES)
+					format(string, sizeof(string), "%sPosiadanych pojazdów: %d/%d\nLiczba zamówieñ: %d\nPojazdy oczekuj¹ce(0/1): %d\n", string, Businesses[i][VehicleCount], Businesses[i][MaxVehicles], Businesses[i][VehicleOrderCount], Businesses[i][VehicleSpawned]);
+				
+				
+				ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Biznes", string, "Zamknij", "");
+				PlayerActionMessage(playerid, 15.0, "przegl¹da dokumentacje biznesu");
 				return 1;
 			}
-			ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Informacja", "Musisz znajdowaæ siê wewn¹trz biznesu.", "Zamknij", "");
+			SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz znajdowaæ siê wewn¹trz biznesu !");
 			return 1;
 		}
 		else if(strcmp(cmd, "/sprzedajbiznes", true) == 0)
@@ -19163,16 +19697,16 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							cost += cenyPojazdow[gVehData[j][mVehModel]-400];
 					}
 					GivePlayerCash(playerid,(Businesses[i][BizPrice]+cost));
-					format(string, sizeof(string), "[INFO:] Sprzeda³eœ swój biznes za $%d.", Businesses[i][BizPrice]+cost);
+					format(string, sizeof(string), "[INFO:] Sprzeda³eœ swój biznes za %d$.", Businesses[i][BizPrice]+cost);
 				}
 				else
 				{
 					GivePlayerCash(playerid,Businesses[i][BizPrice]);
-					format(string, sizeof(string), "[INFO:] Sprzeda³eœ swój biznes za $%d.", Businesses[i][BizPrice]);
+					format(string, sizeof(string), "[INFO:] Sprzeda³eœ swój biznes za %d$.", Businesses[i][BizPrice]);
 				}
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 
-				ResetBizData(i);
+				ResetBizData(i, 1);
 				RefreshBizDescription(i);
 				
 				return 1;
@@ -19182,15 +19716,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		else if(strcmp(cmd, "/kupbiznes", true) == 0)
 		{
 			new cost;
-			
 			if(gPlayerData[playerid][pIsDeptor])
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Znajdujesz siê w rejestrze d³u¿ników. Nie mo¿esz kupiæ ¿adnego biznesu !");
 				return 1;
 			}
-			
 			new countBizTel, countBizOther;
-			
 			for(new h = 0; h < sizeof(Businesses); h++)
 			{
 				if(strcmp(Businesses[h][Owner], gPlayerData[playerid][pName], false) == 0)
@@ -19201,7 +19732,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						countBizOther++;
 				}
 			}
-			
 			for(new h = 0; h < sizeof(Businesses); h++)
 			{
 				if(PlayerToPoint(2.0, playerid, Businesses[h][EnterX], Businesses[h][EnterY], Businesses[h][EnterZ]))
@@ -19259,7 +19789,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					if(gBizBoughtApproved[playerid] != h && !AdminDuty[playerid])
 					{
 						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz pozwolenia na kupno tego biznesu !");
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Aby uzyskaæ pozwolenie udaj siê do urzêdnia i wpisz komende /prosbaobiznes [id urzednika]");
+						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Aby uzyskaæ pozwolenie udaj siê do urzêdnia i wpisz komende /prosbaobiznes [id urzednika] [id biznesu]");
 						return 1;
 					}
 					if(!PlayerFreeSlotCount(playerid))
@@ -19269,6 +19799,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					}
 					if(GetPlayerCash(playerid) >= Businesses[h][BizPrice])
 					{
+						// ResetBizData(h, 1);
 						if(Businesses[h][BizType] == 10)
 						{
 							for(new i = 0; i < sizeof(gVehData); i++)
@@ -19280,12 +19811,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							}
 							if(GetPlayerCash(playerid) >= Businesses[h][BizPrice] + cost)
 							{
-								Businesses[h][Locked] = 1;
 								Businesses[h][Till] = 0;
 								Businesses[h][Owned] = 1;
 								Businesses[h][Products] = 0;
 								strmid(Businesses[h][Owner], gPlayerData[playerid][pName], 0, MAX_PLAYER_NAME);
-								SaveBizData(h, "Locked");
 								SaveBizData(h, "Till");
 								SaveBizData(h, "Owned");
 								SaveBizData(h, "Owner");
@@ -19302,11 +19831,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 								DestroyDynamicPickup(Businesses[h][PickupID]);
 								Businesses[h][PickupID] = CreateDynamicPickup(1239, 1, Businesses[h][EnterX],Businesses[h][EnterY],Businesses[h][EnterZ]);
-							}
-							else
-							{
-								SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz wystarczaj¹cej iloœci pieniêdzy !");
-								return 1;
 							}
 						}
 						else
@@ -19333,8 +19857,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							CreateDynamicPickup(1239, 1, Businesses[h][EnterX], Businesses[h][EnterY], Businesses[h][EnterZ]);
 						}
 						
-						Businesses[h][BUID] = random(999999);
-						SaveBizData(h, "UID");
+						Businesses[h][BUID] = random(999999);						
 						
 						InsertPlayerItem(playerid, 10, h, Businesses[h][BUID], 0);
 						
@@ -19381,13 +19904,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						if(GetPlayerCash(playerid) >= gDrivingTestPosition[mPriceA] && !gPlayerData[playerid][pFirstATest])
 						{
 							GivePlayerCash(playerid, -gDrivingTestPosition[mPriceA]);
-							
 							DynamicFactions[FACTIONID_GOVERNMENT][fBank] += gDrivingTestPosition[mPriceA];
 							SaveFData(FACTIONID_GOVERNMENT, "Bank");
-							
 							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Wykupi³eœ test ! Aby rozpocz¹æ egzamin teoretyczny wpisz /rozpocznijtest");
 							SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[INFO:] Pamiêtaj aby nie rozpoczynaæ testu jeœli w pobli¿u nie ma egzaminatora poniewa¿ taki test bêdzie niewa¿ny !");
-							
 							TakingDrivingTestA[playerid] = 1;
 							gPlayerData[playerid][pFirstATest] = 1;
 							SavePlayerData(playerid, "FirstATest");
@@ -19680,7 +20200,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 				return 1;
 			}
-			
 			for(new i = 0; i < sizeof(Businesses); i++)
 			{
 				if(gPlayerData[playerid][pGasStationRefPetrol][i] != 0.0 || gPlayerData[playerid][pGasStationRefOil][i] != 0 || gPlayerData[playerid][pGasStationRefGas][i] != 0)
@@ -19690,7 +20209,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					return 1;
 				}
 			}
-			
 			if(gVehData[tmpcar][EngineOn])
 			{
 				new tmpstring[128];
@@ -19701,12 +20219,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			else
 			{
 				new Float:posX,Float:posY,Float:posZ;
-				
 				for(new i = 0; i < sizeof(GasStations); i++)
 				{
-					#if defined DEBUG
-						printf("GasStation[%d][GSposX] = %f, GasStation[%d][GSposY] = %f, GasStation[%d][GSposZ] = %f", i,  GasStations[i][GSposX], i, GasStations[i][GSposY], i, GasStations[i][GSposZ]);
-					#endif
+					// printf(" GasStation[%d][GSposX] = %f, GasStation[%d][GSposY] = %f, GasStation[%d][GSposZ] = %f", i,  GasStations[i][GSposX], i, GasStations[i][GSposY], i, GasStations[i][GSposZ]);
 					if(PlayerToPoint(10.0, playerid, GasStations[i][GSposX], GasStations[i][GSposY], GasStations[i][GSposZ]))
 					{
 						if(gVehData[tmpcar][Fuel] == 0)
@@ -19733,30 +20248,20 @@ public OnPlayerCommandText(playerid, cmdtext[])
 								return 1;
 							}
 						}
-						
 						GetPlayerPos(playerid, posX, posY, posZ);
-						
 						if(gVehData[tmpcar][CarFuel] < float(VehFTank(idcar)) && !gVehData[tmpcar][IsRefueling])
 						{
 							SetTimerEx("RefuelingVehicle", 1000, false, "ddfdfff", playerid, idcar, 0, i, posX, posY, posZ);
-							
 							new tmpstring[512];
-							
 							strcat(tmpstring, "Rozpoczêto tankowanie.\nAby przerwaæ tankowanie w danym momencie uruchom silnik i zaparkuj pojazd tak\n ");
 							strcat(tmpstring, "aby zwolniæ miejsce do tankowania a nastêpnie udaj siê do kasy znajduj¹cej siê w stacji aby op³aciæ zatankowane paliwo.");
-							
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja paliw", tmpstring, "Zamknij", "");
-							
 							gVehData[tmpcar][IsRefueling] = 1;
 						}
 						else if(gVehData[tmpcar][IsRefueling])
-						{
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja paliw", "Pojazd jest ju¿ tankowany !", "Zamknij", "");
-						}
 						else
-						{
 							ShowPlayerDialog(playerid, DIALOG_INFO, DIALOG_STYLE_MSGBOX, "Stacja paliw", "Masz ju¿ pe³ny bak !", "Zamknij", "");
-						}
 						return 1;
 					}
 				}
@@ -19770,41 +20275,39 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			{
 				gPlayerData[playerid][pFirstStats] = 1;
 				SavePlayerData(playerid, "FirstStats");
-				 
+				// AddExpPoint(playerid);
 				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Poraz pierwszy wyœwietli³eœ swoje statystyki !");
 			}
-			ShowStats(playerid, playerid);
+			ShowStats(playerid,playerid);
 			return 1;
 		}
 		else if(strcmp(cmd, "/komendydomu", true) == 0)
 		{
-			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/wejdz - /wyjdz - /kupdom - /sprzedajdom - /dom - /zmienczynsz - /czynsz  - /otworzdom - /wyplaczdomu - /wplacdodomu");
-			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/wynajmijdom - /zrezygnujzwynajmu - /zamknijdom - /mojeitemywdomu (/miwd) - /wezitemzdomu");
-			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/wlozitemdodomu (/widd) - /radiod - /radiodv - /radiodoff - /radiozabierz - /ktowynajmuje");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/wejdz - /wyjdz - /kupdom - /sprzedajdom - /zmienczynsz - /czynsz  - /otworzdom - /wyplaczdomu - /wplacdodomu");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/wynajmijdom - /zrezygnujzwynajmu - /zamknijdom - /mojeitemywdomu - /wezitemzdomu");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/wlozitemdodomu - /radiod - /radiodv - /radiodoff - /radiozabierz - /ktowynajmuje");
 			return 1;
 		}
 		else if(strcmp(cmd, "/komendyfirmy", true) == 0)
 		{
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/sieckomorkowa - /firmawplac - /firmawyplac - /zarzadzajfirma");
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/sieckomorkowa - /firmawplac - /firmawyplac");
 			return 1;
 		}
 		else if(strcmp(cmd, "/komendyfrakcji", true) == 0)
 		{
 			if(gPlayerData[playerid][pFaction] != 255)
 			{
-				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/opuscfrakcje - /fwyplac - /fwplac - /fstankonta - /statusfrakcji - /przekazlidera - /uprawnieniarangi");
-				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/zmienuprawnieniarangi - /kuppojazdf - /sprzedajpojazdf - /zezlomujpojazdf - /kupbudynek - /sprzedajbudynek");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/opuscfrakcje - /f - /fwyplac - /fwplac - /fstankonta - /statusfrakcji - /przekazlidera - /uprawnieniarangi");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/zmienuprawnieniarangi - /kuppojazdf - /sprzedajpojazdf - /zezlomujpojazdf");
 				if(gPlayerData[playerid][pFaction] == FACTIONID_GOVERNMENT)
-					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/komendyurzedu");
+					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/komendyurzedu - /komendyurzedu2");
 				if(gPlayerData[playerid][pFaction] == FACTIONID_SANNEWS)
 					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/cenypaliw - /ustawwiadomosc");
-				if(gPlayerData[playerid][pFaction] == FACTIONID_RAFINERY)
-					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/komendyrafinerii");
 				if(gPlayerData[playerid][pFaction] == FACTIONID_POLICE)
 					SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/ustawwiadomosc - /wyczyscwiadomosc");
 				if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_GANG)
 				{
-					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/terytoria - /walczoterytorium - /walkower - /okradnij - /okradnijzkasy - /wlamsiedopojazdu - /wlamsiedodomu - /wlamsiedobiznesu");
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/terytoria - /walczoterytorium - /okradnij - /okradnijzkasy - /wlamsiedopojazdu - /wlamsiedodomu - /wlamsiedobiznesu");
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/okradnijdom - /okradnijbiznes - /pokazpunkteksportu - /ukryjpunkteksportu - /eksportujpojazd - /oddajterytorium");
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/zbierzplony - /podpalfab");
 				}
@@ -19821,8 +20324,8 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pFaction] != 255 && gPlayerData[playerid][pRank] == 1)
 			{
-				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Lider:] /zarzadzajfrakcaj - /kuppojazdf - /sprzedajpojazdf - /zezlomujpojazdf - /wynagrodzenie");
-				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Lider:] /pktorganizacyjny - /pktorganizacyjny2 - /fabryka - /uzbrojenie - /stanuzbrojenia");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Lider:] /zapros - /wypros - /kuppojazdf - /sprzedajpojazdf - /zezlomujpojazdf");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Lider:] /pktorganizacyjny - /pktorganizacyjny2 - /fabryka");
 			}
 			else
 			{
@@ -19839,7 +20342,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/kupbiznes - /sprzedajbiznes - /statystykibiznesu - /infobiznesu - /wejsciowka - /nazwabiznesu - /otworzbiznes - /zamknijbiznes");
 			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/wplacdobiznesu - /wyplaczbiznesu - /radiob - /radiobv - /radioboff - /radiozabierz");
-			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/salon - /stacjapaliw - /ogloszenie");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/salon - /stacjapaliw");
 			return 1;
 		}
 		else if(strcmp(cmd, "/stacjapaliw", true) == 0)
@@ -19850,7 +20353,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 		else if(strcmp(cmd, "/salon", true) == 0)
 		{
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "/statuszamowien - /sprowadzpojazd - /cenapojazdu - /wynajempojazdu - /listapojazdownawynajem");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "/statuszamowien - /sprowadzpojazd - /cenapojazdu ");
 			return 1;
 		}
 		else if(strcmp(cmd, "/acarcmds", true) == 0)
@@ -19931,7 +20434,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pAdmin] < 1)
 				return 0;
-			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Level 1:] - [TELEPORTS] /agotobuilding - /agotohouse - /agotobiz");
+			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Level 1:] - [TELEPORTS] /agotobuilding - /agotohouse - /agotobiz - /agotofmatsstorage - /agotofdrugsstorage");
 			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Level 1:] - [TELEPORTS] /agotodrivingtestpos - /agotoflyingtestpos - /agotobank - /agotoweaponlicpos - /agotopolicearrestpos");
 			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Level 1:] - [TELEPORTS] /agotopolicedutypos");
 			SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Level 10:] - adrivingtestpos - /aflyingtestpos - /abankpos - /aweaponlicensepos - /apolicearrestpos - /apolicedutypos");
@@ -19994,6 +20497,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pAdmin] < 1)
 				return 0;
+			new faction = gPlayerData[playerid][pFaction];
 			if(AdminDuty[playerid] == 1)
 			{
 				format(string, sizeof(string), "[ADMIN:] %s [%d] nie jest ju¿ na s³u¿bie.", GetPlayerNameEx(playerid),playerid);
@@ -20003,6 +20507,22 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SetPlayerHealth(playerid,100);
 				SetPlayerArmourEx(playerid,0);
 				printf("[WARNING:] %s used goes OFF admin DUTY", gPlayerData[playerid][pName]);
+
+				if(gPlayerData[playerid][pFaction] != 255)
+				{
+					if(DynamicFactions[faction][fUseColor])
+					{
+						//SetPlayerToFactionColor(playerid);//Setting the players color.
+					}
+					else
+					{
+						SetPlayerColor(playerid,COLOR_CIVILIAN);
+					}
+				}
+				else
+				{
+					SetPlayerColor(playerid,COLOR_CIVILIAN);
+				}
 			}
 			else
 			{
@@ -20049,7 +20569,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							case 10: rankPay = PayRank[gPlayerData[giveplayerid][pFaction]][Rank10];
 						}
 					}
-					format(string, sizeof(string), "[INFO:] Kasa przy postaci: $%d, kasa w banku: $%d, wyp³ata: $%d",
+					format(string, sizeof(string), "[INFO:] Kasa przy postaci: %d$, kasa w banku: %d$, wyp³ata: %d$",
 						gPlayerData[giveplayerid][pCash],
 						gPlayerData[giveplayerid][pBank],
 						rankPay
@@ -20088,7 +20608,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					// return 1;
 				// }
 				// GivePlayerCash(playerid, -moneys);
-				// format(string, sizeof(string), "[INFO:] %s zasponsorowal $%d.",GetPlayerNameEx(playerid), moneys);
+				// format(string, sizeof(string), "[INFO:] %s zasponsorowal %d$.",GetPlayerNameEx(playerid), moneys);
 				// SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 				// PayLog(string);
 			// }
@@ -20675,7 +21195,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				return 0;
 			if(IsPlayerInAnyVehicle(playerid))
 			{
-				SetVehicleHealth(idcar, MaxVehicleHealth(idcar));
+				SetVehicleHealth(idcar, 1000.0);
 			}
 			return 1;
 		}
@@ -20688,7 +21208,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				RepairVehicle(idcar);
 				gVehData[tmpcar][CarDamaged] = 0;
 				gVehData[tmpcar][CarRepairTimeLeft] = 0;
-				gVehData[tmpcar][CarHealth] = MaxVehicleHealth(idcar);
+				gVehData[tmpcar][CarHealth] = 1000.0;
 				
 				SaveVehData(tmpcar, "CarHealth");
 				SaveVehData(tmpcar, "CarDamaged");
@@ -20838,7 +21358,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			{
 				tmp = strtok(cmdtext, idx);
 				ammo = strval(tmp);
-				if(ammo < 0 || ammo > 999)
+				if(ammo < 1 || ammo > 999)
 				{
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Ammo must be , 1-999.");
 					return 1;
@@ -20848,6 +21368,70 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					if(playa != INVALID_PLAYER_ID)
 					{
 						GivePlayerGun(playa, gun, ammo);
+					}
+				}
+			}
+			return 1;
+		}
+		else if(strcmp(cmd, "/dajbron", true) == 0)
+		{
+			if(IsPlayerConnected(playerid))
+			{
+				tmp = strtok(cmdtext, idx);
+				if(!strlen(tmp))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /dajbron [playerid/PartOName] [weaponid] [ammo]");
+					return 1;
+				}
+				new playa;
+				new gun;
+				new ammo;
+				playa = ReturnUser(tmp);
+				tmp = strtok(cmdtext, idx);
+				gun = strval(tmp);
+				if(!strlen(tmp))
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /givegun [playerid/PartOName] [weaponid] [ammo]");
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "3(Club) 4(knife) 5(bat) 6(Shovel) 7(Cue) 8(Katana) 10-13(Dildo) 14(Flowers) 16(Grenades) 18(Molotovs) 22(Pistol) 23(SPistol)");
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "24(Eagle) 25(shotgun) 29(MP5) 30(AK47) 31(M4) 33(Rifle) 34(Sniper)");
+					return 1;
+				}
+				if(gun >= 1 && gun <= 34)
+				{
+					tmp = strtok(cmdtext, idx);
+					ammo = strval(tmp);
+					if(ammo < 1 || ammo > 30)
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Amunicji mozesz dac tylko : 1-30.");
+						return 1;
+					}
+					if(gunGiven[playa] == 1)
+					{
+						SendClientMessage(playerid, COLOR_RED, "[INFO:] Musisz odczekaæ 2 minuty zanim bêdziesz móg³ znów przekazaæ graczowi broñ !");
+						return 1;
+					}
+					if(gPlayerData[playerid][pFaction] == 9)
+					{
+						if(IsPlayerConnected(playa))
+						{
+							if(playa != INVALID_PLAYER_ID)
+							{
+								gunGiven[playa] = 1;
+								GiveGunTimer(playa);
+								GivePlayerGun(playa, gun, ammo);
+								format(string, sizeof(string), "[INFO:] Da³eœ broñ %d %s na zwiêkszenie poziomu skili !", gun, playa);
+								SendClientMessage(playerid, COLOR_LIGHTYELLOW2,string);
+								format(string, sizeof(string), "[INFO:] Otrzyma³eœ od %s broñ %d", GetPlayerNameEx(playerid), gun);
+								SendClientMessage(playa, COLOR_LIGHTYELLOW2,string);
+								new stringTMP[256];
+								format(stringTMP, sizeof(stringTMP), "[GOVERNMENT:] Bron, wydana przez: %s dla %s, ID broni: %d, ammo: %d", gPlayerData[playerid][pName], gPlayerData[playa][pName], gun, ammo);
+								GovermentLog(stringTMP);
+							}
+						}
+					}
+					else
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ urzednikiem.");
 					}
 				}
 			}
@@ -20930,7 +21514,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					gPlayerData[para1][pModerator] = 1;
 					SavePlayerData(para1, "Moderator");
 
-					format(string, sizeof(string), "[INFO:] %s mianowa³ cie moderatorem !", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "[INFO:] %s mianowa³ Cie Supporterem !", GetPlayerNameEx(playerid));
 					SendClientMessage(para1, COLOR_WHITE, string);
 					format(string, sizeof(string), "[INFO:] You have made %s an Moderator.", GetPlayerNameEx(para1));
 					SendClientMessage(playerid, COLOR_WHITE, string);
@@ -20960,7 +21544,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					gPlayerData[para1][pModerator] = 0;
 					SavePlayerData(para1, "Moderator");
 
-					format(string, sizeof(string), "[INFO:] %s pozbawi³ cie funkcji moderatora !", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "[INFO:] %s pozbawi³ Cie funkcji Supportera !", GetPlayerNameEx(playerid));
 					SendClientMessage(para1, COLOR_WHITE, string);
 					format(string, sizeof(string), "[INFO:] You have dismade %s an Moderator.", GetPlayerNameEx(para1));
 					SendClientMessage(playerid, COLOR_WHITE, string);
@@ -20974,29 +21558,15 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			{
 				gPlayerData[playerid][pFirstStudy] = 1;
 				SavePlayerData(playerid, "FirstStudy");
-
+				// AddExpPoint(playerid);
 				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Pierwszy raz podnios³eœ swoje umiejêtnoœci !");
 			}
-			
-			if(gPlayerData[playerid][pSchoolCooldown] >= SCHOOL_COOLDOWN)
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XPis],SkillPosition[YPis],SkillPosition[ZPis]))
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Jesteœ przemêczony i niezdolny do dalszej nauki");
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Zapraszamy ponownie po \"wyp³acie\"");
-				return 1;
-			}
-			
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XPis], SkillPosition[YPis], SkillPosition[ZPis]))
-			{
-				if(gPlayerData[playerid][pCash] < PIS_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -PIS_SKILL_COST);
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += PIS_SKILL_COST;
+					GivePlayerCash(playerid,-1000);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 1000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
 					gPlayerData[playerid][pSkillPointsPis]++;
@@ -21023,18 +21593,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XSil], SkillPosition[YSil], SkillPosition[ZSil]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XSil],SkillPosition[YSil],SkillPosition[ZSil]))
 			{
-				if(gPlayerData[playerid][pCash] < SIL_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -SIL_SKILL_COST);
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SIL_SKILL_COST;
+					GivePlayerCash(playerid,-1000);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 1000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
 					gPlayerData[playerid][pSkillPointsSil]++;
@@ -21061,18 +21625,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XDes], SkillPosition[YDes], SkillPosition[ZDes]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XDes],SkillPosition[YDes],SkillPosition[ZDes]))
 			{
-				if(gPlayerData[playerid][pCash] < DES_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -DES_SKILL_COST);
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += DES_SKILL_COST;
+					GivePlayerCash(playerid,-2000);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 2000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
 					gPlayerData[playerid][pSkillPointsDes]++;
@@ -21099,18 +21657,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XSho], SkillPosition[YSho], SkillPosition[ZSho]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XSho],SkillPosition[YSho],SkillPosition[ZSho]))
 			{
-				if(gPlayerData[playerid][pCash] < SHO_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -SHO_SKILL_COST);
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SHO_SKILL_COST;
+					GivePlayerCash(playerid,-2000);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 2000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
 					gPlayerData[playerid][pSkillPointsSho]++;
@@ -21137,24 +21689,18 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XSha], SkillPosition[YSha], SkillPosition[ZSha]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XSha],SkillPosition[YSha],SkillPosition[ZSha]))
 			{
-				if(gPlayerData[playerid][pCash] < SHA_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -SHA_SKILL_COST);
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SHA_SKILL_COST;
+					GivePlayerCash(playerid,-2000);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 2000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
 					gPlayerData[playerid][pSkillPointsSha]++;
 					SavePlayerData(playerid, "SkillPointsSha");
 
-					format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie ogryzka do %d!", gPlayerData[playerid][pSkillPointsSha]);
+					format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie ogryska do %d!", gPlayerData[playerid][pSkillPointsSha]);
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 					
 					gPlayerData[playerid][pPozwolenie]--;
@@ -21175,18 +21721,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XSpa], SkillPosition[YSpa], SkillPosition[ZSpa]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XSpa],SkillPosition[YSpa],SkillPosition[ZSpa]))
 			{
-				if(gPlayerData[playerid][pCash] < SPASS_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -SPASS_SKILL_COST);
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SPASS_SKILL_COST;
+					GivePlayerCash(playerid,-3000);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 3000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
 					gPlayerData[playerid][pSkillPointsSpa]++;
@@ -21213,18 +21753,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XMic], SkillPosition[YMic], SkillPosition[ZMic]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XMic],SkillPosition[YMic],SkillPosition[ZMic]))
 			{
-				if(gPlayerData[playerid][pCash] < UZI_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -UZI_SKILL_COST);
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += UZI_SKILL_COST;
+					GivePlayerCash(playerid,-2000);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 2000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
 					gPlayerData[playerid][pSkillPointsMic]++;
@@ -21251,18 +21785,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XMp5], SkillPosition[YMp5], SkillPosition[ZMp5]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XMp5],SkillPosition[YMp5],SkillPosition[ZMp5]))
 			{
-				if(gPlayerData[playerid][pCash] < MP5_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -MP5_SKILL_COST);
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += MP5_SKILL_COST;
+					GivePlayerCash(playerid,-4000);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 4000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
 					gPlayerData[playerid][pSkillPointsMp5]++;
@@ -21289,14 +21817,8 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XAk], SkillPosition[YAk], SkillPosition[ZAk]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XAk],SkillPosition[YAk],SkillPosition[ZAk]))
 			{
-				if(gPlayerData[playerid][pCash] < AK_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
 					GivePlayerCash(playerid,-5000);
@@ -21327,18 +21849,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XM4], SkillPosition[YM4], SkillPosition[ZM4]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XM4],SkillPosition[YM4],SkillPosition[ZM4]))
 			{
-				if(gPlayerData[playerid][pCash] < M4_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -M4_SKILL_COST);
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += M4_SKILL_COST;
+					GivePlayerCash(playerid,-5000);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 5000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
 					gPlayerData[playerid][pSkillPointsM4]++;
@@ -21365,17 +21881,11 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XSni], SkillPosition[YSni], SkillPosition[ZSni]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XSni],SkillPosition[YSni],SkillPosition[ZSni]))
 			{
-				if(gPlayerData[playerid][pCash] < SNIPER_SKILL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-			
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -6000);
+					GivePlayerCash(playerid,-6000);
 					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 6000;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
@@ -21403,272 +21913,132 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XTech], SkillPosition[YTech], SkillPosition[ZTech]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XAng],SkillPosition[YAng],SkillPosition[ZAng]))
 			{
-				if(gPlayerData[playerid][pCash] < SCHOOL_COST)
+				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
-				if(!gPlayerData[playerid][pHighSchool])
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz kontynuuowaæ nauki w tej dziedzinie dopóki nie zdobêdziesz œredniego wykszta³cenia");
-						
-					return 1;
-				}
-				
-				if(gPlayerData[playerid][pTech] >= MAX_GRADE_LVL)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Osi¹gn¹³eœ szczyt umiejêtnoœci w tej dziedzinie");
-					return 1;
-				}
-				
-				GivePlayerCash(playerid, -SCHOOL_COST);
-				
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-				gPlayerData[playerid][pPktTech]++;
-				SavePlayerData(playerid, "PktTech");
-				
-				gPlayerData[playerid][pSchoolCooldown]++;
-				SavePlayerData(playerid, "SchoolCooldown");
-
-				format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk technicznych", gPlayerData[playerid][pPktTech]);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				if(gPlayerData[playerid][pPktTech] == (HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pTech]*10)))
-				{
-					GivePlayerCash(playerid, -SCHOOL_COST);
-				
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
+					GivePlayerCash(playerid,-400);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 400;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
-					gPlayerData[playerid][pPktTech] = 0;
-					SavePlayerData(playerid, "PktTech");
-				
-					gPlayerData[playerid][pTech]++;
-					SavePlayerData(playerid, "Tech");
+					gPlayerData[playerid][pPktAng]++;
+					SavePlayerData(playerid, "PktAng");
 
-					format(string, sizeof(string), "[INFO:] Uda³o ci siê zdobyæ nowy tytu³ z nauk technicznych: %s", ReturnGradeName(gPlayerData[playerid][pTech]));
+					format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie angielskiego do %d!", gPlayerData[playerid][pPktAng]);
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 					
-					return 1;
-				}
-			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XLaw], SkillPosition[YLaw], SkillPosition[ZLaw]))
-			{
-				if(gPlayerData[playerid][pCash] < SCHOOL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-			
-				if(!gPlayerData[playerid][pHighSchool])
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz kontynuuowaæ nauki w tej dziedzinie dopóki nie zdobêdziesz œredniego wykszta³cenia");
-				
-					return 1;
-				}
-				
-				if(gPlayerData[playerid][pLaw] >= MAX_GRADE_LVL)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Osi¹gn¹³eœ szczyt umiejêtnoœci w tej dziedzinie");
-					return 1;
-				}
-				
-				GivePlayerCash(playerid, -SCHOOL_COST);
-				
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-				gPlayerData[playerid][pPktLaw]++;
-				SavePlayerData(playerid, "PktLaw");
-				
-				gPlayerData[playerid][pSchoolCooldown]++;
-				SavePlayerData(playerid, "SchoolCooldown");
+					gPlayerData[playerid][pPozwolenie] --;
+					SavePlayerData(playerid, "Pozwolenie");
 
-				format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk prawniczych", gPlayerData[playerid][pPktLaw]);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				if(gPlayerData[playerid][pPktLaw] == (HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pLaw]*10)))
-				{
-					GivePlayerCash(playerid, -SCHOOL_COST);
-				
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-					SaveFData(FACTIONID_GOVERNMENT, "Bank");
-					
-					gPlayerData[playerid][pPktLaw] = 0;
-					SavePlayerData(playerid, "PktLaw");
-				
-					gPlayerData[playerid][pLaw]++;
-					SavePlayerData(playerid, "Law");
-
-					format(string, sizeof(string), "[INFO:] Uda³o ci siê zdobyæ nowy tytu³ z nauk prawniczych: %s", ReturnGradeName(gPlayerData[playerid][pLaw]));
-					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-					
-					return 1;
-				}
-			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XMat], SkillPosition[YMat], SkillPosition[ZMat]))
-			{
-				if(gPlayerData[playerid][pCash] < SCHOOL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
-				if(!gPlayerData[playerid][pHighSchool])
-				{
-					if(gPlayerData[playerid][pPktMat] < HIGH_SCHOOL_POINTS)
+					if(gPlayerData[playerid][pPktAng] == (4 + (gPlayerData[playerid][pAng]*2)))
 					{
-						GivePlayerCash(playerid, -SCHOOL_COST);
-				
-						DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-						SaveFData(FACTIONID_GOVERNMENT, "Bank");
-						
-						gPlayerData[playerid][pPktMat]++;
-						SavePlayerData(playerid, "PktMat");
-						
-						gPlayerData[playerid][pSchoolCooldown]++;
-						SavePlayerData(playerid, "SchoolCooldown");
+						gPlayerData[playerid][pAng]++;
+						SavePlayerData(playerid, "Ang");
 
-						format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk matematycznych", gPlayerData[playerid][pPktMat]);
+						format(string, sizeof(string), "[INFO:] Osi¹gn¹³eœ %d poziom Angielskiego !", gPlayerData[playerid][pAng]);
 						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-						
-						return 1;
-					}
-					else
-					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz kontynuuowaæ nauki w tej dziedzinie dopóki nie zdobêdziesz œredniego wykszta³cenia");
-						
-						return 1;
 					}
 				}
-				
-				if(gPlayerData[playerid][pMat] >= MAX_GRADE_LVL)
+				else
 				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Osi¹gn¹³eœ szczyt umiejêtnoœci w tej dziedzinie");
-					return 1;
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
-				
-				GivePlayerCash(playerid, -SCHOOL_COST);
-				
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-				gPlayerData[playerid][pPktMat]++;
-				SavePlayerData(playerid, "PktMat");
-				
-				gPlayerData[playerid][pSchoolCooldown]++;
-				SavePlayerData(playerid, "SchoolCooldown");
-
-				format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk matematycznych", gPlayerData[playerid][pPktMat]);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				if(gPlayerData[playerid][pPktMat] == (HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pMat]*10)))
+			}
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XWf],SkillPosition[YWf],SkillPosition[ZWf]))
+			{
+				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					GivePlayerCash(playerid, -SCHOOL_COST);
-				
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
+					GivePlayerCash(playerid,-500);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 500;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
 					
-					gPlayerData[playerid][pPktMat] = 0;
+					gPlayerData[playerid][pPktWf]++;
+					SavePlayerData(playerid, "PktWf");
+
+					format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie WF-u do %d!", gPlayerData[playerid][pPktWf]);
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+					
+					gPlayerData[playerid][pPozwolenie] --;
+					SavePlayerData(playerid, "Pozwolenie");
+
+					if(gPlayerData[playerid][pPktWf] == (4 + (gPlayerData[playerid][pWf]*2)))
+					{
+						gPlayerData[playerid][pWf]++;
+						SavePlayerData(playerid, "Wf");
+
+						format(string, sizeof(string), "[INFO:] Osi¹gn¹³eœ %d poziom WF-u !", gPlayerData[playerid][pWf]);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+					}
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
+				}
+			}
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XMat],SkillPosition[YMat],SkillPosition[ZMat]))
+			{
+				if(gPlayerData[playerid][pPozwolenie] >= 1)
+				{
+					GivePlayerCash(playerid,-500);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 500;
+					SaveFData(FACTIONID_GOVERNMENT, "Bank");
+					
+					gPlayerData[playerid][pPktMat]++;
 					SavePlayerData(playerid, "PktMat");
-				
-					gPlayerData[playerid][pMat]++;
-					SavePlayerData(playerid, "Mat");
 
-					format(string, sizeof(string), "[INFO:] Uda³o ci siê zdobyæ nowy tytu³ z nauk matematycznych: %s", ReturnGradeName(gPlayerData[playerid][pMat]));
+					format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie Matematyki do %d!", gPlayerData[playerid][pPktMat]);
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 					
-					return 1;
-				}
-			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XPol], SkillPosition[YPol], SkillPosition[ZPol]))
-			{
-				if(gPlayerData[playerid][pCash] < SCHOOL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
-				if(!gPlayerData[playerid][pHighSchool])
-				{
-					if(gPlayerData[playerid][pPktPol] < HIGH_SCHOOL_POINTS)
-					{
-						GivePlayerCash(playerid, -SCHOOL_COST);
-				
-						DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-						SaveFData(FACTIONID_GOVERNMENT, "Bank");
-						
-						gPlayerData[playerid][pPktPol]++;
-						SavePlayerData(playerid, "PktPol");
-						
-						gPlayerData[playerid][pSchoolCooldown]++;
-						SavePlayerData(playerid, "SchoolCooldown");
+					gPlayerData[playerid][pPozwolenie] --;
+					SavePlayerData(playerid, "Pozwolenie");
 
-						format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk humanistycznych", gPlayerData[playerid][pPktPol]);
+					if(gPlayerData[playerid][pPktMat] == (4 + (gPlayerData[playerid][pMat]*2)))
+					{
+						gPlayerData[playerid][pMat]++;
+						SavePlayerData(playerid, "Mat");
+
+						format(string, sizeof(string), "[INFO:] Osi¹gn¹³eœ %d poziom Matematyki !", gPlayerData[playerid][pMat]);
 						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-						
-						return 1;
-					}
-					else
-					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz kontynuuowaæ nauki w tej dziedzinie dopóki nie zdobêdziesz œredniego wykszta³cenia");
-						
-						return 1;
 					}
 				}
-				
-				if(gPlayerData[playerid][pPol] >= MAX_GRADE_LVL)
+				else
 				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Osi¹gn¹³eœ szczyt umiejêtnoœci w tej dziedzinie");
-					return 1;
-				}
-				
-				GivePlayerCash(playerid, -SCHOOL_COST);
-				
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-				gPlayerData[playerid][pPktPol]++;
-				SavePlayerData(playerid, "PktPol");
-				
-				gPlayerData[playerid][pSchoolCooldown]++;
-				SavePlayerData(playerid, "SchoolCooldown");
-
-				format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk humanistycznych", gPlayerData[playerid][pPktPol]);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				if(gPlayerData[playerid][pPktPol] == (HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pPol]*10)))
-				{
-					GivePlayerCash(playerid, -SCHOOL_COST);
-				
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-					SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-					gPlayerData[playerid][pPktPol] = 0;
-					SavePlayerData(playerid, "PktPol");
-					
-					gPlayerData[playerid][pPol]++;
-					SavePlayerData(playerid, "Pol");
-
-					format(string, sizeof(string), "[INFO:] Uda³o ci siê zdobyæ nowy tytu³ z nauk humanistycznych: %s", ReturnGradeName(gPlayerData[playerid][pPol]));
-					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-					
-					return 1;
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XHis], SkillPosition[YHis], SkillPosition[ZHis]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XPol],SkillPosition[YPol],SkillPosition[ZPol]))
 			{
-				if(gPlayerData[playerid][pCash] < SCHOOL_COST)
+				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
+					GivePlayerCash(playerid,-500);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 500;
+					SaveFData(FACTIONID_GOVERNMENT, "Bank");
+					
+					gPlayerData[playerid][pPktPol]++;
+					SavePlayerData(playerid, "PktPol");
+
+					format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie Polskiego do %d!", gPlayerData[playerid][pPktPol]);
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+					
+					gPlayerData[playerid][pPozwolenie] --;
+					SavePlayerData(playerid, "Pozwolenie");
+
+					if(gPlayerData[playerid][pPktPol] == (4 + (gPlayerData[playerid][pPol]*2)))
+					{
+						gPlayerData[playerid][pPol]++;
+						SavePlayerData(playerid, "Pol");
+
+						format(string, sizeof(string), "[INFO:] Osi¹gn¹³eœ %d poziom Polskiego !", gPlayerData[playerid][pPol]);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+					}
 				}
-			
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
+				}
+			}
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XHis],SkillPosition[YHis],SkillPosition[ZHis]))
+			{
 				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
 					GivePlayerCash(playerid,-500);
@@ -21698,220 +22068,69 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-			if(PlayerToPoint(1.0, playerid,SkillPosition[XFiz], SkillPosition[YFiz], SkillPosition[ZFiz]))
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XFiz],SkillPosition[YFiz],SkillPosition[ZFiz]))
 			{
-				if(gPlayerData[playerid][pCash] < SCHOOL_COST)
+				if(gPlayerData[playerid][pPozwolenie] >= 1)
 				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
-				if(!gPlayerData[playerid][pHighSchool])
-				{
-					if(gPlayerData[playerid][pPktFiz] < HIGH_SCHOOL_POINTS)
-					{
-						GivePlayerCash(playerid, -SCHOOL_COST);
-				
-						DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-						SaveFData(FACTIONID_GOVERNMENT, "Bank");
-						
-						gPlayerData[playerid][pPktFiz]++;
-						SavePlayerData(playerid, "PktFiz");
-						
-						gPlayerData[playerid][pSchoolCooldown]++;
-						SavePlayerData(playerid, "SchoolCooldown");
-
-						format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk fizycznych", gPlayerData[playerid][pPktFiz]);
-						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-						
-						return 1;
-					}
-					else
-					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz kontynuuowaæ nauki w tej dziedzinie dopóki nie zdobêdziesz œredniego wykszta³cenia");
-						
-						return 1;
-					}
-				}
-				
-				if(gPlayerData[playerid][pFiz] >= MAX_GRADE_LVL)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Osi¹gn¹³eœ szczyt umiejêtnoœci w tej dziedzinie");
-					return 1;
-				}
-				
-				GivePlayerCash(playerid, -SCHOOL_COST);
-				
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-				gPlayerData[playerid][pPktFiz]++;
-				SavePlayerData(playerid, "PktFiz");
-				
-				gPlayerData[playerid][pSchoolCooldown]++;
-				SavePlayerData(playerid, "SchoolCooldown");
-
-				format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk fizycznych", gPlayerData[playerid][pPktFiz]);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				if(gPlayerData[playerid][pPktFiz] == (HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pFiz]*10)))
-				{
-					GivePlayerCash(playerid, -SCHOOL_COST);
-				
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
+					GivePlayerCash(playerid,-500);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 500;
 					SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-					gPlayerData[playerid][pPktFiz] = 0;
+
+					gPlayerData[playerid][pPktFiz]++;
 					SavePlayerData(playerid, "PktFiz");
-					
-					gPlayerData[playerid][pFiz]++;
-					SavePlayerData(playerid, "Fiz");
 
-					format(string, sizeof(string), "[INFO:] Uda³o ci siê zdobyæ nowy tytu³ z nauk fizycznych: %s", ReturnGradeName(gPlayerData[playerid][pFiz]));
+					format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie Fizyki do %d!", gPlayerData[playerid][pPktFiz]);
 					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 					
-					return 1;
-				}
-			}
-			if(PlayerToPoint(1.0, playerid, SkillPosition[XBio], SkillPosition[YBio], SkillPosition[ZBio]))
-			{
-				if(gPlayerData[playerid][pCash] < SCHOOL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
-				if(!gPlayerData[playerid][pHighSchool])
-				{
-					if(gPlayerData[playerid][pPktBio] < HIGH_SCHOOL_POINTS)
-					{
-						GivePlayerCash(playerid, -SCHOOL_COST);
-				
-						DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-						SaveFData(FACTIONID_GOVERNMENT, "Bank");
-						
-						gPlayerData[playerid][pPktBio]++;
-						SavePlayerData(playerid, "PktBio");
-						
-						gPlayerData[playerid][pSchoolCooldown]++;
-						SavePlayerData(playerid, "SchoolCooldown");
+					gPlayerData[playerid][pPozwolenie] --;
+					SavePlayerData(playerid, "Pozwolenie");
 
-						format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk biologicznych", gPlayerData[playerid][pPktBio]);
+					if(gPlayerData[playerid][pPktFiz] == (4 + (gPlayerData[playerid][pFiz]*2)))
+					{
+						gPlayerData[playerid][pFiz]++;
+						SavePlayerData(playerid, "Fiz");
+
+						format(string, sizeof(string), "[INFO:] Osi¹gn¹³eœ %d poziom Fizyki !", gPlayerData[playerid][pFiz]);
 						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-						
-						return 1;
 					}
-					else
-					{
-						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz kontynuuowaæ nauki w tej dziedzinie dopóki nie zdobêdziesz œredniego wykszta³cenia");
-						
-						return 1;
-					}
-				}
-				
-				if(gPlayerData[playerid][pBio] >= MAX_GRADE_LVL)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Osi¹gn¹³eœ szczyt umiejêtnoœci w tej dziedzinie");
-					return 1;
-				}
-				
-				GivePlayerCash(playerid, -SCHOOL_COST);
-				
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-				gPlayerData[playerid][pPktBio]++;
-				SavePlayerData(playerid, "PktBio");
-				
-				gPlayerData[playerid][pSchoolCooldown]++;
-				SavePlayerData(playerid, "SchoolCooldown");
-
-				format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie z nauk biologicznych", gPlayerData[playerid][pPktBio]);
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
-				if(gPlayerData[playerid][pPktBio] == (HIGH_SCHOOL_POINTS + (gPlayerData[playerid][pBio]*10)))
-				{
-					GivePlayerCash(playerid, -SCHOOL_COST);
-				
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += SCHOOL_COST;
-					SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-					gPlayerData[playerid][pPktBio] = 0;
-					SavePlayerData(playerid, "PktBio");
-					
-					gPlayerData[playerid][pBio]++;
-					SavePlayerData(playerid, "Bio");
-
-					format(string, sizeof(string), "[INFO:] Uda³o ci siê zdobyæ nowy tytu³ z nauk biologicznych: %s", ReturnGradeName(gPlayerData[playerid][pBio]));
-					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-					
-					return 1;
-				}
-			}
-			if(PlayerToPoint(1.0, playerid, SkillPosition[XHighSchool], SkillPosition[YHighSchool], SkillPosition[ZHighSchool]))
-			{
-				if(gPlayerData[playerid][pHighSchool])
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Posiadasz ju¿ œrednie wykszta³cenie");
-					return 1;
-				}
-				
-				if(gPlayerData[playerid][pCash] < HIGH_SCHOOL_COST)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie posiadasz wystarczaj¹cej iloœci pieniêdzy");
-					return 1;
-				}
-				
-				if(gPlayerData[playerid][pPktBio] < HIGH_SCHOOL_POINTS ||
-					gPlayerData[playerid][pPktFiz] < HIGH_SCHOOL_POINTS ||
-					gPlayerData[playerid][pPktPol] < HIGH_SCHOOL_POINTS ||
-					gPlayerData[playerid][pPktMat] < HIGH_SCHOOL_POINTS)
-				{
-					format(string, sizeof(string), "[INFO:] Nie posiadasz %d punktów doœwiadczenia z jednej z wymienionych dziedzin edukacji:", HIGH_SCHOOL_POINTS);
-					SendClientMessage(playerid, COLOR_ORANGE, string);
-					
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] matematycznych, fizycznych, humanistycznych, biologicznych");
-					
-					return 1;
 				}
 				else
 				{
-					GivePlayerCash(playerid, -HIGH_SCHOOL_COST);
-					
-					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += HIGH_SCHOOL_COST;
-					SaveFData(FACTIONID_GOVERNMENT, "Bank");
-					
-					gPlayerData[playerid][pSchoolCooldown]++;
-					SavePlayerData(playerid, "SchoolCooldown");
-					
-					gPlayerData[playerid][pPktBio] = 0;
-					gPlayerData[playerid][pPktFiz] = 0;
-					gPlayerData[playerid][pPktPol] = 0;
-					gPlayerData[playerid][pPktMat] = 0;
-					gPlayerData[playerid][pBio] = 1;
-					gPlayerData[playerid][pFiz] = 1;
-					gPlayerData[playerid][pPol] = 1;
-					gPlayerData[playerid][pMat] = 1;
-					gPlayerData[playerid][pLaw] = 1;
-					gPlayerData[playerid][pTech] = 1;
-					gPlayerData[playerid][pHighSchool] = 1;
-					SavePlayerData(playerid, "PktBio");
-					SavePlayerData(playerid, "PktFiz");
-					SavePlayerData(playerid, "PktPol");
-					SavePlayerData(playerid, "PktMat");
-					SavePlayerData(playerid, "Bio");
-					SavePlayerData(playerid, "Fiz");
-					SavePlayerData(playerid, "Pol");
-					SavePlayerData(playerid, "Mat");
-					SavePlayerData(playerid, "Law");
-					SavePlayerData(playerid, "Tech");
-					SavePlayerData(playerid, "HighSchool");
-					
-					SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Zdoby³eœ œrednie wykszta³cenie !");
-					return 1;
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
 				}
 			}
-				
+			if(PlayerToPoint(1.0,playerid,SkillPosition[XBio],SkillPosition[YBio],SkillPosition[ZBio]))
+			{
+				if(gPlayerData[playerid][pPozwolenie] >= 1)
+				{
+					GivePlayerCash(playerid,-500);
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += 500;
+					SaveFData(FACTIONID_GOVERNMENT, "Bank");
+					
+					gPlayerData[playerid][pPktBio]++;
+					SavePlayerData(playerid, "PktBio");
+
+					format(string, sizeof(string), "[INFO:] Podnios³eœ doœwiadczenie Biologii do %d!", gPlayerData[playerid][pPktBio]);
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+					
+					gPlayerData[playerid][pPozwolenie] --;
+					SavePlayerData(playerid, "Pozwolenie");
+
+					if(gPlayerData[playerid][pPktBio] == (4 + (gPlayerData[playerid][pBio]*2)))
+					{
+						gPlayerData[playerid][pBio]++;
+						SavePlayerData(playerid, "Bio");
+
+						format(string, sizeof(string), "[INFO:] Osi¹gn¹³eœ %d poziom Biologii !", gPlayerData[playerid][pBio]);
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
+					}
+				}
+				else
+				{
+					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie otrzyma³eœ pozwolenia na podniesienie umiejêtnoœci");
+				}
+			}
+
 			return 1;
 		}
 		else if(strcmp(cmd, "/dajpozwolenie", true) == 0)
@@ -22145,7 +22364,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			if(gPlayerData[playerid][pModerator] >= 1)
 			{
-				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Supporter]: /mgoto - /mmute - /mkick - /mbanaccount - /(m)oderator - /mspec - /mspecoff - /mjail");
+				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Supporter]: /mgoto - /mmute - /mkick - /mbanaccount - /(su)pporter - /mspec - /mspecoff - /mjail");
 				SendClientMessage(playerid,COLOR_LIGHTYELLOW2, "[Supporter]: /mfreeze - /munfreeze - /mgetip - / - / - / - /- /");
 			}
 			if(gPlayerData[playerid][pAdmin] >= 1)
@@ -22288,7 +22507,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 									PlayerActionMessage(playerid,15.0, "naciska klamke i wchodzi do budynku");
 									Audio_Play(playerid, AUDIO_DOOR_OPEN, false, false, false);
 
-									gPlayerVars[playerid][mAtBuildingId] = i;
+									gPlayerVars[playerid][mAtBuildingID] = i;
 									
 									SetPlayerInterior(playerid,Building[i][ExitInterior]);
 									SetPlayerVirtualWorld(playerid,i);
@@ -22371,13 +22590,14 @@ public OnPlayerCommandText(playerid, cmdtext[])
 						SaveBizData(i, "IncomeEntranceToday");
 						SaveBizData(i, "IncomeTotal");
 						
-						format(string, sizeof(string), "[INFO:] Pobrano op³ate w wysokoœci $%d za wejœcie do %s.", Businesses[i][EntranceCost],Businesses[i][BusinessName]);
+						format(string, sizeof(string), "[INFO:] Pobrano op³ate w wysokoœci %d$ za wejœcie do %s.", Businesses[i][EntranceCost],Businesses[i][BusinessName]);
 						SendClientMessage(playerid,COLOR_LIGHTYELLOW2,string);
 					}
 					if(gPlayerData[playerid][pJob] == 19)
 					{
 						if(Businesses[i][Till] <= 0)
 							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie mo¿esz pracowaæ tutaj jako sprzedawca - brak pieniêdzy w kasie biznesu");
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Aby rozpocz¹æ prace wpisz /rp - za ka¿de 5 minut spêdzone w pracy dostajesz 12$");
 					}															
 					// Businesses[i][Products]--;
 					// SaveBizData(i, "Products");
@@ -22484,7 +22704,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							PlayerActionMessage(playerid,15.0, "naciska klamke i wychodzi z budynku");
 							Audio_Play(playerid, AUDIO_DOOR_OPEN, false, false, false);
 
-							gPlayerVars[playerid][mAtBuildingId] = -1;
+							gPlayerVars[playerid][mAtBuildingID] = -1;
 							
 							SetPlayerInterior(playerid,Building[i][EnterInterior]);
 							SetPlayerVirtualWorld(playerid,Building[i][EnterWorld]);
@@ -22579,25 +22799,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 		else if(strcmp(cmd, "/kuppojazd", true) == 0)
 		{
-			new bool:isPayed = false;
-			
-			if(!IsPlayerInAnyVehicle(playerid))
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ w pojeŸdzie !");
-				return 1;
-			}
-			
 			if(gPlayerData[playerid][pIsDeptor])
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Znajdujesz siê w rejestrze d³u¿ników. Nie mo¿esz kupiæ ¿adnego pojazdu !");
 				return 1;
 			}
 			
-			if(strlen(gVehData[tmpcar][mRenter]) != 0 || gVehData[tmpcar][mRentPrice] != 0)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nie jest na sprzeda¿ !");
-				return 1;
-			}
 			
 			// warunki zalezne od ktorych pojazd jest na sprzedaz
 			if(gVehData[tmpcar][ReadyToSell] == 0 && (gVehData[tmpcar][mVehOwned] == 1 || gVehData[tmpcar][mVehFaction] != 255))
@@ -22606,12 +22813,8 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				return 1;
 			}
 			
-			if(PlayerFreeSlotCount(playerid) <= 0)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz mieæ przynajmniej jeden wolny slot");
-				return 1;
-			}
 			
+			// limity modeli pojazdow
 			if(gVehData[tmpcar][mVehModel] == 416 || gVehData[tmpcar][mVehModel] == 433 || gVehData[tmpcar][mVehModel] == 431
 			|| gVehData[tmpcar][mVehModel] == 438 || gVehData[tmpcar][mVehModel] == 437 || gVehData[tmpcar][mVehModel] == 523
 			|| gVehData[tmpcar][mVehModel] == 427 || gVehData[tmpcar][mVehModel] == 490 || gVehData[tmpcar][mVehModel] == 528
@@ -22624,43 +22827,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				return 1;
 			}
 			
-			if(IsABoat(idcar))
-			{
-				if(gPlayerData[playerid][pPlayingHours] < BoatKeyLVL)
-				{
-					format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane conajmniej %d godzin aby kupiæ ³ódŸ", BoatKeyLVL);
-					SendClientMessage(playerid, COLOR_ORANGE, string);
-					return 1;
-				}
-			}
-			else if(IsAHelicopter(idcar))
-			{
-				if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
-				{
-					format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ helikopter",AirKeyLVL);
-					SendClientMessage(playerid, COLOR_ORANGE, string);
-					return 1;
-				}
-			}
-			else if(IsAPlane(idcar))
-			{
-				if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
-				{
-					format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ samolot",AirKeyLVL);
-					SendClientMessage(playerid, COLOR_ORANGE, string);
-					return 1;
-				}
-			}
-			else if(IsAPlane(idcar) == 0 && IsAHelicopter(idcar) == 0 && IsABoat(idcar) == 0)
-			{
-				if(gPlayerData[playerid][pPlayingHours] < CarKey1LVL)
-				{
-					format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmneij %d godzin aby kupiæ pierwszy samochód.",CarKey1LVL);
-					SendClientMessage(playerid, COLOR_ORANGE, string);
-
-					return 1;
-				}
-			}
 			
 			// sprawdzenie slotow pojazdow sprowadzonych
 			for(new i = 0; i < sizeof(SpawnPlaceCars); i++)
@@ -22672,601 +22838,671 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					return 1;
 				}
 			}
-			
 			if(gVehData[tmpcar][Price] <= 0)
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz kupiæ tego pojazdu ! - brak ustalonej ceny");
 				return 1;
 			}
 		
-			// pojazd nowy - salonowy		
+		
+			// pojazd nowy - salonowy
+			new slot;			
 			if(gVehData[tmpcar][mVehOwned] == 0 && gVehData[tmpcar][mVehType] == 0 && gVehData[tmpcar][mVehFaction] == 255)
 			{
-				if(gPlayerData[playerid][pCash] < (gVehData[tmpcar][Price] + floatround(float(gVehData[tmpcar][Price]) * DynamicTaxes[VatTaxMax], floatround_round)))
+			
+			
+				// sprawdzenie czy kupujacy posiada wystarczajaca ilosc pieniedzy na koncie frakcji
+				if(gPlayerData[playerid][pCash] <(gVehData[tmpcar][Price] + floatround(float(gVehData[tmpcar][Price]) * DynamicTaxes[VatTaxMax],floatround_round)))
 				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz wystarczaj¹co du¿o pieniêdzy aby zakupiæ ten pojazd.");
+					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Nie masz wystarczaj¹co du¿o pieniêdzy aby zakupiæ ten pojazd.");
 					return 1;
 				}
 				
-				newVehSerial(tmpcar);
-				PutPlayerInVehicle(playerid, tmpcar+1, 0);
-				InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
-				gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
 				
-				format(gVehData[tmpcar][Owner], MAX_PLAYER_NAME, gPlayerData[playerid][pName]);
-				gVehData[tmpcar][mVehType] = 0;
-				gVehData[tmpcar][mVehOwned] = 1;
-				gVehData[tmpcar][mVehFaction] = 255;
-				gVehData[tmpcar][ReadyToSell] = 0;
+				// dane zalezne od typu pojazdu
+				if(IsABoat(idcar))
+				{
+					// sprawdzenie czy gracz posiada odpowiedni level do kupna lodzi
+					if(gPlayerData[playerid][pPlayingHours] < BoatKeyLVL)
+					{
+						format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane conajmniej %d godzin aby kupiæ ³ódŸ",BoatKeyLVL);
+						SendClientMessage(playerid, COLOR_WHITE, string);
+						return 1;
+					}
 
-				SaveVehData(tmpcar, "Owner");
-				SaveVehData(tmpcar, "VehType");
-				SaveVehData(tmpcar, "VehOwned");
-				SaveVehData(tmpcar, "VehFaction");
-				SaveVehData(tmpcar, "ReadyToSell");
-				
-				RefreshVehicleDescription(tmpcar+1);
-				
-				GivePlayerCash(playerid, -gVehData[tmpcar][Price]-floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round));
+					// sprawdzenie czy gracz posiada wolny slot
+					if(!PlayerFreeSlotCount(playerid))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+						return 1;
+					}
+					newVehSerial(tmpcar);
+					PutPlayerInVehicle(playerid, tmpcar+1, 0);
+					slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+					gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+					
+					// modyfikacja danych pojazdu
+					gVehData[tmpcar][mVehOwned] = 1;
+					strmid(gVehData[tmpcar][Owner], gPlayerData[playerid][pName], 0, MAX_PLAYER_NAME, 128);
 
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round);
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-				Businesses[gVehData[tmpcar][BusinessID]][VehicleCount]--;
-				Businesses[gVehData[tmpcar][BusinessID]][Till] += gVehData[tmpcar][Price];
-				Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleTotal] += gVehData[tmpcar][Price];
-				Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleToday] += gVehData[tmpcar][Price];
-				Businesses[gVehData[tmpcar][BusinessID]][mIncomeTotal] += gVehData[tmpcar][Price];
-				
-				SaveBizData(gVehData[tmpcar][BusinessID], "VehicleCount");
-				SaveBizData(gVehData[tmpcar][BusinessID], "Till");
-				SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleTotal");
-				SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleToday");
-				SaveBizData(gVehData[tmpcar][BusinessID], "IncomeTotal");
-				
-				format(string, sizeof(string), "Vehicle id [%d] has been bought by %s for $%d", idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][Price]);
-				VehicleLog(string);
+					SaveVehData(tmpcar, "VehOwned");
+					SaveVehData(tmpcar, "Owner");
+
+					// zmniejszenie ilosci pieniedzy gracza
+					GivePlayerCash(playerid,-gVehData[tmpcar][Price]-floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round));
+
+					// podatki
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round);
+
+					// zwolnienie slotu wlasciciela biznesu
+					Businesses[gVehData[tmpcar][BusinessID]][VehicleCount]--;
+
+					// zysk dla wlasciciela biznesu/salonu
+					Businesses[gVehData[tmpcar][BusinessID]][Till] += gVehData[tmpcar][Price];
+					SaveBizData(gVehData[tmpcar][BusinessID], "Till");
+					
+					Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleTotal] += gVehData[tmpcar][Price];
+					Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleToday] += gVehData[tmpcar][Price];
+					Businesses[gVehData[tmpcar][BusinessID]][mIncomeTotal] += gVehData[tmpcar][Price];
+					SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleTotal");
+					SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleToday");
+					SaveBizData(gVehData[tmpcar][BusinessID], "IncomeTotal");
+
+					// informacja dla kupujacego
+					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ ³ódŸ !");
+					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+
+					// zapis
+					SaveBizData(gVehData[tmpcar][BusinessID], "VehicleCount");
+					SaveFData(FACTIONID_GOVERNMENT, "Bank");
+
+					// log
+					format(string, sizeof(string), "Vehicle id [%d] has been bought by %s for %d$", idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][Price]);
+					VehicleLog(string);
+
+					return 1;
+				}
+				if(IsAHelicopter(idcar))
+				{
+					// sprawdzenie czy gracz posiada odpowiedni level do kupna helikoptera
+					if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
+					{
+						format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ helikopter",AirKeyLVL);
+						SendClientMessage(playerid, COLOR_WHITE, string);
+						return 1;
+					}
+
+					// sprawdzenie czy gracz posiada wolny slot
+					if(!PlayerFreeSlotCount(playerid))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+						return 1;
+					}
+					newVehSerial(tmpcar);
+					PutPlayerInVehicle(playerid, tmpcar+1, 0);
+					slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+					gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+
+					// modyfikacja danych pojazdu
+					gVehData[tmpcar][mVehOwned] = 1;
+					strmid(gVehData[tmpcar][Owner], gPlayerData[playerid][pName], 0, MAX_PLAYER_NAME, 128);
+
+					SaveVehData(tmpcar, "VehOwned");
+					SaveVehData(tmpcar, "Owner");
+
+					// zmniejszenie ilosci pieniedzy gracza
+					GivePlayerCash(playerid,-gVehData[tmpcar][Price] - floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round));
+
+					// podatki
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round);
+
+					// zwolnienie slotu wlasciciela biznesu
+					Businesses[gVehData[tmpcar][BusinessID]][VehicleCount]--;
+
+					// zysk dla wlasciciela biznesu/salonu
+					Businesses[gVehData[tmpcar][BusinessID]][Till] += gVehData[tmpcar][Price];
+					
+					Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleTotal] += gVehData[tmpcar][Price];
+					Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleToday] += gVehData[tmpcar][Price];
+					Businesses[gVehData[tmpcar][BusinessID]][mIncomeTotal] += gVehData[tmpcar][Price];
+					SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleTotal");
+					SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleToday");
+					SaveBizData(gVehData[tmpcar][BusinessID], "IncomeTotal");
+
+					// informacja dla kupujacego
+					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ helikopter !");
+					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+
+					// zapis
+					SaveBizData(gVehData[tmpcar][BusinessID], "Till");
+					SaveBizData(gVehData[tmpcar][BusinessID], "VehicleCount");
+					SaveFData(FACTIONID_GOVERNMENT, "Bank");
+
+					// log
+					format(string, sizeof(string), "Vehicle id [%d] has been bought by %s for %d$", idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][Price]);
+					VehicleLog(string);
+
+					return 1;
+				}
+				if(IsAPlane(idcar))
+				{
+					// sprawdzenie czy gracz posiada odpowiedni level do kupna samolotu
+					if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
+					{
+						format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ samolot",AirKeyLVL);
+						SendClientMessage(playerid, COLOR_WHITE, string);
+						return 1;
+					}
+
+					// sprawdzenie czy gracz posiada wolny slot
+					if(!PlayerFreeSlotCount(playerid))
+					{
+						SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+						return 1;
+					}
+					newVehSerial(tmpcar);
+					PutPlayerInVehicle(playerid, tmpcar+1, 0);
+					slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+					gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+
+					// modyfikacja danych pojazdu
+					gVehData[tmpcar][mVehOwned] = 1;
+					strmid(gVehData[tmpcar][Owner], gPlayerData[playerid][pName], 0, MAX_PLAYER_NAME, 128);
+
+					SaveVehData(tmpcar, "VehOwned");
+					SaveVehData(tmpcar, "Owner");
+
+					// zmniejszenie ilosci pieniedzy gracza
+					GivePlayerCash(playerid, -gVehData[tmpcar][Price] - floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round));
+
+					// podatki
+					DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round);
+
+					// zwolnienie slotu wlasciciela biznesu
+					Businesses[gVehData[tmpcar][BusinessID]][VehicleCount]--;
+
+					// zysk dla wlasciciela biznesu/salonu
+					Businesses[gVehData[tmpcar][BusinessID]][Till] += gVehData[tmpcar][Price];
+					
+					Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleTotal] += gVehData[tmpcar][Price];
+					Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleToday] += gVehData[tmpcar][Price];
+					Businesses[gVehData[tmpcar][BusinessID]][mIncomeTotal] += gVehData[tmpcar][Price];
+					SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleTotal");
+					SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleToday");
+					SaveBizData(gVehData[tmpcar][BusinessID], "IncomeTotal");
+
+					// informacja dla kupujacego
+					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ samolot !");
+					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+
+					// zapis
+					SaveBizData(gVehData[tmpcar][BusinessID], "Till");
+					SaveBizData(gVehData[tmpcar][BusinessID], "VehicleCount");
+					SaveFData(FACTIONID_GOVERNMENT, "Bank");
+
+					// log
+					format(string, sizeof(string), "Vehicle id [%d] has been bought by %s for %d$", idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][Price]);
+					VehicleLog(string);
+
+					return 1;
+				}
+				if(IsAPlane(idcar) == 0 && IsAHelicopter(idcar) == 0 && IsABoat(idcar) == 0)
+				{
+					// gracz ma za niski lvl
+					if(gPlayerData[playerid][pPlayingHours] < CarKey1LVL)
+					{
+						format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmneij %d godzin aby kupiæ pierwszy samochód.",CarKey1LVL);
+						SendClientMessage(playerid, COLOR_WHITE, string);
+
+						return 1;
+					}
+					// kupno pierwszego pojazdu
+					if(gPlayerData[playerid][pPlayingHours] >= CarKey1LVL)
+					{
+						// sprawdzenie czy gracz posiada wolny slot
+						if(!PlayerFreeSlotCount(playerid))
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+							return 1;
+						}
+						newVehSerial(tmpcar);
+						PutPlayerInVehicle(playerid, tmpcar+1, 0);
+						newVehSerial(tmpcar);
+						slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+						gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+						
+						// modyfikacja danych pojazdu
+						gVehData[tmpcar][mVehOwned] = 1;
+						strmid(gVehData[tmpcar][Owner], gPlayerData[playerid][pName], 0, gPlayerData[playerid][pName], 128);
+
+						SaveVehData(tmpcar, "VehOwned");
+						SaveVehData(tmpcar, "Owner");
+
+						// zmniejszenie ilosci pieniedzy gracza
+						GivePlayerCash(playerid, -gVehData[tmpcar][Price]-floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round));
+
+						// podatki
+						DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round);
+
+						// zwolnienie slotu wlasciciela biznesu
+						Businesses[gVehData[tmpcar][BusinessID]][VehicleCount]--;
+
+						// zysk dla wlasciciela biznesu/salonu
+						Businesses[gVehData[tmpcar][BusinessID]][Till] += gVehData[tmpcar][Price];
+						
+						Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleTotal] += gVehData[tmpcar][Price];
+						Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleToday] += gVehData[tmpcar][Price];
+						Businesses[gVehData[tmpcar][BusinessID]][mIncomeTotal] += gVehData[tmpcar][Price];
+						SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleTotal");
+						SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleToday");
+						SaveBizData(gVehData[tmpcar][BusinessID], "IncomeTotal");
+
+						// informacja dla kupujacego
+						if(gPlayerData[playerid][pFirstCar])
+						{
+							SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ pojazd !");
+							SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+						}
+						else
+						{
+							SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ swój pierwszy samochód !");
+							SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+
+							// AddExpPoint(playerid);
+
+							gPlayerData[playerid][pFirstCar] = 1;
+
+							SavePlayerData(playerid, "FirstCar");
+						}
+
+						// zapis
+						SaveBizData(gVehData[tmpcar][BusinessID], "Till");
+						SaveBizData(gVehData[tmpcar][BusinessID], "VehicleCount");
+						SaveFData(FACTIONID_GOVERNMENT, "Bank");
+
+						// log
+						format(string, sizeof(string), "Vehicle id [%d] has been bought by %s for %d$", idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][Price]);
+						VehicleLog(string);
+
+						return 1;
+					}
+				}
 			}
-			
 			// pojazd uzywany
 			if(gVehData[tmpcar][ReadyToSell] == 1)
 			{
+				// sprawdzenie ilosci pieniedzy kupujacego
 				if(gPlayerData[playerid][pCash] < gVehData[tmpcar][Price])
 				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz wystarczaj¹co du¿o pieniêdzy aby zakupiæ ten pojazd.");
+					SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Nie masz wystarczaj¹co du¿o pieniêdzy aby zakupiæ ten pojazd.");
 					return 1;
 				}
+				new tmpplname[128];
+				new sellerID = 999;
+				new sellerslot;
 				
-				RemoveItemFromAll(3, 19, gVehData[tmpcar][CarSerial], gVehData[tmpcar][mVehVinNo]);
-				RemoveItemFromAll(2, gVehData[tmpcar][CarSerial]);
 				
-				// pojazd u¿ywany - prywatny
-				if(gVehData[tmpcar][mVehFaction] == 255)
+				// pojazd uzywany - prywatny
+				if(gVehData[tmpcar][mVehOwned] == 1 && gVehData[tmpcar][mVehFaction] == 255)
 				{
 					foreach(Player, i)
 					{
-						if(!gPlayerLogged[i])
+						if(gPlayerLogged[i])
 						{
-							continue;
-						}
-						
-						if(strcmp(gPlayerData[i][pName], gVehData[tmpcar][Owner], false) == 0)
-						{
-							gPlayerData[i][pBank] += gVehData[tmpcar][Price];
-							format(string, sizeof(string), "~g~+$%d za sprzedaz pojazdu", gVehData[tmpcar][Price]);
-							GameTextForPlayer(i, string, 5000, 1);
-							isPayed = true;
-						}
-					}
-					
-					if(!isPayed)
-					{
-						UpdatePlayerDataByName(gVehData[tmpcar][Owner], "Bank", gVehData[tmpcar][Price]);
-					}
-				}
-				
-				// pojazd uzywany - frakcyjny
-				else if(gVehData[tmpcar][mVehFaction] != 255)
-				{
-					if(DynamicFactions[gVehData[tmpcar][mVehFaction]][fType] == FACTIONT_GANG)
-					{
-						new payed = 0;
-						
-						for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
-						{
-							if(gPlayerData[i][pFaction] == gVehData[tmpcar][mVehFaction] && gPlayerData[i][pRank] == 1)
-							{
-								payed = 1;
-								gPlayerData[i][pBank] += gVehData[tmpcar][Price];
-							}
-						}
-						
-						if(!payed)
-						{
-							format(string, sizeof(string), "SELECT `Faction` , `Rank` , `PlayerName` FROM `samp_users` WHERE `Faction` = '%d' && `Rank` = '1'", gVehData[tmpcar][mVehFaction]);
-							wp_mysql_query(string, PLAYER_VEHICLE_CASH, tmpcar, db_con2);
-						}
-					}
-					else
-					{
-						DynamicFactions[gVehData[tmpcar][mVehFaction]][fBank] += gVehData[tmpcar][Price];
-						SaveFData(gVehData[tmpcar][mVehFaction], "Bank");
-					}
-				
-					// sprawdzenie stanu licznika pojazdow frakcji
-					if(DynamicFactions[gVehData[tmpcar][mVehFaction]][fCarsCount] > 0)
-					{
-						DynamicFactions[gVehData[tmpcar][mVehFaction]][fCarsCount]--;
-						SaveFData(gVehData[tmpcar][mVehFaction], "CarsCount");
-					}
+							// sprawdzenie czy pojazd nalezy do sprzedajacego
+							sellerslot = PHaveItem(i, 2, gVehData[tmpcar][CarSerial]);
+							if(sellerslot == 0)
+								continue;
 
-					if(DynamicFactions[gVehData[tmpcar][mVehFaction]][fType] == 6)
-					{
-						DestroyDynamic3DTextLabel(gVehData[tmpcar][Veh3DTaxiNfo]);
-						DestroyDynamic3DTextLabel(gVehData[tmpcar][Veh3DTaxiNfo2]);
-					}
-				}
-				
-				gPlayerData[playerid][pCash] -= gVehData[tmpcar][Price];
-				
-				InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
-				gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
-				
-				format(gVehData[tmpcar][Owner], MAX_PLAYER_NAME, gPlayerData[playerid][pName]);
-				gVehData[tmpcar][mVehType] = 0;
-				gVehData[tmpcar][mVehOwned] = 1;
-				gVehData[tmpcar][mVehFaction] = 255;
-				gVehData[tmpcar][ReadyToSell] = 0;
-
-				SaveVehData(tmpcar, "Owner");
-				SaveVehData(tmpcar, "VehType");
-				SaveVehData(tmpcar, "VehOwned");
-				SaveVehData(tmpcar, "VehFaction");
-				SaveVehData(tmpcar, "ReadyToSell");
-				
-				RefreshVehicleDescription(tmpcar+1);
-
-				// log
-				new Year, Month, Day;
-				getdate(Year, Month, Day);
-				printf("[%d-%d-%d] [VEHICLE:] Vehicle id [%d] has been bought by %s from faction ID: %d for $%d", Year, Month, Day, idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][mVehFaction], gVehData[tmpcar][Price]);
-
-			}
-			
-			if(IsABoat(idcar))
-			{
-				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ ³ódŸ !");
-			}
-			else if(IsAHelicopter(idcar))
-			{
-				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ helikopter !");
-			}
-			else if(IsAPlane(idcar))
-			{
-				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ samolot !");
-			}
-			else if(IsAPlane(idcar) == 0 && IsAHelicopter(idcar) == 0 && IsABoat(idcar) == 0)
-			{
-				if(gPlayerData[playerid][pFirstCar])
-				{
-					SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ pojazd !");
-				}
-				else
-				{
-					SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ swój pierwszy samochód !");
-					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Zobacz /komendypojazdow aby zobaczyæ dostepne komendy");
-
-					gPlayerData[playerid][pFirstCar] = 1;
-					SavePlayerData(playerid, "FirstCar");
-				}
-			}
-			
-			return 1;
-		}
-		else if(strcmp(cmd, "/kuppojazdf", true) == 0)
-		{
-			new bool:isPayed = false;
-		
-			if(!IsPlayerInAnyVehicle(playerid))
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ w pojeŸdzie !");
-				return 1;
-			}
-			
-			if(gPlayerData[playerid][pIsDeptor])
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Znajdujesz siê w rejestrze d³u¿ników. Nie mo¿esz kupiæ ¿adnego pojazdu !");
-				return 1;
-			}
-			
-			if(strlen(gVehData[tmpcar][mRenter]) != 0 || gVehData[tmpcar][mRentPrice] != 0)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nie jest na sprzeda¿ !");
-				return 1;
-			}
-			
-			if(gPlayerData[playerid][pFaction] == 255)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie nale¿ysz do ¿adnej frakcji");
-				return 1;
-			}
-			
-			if(!CheckRankPrivilidges(gPlayerData[playerid][pFaction], gPlayerData[playerid][pRank], "kuppojazdf"))
-			{
-				SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie posiadasz uprawnieñ do kupowania pojazdów frakcyjnych !");
-				return 1;
-			}
-			
-			// warunki zalezne od ktorych pojazd jest na sprzedaz
-			if(gVehData[tmpcar][ReadyToSell] == 0 && (gVehData[tmpcar][mVehOwned] == 1 || gVehData[tmpcar][mVehFaction] != 255))
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nie jest na sprzeda¿ !");
-				return 1;
-			}
-			
-			if(PlayerFreeSlotCount(playerid) <= 0)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz mieæ przynajmniej jeden wolny slot");
-				return 1;
-			}
-			
-			if(DynamicFactions[gPlayerData[playerid][pFaction]][fCarsCount] >= DynamicFactions[gPlayerData[playerid][pFaction]][fMaxCars])
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Osi¹gniêto limit pojazdów we frakcji ! Nie mo¿esz kupiæ nowego pojazdu !");
-				return 1;
-			}
-			
-			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_POLICE)
-			{
-				if(gVehData[tmpcar][mVehModel] != 601 && gVehData[tmpcar][mVehModel] != 599 && gVehData[tmpcar][mVehModel] != 597 && gVehData[tmpcar][mVehModel] != 525 && gVehData[tmpcar][mVehModel] != 596 && gVehData[tmpcar][mVehModel] != 598 && gVehData[tmpcar][mVehModel] != 528&& gVehData[tmpcar][mVehModel] != 427 && gVehData[tmpcar][mVehModel] != 523 && gVehData[tmpcar][mVehModel] != 497 && gVehData[tmpcar][mVehModel] != 430)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nie mo¿e byæ zakupiony dla tej frakcji !");
-					return 1;
-				}
-			}
-			
-			if(gPlayerData[playerid][pFaction] == FACTIONID_MEDICS)
-			{
-				if(gVehData[tmpcar][mVehModel] != 487 && gVehData[tmpcar][mVehModel] != 416)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nie mo¿e byæ zakupiony dla tej frakcji !");
-					return 1;
-				}
-			}
-		
-			if(gPlayerData[playerid][pFaction] == 6)
-			{
-				if(gVehData[tmpcar][mVehModel] != 433 && gVehData[tmpcar][mVehModel] != 432 && gVehData[tmpcar][mVehModel] != 425 && gVehData[tmpcar][mVehModel] != 548 && gVehData[tmpcar][mVehModel] != 470)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nie mo¿e byæ zakupiony dla tej frakcji !");
-					return 1;
-				}
-			}
-			
-			if(gPlayerData[playerid][pFaction] == 7 || gPlayerData[playerid][pFaction] == 8 || gPlayerData[playerid][pFaction] == 10)
-			{
-				if(gVehData[tmpcar][mVehModel] == 602 || gVehData[tmpcar][mVehModel] == 429 || gVehData[tmpcar][mVehModel] == 402 || gVehData[tmpcar][mVehModel] == 541 || gVehData[tmpcar][mVehModel] == 587
-				|| 	gVehData[tmpcar][mVehModel] == 494 || gVehData[tmpcar][mVehModel] == 502 || gVehData[tmpcar][mVehModel] == 559 || gVehData[tmpcar][mVehModel] == 411 || gVehData[tmpcar][mVehModel] == 603
-				|| gVehData[tmpcar][mVehModel] == 559 || gVehData[tmpcar][mVehModel] == 506 || gVehData[tmpcar][mVehModel] == 451 || gVehData[tmpcar][mVehModel] == 477 || gVehData[tmpcar][mVehModel] == 522
-				|| gVehData[tmpcar][mVehModel] == 495 || gVehData[tmpcar][mVehModel] == 557 || gVehData[tmpcar][mVehModel] == 556 || gVehData[tmpcar][mVehModel] == 444 || gVehData[tmpcar][mVehModel] == 504
-				|| gVehData[tmpcar][mVehModel] == 562 || gVehData[tmpcar][mVehModel] == 560 || gVehData[tmpcar][mVehModel] == 447 || gVehData[tmpcar][mVehModel] == 433 || gVehData[tmpcar][mVehModel] == 432
-				|| gVehData[tmpcar][mVehModel] == 425 || gVehData[tmpcar][mVehModel] == 548 || gVehData[tmpcar][mVehModel] == 470 || gVehData[tmpcar][mVehModel] == 601 || gVehData[tmpcar][mVehModel] == 599
-				|| gVehData[tmpcar][mVehModel] == 597 || gVehData[tmpcar][mVehModel] == 596 || gVehData[tmpcar][mVehModel] == 598 || gVehData[tmpcar][mVehModel] == 528 || gVehData[tmpcar][mVehModel] == 427
-				|| gVehData[tmpcar][mVehModel] == 523 || gVehData[tmpcar][mVehModel] == 497 || gVehData[tmpcar][mVehModel] == 430 || gVehData[tmpcar][mVehModel] == 416)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nie mo¿e byæ zakupiony dla tej frakcji !");
-					return 1;
-				}
-			}
-			
-			if(gPlayerData[playerid][pFaction] == FACTIONID_TAXI)
-			{
-				if(gVehData[tmpcar][mVehModel] != 438 && gVehData[tmpcar][mVehModel] != 420 && gVehData[tmpcar][mVehModel] != 409)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nie mo¿e byæ zakupiony dla tej frakcji !");
-					return 1;
-				}
-			}
-			
-			if(IsABoat(idcar))
-			{
-				if(gPlayerData[playerid][pPlayingHours] < BoatKeyLVL)
-				{
-					format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane conajmniej %d godzin aby kupiæ ³ódŸ", BoatKeyLVL);
-					SendClientMessage(playerid, COLOR_ORANGE, string);
-					return 1;
-				}
-			}
-			else if(IsAHelicopter(idcar))
-			{
-				if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
-				{
-					format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ helikopter",AirKeyLVL);
-					SendClientMessage(playerid, COLOR_ORANGE, string);
-					return 1;
-				}
-			}
-			else if(IsAPlane(idcar))
-			{
-				if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
-				{
-					format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ samolot",AirKeyLVL);
-					SendClientMessage(playerid, COLOR_ORANGE, string);
-					return 1;
-				}
-			}
-			else if(IsAPlane(idcar) == 0 && IsAHelicopter(idcar) == 0 && IsABoat(idcar) == 0)
-			{
-				if(gPlayerData[playerid][pPlayingHours] < CarKey1LVL)
-				{
-					format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmneij %d godzin aby kupiæ pierwszy samochód.",CarKey1LVL);
-					SendClientMessage(playerid, COLOR_ORANGE, string);
-
-					return 1;
-				}
-			}
-			
-			// sprawdzenie slotow pojazdow sprowadzonych
-			for(new i = 0; i < sizeof(SpawnPlaceCars); i++)
-			{
-				// jesli pojazd wciaz jest w slocie to znaczy ze nie zostal jeszcze odebrany przez wlasciciela salonu
-				if(SpawnPlaceCars[i][VehicleID] == idcar || SpawnPlacePlanes[i][VehicleID] == idcar || SpawnPlaceBoats[i][VehicleID] == idcar)
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Ten pojazd nie jest na sprzeda¿ !");
-					return 1;
-				}
-			}
-			
-			if(gVehData[tmpcar][Price] <= 0)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz kupiæ tego pojazdu ! - brak ustalonej ceny");
-				return 1;
-			}
-		
-			// pojazd nowy - salonowy		
-			if(gVehData[tmpcar][mVehOwned] == 0 && gVehData[tmpcar][mVehType] == 0 && gVehData[tmpcar][mVehFaction] == 255)
-			{
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != FACTIONT_GANG && DynamicFactions[gPlayerData[playerid][pFaction]][fBank] < (gVehData[tmpcar][Price] + floatround(float(gVehData[tmpcar][Price]) * DynamicTaxes[VatTaxMax], floatround_round)))
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz wystarczaj¹co du¿o pieniêdzy na koncie frakcji aby zakupiæ ten pojazd");
-					return 1;
-				}
-				
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_GANG && gPlayerData[playerid][pCash] < (gVehData[tmpcar][Price] + floatround(float(gVehData[tmpcar][Price]) * DynamicTaxes[VatTaxMax], floatround_round)))
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz przy sobie wystarczaj¹co du¿o pieniêdzy aby zakupiæ ten pojazd");
-					return 1;
-				}
-				
-				if(gPlayerData[playerid][pFaction] == 4)
-				{
-					gVehData[tmpcar][mVehType] = 3;
-					SaveVehData(tmpcar, "VehType");
-
-					if(gVehData[tmpcar][CarSerial] == 0)
-					{
-						gVehData[tmpcar][CarSerial] = random(2000);
-						for(new i = 0; i < sizeof(gVehData); i++)
-						{
-							if(i != tmpcar)
-							{
-								if(gVehData[tmpcar][CarSerial] == gVehData[i][CarSerial])
+							GetPlayerName(i, tmpplname, sizeof(tmpplname));
+							if(IsABoat(idcar))
+							{		
+								// sprawdzenie czy gracz posiada odpowiedni level do kupna lodzi
+								if(gPlayerData[playerid][pPlayingHours] < BoatKeyLVL)
 								{
-									i = 0;
-									gVehData[tmpcar][CarSerial] = random(2000);
-									SaveVehData(tmpcar, "CarSerial");
+									format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ ³ódŸ", BoatKeyLVL);
+									SendClientMessage(playerid, COLOR_WHITE, string);
+									return 1;
 								}
+								// sprawdzenie czy gracz posiada wolny slot
+								if(!PlayerFreeSlotCount(playerid))
+								{
+									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+									return 1;
+								}
+								newVehSerial(tmpcar);
+								PutPlayerInVehicle(playerid, tmpcar+1, 0);
+								slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+								gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+							
+								// przypisanie zmiennej id sprzedajacego
+								sellerID = i;
+
+								// zwolnienie slotu gracza sprzedajacego
+								RemovePlayerItemExUsed(i, sellerslot);
+
+								// informacja dla kupujacego
+								SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ ³ódŸ !");
+								SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+
+								// informacja dla sprzedajacego
+								format(string, sizeof(string), "[INFO:] Gracz %s [%d] kupi³ od Ciebie pojazd !", GetPlayerNameEx(playerid), playerid);
+								SendClientMessage(i, COLOR_LIGHTYELLOW2, string);
+
+								break;
 							}
-						}
-					}
-				}
-				
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == 6)
-				{
-					gVehData[tmpcar][Veh3DTaxiNfo] = CreateDynamic3DTextLabel("TAXI", COLOR_YELLOW, 0.0, 0.0, 3.0, INVALID_PLAYER_ID, tmpcar+1, 1);
-					if(DynamicFactions[gPlayerData[playerid][pFaction]][fTaxiEnterCost] > 0)
-					{
-						format(string, sizeof(string), "cena za KM: $%d + $%d", DynamicFactions[gPlayerData[playerid][pFaction]][fTaxiKMCost], DynamicFactions[gPlayerData[playerid][pFaction]][fTaxiEnterCost]);
-					}
-					else
-					{
-						format(string, sizeof(string), "cena za KM: $%d", DynamicFactions[gPlayerData[playerid][pFaction]][fTaxiKMCost]);
-					}
-					
-					gVehData[tmpcar][Veh3DTaxiNfo2] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, 0.0, 0.0, 2.7, INVALID_PLAYER_ID, tmpcar+1, 1);
-				}
-				
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_GANG)
-				{
-					gPlayerData[playerid][pBank] -= gVehData[tmpcar][Price] + floatround(float(gVehData[tmpcar][Price]) * DynamicTaxes[VatTaxMax], floatround_round);
-				}
-				else
-				{
-					DynamicFactions[gPlayerData[playerid][pFaction]][fBank] -= gVehData[tmpcar][Price] + floatround(float(gVehData[tmpcar][Price]) * DynamicTaxes[VatTaxMax], floatround_round);
-					SaveFData(gPlayerData[playerid][pFaction], "Bank");
-				}
-				
-				newVehSerial(tmpcar);
-				PutPlayerInVehicle(playerid, tmpcar+1, 0);
-				InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
-				gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
-				
-				format(gVehData[tmpcar][Owner], MAX_PLAYER_NAME, gPlayerData[playerid][pName]);
-				gVehData[tmpcar][mVehType] = 0;
-				gVehData[tmpcar][mVehOwned] = 1;
-				gVehData[tmpcar][mVehFaction] = gPlayerData[playerid][pFaction];
-				gVehData[tmpcar][ReadyToSell] = 0;
-
-				SaveVehData(tmpcar, "Owner");
-				SaveVehData(tmpcar, "VehType");
-				SaveVehData(tmpcar, "VehOwned");
-				SaveVehData(tmpcar, "VehFaction");
-				SaveVehData(tmpcar, "ReadyToSell");
-
-				DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gVehData[tmpcar][Price] * DynamicTaxes[VatTaxMax],floatround_round);
-				SaveFData(FACTIONID_GOVERNMENT, "Bank");
-				
-				Businesses[gVehData[tmpcar][BusinessID]][VehicleCount]--;
-				Businesses[gVehData[tmpcar][BusinessID]][Till] += gVehData[tmpcar][Price];
-				Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleTotal] += gVehData[tmpcar][Price];
-				Businesses[gVehData[tmpcar][BusinessID]][mIncomeVehicleToday] += gVehData[tmpcar][Price];
-				Businesses[gVehData[tmpcar][BusinessID]][mIncomeTotal] += gVehData[tmpcar][Price];
-				
-				SaveBizData(gVehData[tmpcar][BusinessID], "VehicleCount");
-				SaveBizData(gVehData[tmpcar][BusinessID], "Till");
-				SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleTotal");
-				SaveBizData(gVehData[tmpcar][BusinessID], "IncomeVehicleToday");
-				SaveBizData(gVehData[tmpcar][BusinessID], "IncomeTotal");
-				
-				format(string, sizeof(string), "Vehicle id [%d] has been bought by %s for $%d", idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][Price]);
-				VehicleLog(string);
-			}
-			
-			// pojazd uzywany
-			else if(gVehData[tmpcar][ReadyToSell] == 1)
-			{
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != FACTIONT_GANG && DynamicFactions[gPlayerData[playerid][pFaction]][fBank] < gVehData[tmpcar][Price])
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz wystarczaj¹co du¿o pieniêdzy na koncie frakcji aby zakupiæ ten pojazd");
-					return 1;
-				}
-				
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_GANG && gPlayerData[playerid][pCash] < gVehData[tmpcar][Price])
-				{
-					SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie masz przy sobie wystarczaj¹co du¿o pieniêdzy aby zakupiæ ten pojazd");
-					return 1;
-				}
-				
-				RemoveItemFromAll(3, 19, gVehData[tmpcar][CarSerial], gVehData[tmpcar][mVehVinNo]);
-				RemoveItemFromAll(2, gVehData[tmpcar][CarSerial]);
-				
-				// pojazd u¿ywany - prywatny
-				if(gVehData[tmpcar][mVehFaction] == 255)
-				{
-					foreach(Player, i)
-					{
-						if(!gPlayerLogged[i])
-						{
-							continue;
-						}
-						
-						if(strcmp(gPlayerData[i][pName], gVehData[tmpcar][Owner], false) == 0)
-						{
-							gPlayerData[i][pBank] += gVehData[tmpcar][Price];
-							format(string, sizeof(string), "~g~+$%d za sprzedaz pojazdu", gVehData[tmpcar][Price]);
-							GameTextForPlayer(i, string, 5000, 1);
-							isPayed = true;
-						}
-					}
-					
-					if(!isPayed)
-					{
-						UpdatePlayerDataByName(gVehData[tmpcar][Owner], "Bank", gVehData[tmpcar][Price]);
-					}
-				}
-				
-				// pojazd uzywany - frakcyjny
-				else if(gVehData[tmpcar][mVehFaction] != 255)
-				{
-					if(DynamicFactions[gVehData[tmpcar][mVehFaction]][fType] == FACTIONT_GANG)
-					{
-						new payed = 0;
-						
-						for(new i = 0; i < CUSTOM_MAX_PLAYERS; i++)
-						{
-							if(gPlayerData[i][pFaction] == gVehData[tmpcar][mVehFaction] && gPlayerData[i][pRank] == 1)
+							if(IsAHelicopter(idcar))
 							{
-								payed = 1;
-								gPlayerData[i][pBank] += gVehData[tmpcar][Price];
+								// sprawdzenie czy gracz posiada odpowiedni level do kupna helikoptera
+								if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
+								{
+									format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d gdzoin aby kupiæ helikopter",AirKeyLVL);
+									SendClientMessage(playerid, COLOR_WHITE, string);
+
+									return 1;
+								}
+								
+								// porownanie id gracza kupujacego i sprzedajacego
+								if(playerid == i)
+								{
+									SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie mo¿esz kupiæ w³asnego pojazdu !");
+									return 1;
+								}
+								
+								// sprawdzenie czy gracz posiada wolny slot
+								if(!PlayerFreeSlotCount(playerid))
+								{
+									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+									return 1;
+								}
+								newVehSerial(tmpcar);
+								PutPlayerInVehicle(playerid, tmpcar+1, 0);
+								slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+								gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+
+								// przypisanie zmiennej id sprzedajacego
+								sellerID = i;
+
+								// zwolnienie slotu gracza sprzedajacego
+								RemovePlayerItemExUsed(i, sellerslot);
+
+								// informacja dla kupujacego
+								SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ helikopter !");
+								SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+
+								// informacja dla sprzedajacego
+								format(string, sizeof(string), "[INFO:] Gracz %s [%d] kupi³ od Ciebie pojazd !", GetPlayerNameEx(playerid), playerid);
+								SendClientMessage(i, COLOR_LIGHTYELLOW2, string);
+
+								break;
+							}
+							if(IsAPlane(idcar))
+							{
+								// sprawdzenie czy gracz posiada odpowiedni level do kupna samolotu
+								if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
+								{
+									format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmneij %d godzin aby kupiæ samolot",AirKeyLVL);
+									SendClientMessage(playerid, COLOR_WHITE, string);
+									return 1;
+								}
+								// porownanie id gracza kupujacego i sprzedajacego
+								if(playerid == i)
+								{
+									SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie mo¿esz kupiæ w³asnego pojazdu !");
+									return 1;
+								}
+								// sprawdzenie czy gracz posiada wolny slot
+								if(!PlayerFreeSlotCount(playerid))
+								{
+									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+									return 1;
+								}
+								newVehSerial(tmpcar);
+								PutPlayerInVehicle(playerid, tmpcar+1, 0);
+								slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+								gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+
+								// przypisanie zmiennej id sprzedajacego
+								sellerID = i;
+
+								// zwolnienie slotu gracza sprzedajacego
+								RemovePlayerItemExUsed(i, sellerslot);
+
+								// informacja dla kupujacego
+								SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ samolot !");
+								SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+
+								// informacja dla sprzedajacego
+								format(string, sizeof(string), "[INFO:] Gracz %s [%d] kupi³ od Ciebie pojazd !", GetPlayerNameEx(playerid), playerid);
+								SendClientMessage(i, COLOR_LIGHTYELLOW2, string);
+
+								break;
+							}
+							if(IsAPlane(idcar) == 0 && IsAHelicopter(idcar) == 0 && IsABoat(idcar) == 0)
+							{
+								// gracz ma za niski lvl
+								if(gPlayerData[playerid][pPlayingHours] < CarKey1LVL)
+								{
+									format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ pierwszy samochód",CarKey1LVL);
+									SendClientMessage(playerid, COLOR_WHITE, string);
+									return 1;
+								}
+								// sprawdzenie czy gracz posiada wolny slot
+								if(!PlayerFreeSlotCount(playerid))
+								{
+									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+									return 1;
+								}
+								newVehSerial(tmpcar);
+								PutPlayerInVehicle(playerid, tmpcar+1, 0);
+								slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+								gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+
+								// przypisanie zmiennej id sprzedajacego
+								sellerID = i;
+
+								// zwolnienie slotu gracza sprzedajacego
+								RemovePlayerItemExUsed(i, sellerslot);
+
+								// informacja dla kupujacego
+								SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ pojazd !");
+								SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+
+								// informacja dla sprzedajacego
+								format(string, sizeof(string), "[INFO:] Gracz %s [%d] kupi³ od Ciebie pojazd !", GetPlayerNameEx(playerid), playerid);
+								SendClientMessage(i, COLOR_LIGHTYELLOW2, string);
+
+								break;
 							}
 						}
-						
-						if(!payed)
-						{
-							format(string, sizeof(string), "SELECT `Faction` , `Rank` , `PlayerName` FROM `samp_users` WHERE `Faction` = '%d' && `Rank` = '1'", gVehData[tmpcar][mVehFaction]);
-							wp_mysql_query(string, PLAYER_VEHICLE_CASH, tmpcar, db_con2);
-						}
+					}
+					if(sellerID != 999)
+					{
+						// modyfikacja danych pojazdu
+						gVehData[tmpcar][mVehOwned] = 1;
+						strmid(gVehData[tmpcar][Owner], gPlayerData[playerid][pName], 0, MAX_PLAYER_NAME, 128);
+
+						// zmniejszenie ilosci pieniedzy gracza kupujacego
+						GivePlayerCash(playerid, -gVehData[tmpcar][Price]);
+
+						// zwiekszenie ilosci pieniedzy gracza sprzedajacego
+						GivePlayerCash(sellerID, gVehData[tmpcar][Price]);
+
+						// zresetowanie sprzedazy pojazdu
+						gVehData[tmpcar][ReadyToSell] = 0;
+
+						// usuniecie informacji sprzedazy z nad pojazdu
+						DestroyDynamic3DTextLabel(gVehData[tmpcar][Veh3DSell]);
+
+						// zapis
+						SaveVehData(tmpcar, "ReadyToSell");
+						SaveVehData(tmpcar, "VehOwned");
+						SaveVehData(tmpcar, "Owner");
+
+						// log
+						format(string, sizeof(string), "Vehicle id [%d] has been bought by %s for %d$ from %s", idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][Price], GetPlayerNameEx(sellerID));
+						VehicleLog(string);
+
+						return 1;
 					}
 					else
 					{
-						DynamicFactions[gVehData[tmpcar][mVehFaction]][fBank] += gVehData[tmpcar][Price];
-						SaveFData(gVehData[tmpcar][mVehFaction], "Bank");
+						SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Sprzedawcy nie ma obecnie na serwerze, nie mo¿esz kupiæ tego pojazdu w tej chwili");
+						return 1;
 					}
-				
+				}
+				// pojazd uzywany - frakcyjny
+				if(gVehData[tmpcar][mVehOwned] == 0 && gVehData[tmpcar][mVehFaction] != 255)
+				{
+					if(IsAHelicopter(idcar))
+					{
+						// sprawdzenie czy gracz posiada odpowiedni level do kupna helikoptera
+						if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
+						{
+							format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ helikopter",AirKeyLVL);
+							SendClientMessage(playerid, COLOR_WHITE, string);
+
+							return 1;
+						}
+
+						// sprawdzenie czy gracz posiada wolny slot
+						if(PHaveItem(playerid, 2, gVehData[tmpcar][CarSerial]) > 0)
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Posiadasz ju¿ klucze do tego pojazdu");
+							return 1;
+						}
+						slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+						if(slot == 0)
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+							return 1;
+						}
+						else
+						{
+							gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+						}
+
+						// wiadomosc dla kupujacego
+						SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ helikopter !");
+						SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+					}
+					if(IsAPlane(idcar))
+					{
+						// sprawdzenie czy gracz posiada odpowiedni level do kupna samolotu
+						if(gPlayerData[playerid][pPlayingHours] < AirKeyLVL)
+						{
+							format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ samolot",AirKeyLVL);
+							SendClientMessage(playerid, COLOR_WHITE, string);
+							return 1;
+						}
+
+						// sprawdzenie czy gracz posiada wolny slot
+						if(PHaveItem(playerid, 2, gVehData[tmpcar][CarSerial]) > 0)
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Posiadasz ju¿ klucze do tego pojazdu");
+							return 1;
+						}
+						slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+						if(slot == 0)
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+							return 1;
+						}
+						else
+						{
+							gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+						}
+
+						// wiadomosc dla kupujacego
+						SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ samolot !");
+						SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+					}
+					if(IsAPlane(idcar) == 0 && IsAHelicopter(idcar) == 0 && IsABoat(idcar) == 0)
+					{
+						// gracz ma za niski lvl
+						if(gPlayerData[playerid][pPlayingHours] < CarKey1LVL)
+						{
+							format(string, sizeof(string), "[INFO:] Musisz mieæ przegrane co najmniej %d godzin aby kupiæ pierwszy samochód",CarKey1LVL);
+							SendClientMessage(playerid, COLOR_WHITE, string);
+
+							return 1;
+						}
+
+						new plname[128];
+						GetPlayerName(playerid, plname, sizeof(plname));
+
+						// sprawdzenie czy gracz posiada wolny slot
+						if(PHaveItem(playerid, 2, gVehData[tmpcar][CarSerial]) > 0)
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Posiadasz ju¿ klucze do tego pojazdu");
+							return 1;
+						}
+						slot = InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
+						if(slot == 0)
+						{
+							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie masz miejsca na kolejny item !");
+							return 1;
+						}
+						else
+						{
+							gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
+						}
+
+						// wiadomosc dla kupujacego
+						SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Kupi³eœ samochód !");
+						SendClientMessage(playerid, COLOR_WHITE, "[INFO:] Skorzystaj z komendy '/pomoc samochod'");
+					}
+
+					new plname[128];
+					GetPlayerName(playerid, plname, sizeof(plname));
+
 					// sprawdzenie stanu licznika pojazdow frakcji
 					if(DynamicFactions[gVehData[tmpcar][mVehFaction]][fCarsCount] > 0)
 					{
+						// zmniejszenie licznika pojazdow frakcji
 						DynamicFactions[gVehData[tmpcar][mVehFaction]][fCarsCount]--;
+
 						SaveFData(gVehData[tmpcar][mVehFaction], "CarsCount");
 					}
 
-					if(DynamicFactions[gVehData[tmpcar][mVehFaction]][fType] == 6)
+					// zysk dla frakcji
+					DynamicFactions[gVehData[tmpcar][mVehFaction]][fBank] += gVehData[tmpcar][Price];
+
+					SaveFData(gVehData[tmpcar][mVehFaction], "Bank");
+
+					if(DynamicFactions[ gVehData[tmpcar][mVehFaction] ][fType] == 6)
 					{
 						DestroyDynamic3DTextLabel(gVehData[tmpcar][Veh3DTaxiNfo]);
 						DestroyDynamic3DTextLabel(gVehData[tmpcar][Veh3DTaxiNfo2]);
 					}
+					
+					// modyfikacja danych pojazdu
+					gVehData[tmpcar][mVehType] = 0;
+					gVehData[tmpcar][mVehOwned] = 1;
+					strmid(gVehData[tmpcar][Owner], plname, 0, strlen(plname), 128);
+					gVehData[tmpcar][mVehFaction] = 255;
+					gVehData[tmpcar][ReadyToSell] = 0;
+
+					SaveVehData(tmpcar, "VehType");
+					SaveVehData(tmpcar, "VehOwned");
+					SaveVehData(tmpcar, "Owner");
+					SaveVehData(tmpcar, "VehFaction");
+					SaveVehData(tmpcar, "ReadyToSell");
+
+					// usuniecie informacja sprzedazy z nad pojazdu
+					DestroyDynamic3DTextLabel(gVehData[tmpcar][Veh3DSell]);
+
+					// log
+					new Year, Month, Day;
+					getdate(Year, Month, Day);
+					printf("[%d-%d-%d] [VEHICLE:] Vehicle id [%d] has been bought by %s from faction ID: %d for %d$", Year, Month, Day, idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][mVehFaction], gVehData[tmpcar][Price]);
+
+					return 1;
 				}
-				
-				if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] == FACTIONT_GANG)
+				if(gVehData[tmpcar][mVehOwned] == 1 && gVehData[tmpcar][mVehFaction] != 255)
 				{
-					gPlayerData[playerid][pBank] -= gVehData[tmpcar][Price];
-				}
-				else
-				{
-					DynamicFactions[gPlayerData[playerid][pFaction]][fBank] -= gVehData[tmpcar][Price];
-					SaveFData(gPlayerData[playerid][pFaction], "Bank");
-				}
-				
-				newVehSerial(tmpcar);
-				InsertPlayerItem(playerid, 2, gVehData[tmpcar][CarSerial], 0, 0);
-				gVehData[tmpcar][LastDriverWKey] = gPlayerData[playerid][pName];
-				
-				format(gVehData[tmpcar][Owner], MAX_PLAYER_NAME, gPlayerData[playerid][pName]);
-				gVehData[tmpcar][mVehType] = 0;
-				gVehData[tmpcar][mVehOwned] = 1;
-				gVehData[tmpcar][mVehFaction] = gPlayerData[playerid][pFaction];
-				gVehData[tmpcar][ReadyToSell] = 0;
-
-				SaveVehData(tmpcar, "Owner");
-				SaveVehData(tmpcar, "VehType");
-				SaveVehData(tmpcar, "VehOwned");
-				SaveVehData(tmpcar, "VehFaction");
-				SaveVehData(tmpcar, "ReadyToSell");
-
-				RefreshVehicleDescription(tmpcar+1);
-
-				// log
-				new Year, Month, Day;
-				getdate(Year, Month, Day);
-				printf("[%d-%d-%d] [VEHICLE:] Vehicle id [%d] has been bought by %s from faction ID: %d for $%d", Year, Month, Day, idcar, GetPlayerNameEx(playerid), gVehData[tmpcar][mVehFaction], gVehData[tmpcar][Price]);
-
-			}
-			
-			if(IsABoat(idcar))
-			{
-				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ ³ódŸ !");
-			}
-			else if(IsAHelicopter(idcar))
-			{
-				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ helikopter !");
-			}
-			else if(IsAPlane(idcar))
-			{
-				SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ samolot !");
-			}
-			else if(IsAPlane(idcar) == 0 && IsAHelicopter(idcar) == 0 && IsABoat(idcar) == 0)
-			{
-				if(gPlayerData[playerid][pFirstCar])
-				{
-					SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ pojazd !");
-				}
-				else
-				{
-					SendClientMessage(playerid, COLOR_GREEN, "[INFO:] Kupi³eœ swój pierwszy samochód !");
-					SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Zobacz /komendypojazdow aby zobaczyæ dostepne komendy");
-
-					gPlayerData[playerid][pFirstCar] = 1;
-					SavePlayerData(playerid, "FirstCar");
+					SendClientMessage(playerid, COLOR_RED, "[INFO:] Wyst¹pi³ problem z tym pojazdem. Skontaktuj siê z administratorem. Lista administratorów: /admini");
+					return 1;
 				}
 			}
 			return 1;
@@ -23317,7 +23553,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 									defer ResetVehicleData(idcar,1);
 									format(string, sizeof(string), "[INFO:] Zez³omowa³eœ swój samochód");
 									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-									format(string, sizeof(string), "[INFO:] Koszt z³omowania $%d", floatround(float(gVehData[tmpcar][Price]) * 0.20, floatround_round));
+									format(string, sizeof(string), "[INFO:] Koszt z³omowania %d$", floatround(float(gVehData[tmpcar][Price]) * 0.20, floatround_round));
 									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 									DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gVehData[tmpcar][Price] * 0.20, floatround_round);
 									SaveFData(FACTIONID_GOVERNMENT, "Bank");
@@ -23350,7 +23586,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 									defer ResetVehicleData(idcar,1);
 									format(string, sizeof(string), "[INFO:] Zez³omowa³eœ swoj¹ ³ódŸ");
 									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-									format(string, sizeof(string), "[INFO:] Koszt z³omowania $%d", floatround(gVehData[tmpcar][Price] * 0.20, floatround_round));
+									format(string, sizeof(string), "[INFO:] Koszt z³omowania %d$", floatround(gVehData[tmpcar][Price] * 0.20, floatround_round));
 									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 									DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gVehData[tmpcar][Price] * 0.20, floatround_round);
 									SaveFData(FACTIONID_GOVERNMENT, "Bank");
@@ -23383,7 +23619,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 									defer ResetVehicleData(idcar,1);
 									format(string, sizeof(string), "[INFO:] Zez³omowa³eœ swój helikopter");
 									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-									format(string, sizeof(string), "[INFO:] Koszt z³omowania $%d", floatround(gVehData[tmpcar][Price] * 0.20, floatround_round));
+									format(string, sizeof(string), "[INFO:] Koszt z³omowania %d$", floatround(gVehData[tmpcar][Price] * 0.20, floatround_round));
 									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 									DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(gVehData[tmpcar][Price] * 0.20, floatround_round);
 									SaveFData(FACTIONID_GOVERNMENT, "Bank");
@@ -23416,7 +23652,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 									defer ResetVehicleData(idcar,1);
 									format(string, sizeof(string), "[INFO:] Zez³omowa³eœ swój samolot");
 									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-									format(string, sizeof(string), "[INFO:] Koszt z³omowania $%d", floatround(float(gVehData[tmpcar][Price]) * 0.20, floatround_round));
+									format(string, sizeof(string), "[INFO:] Koszt z³omowania %d$", floatround(float(gVehData[tmpcar][Price]) * 0.20, floatround_round));
 									SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 									DynamicFactions[FACTIONID_GOVERNMENT][fBank] += floatround(float(gVehData[tmpcar][Price]) * 0.20, floatround_round);
 									SaveFData(FACTIONID_GOVERNMENT, "Bank");
@@ -23441,7 +23677,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 					}
 					else
 					{
-						format(string, sizeof(string), "[INFO:] Nie masz wystarczaj¹cej iloœci pieniêdzy aby zez³omowaæ pojazd ($%d) !", floatround(gVehData[tmpcar][Price] * 0.20, floatround_round));
+						format(string, sizeof(string), "[INFO:] Nie masz wystarczaj¹cej iloœci pieniêdzy aby zez³omowaæ pojazd (%d$) !", floatround(gVehData[tmpcar][Price] * 0.20, floatround_round));
 						SendClientMessage(playerid, COLOR_RED, string);
 						return 1;
 					}
@@ -23617,7 +23853,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			else
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /asetplayerfaction [playerid] [frakcja] [ranga]");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "Ranga musi byæ z zakresu od 1 do 10");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "Ranga musi byæ z zakresu od 1 do 10 lub 0 dla frakcji 255");
 			}
 			return 1;
 		}
@@ -23666,7 +23902,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 			else
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /asetplayerfaction [playerid] [frakcja] [ranga]");
-				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "Ranga musi byæ z zakresu od 1 do 10");
+				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "Ranga musi byæ z zakresu od 1 do 10 lub 0 dla frakcji 255");
 			}
 			return 1;
 		}
@@ -23677,24 +23913,16 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie nale¿ysz do ¿adnej frakcji !");
 				return 1;
 			}
-			
 			if(gPlayerData[playerid][pRank] == 1)
 			{
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie mo¿esz opuœciæ frakcji bêd¹c jej liderem !");
 				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Musisz usun¹æ frakcje lub przekaæ lidera aby opuœciæ frakcje");
 				return 1;
 			}
-			
-			FactionRequest[playerid] = gPlayerData[playerid][pFaction];
-			
-			format(string, sizeof(string), "SELECT `additionalgroups` FROM `mybb_users` WHERE `uid` = '%d'", gPlayerData[playerid][pAccountOwnerID]);
-			wp_mysql_query(string, DEL_FROM_FORUM_FACTION, playerid, db_con2);
-			
 			gPlayerData[playerid][pFaction] = 255;
 			gPlayerData[playerid][pRank] = 1;
 			SavePlayerData(playerid, "Faction");
 			SavePlayerData(playerid, "Rank");
-
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Gratulacje, odeszles z frakcji");
 			return 1;
 		}
@@ -23783,208 +24011,43 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		else if(strcmp(cmd, "/acardata", true) == 0)
 		{
 			if(gPlayerData[playerid][pAdmin] < 1)
-			{
 				return 0;
-			}
-			
 			if(!IsPlayerInVehicle(playerid, idcar))
-			{
 				return 1;
-			}
-			
-			new Float:emmision, isOwned[6], isDamaged[6], haveHook[6], haveAlarm[6], isReadyToSell[6], isConfiscated[6], isRentable[80], vehType[22];
-			
-			if(gVehData[tmpcar][mVehOwned])
-			{
-				format(isOwned, sizeof(isOwned), "true");
-			}
-			else
-			{
-				format(isOwned, sizeof(isOwned), "false");
-			}
-			
-			if(gVehData[tmpcar][CarDamaged])
-			{
-				format(isDamaged, sizeof(isDamaged), "true");
-			}
-			else
-			{
-				format(isDamaged, sizeof(isDamaged), "false");
-			}
-			
-			if(gVehData[tmpcar][Hook])
-			{
-				format(haveHook, sizeof(haveHook), "true");
-			}
-			else
-			{
-				format(haveHook, sizeof(haveHook), "false");
-			}
-			
-			if(gVehData[tmpcar][Alarm])
-			{
-				format(haveAlarm, sizeof(haveAlarm), "true");
-			}
-			else
-			{
-				format(haveAlarm, sizeof(haveAlarm), "false");
-			}
-			
-			if(gVehData[tmpcar][ReadyToSell])
-			{
-				format(isReadyToSell, sizeof(isReadyToSell), "true");
-			}
-			else
-			{
-				format(isReadyToSell, sizeof(isReadyToSell), "false");
-			}
-			
-			if(gVehData[tmpcar][VConfiscated])
-			{
-				format(isConfiscated, sizeof(isConfiscated), "true");
-			}
-			else
-			{
-				format(isConfiscated, sizeof(isConfiscated), "false");
-			}
-			
-			if(gVehData[tmpcar][mRentPrice])
-			{
-				format(isRentable, sizeof(isRentable), "isRentable: true, renter: %s, rentPrice: %d",
-					gVehData[tmpcar][mRenter], gVehData[tmpcar][mRentPrice]);
-			}
-			else
-			{
-				format(isRentable, sizeof(isRentable), "isRentable: false");
-			}
-			
-			switch(gVehData[tmpcar][mVehType])
-			{
-				case 0:
-				{
-					format(vehType, sizeof(vehType), "default");
-				}
-				case 1:
-				{
-					format(vehType, sizeof(vehType), "WORD");
-				}
-				case 2:
-				{
-					format(vehType, sizeof(vehType), "bus");
-				}
-				case 3:
-				{
-					format(vehType, sizeof(vehType), "interior vehicle [DEPRECATED]");
-				}
-				case 4:
-				{
-					format(vehType, sizeof(vehType), "trash");
-				}
-				case 5:
-				{
-					format(vehType, sizeof(vehType), "sweeper");
-				}
-				case 6:
-				{
-					format(vehType, sizeof(vehType), "boat");
-				}
-				case 7:
-				{
-					format(vehType, sizeof(vehType), "bike");
-				}
-				case 8:
-				{
-					format(vehType, sizeof(vehType), "unknown?");
-				}
-				case 9:
-				{
-					format(vehType, sizeof(vehType), "faction [DEPRECATED]");
-				}
-				case 10:
-				{
-					format(vehType, sizeof(vehType), "mechanic [DEPRECATED]");
-				}
-				case 11:
-				{
-					format(vehType, sizeof(vehType), "farmer");
-				}
-			}
-			
+			new Float:emmision;
 			VehCo2Emmision(idcar, emmision);
-			
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "____________________________________________________________________________________________________");
-			
-			format(string, sizeof(string), "ID: %d, model: %d, faction: %d, type: %d - %s, bizId: %d, carSerial: %d, price: %d", 
-				idcar, GetVehicleModel(idcar), gVehData[tmpcar][mVehFaction], gVehData[tmpcar][mVehType], vehType, gVehData[tmpcar][BusinessID], gVehData[tmpcar][CarSerial], gVehData[tmpcar][Price]);
-			
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "___________________________________________________");
+			format(string, sizeof(string), "ID: %d, Model: %d, Faction: %d, Type: %d, BizID: %d, CarSerial: %d", idcar, GetVehicleModel(idcar), gVehData[tmpcar][mVehFaction], gVehData[tmpcar][mVehType], gVehData[tmpcar][BusinessID], gVehData[tmpcar][CarSerial]);
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-			
-			format(string, sizeof(string), "owned: %s, owner: %s, %s,", 
-				isOwned, gVehData[tmpcar][Owner], isRentable);
-			
+			format(string, sizeof(string), "Bought: %d, Owner: %s, Price: %d, ReadyToSell: %d, Alarm: %d", gVehData[tmpcar][mVehOwned], gVehData[tmpcar][Owner], gVehData[tmpcar][Price], gVehData[tmpcar][ReadyToSell], gVehData[tmpcar][Alarm]);
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-			
-			format(string, sizeof(string), "vinNr: %d, damaged: %s, alarm: %d, hook: %s, readyToSell: %s, confiscated: %s",
-				gVehData[tmpcar][mVehVinNo], isDamaged, haveAlarm, haveHook, isReadyToSell, isConfiscated);
-			
+			format(string, sizeof(string), "Hook: %d, Damaged: %d, Repair Time Left: %d min, CarResetT: %d, Fuel Type: %d, Battery: %f, Confiscated: %d", gVehData[tmpcar][Hook], gVehData[tmpcar][CarDamaged], gVehData[tmpcar][CarRepairTimeLeft]*10, gVehData[tmpcar][CarResetT], gVehData[tmpcar][Fuel], gVehData[tmpcar][BatteryCapacity], gVehData[tmpcar][VConfiscated]);
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-			
-			format(string, sizeof(string), "repairTimeLeft: %d min, carResetT: %d, fuelType: %d, battery: %.1f, maxBattery: %.1f, co2 emmision: %f", 
-				gVehData[tmpcar][CarRepairTimeLeft]*10, gVehData[tmpcar][CarResetT], gVehData[tmpcar][Fuel], gVehData[tmpcar][BatteryCapacity], gVehData[tmpcar][BatteryMaxCapacity], emmision);
-			
+			format(string, sizeof(string), "Co2 emmision: %f, VIN: %d", emmision, gVehData[tmpcar][mVehVinNo]); 
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-			
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "____________________________________________________________________________________________________");
-			
+			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "___________________________________________________");
 			return 1;
-		}
-		else if(strcmp(cmd, "/acardata2", true) == 0)
-		{
-			if(gPlayerData[playerid][pAdmin] < 1)
-			{
-				return 0;
-			}
-			
-			format(string, sizeof(string), "CarPanels: %d - CarDoors: %d - CarLights: %d - CarTires: %d",
-				gVehData[tmpcar][CarPanels], gVehData[tmpcar][CarDoors], gVehData[tmpcar][CarLights], gVehData[tmpcar][CarTires]);
-			
-			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
 		}
 		else if(strcmp(cmd, "/sprawdznumer", true) == 0)
 		{
-			if(gPlayerData[playerid][pFaction] == 255)
+			if(gPlayerData[playerid][pFaction] != 0)
 			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ z policji");
+				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ z policji !");
 				return 1;
 			}
-		
-			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != FACTIONT_POLICE)
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] Nie jesteœ z policji");
-				return 1;
-			}
-			
 			if(IsPlayerInVehicle(playerid, idcar))
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "___________________________________________________");
-				
 				format(string, sizeof(string), "ID pojazdu: %d",idcar);
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, string);
-				
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "___________________________________________________");
 			}
-			else
-			{
-				SendClientMessage(playerid, COLOR_ORANGE, "[INFO:] WejdŸ do pojazdu aby skorzystaæ z tej komendy");
-			}
-			
 			return 1;
 		}
 		else if(strcmp(cmd, "/camera1", true) == 0)
 		{
 			if(gPlayerData[playerid][pAdmin] != 5)
 				return 0;
-				
 			if(Camera1On[playerid] == 0) //gps wylaczony
 			{
 				Camera1On[playerid] = 1;
@@ -23997,7 +24060,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "Camera Pos wy³aczony");
 				TextDrawDestroy(CameraPos[playerid]);
 			}
-			
 			return 1;
 		}
 		else if(strcmp(cmd, "/angle", true) == 0)
@@ -24046,19 +24108,16 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Niew³aœciwa frakcja !");
 				return 1;
 			}
-			
-			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != FACTIONT_GANG)
+			if(DynamicFactions[gPlayerData[playerid][pFaction]][fType] != 3)
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Nie jesteœ liderem gangu !");
 				return 1;
 			}
-			
 			if(!CheckRankPrivilidges(gPlayerData[playerid][pFaction], gPlayerData[playerid][pRank], "walczoterytorium"))
 			{
 				SendClientMessage(playerid, COLOR_RED, "[INFO:] Nie posiadasz uprawnieñ do rozpoczynania wojny o terytorium !");
 				return 1;
 			}
-			
 			for(new i = 0; i < sizeof(DynamicZones); i++)
 			{
 				if(IsPlayerInArea(playerid, DynamicZones[i][mPosMaxX], DynamicZones[i][mPosMinX], DynamicZones[i][mPosMaxY], DynamicZones[i][mPosMinY]))
@@ -24371,19 +24430,14 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		else if(strcmp(cmd, "/asetplayervipafkt", true) == 0)
 		{
 			if(gPlayerData[playerid][pAdmin] != 5)
-			{
 				return 0;
-			}
-			
 			tmp = strtok(cmdtext, idx);
 			if(!strlen(tmp))
 			{
 				SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] /asetplayervipafkt [playerid]");
 				return 1;
 			}
-		
 			giveplayerid = ReturnUser(tmp);
-			
 			if(IsPlayerConnected(giveplayerid))
 			{
 				tmp = strtok(cmdtext, idx);
@@ -24395,24 +24449,33 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				new playervipafkt;
 				playervipafkt = strval(tmp);
 				if(playervipafkt < 0 || playervipafkt > 1) { SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] 0-1."); return 1; }
-				
 				if(playervipafkt == 1)
 				{
-					gPlayerData[giveplayerid][pVipAFKT] = 30;
-					SavePlayerData(giveplayerid, "VipAFKT");
+					if(getdate() < 335)
+					{
+						gPlayerData[giveplayerid][pVipAFKT] = getdate() + 30;
+
+						SavePlayerData(giveplayerid, "VipAFKT");
+					}
+					if(getdate() >= 335)
+					{
+						gPlayerData[giveplayerid][pVipAFKT] = 30 - 365 - getdate();
+
+						SavePlayerData(giveplayerid, "VipAFKT");
+					}
 				}
-				else
+				if(playervipafkt == 0)
 				{
 					gPlayerData[giveplayerid][pVipAFKT] = 0;
+
 					SavePlayerData(giveplayerid, "VipAFKT");
 				}
-				
 				printf("[WARNING:] %s used /asetplayervipafkt", gPlayerData[playerid][pName]);
 				format(string, sizeof(string), "[INFO:] VipAFKT status for player: %d was set to: %d by %s", giveplayerid, playervipafkt, GetPlayerNameEx(playerid));
 				SendAdminMessage(COLOR_YELLOW, string);
 				format(string, sizeof(string), "[INFO:] Day of end: %d", gPlayerData[giveplayerid][pVipAFKT]);
 				SendAdminMessage(COLOR_YELLOW, string);
-				
+				SavePlayerData(giveplayerid, "VipAFKT");
 				return 1;
 			}
 			SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Gracz od danym ID nie jest ON-LINE");
@@ -24465,7 +24528,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 				return 1;
 			}
 			giveplayerid = ReturnUser(tmp);
-			if(gPlayerLogged[giveplayerid])
+			if(IsPlayerConnected(giveplayerid) && gPlayerLogged[giveplayerid])
 			{
 				if(giveplayerid != INVALID_PLAYER_ID)
 				{
@@ -24494,22 +24557,22 @@ public OnPlayerCommandText(playerid, cmdtext[])
 							SendClientMessage(playerid, COLOR_LIGHTYELLOW2, "[INFO:] Gracz wy³¹czy³ otrzymywanie wiadomoœci PW.");
 							return 1;
 						}
-						format(string, sizeof(string), "[PW][F: %d][F: %s][T: %d]: %s", playerid, gPlayerData[playerid][pOOCName], giveplayerid, result);
+						format(string, sizeof(string), "[PW][%d][F: %s]: %s", playerid, gPlayerData[playerid][pOOCName], result);
 						foreach(Player, i)
 						{
 							if(!gPlayerLogged[i])
-							{
 								continue;
-							}
-							
 							if(BigEar[i])
 							{
 								SendClientMessage(i, COLOR_DARKBROWN, string);
 							}
 						}
-						
 						SendClientMessage(giveplayerid, COLOR_DARKBROWN, string);
 						SendClientMessage(playerid, COLOR_DARKBROWN, string);
+						// if(!(gPlayerData[playerid][pAdmin] > 0) && GetPlayerState(playerid) != 9)
+						// {
+							// PlayerActionMessage(playerid,5.0, "pisze PW.");
+						// }
 
 						new Year, Month, Day;
 						getdate(Year, Month, Day);
@@ -24598,478 +24661,296 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Pierwsza czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Admiral - 445 - $%d", cenyPojazdow[45]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Alpha - 602 - $%d", cenyPojazdow[202]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Ambulans - 416 - $%d", cenyPojazdow[16]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Baggage - 485 - $%d", cenyPojazdow[85]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Bandito - 568 - $%d", cenyPojazdow[168]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Barracks - 433 - $%d", cenyPojazdow[33]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Benson - 499 - $%d", cenyPojazdow[99]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "BF Injection - 424 - $%d", cenyPojazdow[24]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Blade - 536 - $%d", cenyPojazdow[36]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Admiral - 445 - 30.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Alpha - 602 - 430.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Ambulance - 416 - 140.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Baggage - 485 - 10.500$");
+			SendClientMessage(playerid, COLOR_GREY, "Bandito - 568 - 80.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Banshee - 429 - 790.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Barracks - 433 - 640.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Benson - 499 - 60.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Bfinject - 424 - 760.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Blade - 536) - 31.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody2", true) == 0)
 		{
 			SendClientMessage(playerid ,COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Druga czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Blista - 496 - $%d", cenyPojazdow[96]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Bloodra - 504 - $%d", cenyPojazdow[104]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Bobcat - 422 - $%d", cenyPojazdow[22]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Boxburg - 609 - $%d", cenyPojazdow[209]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Boxville - 498 - $%d", cenyPojazdow[98]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Bravura - 401 - $%d", cenyPojazdow[1]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Broadway - 401 - $%d", cenyPojazdow[175]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Buccanee - 518 - $%d", cenyPojazdow[118]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Buffalo - 402 - $%d", cenyPojazdow[2]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Bullet - 541 - $%d", cenyPojazdow[141]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Blistac - 496 - 41.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Bloodra - 504 - 900.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Bobcat - 422 - 33.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Boxburg - 609 - 66.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Boxville - 498 - 50.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Bravura - 401 - 15.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Broadway - 575 - 15.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Buccanee - 518 - 19.500$");
+			SendClientMessage(playerid, COLOR_GREY, "Buffalo - 402 - 540.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Bullet - 541 - 800.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody3", true) == 0)
 		{	
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Trzecia czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Burrito - 482 - $%d", cenyPojazdow[82]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Bus - 431 - $%d", cenyPojazdow[31]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Cabbie - 438 - $%d", cenyPojazdow[38]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Caddy - 457 - $%d", cenyPojazdow[57]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Cadrona - 527 - $%d", cenyPojazdow[127]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Camper - 483 - $%d", cenyPojazdow[83]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Cement - 524 - $%d", cenyPojazdow[124]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Cheetah - 415 - $%d", cenyPojazdow[15]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Clover - 542 - $%d", cenyPojazdow[142]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Club - 589 - $%d", cenyPojazdow[189]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Burrito - 482 - 55.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Bus - 431 - 660.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Cabbie - 438 - 43.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Caddy - 457 - 5.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Cadrona - 527 - 25.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Camper - 483 - 70.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Cement - 524 - 620.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Cheetah - 415 - 850.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Clover - 542 - 33.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Club - 589 - 130.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody4", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Czwarta czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Coach - 437 - $%d", cenyPojazdow[37]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Combine - 532 - $%d", cenyPojazdow[132]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Comet - 480 - $%d", cenyPojazdow[80]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Police Car LSPD - 596 - $%d", cenyPojazdow[196]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Police Ranger - 599 - $%d", cenyPojazdow[199]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Police Car LVPD - 598 - $%d", cenyPojazdow[198]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Police Car SFPD - 597 - $%d", cenyPojazdow[197]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Cft30 - 578 - $%d", cenyPojazdow[178]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Dumper - 406 - $%d", cenyPojazdow[6]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Duneride - 573 - $%d", cenyPojazdow[173]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Coach - 437 - 680.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Combine - 532 - 215.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Comet - 480 - 690.000$");
+			SendClientMessage(playerid, COLOR_GREY, "CopCarla - 596 - 100.000$");
+			SendClientMessage(playerid, COLOR_GREY, "CopCarru - 599 - 150.000$");
+			SendClientMessage(playerid, COLOR_GREY, "CopCarsf - 597 - 100.000$");
+			SendClientMessage(playerid, COLOR_GREY, "CopCarlv - 598 - 100.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Cft30 - 578 - 160.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Dumper - 406 - 2.000.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Duneride - 573 - 250.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody5", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
-			SendClientMessage(playerid, COLOR_RED, "Pi¹ta czêœæ spisu samochodów.");			
-			format(string, sizeof(string), "Elegant - 507 - $%d", cenyPojazdow[107]);
-			SendClientMessage(playerid, COLOR_GREY, string);	
-			format(string, sizeof(string), "Elegy - 507 - $%d", cenyPojazdow[162]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Emperor - 585 - $%d", cenyPojazdow[185]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Enforcer - 427 - $%d", cenyPojazdow[27]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Esperant - 419 - $%d", cenyPojazdow[19]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Euros - 587 - $%d", cenyPojazdow[187]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "FBI Rancher - 490 - $%d", cenyPojazdow[90]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "FBI Truck - 528 - $%d", cenyPojazdow[128]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Felze - 533 - $%d", cenyPojazdow[133]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Firela - 544 - $%d", cenyPojazdow[144]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_RED, "Pi¹ta czêœæ spisu samochodów.");
+			SendClientMessage(playerid, COLOR_GREY, "Elegant - 507 - 34.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Elegy - 562 - 430.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Emperor - 585 - 22.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Enforcer - 427 - 440.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Esperant - 419 - 32.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Euros - 587 - 620.000$");
+			SendClientMessage(playerid, COLOR_GREY, "FBIRancher - 490 - 200.000$");
+			SendClientMessage(playerid, COLOR_GREY, "FbiTruck - 528 - 600.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Felze - 533 - 52.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Firela - 544 - 740.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody6", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Szósta czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Firetruck - 407 - $%d", cenyPojazdow[7]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Flash - 565 - $%d", cenyPojazdow[165]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Flatbed - 455 - $%d", cenyPojazdow[55]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Forklift - 530 - $%d", cenyPojazdow[130]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Fortune - 526 - $%d", cenyPojazdow[126]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Glendale - 466 - $%d", cenyPojazdow[66]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Greenwood - 492 - $%d", cenyPojazdow[92]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Hermes - 474 - $%d", cenyPojazdow[74]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "HotDog - 588 - $%d", cenyPojazdow[188]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Hotknife - 434 - $%d", cenyPojazdow[34]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Firetruck - 407 - 1.300.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Flash - 565 - 150.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Flatbed - 455 - 380.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Forklift - 530 - 5.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Fortune - 526 - 28.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Glendale - 466 - 25.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Greenwood - 492 - 24.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Hermes - 474 - 21.000$");
+			SendClientMessage(playerid, COLOR_GREY, "HotDog - 588 - 55.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Hotknife - 434 - 71.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody7", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
-			SendClientMessage(playerid, COLOR_RED, "Siódma czêœæ spisu samochodów.");			
-			format(string, sizeof(string), "Hotrina - 502 - $%d", cenyPojazdow[102]);
-			SendClientMessage(playerid, COLOR_GREY, string);	
-			format(string, sizeof(string), "Hotrinb - 503 - $%d", cenyPojazdow[103]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Hotring - 494 - $%d", cenyPojazdow[94]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Huntley - 579 - $%d", cenyPojazdow[179]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Hustler - 545 - $%d", cenyPojazdow[145]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Infernus - 411 - $%d", cenyPojazdow[11]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Intruder - 546 - $%d", cenyPojazdow[146]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Jester - 559 - $%d", cenyPojazdow[159]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Journey - 508 - $%d", cenyPojazdow[108]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Kart - 571 - $%d", cenyPojazdow[171]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_RED, "Siódma czêœæ spisu samochodów.");
+			SendClientMessage(playerid, COLOR_GREY, "Hotrina - 502 - 1.000.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Hotrinb - 503 - 1.000.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Hotring - 494 - 900.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Huntley - 579 - 89.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Hustler - 545 - 200.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Infernus - 411 - 720.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Intruder - 546 - 22.200$");
+			SendClientMessage(playerid, COLOR_GREY, "Jester - 559 - 620.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Journey - 508 - 200.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Kart - 571 - 55.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody8", true) == 0)
 		{
 			SendClientMessage(playerid ,COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Ósma czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Landstal - 400 - $%d", cenyPojazdow[0]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Linerunner - 403 - $%d", cenyPojazdow[3]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Majestic - 517 - $%d", cenyPojazdow[117]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Manana - 410 - $%d", cenyPojazdow[10]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Merit - 551 - $%d", cenyPojazdow[151]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Mesa - 500 - $%d", cenyPojazdow[100]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Moonbeam - 418 - $%d", cenyPojazdow[18]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Mowerr - 572 - $%d", cenyPojazdow[172]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "MrWhoop - 423 - $%d", cenyPojazdow[23]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Monster - 444 - $%d", cenyPojazdow[44]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Landstal - 400 - 85.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Linerunner - 403 - 1.500.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Majestic - 517 - 20.500$");
+			SendClientMessage(playerid, COLOR_GREY, "Manana - 410 - 20.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Merit - 551 - 32.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Mesa - 500 - 70.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Moonbeam - 418 - 50.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Mowerr - 572 - 10.000$");
+			SendClientMessage(playerid, COLOR_GREY, "MrWhoop - 423 - 70.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Monster - 444 - 420.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody9", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Dziewi¹ta czêœæ spisu samochodów.");
-			format(string, sizeof(string), "MonsterA - 556 - $%d", cenyPojazdow[156]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "MonsterB - 557 - $%d", cenyPojazdow[157]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Mule - 414 - $%d", cenyPojazdow[14]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Nebula - 516 - $%d", cenyPojazdow[116]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "NewsVan - 582 - $%d", cenyPojazdow[182]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Oceanic - 467 - $%d", cenyPojazdow[67]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Packer - 443 - $%d", cenyPojazdow[43]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Patriot - 470 - $%d", cenyPojazdow[70]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Peren - 404 - $%d", cenyPojazdow[4]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Petro - 514 - $%d", cenyPojazdow[114]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "MonsterA - 556 - 500.000$");
+			SendClientMessage(playerid, COLOR_GREY, "MonsterB - 557 - 500.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Mule - 414 - 65.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Nebula - 516 - 35.000$");
+			SendClientMessage(playerid, COLOR_GREY, "NewsVan - 582 - 90.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Oceanic - 467 - 30.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Packer - 443 - 250.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Patriot - 470 - 800.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Peren - 404 - 11.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Petro - 514 - 280.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody10", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Dziesi¹ta czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Phoenix - 603 - $%d", cenyPojazdow[203]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Picador - 600 - $%d", cenyPojazdow[200]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Pony - 413 - $%d", cenyPojazdow[13]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Premier - 426 - $%d", cenyPojazdow[26]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Previon - 436 - $%d", cenyPojazdow[36]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Primo - 547 - $%d", cenyPojazdow[147]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Rancher - 489 - $%d", cenyPojazdow[89]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "RdTrain - 515 - $%d", cenyPojazdow[115]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Regina - 479 - $%d", cenyPojazdow[79]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Remington - 534 - $%d", cenyPojazdow[134]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Phoenix - 603 - 710.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Picador - 600 - 30.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Pony - 413 - 50.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Premier - 426 - 25.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Previon - 436 - 19.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Primo - 547 - 10.200$");
+			SendClientMessage(playerid, COLOR_GREY, "Rancher - 489 - 77.000$");
+			SendClientMessage(playerid, COLOR_GREY, "RdTrain - 515 - 350.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Regina - 479 - 45.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Remington - 534 - 32.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody11", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Jedenasta czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Rhino - 432 - $%d", cenyPojazdow[32]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Romero - 442 - $%d", cenyPojazdow[42]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Rumpo - 440 - $%d", cenyPojazdow[40]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sabre - 475 - $%d", cenyPojazdow[75]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sedler - 543 - $%d", cenyPojazdow[143]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sandking - 495 - $%d", cenyPojazdow[95]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Savanna - 567 - $%d", cenyPojazdow[167]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sandking - 495 - $%d", cenyPojazdow[95]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Securica - 428 - $%d", cenyPojazdow[28]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sentinel - 405 - $%d", cenyPojazdow[5]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Slamvan - 535 - $%d", cenyPojazdow[135]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Rhino - 432 - 10.000.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Romero - 442 - 150.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Rumpo - 440 - 55.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Sabre - 475 - 44.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Sedler - 543 - 80.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Sandking - 495 - 200.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Savanna - 567 - 30.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Securica - 428 - 400.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Sentinel - 405 - 30.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Slamvan - 535 - 30.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody12", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Dwunasta czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Solair - 458 - $%d", cenyPojazdow[58]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Stafford - 580 - $%d", cenyPojazdow[180]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Stallion - 439 - $%d", cenyPojazdow[39]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Stratum - 561 - $%d", cenyPojazdow[161]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Strech - 409 - $%d", cenyPojazdow[9]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sultan - 560 - $%d", cenyPojazdow[160]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sunrise - 550 - $%d", cenyPojazdow[150]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Super-GT - 506 - $%d", cenyPojazdow[106]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "SwatVan - 601 - $%d", cenyPojazdow[201]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sweeper - 574 - $%d", cenyPojazdow[174]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Solair - 458 - 28.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Stafford - 580 - 20.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Stallion - 439 - 65.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Stratum - 561 - 44.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Strech - 409 - 560.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Sultan - 560 - 600.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Sunrise - 550 - 24.100$");
+			SendClientMessage(playerid, COLOR_GREY, "Super-GT - 506 - 780.000$");
+			SendClientMessage(playerid, COLOR_GREY, "SwatVan - 601 - 500.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Sweeper - 574 - 20.400$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody13", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Trzynasta czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Tahoma - 566 - $%d", cenyPojazdow[166]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Tampa - 549 - $%d", cenyPojazdow[149]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Taxi - 420 - $%d", cenyPojazdow[20]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Topfun - 559 - $%d", cenyPojazdow[159]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Tornado - 576 - $%d", cenyPojazdow[176]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Towtruck - 525 - $%d", cenyPojazdow[125]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Tractor - 531 - $%d", cenyPojazdow[131]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Trash - 408 - $%d", cenyPojazdow[8]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Tug - 583 - $%d", cenyPojazdow[183]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Turismo - 451 - $%d", cenyPojazdow[51]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Tahoma - 566 - 34.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Tampa - 549 - 30.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Taxi - 420 - 43.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Topfun - 559 - 620.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Tornado - 576 - 18.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Towtruck - 525 - 140.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Tractor - 531 - 30.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Trash - 408 - 430.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Tug - 583 - 14.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Turismo - 451 - 820.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samochody14", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Czternasta czêœæ spisu samochodów.");
-			format(string, sizeof(string), "Uranus - 558 - $%d", cenyPojazdow[158]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Utility - 552 - $%d", cenyPojazdow[152]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Vincent - 540 - $%d", cenyPojazdow[140]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Voodoo - 412 - $%d", cenyPojazdow[12]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Vortex - 539 - $%d", cenyPojazdow[139]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Washington - 421 - $%d", cenyPojazdow[21]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Willard - 529 - $%d", cenyPojazdow[129]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Windsor - 555 - $%d", cenyPojazdow[155]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Yankee - 456 - $%d", cenyPojazdow[56]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Yosemite - 554 - $%d", cenyPojazdow[154]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Uranus - 558 - 500.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Utility - 552 - 32.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Vincent - 540 - 21.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Voodoo - 412 - 24.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Vortex - 539 - 130.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Washington - 421 - 33.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Willard - 529 - 23.200$");
+			SendClientMessage(playerid, COLOR_GREY, "Windsor - 555 - 300.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Yankee - 456 - 100.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Yosemite - 554 - 78.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/motory", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Motory___________________");
 			SendClientMessage(playerid, COLOR_RED, "Pierwsza czêœæ spisu motorów.");
-			format(string, sizeof(string), "NRG-500 - 522 - $%d", cenyPojazdow[122]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Faggio - 462 - $%d", cenyPojazdow[62]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "FCR-900 - 521 - $%d", cenyPojazdow[121]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "PCJ-600 - 461 - $%d", cenyPojazdow[61]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Freeway - 463 - $%d", cenyPojazdow[63]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "BF-400 - 581 - $%d", cenyPojazdow[181]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Pizzaboy - 448 - $%d", cenyPojazdow[48]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Wayfarer - 586 - $%d", cenyPojazdow[186]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "CopBike - 523 - $%d", cenyPojazdow[123]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sanchez - 468 - $%d", cenyPojazdow[68]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Quad - 471 - $%d", cenyPojazdow[71]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "NRG-500 - 522 - 91.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Faggio - 462 - 3.000$");
+			SendClientMessage(playerid, COLOR_GREY, "FCR-900 - 521 - 80.000$");
+			SendClientMessage(playerid, COLOR_GREY, "PCJ-600 - 461 - 15.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Freeway - 463 - 20.000$");
+			SendClientMessage(playerid, COLOR_GREY, "BF-400 - 581 - 70.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Pizzaboy - 448 - 3.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Wayfarer - 586 - 45.000$");
+			SendClientMessage(playerid, COLOR_GREY, "CopBike - 523 - 82.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Sanchez - 468 - 11.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Quad - 471 - 22.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/rowery", true) == 0)
 		{
 			SendClientMessage(playerid ,COLOR_YELLOW, "______________________Rowery___________________");
 			SendClientMessage(playerid, COLOR_RED, "Pierwsza czêœæ spisu rowerów.");
-			format(string, sizeof(string), "Bike - 509 - $%d", cenyPojazdow[109]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "BMX - 481 - $%d", cenyPojazdow[81]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Mountian Bike - 510 - $%d", cenyPojazdow[110]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Bike - 509 - 700$");
+			SendClientMessage(playerid, COLOR_GREY, "BMX - 481 - 900$");
+			SendClientMessage(playerid, COLOR_GREY, "Mountian Bike - 510 - 1.200$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/helikoptery", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Helikoptery___________________");
 			SendClientMessage(playerid, COLOR_RED, "Pierwsza czêœæ spisu helikopterów.");
-			format(string, sizeof(string), "Cargobob - 548 - $%d", cenyPojazdow[148]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Hunter - 425 - $%d", cenyPojazdow[125]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Leviathan - 417 - $%d", cenyPojazdow[17]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Maverick - 487 - $%d", cenyPojazdow[87]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Police Maverick - 497 - $%d", cenyPojazdow[97]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Raindance - 563 - $%d", cenyPojazdow[163]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Sparrow - 469 - $%d", cenyPojazdow[69]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "San News Maverick - 488 - $%d", cenyPojazdow[88]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Cargobob - 548 - 1.000.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Hunter - 425 - 50.000.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Leviathan - 417 - 1.200.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Maverick - 487 - 820.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Police Maverick - 497 - 400.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Raindance - 563 - 1.000.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Sparrow - 469 - 200.000$");
+			SendClientMessage(playerid, COLOR_GREY, "VcMaverick - 488 - 720.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/samoloty", true) == 0)
 		{
 			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samoloty___________________");
 			SendClientMessage(playerid, COLOR_RED, "Pierwsza czêœæ spisu samolotów.");
-			format(string, sizeof(string), "Hydra - 520 - $%d", cenyPojazdow[120]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Rustler - 476 - $%d", cenyPojazdow[76]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Dodo - 593 - $%d", cenyPojazdow[193]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Nevada - 553 - $%d", cenyPojazdow[153]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Stuntplane - 513 - $%d", cenyPojazdow[113]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Cropdust - 512 - $%d", cenyPojazdow[112]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Andromeda - 592 - $%d", cenyPojazdow[192]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Beagle - 511 - $%d", cenyPojazdow[111]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Skimmer - 592 - $%d", cenyPojazdow[192]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Shamal - 519 - $%d", cenyPojazdow[119]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "Hydra - 520 - 8.000.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Rustler - 476 - 1.350.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Dodo - 593 - 890.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Nevada - 553 - 600.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Stuntplane - 513 - 990.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Cropdust - 512 - 300.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Andromeda - 592 - 1.000.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Beagle - 511 - 400.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Skimmer - 460 - 900.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Shamal - 519 - 1.800.000$");
 			return 1;
 		}
 		else if(strcmp(cmd, "/lodzie", true) == 0)
 		{
-			SendClientMessage(playerid, COLOR_YELLOW, "______________________£odzie___________________");
+			SendClientMessage(playerid, COLOR_YELLOW, "______________________Samochody___________________");
 			SendClientMessage(playerid, COLOR_RED, "Pierwsza czêœæ spisu ³odzi.");
-			format(string, sizeof(string), "CoastGuard - 472 - $%d", cenyPojazdow[72]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Dinghy - 473 - $%d", cenyPojazdow[73]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Jetmax - 493 - $%d", cenyPojazdow[93]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Launch - 595 - $%d", cenyPojazdow[195]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Marquis - 484 - $%d", cenyPojazdow[84]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Predator - 430 - $%d", cenyPojazdow[30]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Reefer - 453 - $%d", cenyPojazdow[53]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Speeder - 452 - $%d", cenyPojazdow[52]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Squalo - 446 - $%d", cenyPojazdow[46]);
-			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string), "Tropic - 454 - $%d", cenyPojazdow[54]);
-			SendClientMessage(playerid, COLOR_GREY, string);
+			SendClientMessage(playerid, COLOR_GREY, "CoastGuard - 472 - 100.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Dinghy - 473 - 60.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Jetmax - 493 - 1.350.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Launch - 595 - 590.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Marquis - 484 - 1.220.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Predator - 430 - 120.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Reefer - 453 - 820.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Speeder - 452 - 600.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Squalo - 446 - 1.200.000$");
+			SendClientMessage(playerid, COLOR_GREY, "Tropic - 454 - 1.100.000$");
 			return 1;
 		}
 		else

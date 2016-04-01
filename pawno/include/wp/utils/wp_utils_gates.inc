@@ -36,9 +36,3 @@ timer PoliceGate2Close[10000]()
 	MoveDynamicObject(gGateSfPd3a, -1701.430664, 687.677, 24.65, 0.01, 0.0, 270.0, 90.0);
     return 0;
 }
-
-timer PoliceGateLs1Close[12000]()
-{
-	MoveDynamicObject(gGateLsPd1, 1589.03, -1638.09, 14.14, 0.9, 0.0, 0.0, 0.0);
-    return 0;
-}
