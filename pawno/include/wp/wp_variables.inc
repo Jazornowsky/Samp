@@ -220,7 +220,7 @@ Float:VehBatDegradation(itemid);
 Float:MaxVehicleHealth(vehId);
 
 /* Default data */
-#define VERSION "1.32"										
+#define VERSION "1.33"										
 #define MAX_ZONE_NAME 28
 #define MAX_SPAWN_ATTEMPTS 4						// This is the amount of times sometime can try to spawn before finally getting kicked.
 #define SMS_COST 15									// Price used in phone sms
